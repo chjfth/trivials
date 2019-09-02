@@ -4,6 +4,10 @@
 #include <assert.h>
 #include <string.h>
 
+//#define MAXELE 100
+#define COUNT(ar) (sizeof(ar)/sizeof(ar[0]))
+int g_cases = 0;
+
 /**
  * @file straight_HeapSort.c      Generic Heap Sort implementation.
  * @brief
@@ -95,48 +99,36 @@ int is_greater_than(const DATATYPE a, const DATATYPE b)
 		return -1;
 }
 
-#define MAXELE 100
-#define COUNT(ar) (sizeof(ar)/sizeof(ar[0]))
 
 void assert_sorted(DATATYPE ar[], int count)
 {
-	DATATYPE arcorrect[MAXELE];
-	for(int i=0; i<count; i++)
-		arcorrect[i] = i+1;
-
-	if(memcmp(arcorrect, ar, count*sizeof(DATATYPE))!=0)
-	{
-		printf("Got error!\n");
-		assert(0);
+	for(int i=0; i<count-1; i++) {
+		if(! (ar[i]<=ar[i+1]) ) {
+			printf("Got error on case idx=%d!\n", g_cases);
+			assert(0);
+		}
 	}
+	g_cases++;
 }
 
-#define HEAPSORT(ar) do { \
+#define HEAPSORT(...) do { \
+	DATATYPE ar[] = {__VA_ARGS__}; \
 	sortPointers(ar, COUNT(ar), is_greater_than); \
 	assert_sorted(ar, COUNT(ar)); \
 } while(0)
 
 int main()
 {
-	int a1[] = {2, 1, 3};
-	HEAPSORT(a1); // output [1,2,3]
+	HEAPSORT(2, 1, 3); // output [1,2,3]
+	HEAPSORT(3, 2, 1); // output [1,2,3]
+	HEAPSORT(1,2,3,4,5); // output [1,2,3,4,5]
+	HEAPSORT(5,4,3,2,1); // output [1,2,3,4,5]
+	HEAPSORT(8,7,6,5,4,3,2,1);
+	HEAPSORT(8,2,6,1,4,3,7,5);
 
-	int a2[] = {3, 2, 1};
-	HEAPSORT(a2); // output [1,2,3]
+	HEAPSORT(8,22, 6 ,22,4,3, 6 ,5);
 
-	int a3[] = {1,2,3,4,5};
-	HEAPSORT(a3); // output [1,2,3,4,5]
-
-	int a4[] = {5,4,3,2,1};
-	HEAPSORT(a4); // output [1,2,3,4,5]
-
-	int a5[] = {8,7,6,5,4,3,2,1};
-	HEAPSORT(a5);
-
-	int a6[] = {8,2,6,1,4,3,7,5};
-	HEAPSORT(a6);
-
-	printf("All cases OK.\n");
+	printf("All %d cases OK.\n", g_cases);
 	return 0;
 }
 
