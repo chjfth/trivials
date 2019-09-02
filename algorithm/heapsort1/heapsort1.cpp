@@ -1,6 +1,8 @@
 // Origin: $\algorithms-nutshell-2ed\Code\Sorting\PointerBased\straight_HeapSort.c
 
 #include <stdio.h>
+#include <assert.h>
+#include <string.h>
 
 /**
  * @file straight_HeapSort.c      Generic Heap Sort implementation.
@@ -22,11 +24,22 @@ void swap(DATATYPE &a, DATATYPE &b)
 	b = tmp;
 }
 
-/** Heapify the subarray ar[0,max). */
+/** Heapify the subarray ar[idx,max). */
 static void heapify (DATATYPE *ar, 
-	int(*cmp)(const DATATYPE,const DATATYPE),
+	int(*cmp)(const DATATYPE,const DATATYPE), 
 	int idx, int max) 
 {
+	// [2019-09-02] Chj memo:
+	// cmp() means "is param1 larger then param2".
+	// The largest-value node will be at tree root.
+	//
+	// Important input premise: All nodes, except current root node(indicated by idx), 
+	// have been in heapified state.
+	//
+	// The root node now may be the "out-of-order" node, so this function will 
+	// move(swap) that out-of-order root to its proper location, so that 
+	// on function return, the tree at idx has become a heapified tree.
+
 	int left = 2*idx + 1;
 	int right = 2*idx + 2;
 	int largest;
@@ -82,9 +95,26 @@ int is_greater_than(const DATATYPE a, const DATATYPE b)
 		return -1;
 }
 
+#define MAXELE 100
 #define COUNT(ar) (sizeof(ar)/sizeof(ar[0]))
 
-#define HEAPSORT(ar) sortPointers(ar, COUNT(ar), is_greater_than)
+void assert_sorted(DATATYPE ar[], int count)
+{
+	DATATYPE arcorrect[MAXELE];
+	for(int i=0; i<count; i++)
+		arcorrect[i] = i+1;
+
+	if(memcmp(arcorrect, ar, count*sizeof(DATATYPE))!=0)
+	{
+		printf("Got error!\n");
+		assert(0);
+	}
+}
+
+#define HEAPSORT(ar) do { \
+	sortPointers(ar, COUNT(ar), is_greater_than); \
+	assert_sorted(ar, COUNT(ar)); \
+} while(0)
 
 int main()
 {
@@ -100,6 +130,13 @@ int main()
 	int a4[] = {5,4,3,2,1};
 	HEAPSORT(a4); // output [1,2,3,4,5]
 
+	int a5[] = {8,7,6,5,4,3,2,1};
+	HEAPSORT(a5);
+
+	int a6[] = {8,2,6,1,4,3,7,5};
+	HEAPSORT(a6);
+
+	printf("All cases OK.\n");
 	return 0;
 }
 
