@@ -111,7 +111,7 @@ void assert_sorted(DATATYPE ar[], int count)
 	g_cases++;
 }
 
-#define HEAPSORT(...) do { \
+#define SORT(...) do { \
 	DATATYPE ar[] = {__VA_ARGS__}; \
 	sortPointers(ar, COUNT(ar), is_greater_than); \
 	assert_sorted(ar, COUNT(ar)); \
@@ -119,14 +119,14 @@ void assert_sorted(DATATYPE ar[], int count)
 
 int main()
 {
-	HEAPSORT(2, 1, 3); // output [1,2,3]
-	HEAPSORT(3, 2, 1); // output [1,2,3]
-	HEAPSORT(1,2,3,4,5); // output [1,2,3,4,5]
-	HEAPSORT(5,4,3,2,1); // output [1,2,3,4,5]
-	HEAPSORT(8,7,6,5,4,3,2,1);
-	HEAPSORT(8,2,6,1,4,3,7,5);
+	SORT(2, 1, 3); // output [1,2,3]
+	SORT(3, 2, 1); // output [1,2,3]
+	SORT(1,2,3,4,5); // output [1,2,3,4,5]
+	SORT(5,4,3,2,1); // output [1,2,3,4,5]
+	SORT(8,7,6,5,4,3,2,1);
+	SORT(8,2,6,1,4,3,7,5);
 
-	HEAPSORT(8,22, 6 ,22,4,3, 6 ,5);
+	SORT(8,22, 6 ,22,4,3, 6 ,5);
 
 	printf("All %d cases OK.\n", g_cases);
 	return 0;
