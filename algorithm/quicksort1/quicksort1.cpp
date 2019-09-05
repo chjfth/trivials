@@ -12,6 +12,15 @@ int g_cmps = 0;
 int g_swaps = 0;
 int g_copies = 0; // only in insertion sort
 
+typedef int DATATYPE;
+
+/** Code to select a pivot index around which to partition ar[left, right]. */
+int selectPivotIndex (DATATYPE *vals, int left, int right)
+{
+	return right;
+}
+
+
 /**
  * @file baseQsort.c   Quicksort implementation
  * @brief 
@@ -29,19 +38,10 @@ int g_copies = 0; // only in insertion sort
 
 //#include "report.h"
 
-typedef int DATATYPE;
-
 void swap(DATATYPE &a, DATATYPE &b)
 {
 	DATATYPE tmp = a; a = b; b = tmp;
 	g_swaps++;
-}
-
-
-/** Code to select a pivot index around which to partition ar[left, right]. */
-int selectPivotIndex (DATATYPE *vals, int left, int right)
-{
-	return right;
 }
 
 /**
@@ -229,7 +229,7 @@ void sort_and_verify(DATATYPE ar[], int count,
 	sort_and_verify(ar, COUNT(ar), is_greater_than); \
 } while(0)
 
-int run_tests()
+int run_tests()	
 {
 	printf("Running quicksort cases. (ins-minsize=%d)\n", minSize);
 
