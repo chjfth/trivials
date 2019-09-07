@@ -34,13 +34,39 @@ static struct timeval before;
 static struct timeval after;
 #endif // UNIX
 
+void print_path_results(int vcount,
+	const vector<int> &dist, const vector<int> &pred) 
+{
+	printf("      dist[]  pred[]\n");
+	for (int i = 0; i < vcount; i++) {
+		printf ("#%-2d.  %-6d   %-6d\n", i, dist[i], pred[i]);
+	}
+}
 
+void test_AGNS2_p155_case1()
+{
+	int n = 5; // vertex count is 5
+	Graph g(n, true);
 
+	g.addEdge(0, 4, 2); 
+	g.addEdge(4, 3, 4); 
+	g.addEdge(4, 1, 5); 
+	g.addEdge(3, 2, 6); 
+	g.addEdge(2, 1, -3); 
+	g.addEdge(1, 3, -2);
+
+	vector<int> dist(n);
+	vector<int> pred(n);
+
+	singleSourceShortest(g, 0, dist, pred);
+
+	print_path_results(n, dist, pred);
+}
 
 
 void run_stock_tests()
 {
-
+	test_AGNS2_p155_case1();
 }
 
 /** Launch program to load graph from a file an operate in verbose mode if needed. */
@@ -76,13 +102,13 @@ int main (int argc, char **argv) {
 		if(strcmp(argv[idx], "-v")==0)
 		{
 			verbose = true;
-			idx++;
 		}
 		else if(strcmp(argv[idx], "-f")==0)
 		{
 			fileName = argv[idx+1];
-			idx += 2;
+			idx++;
 		}
+		idx++;
 	}
 #endif
 
@@ -105,8 +131,6 @@ int main (int argc, char **argv) {
 
 	int n = graph.numVertices();
 
-	int i;
-
 	vector<int> dist(n);
 	vector<int> pred(n);
 
@@ -120,10 +144,7 @@ int main (int argc, char **argv) {
 //		printf("%s\n", timingString(usecs));
 
 		if (verbose) {
-			printf("      dist[]  pred[]\n");
-			for (i = 0; i < n; i++) {
-				printf ("#%-2d.  %-6d   %-6d\n", i, dist[i], pred[i]);
-			}
+			print_path_results(n, dist, pred);
 		}
 	} 
 	catch (char const *s) {
