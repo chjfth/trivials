@@ -75,8 +75,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BellmanFord.cpp" />
-    <ClCompile Include="Graph.cxx" />
-    <ClCompile Include="testBellmanFord.cxx" />
+    <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="testBellmanFord.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />

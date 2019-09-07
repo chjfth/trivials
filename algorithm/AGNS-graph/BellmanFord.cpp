@@ -49,11 +49,14 @@ void singleSourceShortest(Graph const &graph, int s, /* in */
 		// chj: should assign max/2, otherwise, newLen below may wrap to a negative value.
 	dist[s] = 0;
 
+	int ucount = 0; // update count
+
 	// After n-1 times we can be guaranteed distances from s to all 
 	// vertices are properly computed to be shortest. So on the nth 
 	// pass, a change to any value guarantees there is negative cycle.
 	// Leave early if no changes are made.
-	for (int i = 1; i <= n; i++) 
+	int i;
+	for (i = 1; i <= n; i++) 
 	{
 		bool failOnUpdate = (i == n);
 		bool leaveEarly = true;
@@ -78,12 +81,16 @@ void singleSourceShortest(Graph const &graph, int s, /* in */
 					dist[v] = newLen; 
 					pred[v] = u;
 					leaveEarly = false;
+
+					ucount++;
 				}
 			}
 		}
 		
-		if (leaveEarly)  
+		if (leaveEarly) { 
+			// We can observe ucount an i here.
 			break; 
+		}
 	}
 }
 

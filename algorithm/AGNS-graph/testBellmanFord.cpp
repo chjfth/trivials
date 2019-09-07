@@ -63,10 +63,45 @@ void test_AGNS2_p155_case1()
 	print_path_results(n, dist, pred);
 }
 
+void test_AGNS2_p155_case2()
+{
+	// almost same as p115_case1(), but with different addEdge order
+	int n = 5;
+	Graph g(n, true);
+	g.addEdge(3, 2, 6); 
+	g.addEdge(2, 1, -3); 
+	g.addEdge(1, 3, -2);
+	g.addEdge(0, 4, 2); 
+	g.addEdge(4, 3, 4); 
+	g.addEdge(4, 1, 5); 
+	vector<int> dist(n);
+	vector<int> pred(n);
+	singleSourceShortest(g, 0, dist, pred);
+	print_path_results(n, dist, pred);
+}
+
+void test_AGNS2_p155_case3()
+{
+	// almost same as p115_case1(), but with different addEdge order
+	int n = 5;
+	Graph g(n, true);
+	g.addEdge(1, 3, -2);
+	g.addEdge(2, 1, -3); 
+	g.addEdge(3, 2, 6); 
+	g.addEdge(4, 1, 5); 
+	g.addEdge(4, 3, 4); 
+	g.addEdge(0, 4, 2); 
+	vector<int> dist(n);
+	vector<int> pred(n);
+	singleSourceShortest(g, 0, dist, pred);
+	print_path_results(n, dist, pred);
+}
 
 void run_stock_tests()
 {
 	test_AGNS2_p155_case1();
+//	test_AGNS2_p155_case2();
+//	test_AGNS2_p155_case3();
 }
 
 /** Launch program to load graph from a file an operate in verbose mode if needed. */
