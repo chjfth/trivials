@@ -43,7 +43,7 @@ void print_path_results(int vcount,
 	}
 }
 
-void test_AGNS2_p155_case1()
+void test_AGNS2_p155_case1(bool is_reverse_feed)
 {
 	int n = 5; // vertex count is 5
 	Graph g(n, true);
@@ -58,11 +58,12 @@ void test_AGNS2_p155_case1()
 	vector<int> dist(n);
 	vector<int> pred(n);
 
-	singleSourceShortest(g, 0, dist, pred);
+	singleSourceShortest_BellmanFord(g, 0, dist, pred, is_reverse_feed);
 
 	print_path_results(n, dist, pred);
 }
 
+/*
 void test_AGNS2_p155_case2()
 {
 	// almost same as p115_case1(), but with different addEdge order
@@ -96,11 +97,13 @@ void test_AGNS2_p155_case3()
 	singleSourceShortest(g, 0, dist, pred);
 	print_path_results(n, dist, pred);
 }
+*/
 
 void run_stock_tests()
 {
-	test_AGNS2_p155_case1();
-/* Correct output:
+	test_AGNS2_p155_case1(false);
+	test_AGNS2_p155_case1(true);
+/* Correct output for both above calls:
 	dist[]  pred[]
 #0 .  0        -1
 #1 .  7        4

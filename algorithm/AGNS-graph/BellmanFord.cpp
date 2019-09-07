@@ -38,8 +38,9 @@ void output (int n,
  * \param dist    array to contain shortest distances to all other vertices.
  * \param pred    array to contain previous vertices to be able to recompute paths.
  */
-void singleSourceShortest(Graph const &graph, int s, /* in */
-	vector<int> &dist, vector<int> &pred /* out */
+void singleSourceShortest_BellmanFord(Graph const &graph, int s, /* in */
+	vector<int> &dist, vector<int> &pred, /* out */
+	bool is_reverse_feed
 	)
 {
 	// initialize dist[] and pred[] arrays.
@@ -64,8 +65,10 @@ void singleSourceShortest(Graph const &graph, int s, /* in */
 		// Process each vertex, u, and its respective edges to see if 
 		// some edge (u,v) realizes a shorter distance from s->v by going
 		// through s->u->v. Use longs to prevent overflow.
-		for (int u = 0; u < n; u++) 
+		for (int uadv = 0; uadv < n; uadv++)
 		{
+			int u = !is_reverse_feed ? uadv : n-1-uadv;
+
 			for (VertexList::const_iterator ci = graph.begin(u);
 				ci != graph.end(u); 
 				++ci) 
@@ -88,9 +91,15 @@ void singleSourceShortest(Graph const &graph, int s, /* in */
 		}
 		
 		if (leaveEarly) { 
-			// We can observe ucount an i here.
+			// We can observe ucount and i here.
+			// With different is_reverse_feed, we see different value of ucount and i.
 			break; 
 		}
 	}
 }
 
+void singleSourceShortest(Graph const &graph, int s,
+	vector<int> &dist, vector<int> &pred)
+{
+	return singleSourceShortest_BellmanFord(graph, s, dist, pred, false);
+}

@@ -24,6 +24,16 @@
 void singleSourceShortest(Graph const &g, int s,
 			  vector<int> &dist, vector<int> &pred);  /* out */
 
+// Chj extra:
+void singleSourceShortest_BellmanFord(
+	Graph const &g, // input graph
+	int s, // input start vertex
+	vector<int> &dist, // output
+	vector<int> &pred, // output
+	bool is_reverse_feed
+	);
+
+
 /**
  * Interface to dense version of single source Shortest Path problem.
  * 
