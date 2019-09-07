@@ -100,8 +100,17 @@ void test_AGNS2_p155_case3()
 void run_stock_tests()
 {
 	test_AGNS2_p155_case1();
+/* Correct output:
+	dist[]  pred[]
+#0 .  0        -1
+#1 .  7        4
+#2 .  11       3
+#3 .  5        1
+#4 .  2        0
+*/
 //	test_AGNS2_p155_case2();
 //	test_AGNS2_p155_case3();
+
 }
 
 /** Launch program to load graph from a file an operate in verbose mode if needed. */
@@ -186,4 +195,3 @@ int main (int argc, char **argv) {
 		printf ("%s\n", s);
 	}
 }
-
