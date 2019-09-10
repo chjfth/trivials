@@ -38,7 +38,7 @@ static struct timeval after;
 void print_path_results(int vcount,
 	const vector<int> &dist, const vector<int> &pred) 
 {
-	printf("      pred[]  disk[]\n");
+	printf("      pred[]  dist[]\n");
 	for (int i = 0; i < vcount; i++) {
 		printf ("#%-2d.  %-6d   %-6d\n", i, pred[i], dist[i]);
 	}
@@ -64,23 +64,82 @@ void test_AGNS2_p150()
 	singleSourceShortest(g, 0, dist, pred);
 
 	print_path_results(n, dist, pred);
+
+/* Correct output:
+		pred[]  dist[]
+	#0 .  -1       0
+	#1 .  0        6
+	#2 .  0        8
+	#3 .  2        17
+	#4 .  1        17
+	#5 .  4        20
+*/
 }
 
+void test_chjCaseA()
+{
+	int n = 6; // vertex count is 5
+	Graph g(n, true);
+	g.addEdge(0, 2, 4); 
+	g.addEdge(0, 1, 1);
+	g.addEdge(2, 3, 2); 
+	g.addEdge(1, 3, 3); 
+	g.addEdge(3, 4, 2); 
+	g.addEdge(3, 5, 2); 
+	g.addEdge(1, 5, 9);
+
+	vector<int> dist(n);
+	vector<int> pred(n);
+	singleSourceShortest(g, 0, dist, pred);
+	print_path_results(n, dist, pred);
+/*
+        pred[]  dist[]
+	#0 .  -1       0
+	#1 .  0        1
+	#2 .  0        4
+	#3 .  1        4
+	#4 .  3        6
+	#5 .  3        6
+*/
+}
+
+void test_chjCaseB()
+{
+	int n = 6; // vertex count is 5
+	Graph g(n, true);
+	g.addEdge(0, 2, 4); 
+	g.addEdge(0, 1, 1);
+	g.addEdge(2, 3, 2); 
+	g.addEdge(1, 3, 6); // diff!
+	g.addEdge(3, 4, 2); 
+	g.addEdge(3, 5, 2); 
+	g.addEdge(1, 5, 9);
+
+	vector<int> dist(n);
+	vector<int> pred(n);
+	singleSourceShortest(g, 0, dist, pred);
+	print_path_results(n, dist, pred);
+/*
+        pred[]  dist[]
+	#0 .  -1       0
+	#1 .  0        1
+	#2 .  0        4
+	#3 .  2        6
+	#4 .  3        8
+	#5 .  3        8
+*/
+}
+
+#define RUNCASE(name) \
+	printf("\nCase " #name ":\n");\
+	name();
 
 void run_stock_tests()
 {
-	test_AGNS2_p150();
-/* Correct output for both above calls:
-	dist[]  pred[]
-#0 .  0        -1
-#1 .  7        4
-#2 .  11       3
-#3 .  5        1
-#4 .  2        0
-*/
-//	test_AGNS2_p155_case2();
-//	test_AGNS2_p155_case3();
-
+	RUNCASE(test_AGNS2_p150);
+	
+	RUNCASE(test_chjCaseA)
+	RUNCASE(test_chjCaseB)
 }
 
 /** Launch program to load graph from a file an operate in verbose mode if needed. */

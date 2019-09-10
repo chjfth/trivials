@@ -38,36 +38,42 @@ void output (int n,
  * \param dist  array to contain shortest distances to all other vertices.
  * \param pred  array to contain previous vertices to be able to recompute paths.
  */
-void singleSourceShortest(Graph const &g, int s,                  /* in */
-                          vector<int> &dist, vector<int> &pred) { /* out */
+void singleSourceShortest(Graph const &g, int s, // in
+	vector<int> &dist, vector<int> &pred // out
+	) 
+{ 
+	// initialize dist[] and pred[] arrays. Start with vertex s by setting
+	// dist[] to 0. Priority Queue PQ contains all v in G.
+	const int n = g.numVertices();
+	pred.assign(n, -1);
+	dist.assign(n, numeric_limits<int>::max());
+	dist[s] = 0;
+	BinaryHeap pq(n);
+	for (int u = 0; u < n; u++) { 
+		pq.insert (u, dist[u]); 
+	}
 
-  // initialize dist[] and pred[] arrays. Start with vertex s by setting
-  // dist[] to 0. Priority Queue PQ contains all v in G.
-  const int n = g.numVertices();
-  pred.assign(n, -1);
-  dist.assign(n, numeric_limits<int>::max());
-  dist[s] = 0;
-  BinaryHeap pq(n);
-  for (int u = 0; u < n; u++) { pq.insert (u, dist[u]); }
+	// find vertex in ever-shrinking set, V-S, whose dist[] is smallest.
+	// Recompute potential new paths to update all shortest paths
+	while (!pq.isEmpty()) 
+	{
+		int u = pq.smallest();
 
-  // find vertex in ever-shrinking set, V-S, whose dist[] is smallest.
-  // Recompute potential new paths to update all shortest paths
-  while (!pq.isEmpty()) {
-    int u = pq.smallest();
-
-    // For neighbors of u, see if newLen (best path from s->u + weight
-    // of edge u->v) is better than best path from s->v. If so, update
-    // in dist[v] and readjust binary heap accordingly. Compute using 
-    // long to avoid overflow error.
-    for (VertexList::const_iterator ci = g.begin(u); ci != g.end(u); ++ci) {
-      int v = ci->first;
-      long newLen = dist[u];
-      newLen += ci->second;
-      if (newLen < dist[v]) {
-        pq.decreaseKey (v, newLen);
-        dist[v] = newLen;
-        pred[v] = u;
-      }
-    }
-  }
+		// For neighbors of u, see if newLen (best path from s->u + weight
+		// of edge u->v) is better than best path from s->v. If so, update
+		// in dist[v] and readjust binary heap accordingly. Compute using 
+		// long to avoid overflow error.
+		for (VertexList::const_iterator ci = g.begin(u); ci != g.end(u); ++ci) 
+		{
+			int v = ci->first;
+			long newLen = dist[u];
+			newLen += ci->second;
+			if (newLen < dist[v]) 
+			{
+				pq.decreaseKey (v, newLen);
+				dist[v] = newLen;
+				pred[v] = u;
+			}
+		}
+	}
 }
