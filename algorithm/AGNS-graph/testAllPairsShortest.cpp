@@ -7,6 +7,8 @@
  * @date 6/15/08
  */
 
+#include <string.h>
+#include <assert.h>
 #include <iostream>
 #include <cassert>
 
@@ -26,8 +28,9 @@ void assertPath(int s, int t,
   }
 }
 
+
 /** test case from Cormen, 2nd edition, p. 626 */
-int main () {
+int main_testcase () {
   int n = 5;
   Graph g (n, true);
 
@@ -69,6 +72,113 @@ int main () {
   assertPath (4, 0, pred, res2);
 
   cout << "Test passed.\n";
+  return 0;
 }
 
+void test_p160()
+{
+	int n = 5;
+	Graph g (n, true);
 
+	g.addEdge(0, 1, 2);
+	g.addEdge(0, 4, 4);
+	g.addEdge(3, 0, 8);
+	g.addEdge(1, 2, 3);
+	g.addEdge(2, 4, 1);
+	g.addEdge(2, 3, 5);
+	g.addEdge(4, 3, 7);
+/*
+	[dist] To:.#00..#01..#02..#03..#04.
+	From #00 : 0    2    5    10   4
+	From #01 : 16   0    3    8    4
+	From #02 : 13   15   0    5    1
+	From #03 : 8    10   13   0    12
+	From #04 : 15   17   20   7    0
+
+	[pred] To:.#00..#01..#02..#03..#04.
+	From #00 : -1   0    1    2    0
+	From #01 : 3    -1   1    2    2
+	From #02 : 3    0    -1   2    2
+	From #03 : 3    0    1    -1   0
+	From #04 : 3    0    1    4    -1
+*/
+}
+
+void run_stock_tests() 
+{
+	test_p160();
+
+	main_testcase();
+}
+
+void print_matrix_results(int n, 
+	vector< vector<int> > &matrix,
+	const char *desc)
+{
+	int fr, to;
+
+	printf("[%.4s] To:", desc);
+	for(to=0; to<n; to++)
+		printf(".#%02d.", to);
+	printf("\n");
+	for(fr=0; fr<n; fr++)
+	{
+		const vector<int> &arto = matrix[fr];
+		printf("From #%02d :", fr);
+		for(to=0; to<n; to++)
+		{
+			printf(" %-3d ", arto[to]);
+		}
+		printf("\n");
+	}
+}
+
+int main(int argc, char *argv[]) 
+{
+	int idx;
+	char *fileName = 0;
+
+	idx = 1;
+	while(idx<argc)
+	{
+		if(strcmp(argv[idx], "-f")==0)
+		{
+			fileName = argv[idx+1];
+			idx++;
+		}
+		idx++;
+	}
+
+	if (fileName == 0 || *fileName=='\0') {
+		printf ("You can load a graph datafile from command line.\n");
+		printf ("  exename [-v] -f file\n");
+		printf ("\n");
+		printf ("Example:\n");
+		printf ("  exename -f testBellmanFord.input.txt\n");
+		printf ("\n");
+
+		printf("Now run stock tests...\n");
+
+		run_stock_tests();
+		exit (0);
+	}
+
+	Graph graph(0);
+	graph.load (fileName);
+
+	int n = graph.numVertices();
+
+	vector< vector<int> > dist(n, vector<int>(n));
+	vector< vector<int> > pred(n, vector<int>(n));
+
+	printf ("loaded graph with %d vertices (run Floyd-Warshall)\n", n);
+
+	allPairsShortest(graph, dist, pred);
+
+	printf("\n");
+	print_matrix_results(n, dist, "dist");
+	printf("\n");
+	print_matrix_results(n, pred, "pred");
+
+	return 0;
+}

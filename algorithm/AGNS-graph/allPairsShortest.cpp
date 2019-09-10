@@ -11,6 +11,9 @@
 #include <iostream>
 #include "Graph.h"
 
+const int MyMaxInt = numeric_limits<int>::max()/2; 
+	// cut MAX_INT to half to avoid wrap-to-negative.
+
 /** 
  * Useful debugging method to show dist,pred values. Also used to generate
  * useful figures for the execution of the algorithm. 
@@ -53,7 +56,7 @@ void allPairsShortest(Graph const &graph,   /* in */
 	// initialized in corresponding way.
 	for (int u = 0; u < n; u++) 
 	{
-		dist[u].assign(n, numeric_limits<int>::max());
+		dist[u].assign(n, MyMaxInt);
 		pred[u].assign(n, -1);
 		dist[u][u] = 0;
 		for (VertexList::const_iterator ci = graph.begin(u);
@@ -68,7 +71,7 @@ void allPairsShortest(Graph const &graph,   /* in */
 	{
 		for (int i = 0; i < n; i++) 
 		{
-			if (dist[i][k] == numeric_limits<int>::max()) { 
+			if (dist[i][k] == MyMaxInt) { 
 				continue; 
 			}
 
