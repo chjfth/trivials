@@ -187,10 +187,10 @@ int main (int argc, char **argv) {
 
 	if (fileName == 0 || *fileName=='\0') {
 		printf ("You can load a graph datafile from command line.\n");
-		printf ("  exename [-v] -f file\n");
+		printf ("  exename -f file\n");
 		printf ("\n");
 		printf ("Example:\n");
-		printf ("  exename -f testBellmanFord.input.txt\n");
+		printf ("  exename -f p150-dj.input.txt\n");
 		printf ("\n");
 
 		printf("Now run stock tests...\n");
