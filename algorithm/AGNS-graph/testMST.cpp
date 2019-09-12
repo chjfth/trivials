@@ -49,8 +49,10 @@ void main_testcase ()
   cout << "Tests passed\n";
 }
 
-void print_result(const Graph &graph, const int pred[])
+void print_result(const Graph &graph, const int pred[], int start_node)
 {
+	printf("Prim's find MST result: (start_node=#%d)\n", start_node);
+
 	int n = graph.numVertices();
 	// pred[] contains exactly n elements.
 
@@ -58,20 +60,22 @@ void print_result(const Graph &graph, const int pred[])
 	int iedge = 0;
 	for(int i=0; i<n; i++)
 	{
-		if(pred[i]==-1)
+		if(pred[i]==-1) {
+			assert(i==start_node);
 			continue; // the algorithm starting point
+		}
 
 		iedge++;
 
 		int w = graph.edgeWeight(pred[i], i);
 		wtotal += w;
-		printf("#%-2d: (%-2d,%-2d) weight: %d\n", 
+		printf("$%-2d: (%-2d,%-2d) weight: %d\n", 
 			iedge, pred[i], i, w);
 	}
 	printf("Total weight of MST: %d\n", wtotal);
 }
 
-void test_prims_p165()
+void test_prims_p165(int start_node)
 {
 	int n = 5;
 	Graph graph(n, false); // undirected graph
@@ -84,14 +88,15 @@ void test_prims_p165()
 	graph.addEdge(3, 2, 5);
 
 	vector<int> pred(n);
-	mst_prim(graph, pred);
+	mst_prim(graph, pred, start_node);
 
-	print_result(graph, &pred[0]);
+	print_result(graph, &pred[0], start_node);
 }
 
 void run_stock_tests()
 {
-	test_prims_p165();
+	test_prims_p165(0);
+	test_prims_p165(4);
 
 	main_testcase();
 }
@@ -135,7 +140,7 @@ int main (int argc, char **argv)
 
 	printf ("loaded graph with %d vertices (run Prims)\n", n);
 
-	mst_prim(graph, pred);
+	mst_prim(graph, pred, 0);
 
-	print_result(graph, &pred[0]);
+	print_result(graph, &pred[0], 0);
 }

@@ -18,8 +18,9 @@
  * \param graph    Graph to be used as basis for computation.
  * \param pred     pred[] array to contain the previous vertex for each vertex.
  */
-void mst_prim (Graph const &graph,     /* in */
-	       vector<int> &pred);     /* out */
+bool mst_prim (Graph const &graph,     /* in */
+	       vector<int> &pred,     /* out */
+		   int start_node=0);
 
 
 /** Load up TSP from file. */

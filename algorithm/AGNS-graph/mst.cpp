@@ -30,22 +30,26 @@ void debug (int n, vector<int> key, vector<int> pred) {
  * selected vertex. Encoding of MST is done using 'pred' entries.
  * \param graph    the undirected graph
  * \param pred     pred[] array to contain previous information for MST.
+ * \param start_node    Start algorithm from which node,
+ *                      No matter which node to start, the result should be same.
  */
-void mst_prim (Graph const &graph, vector<int> &pred) 
+bool mst_prim (Graph const &graph, vector<int> &pred, int start_node) 
 {
 	// initialize pred[] and key[] arrays. Start with arbitrary 
 	// vertex s=0. Priority Queue PQ contains all v in G.
 	const int n = graph.numVertices();
 	pred.assign(n, -1);
 	vector<int> key(n, numeric_limits<int>::max());
-	key[0] = 0;
+
+	if(start_node<0 || start_node>=n)
+		return false;
+
+	key[start_node] = 0;
 
 	BinaryHeap pq(n);
 	vector<bool>  inQueue(n, true);
 	for (int v = 0; v < n; v++) 
-	{
 		pq.insert(v, key[v]);
-	}
 
 	while (!pq.isEmpty()) 
 	{
@@ -58,16 +62,18 @@ void mst_prim (Graph const &graph, vector<int> &pred)
 			++ci) 
 		{
 			int v = ci->first;
-			if (inQueue[v]) 
+			if (!inQueue[v]) 
+				continue;
+
+			int w = ci->second; // w: weight
+			if (w < key[v]) 
 			{
-				int w = ci->second; // w: weight
-				if (w < key[v]) 
-				{
-					pred[v] = u;
-					key[v] = w;
-					pq.decreaseKey (v, w);
-				}
+				pred[v] = u;
+				key[v] = w;
+				pq.decreaseKey (v, w);
 			}
 		}
 	}
+
+	return true;
 }
