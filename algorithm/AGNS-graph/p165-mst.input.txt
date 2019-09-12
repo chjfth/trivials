@@ -1,0 +1,9 @@
+Minimum spanning tree, Prim's algorithm example, AGNS2 p165
+5 7 undirected
+0, 1, 2
+0, 4, 4
+0, 3, 8
+1, 2, 3
+4, 2, 1
+4, 3, 7
+3, 2, 5

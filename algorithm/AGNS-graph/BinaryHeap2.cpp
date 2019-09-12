@@ -17,19 +17,32 @@
 #include "BinaryHeap2.h"
 
 /** allocate heap of n elements */
-BinaryHeap::BinaryHeap (int i) {
-  _n = 0;  // initially none in the heap
+BinaryHeap::BinaryHeap (int i) 
+{
+	_n = 0;  // initially none in the heap
 
-  // simplify algorithm to consider position 1 as being the 'root'
-  _elements = (ELEMENT *) calloc (i+1, sizeof (ELEMENT));
-  _pos      = (int *) calloc (i+1, sizeof (int));
+	//
+	// [CHJ NOTE] The author stores root element at index 1, NOT 0.
+	//
+
+	// simplify algorithm to consider position 1 as being the 'root'
+
+	_elements = (ELEMENT *) calloc (i+1, sizeof (ELEMENT));
+	_pos      = (int *) calloc (i+1, sizeof (int));
+
+	_numComparisons=0;
+	_numInsert=0;
+	_numSwaps=0;
+	_numSmallest=0;
+	_numDecrease=0;
 }
 
 /** Destructor frees all internal storage. */
-BinaryHeap::~BinaryHeap () {
-  free (_elements);
-  free (_pos);
-  _n = -1;
+BinaryHeap::~BinaryHeap () 
+{
+	free (_elements);
+	free (_pos);
+	_n = -1;
 
 #ifdef REPORT
   printf ("Num Smallest: %d\n", _numSmallest);
@@ -42,51 +55,55 @@ BinaryHeap::~BinaryHeap () {
 
 
 /**
- * Return the vertex identifier of the smallest vertex in heap and 
+ * Return(and remove) the vertex identifier of the smallest vertex in heap and 
  * readjust the heap.
  */
-int BinaryHeap::smallest () {
-  int id = _elements[1].id;
-  int pIdx;
+int BinaryHeap::smallest() // the getMin(PQ) operation in book p148,164
+{
+	int id = _elements[1].id;
+	int pIdx;
 
-  INC_SMALL;
+	INC_SMALL;
 
-  // heap will have one less entry, and we want to place leftover one
-  // in proper location.
-  ELEMENT last = _elements[_n];
-  _n--;
+	// heap will have one less entry, and we want to place leftover one
+	// in proper location.
+	ELEMENT last = _elements[_n];
+	_n--;
 
-  _elements[1] = last;
+	_elements[1] = last;
 
-  pIdx = 1;
-  int child = pIdx*2;
-  while (child <= _n) {
-    // select smaller of two children
-    ELEMENT sm = _elements[child];
-    if (child < _n) {
-      INC_COMP;
-      if (sm.priority >  _elements[child+1].priority) {
-	sm = _elements[++child];
-      }
-    }
+	pIdx = 1;
+	int child = pIdx*2;
+	while (child <= _n) 
+	{
+		// select smaller of two children
+		ELEMENT sm = _elements[child];
+		if (child < _n) {
+			INC_COMP;
+			if (sm.priority >  _elements[child+1].priority) {
+				sm = _elements[++child];
+			}
+		}
 
-    // are we in the right spot? Leave now
-    INC_COMP;
-    if (last.priority <= sm.priority) { break; }
+		// are we in the Correct spot? Leave now
+		INC_COMP;
+		if (last.priority <= sm.priority) { 
+			break; 
+		}
 
-    // otherwise, swap and move up
-    INC_SWAP;
-    _elements[pIdx] = sm;
-    _pos[sm.id] = pIdx;
+		// otherwise, swap and move up
+		INC_SWAP;
+		_elements[pIdx] = sm;
+		_pos[sm.id] = pIdx;
 
-    pIdx = child;
-    child = 2*pIdx;
-  }
+		pIdx = child;
+		child = 2*pIdx;
+	}
 
-  // insert into spot vacated by moved element (or last one)
-  _elements[pIdx] = last;
-  _pos[last.id] = pIdx;
-  return id;
+	// insert into spot vacated by moved element (or last one)
+	_elements[pIdx] = last;
+	_pos[last.id] = pIdx;
+	return id;
 }
 
 

@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dijkstra", "Dijkstra.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "allPairsShortest", "allPairsShortest.vcxproj", "{9A6385FA-3F06-44A1-86DC-691384566E29}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrimsMST", "PrimsMST.vcxproj", "{65350493-4C22-4881-ADC9-FB77997D20CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +27,10 @@ Global
 		{9A6385FA-3F06-44A1-86DC-691384566E29}.Debug|Win32.Build.0 = Debug|Win32
 		{9A6385FA-3F06-44A1-86DC-691384566E29}.Release|Win32.ActiveCfg = Release|Win32
 		{9A6385FA-3F06-44A1-86DC-691384566E29}.Release|Win32.Build.0 = Release|Win32
+		{65350493-4C22-4881-ADC9-FB77997D20CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{65350493-4C22-4881-ADC9-FB77997D20CA}.Debug|Win32.Build.0 = Debug|Win32
+		{65350493-4C22-4881-ADC9-FB77997D20CA}.Release|Win32.ActiveCfg = Release|Win32
+		{65350493-4C22-4881-ADC9-FB77997D20CA}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
