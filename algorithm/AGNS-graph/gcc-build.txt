@@ -3,3 +3,5 @@ g++ -o BellmanFord.ex       testBellmanFord.cpp BellmanFord.cpp Graph.cpp
 g++ -o Dijkstra.ex          testDijkstra.cpp singleSourceShortest-dj.cpp BinaryHeap2.cpp Graph.cpp
 
 g++ -o allPairsShortest.ex  testAllPairsShortest.cpp allPairsShortest.cpp Graph.cpp
+
+g++ -o PrimsMST.ex          testMST.cpp mst.cpp BinaryHeap2.cpp Graph.cpp
