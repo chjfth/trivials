@@ -1,3 +1,4 @@
+package mypkg1;
 
 public class Timeline {
 
