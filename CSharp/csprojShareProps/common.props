@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    
+    <!-- Pass -define:WOW as csc command line -->
+    <DefineConstants>$(DefineConstants);WOW</DefineConstants>
+    
+    <!-- Disable warning CS0219: The variable 'idle' is assigned but its value is never used -->
+    <NoWarn>$(NoWarn);0219</NoWarn>
+
+  </PropertyGroup>
+</Project>
