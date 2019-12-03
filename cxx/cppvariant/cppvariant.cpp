@@ -8,6 +8,7 @@
 
 class A {};
 class B : public A {};
+class C : public A {};
 
 void test_case0()
 {
@@ -23,6 +24,8 @@ template<typename T>
 class Compound
 {
 	T *ptr;
+	T *Fetch();
+	void Print(const T*);
 };
 
 void test_case1()
@@ -33,6 +36,8 @@ void test_case1()
 	pca = pcb; // Oops, not allowed.
 #endif
 }
+
+
 
 //////////////// CASE 2 ////////////////
 
