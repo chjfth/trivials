@@ -13,7 +13,7 @@ resgen.exe Resource1.resx testRes.Resource1.resources
 @set CSFILES=Form1.cs Form1.Designer.cs Program.cs Resource1.Designer.cs Properties\Settings.Designer.cs Properties\Resources.Designer.cs Properties\AssemblyInfo.cs
 
 @REM == Call csc.exe to compile .cs and link resources.
-csc.exe %CSFILES% /resource:Resource1.resources
+csc.exe %CSFILES% /resource:testRes.Resource1.resources
 @if ERRORLEVEL 1 (
     echo csc execution Error!
     exit /b 1
