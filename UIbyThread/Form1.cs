@@ -42,7 +42,7 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
             {
                 Action action = delegate()
                     {
-                        textBox2.Text = "Thread done: "+count;
+                        this.textBox2.Text = "Thread done: "+count;
                     };
                 this.Invoke(action);
             }
