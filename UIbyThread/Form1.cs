@@ -25,7 +25,7 @@ namespace UIbyThread
 ※ For first button, the thread will call UI function directly; 
 ※ For second button, marshalling call is carried out. 
 
-Run this program with VS debugger attached, the first button will cause 'Cross-thread operation not valid' exception.";
+Run this program with VS debugger attached, the first button will cause 'Cross-thread operation not valid' exception. and the second will be fine.";
 
             this.textBox1.Text = text;
         }
@@ -40,7 +40,10 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
             }
             else
             {
-                Action action = () => textBox2.Text = "Thread done: "+count;
+                Action action = delegate()
+                    {
+                        textBox2.Text = "Thread done: "+count;
+                    };
                 this.Invoke(action);
             }
         }
