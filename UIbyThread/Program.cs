@@ -19,18 +19,7 @@ namespace UIbyThread
             Application.SetCompatibleTextRenderingDefault(false);
 
             var form = new Form1();
-            Thread thread = new Thread(() => UpdateUI(form));
-            thread.Start();
-
             Application.Run(form);
         }
-
-        static void UpdateUI(Form1 form)
-        {
-            Thread.Sleep(2000);
-
-            form.Text = "New Title";
-        }
-
     }
 }
