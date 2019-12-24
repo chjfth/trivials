@@ -36,7 +36,7 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
 
             if (!issafe)
             {
-                this.textBox2.Text = "Thread done: "+count;
+                this.textBox2.Text = "Thread done: "+count; // call directly
             }
             else
             {
@@ -44,7 +44,7 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
                     {
                         this.textBox2.Text = "Thread done: "+count;
                     };
-                this.Invoke(action);
+                this.Invoke(action); // call by marshalling
             }
         }
 
