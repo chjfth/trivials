@@ -23,7 +23,7 @@ namespace UIbyThread
 @"Click a button to launch a thread.
 
 ※ For first button, the thread will call UI function directly; 
-※ For second button, marshalling call is carried out. 
+※ For second button, marshaling call is carried out. 
 
 Run this program with VS debugger attached, the first button will cause 'Cross-thread operation not valid' exception. and the second will be fine.";
 
@@ -44,7 +44,7 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
                     {
                         this.textBox2.Text = "Thread done: "+count;
                     };
-                this.Invoke(action); // call by marshalling
+                this.Invoke(action); // call by marshaling
             }
         }
 
