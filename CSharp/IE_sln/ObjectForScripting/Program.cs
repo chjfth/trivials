@@ -32,7 +32,7 @@ public class Form1 : Form
 		this.Controls.Add(webBrowser1);
 		this.Controls.Add(button1);
 
-		Load += new EventHandler(Form1_Load);
+		this.Load += new EventHandler(Form1_Load);
 	}
 
 	private void Form1_Load(object sender, EventArgs e)
@@ -41,12 +41,13 @@ public class Form1 : Form
 		webBrowser1.IsWebBrowserContextMenuEnabled = false;
 		webBrowser1.WebBrowserShortcutsEnabled = false;
 		webBrowser1.ObjectForScripting = this;
+
 		// Uncomment the following line when you are finished debugging.
 		//webBrowser1.ScriptErrorsSuppressed = true;
 
 		webBrowser1.DocumentText =
 			"<html><head><script>" +
-			"function jstest(message) { alert(message); }" +
+			"function jstest(message) { alert(message); return 'JS Done.'; }" +
 			"</script></head><body><button " +
 			"onclick=\"window.external.csTest('called from script code')\">" +
 			"call client code from script code</button>" +
@@ -60,7 +61,7 @@ public class Form1 : Form
 
 	private void button1_Click(object sender, EventArgs e)
 	{
-		webBrowser1.Document.InvokeScript("jstest",
+		var sret = webBrowser1.Document.InvokeScript("jstest",
 			new String[] { "called from client code" });
 	}
 
