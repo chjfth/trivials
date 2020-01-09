@@ -107,7 +107,7 @@ public class Form1 : Form
 	{
 		webBrowser1.AllowWebBrowserDrop = false;
 		webBrowser1.IsWebBrowserContextMenuEnabled = true; // false will disable right-click menu
-		webBrowser1.WebBrowserShortcutsEnabled = false;
+		webBrowser1.WebBrowserShortcutsEnabled = true; // false will disable Ctrl+C, Ctrl+V hotkey
 		webBrowser1.ObjectForScripting = this;
 
 		// Uncomment the following line when you are finished debugging.
