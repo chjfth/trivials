@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectForScripting", "Objec
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavEvent", "NavEvent\NavEvent.csproj", "{C840D90A-E642-4273-9692-F94AFE1903CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavEventUrl", "NavEventUrl\NavEventUrl.csproj", "{C840D90A-E642-4273-9692-F94AFE1903CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C840D90A-E642-4273-9692-F94AFE1903CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C840D90A-E642-4273-9692-F94AFE1903CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C840D90A-E642-4273-9692-F94AFE1903CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
