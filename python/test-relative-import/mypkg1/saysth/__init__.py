@@ -1,5 +1,6 @@
 
-__all__ = ["sayhello"] # mypkg1b
+__all__ = ["sayhello", "sayhowdy", "dumbit"] # mypkg1c
 
 print("[%s] __name__=%s"%(__file__,__name__))
 
+from . import sayhello, sayhowdy
