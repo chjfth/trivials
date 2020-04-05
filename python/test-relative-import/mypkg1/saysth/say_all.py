@@ -1,7 +1,8 @@
 
 print("[%s] __name__=%s"%(__file__,__name__))
 
-from . import * # * is determined by __init__.py -> __all__[] list
+from . import * 
+#	* is determined by __init__.py -> __all__[] list
 
 def say_all():
 	sayhello()
