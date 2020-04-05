@@ -1,5 +1,5 @@
 
-__all__ = ["sayhello", "sayhowdy", "dumbit"] # mypkg1f
+__all__ = ["sayhello", "sayhowdy"] # mypkg1g
 
 print("[%s] __name__=%s"%(__file__,__name__))
 
