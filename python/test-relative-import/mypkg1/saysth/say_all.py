@@ -8,7 +8,6 @@ def say_all():
 	sayhello()
 	sayhowdy()
 
-# This would cause double-import warning!
 if __name__=='__main__':
 	say_all()
 
