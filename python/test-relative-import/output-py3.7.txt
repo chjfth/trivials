@@ -1,0 +1,20 @@
+chj@CHJA20 D:\gitw\trivials\python\test-relative-import (2020-04-05 12:03:10.56)
+CMD$ python -m mypkg1.saysth.say_all
+[D:\gitw\trivials\python\test-relative-import\mypkg1\__init__.py] __name__=mypkg1
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\__init__.py] __name__=mypkg1.saysth
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\sayhello.py] __name__=mypkg1.saysth.sayhello
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\sayhowdy.py] __name__=mypkg1.saysth.sayhowdy
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\say_all.py] __name__=__main__
+Hello~!
+Howdy~!
+
+chj@CHJA20 D:\gitw\trivials\python\test-relative-import (2020-04-05 12:03:12.72)
+CMD$ python -m mypkg1.saysth.sayhello
+[D:\gitw\trivials\python\test-relative-import\mypkg1\__init__.py] __name__=mypkg1
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\__init__.py] __name__=mypkg1.saysth
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\sayhello.py] __name__=mypkg1.saysth.sayhello
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\sayhowdy.py] __name__=mypkg1.saysth.sayhowdy
+d:\Python37\lib\runpy.py:125: RuntimeWarning: 'mypkg1.saysth.sayhello' found in sys.modules after import of package 'mypkg1.saysth', but prior to execution of 'mypkg1.saysth.sayhello'; this may result in unpredictable behaviour
+  warn(RuntimeWarning(msg))
+[D:\gitw\trivials\python\test-relative-import\mypkg1\saysth\sayhello.py] __name__=__main__
+Hello~!
