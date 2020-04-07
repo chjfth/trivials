@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectForScripting", "ObjectForScripting\ObjectForScripting.csproj", "{C840D90A-E642-4273-9692-F94AFE1903CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavEvent", "NavEvent\NavEvent.csproj", "{C840D90A-E642-4273-9692-F94AFE1903CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavEventUrl", "NavEventUrl\NavEventUrl.csproj", "{C840D90A-E642-4273-9692-F94AFE1903CE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C840D90A-E642-4273-9692-F94AFE1903CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C840D90A-E642-4273-9692-F94AFE1903CE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

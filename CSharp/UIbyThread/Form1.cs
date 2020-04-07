@@ -44,9 +44,14 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
                     {
                         this.textBox2.Text = "Thread done: "+count;
                     };
+
+				Console.WriteLine("MyBgThread Invoke() start...");
+
                 this.Invoke(action); // call by marshaling
-            }
-        }
+
+				Console.WriteLine("MyBgThread Invoke() end.");
+			}
+		}
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -57,6 +62,7 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
         private void button2_Click(object sender, EventArgs e)
         {
             Thread thread = new Thread(() => UpdateUI(true));
+			thread.Name = "MyBgThread";
             thread.Start();
         }
 
