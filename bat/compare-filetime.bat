@@ -35,6 +35,11 @@ REM Limitation: input file MUST NOT have directory prefix.
 SETLOCAL
   SET _file1=%1
   SET _file2=%2
+  if not exist "%_file2%" (
+    set _result=yes
+    goto :END_IsFileNewer
+  )
+
   for /F "tokens=*" %%a in ('forfiles /m %_file1% /c "cmd /c echo @fdate @ftime"') do set DATE1=%%a
   for /F "tokens=*" %%a in ('forfiles /m %_file2% /c "cmd /c echo @fdate @ftime"') do set DATE2=%%a
   IF "%DATE1%"=="%DATE2%" (
