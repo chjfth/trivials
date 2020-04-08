@@ -29,6 +29,8 @@ echo Is "%file1%" newer than "%file2%" : %_ret%
 
 goto :eof
 
+REM Function IsFile1Newer(), check %_ret% for result, result is "yes" or "no".
+REM Limitation: input file MUST NOT have directory prefix.
 :IsFile1Newer
 SETLOCAL
   SET _file1=%1
