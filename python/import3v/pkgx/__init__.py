@@ -7,4 +7,6 @@ sub2 = "sub2 is string"
 
 from . import sub3
 
+from .sub4 import foo
+
 print("__init__.py done.")
