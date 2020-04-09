@@ -6,3 +6,5 @@ print("[%s] __name__=%s"%(__file__,__name__))
 sub2 = "sub2 is string"
 
 from . import sub3
+
+print("__init__.py done.")
