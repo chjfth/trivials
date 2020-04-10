@@ -1,10 +1,11 @@
 
 print("[%s] __name__=%s"%(__file__,__name__))
 
-from . import * 
-#	* is determined by __init__.py -> __all__[] list
+from .. import share_util
+from . import sayhello, sayhowdy
 
 def say_all():
+	share_util.print_share()
 	sayhello()
 	sayhowdy()
 
