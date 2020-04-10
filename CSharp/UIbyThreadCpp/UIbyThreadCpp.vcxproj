@@ -142,8 +142,10 @@
   <ItemGroup>
     <ClInclude Include="CmnHdr-Jeffrey.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>

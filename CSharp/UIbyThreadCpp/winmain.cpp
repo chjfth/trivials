@@ -1,3 +1,4 @@
+#define WIN32_LEAN_AND_MEAN
 #include <WindowsX.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -7,6 +8,7 @@
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+#include "utils.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -49,9 +51,16 @@ void Dlg_OnDestroy(HWND hwnd)
 	delete pr;
 }
 
+int thread_DirectUI(void *param)
+{
+	HWND hwnd = (HWND)param;
+	SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"Direct text from worker thread.");
+	return 0;
+}
+
 void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) 
 {
-	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hwnd, DWLP_USER);
+//	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hwnd, DWLP_USER);
 
 	switch (id) 
 	{{
@@ -60,8 +69,21 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		EndDialog(hwnd, id);
 		break;
 	
-	case ID_GETPRIVATEDATA:
-		SetDlgItemText(hwnd, IDC_EDIT1, pr->mystr);
+	case ID_BTN_UIDIRECT:
+		HANDLE hThread = winCreateThread(thread_DirectUI, hwnd);
+
+		SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"Created the DirectUI thread. Waiting 3 seconds for thread end...");
+		DWORD thread_ret = winWaitThreadEnd(hThread, 3000); (void)thread_ret;
+
+		if (thread_ret == 0) {
+			SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"DirectUI thread done.");
+		}
+		else {
+			SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"DirectUI thread not finished yet.");
+			Sleep(1000);
+		}
+
+		(void)hThread; 
 		break;
 	}}
 }
