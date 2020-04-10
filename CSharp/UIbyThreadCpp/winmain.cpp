@@ -24,6 +24,18 @@ BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 
 	SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)pr);
 
+	SetDlgItemText(hwnd, IDC_LBL_HIDDEN, L"");
+	const WCHAR *text_banner = 
+L"Click a button to launch a thread.\r\n"
+L"\r\n"
+L" >> For first button, the thread will call UI function directly;\r\n"
+L" >> For second button, marshaling call is carried out.\r\n"
+L"\r\n"
+L"(TODO) Run this program with VS debugger attached, the first button will cause "
+L"'Cross-thread operation not valid' exception. and the second will be fine.\r\n"
+	;
+	SetDlgItemText(hwnd, IDC_BANNER_TEXT, text_banner);
+
 //	HWND hwndRootKey = GetDlgItem(hwnd, IDC_ROOTKEY);
 
 	return(TRUE);
