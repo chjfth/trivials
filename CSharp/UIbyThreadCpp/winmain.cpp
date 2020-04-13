@@ -9,6 +9,7 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #include "utils.h"
+#include "Checker2m.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +41,8 @@ L"'Cross-thread operation not valid' exception. and the second will be fine.\r\n
 
 //	HWND hwndRootKey = GetDlgItem(hwnd, IDC_ROOTKEY);
 
+	Checker2_RegisterClass();
+
 	return(TRUE);
 }
 
@@ -58,6 +61,28 @@ int thread_DirectUI(void *param)
 	return 0;
 }
 
+int thread_extraGUI(void *param)
+{
+	Checker2_RunGUIThread();
+	return 0;
+}
+
+void CreateGUIThreads(HWND hParent)
+{
+	// Chj:
+	// Here I create two worker threads who respectively creates a checker window.
+	// We will see that: if the thread quits pre-maturely(break out of message loop code),
+	// its associating window is destroyed by system automatically.
+
+	HANDLE arth[2] = {};
+	arth[0] = winCreateThread(thread_extraGUI, NULL);
+	arth[1] = winCreateThread(thread_extraGUI, NULL);
+	
+	DWORD waitre = WaitForMultipleObjects(2, arth, TRUE, INFINITE);
+
+	MessageBox(hParent, L"2 GUI threads done.", L"Info", MB_OK);
+}
+
 void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) 
 {
 //	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hwnd, DWLP_USER);
@@ -70,6 +95,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	
 	case ID_BTN_UIDIRECT:
+	{
 		HANDLE hThread = winCreateThread(thread_DirectUI, hwnd);
 
 		SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"Created the DirectUI thread. Waiting 3 seconds for thread end...");
@@ -85,6 +111,11 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 
 		(void)hThread; 
 		break;
+	}
+	case ID_BTN_UIMARSHAL:
+	{	CreateGUIThreads(hwnd);
+		break;
+	}
 	}}
 }
 
