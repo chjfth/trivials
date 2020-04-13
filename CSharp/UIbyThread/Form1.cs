@@ -57,6 +57,9 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
         {
             Thread thread = new Thread(() => UpdateUI(false));
             thread.Start();
+
+            if(this.chkboxSleep.Checked)
+                Thread.Sleep(2000);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -64,6 +67,9 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
             Thread thread = new Thread(() => UpdateUI(true));
 			thread.Name = "MyBgThread";
             thread.Start();
+
+            if (this.chkboxSleep.Checked)
+                Thread.Sleep(2000);
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -71,5 +77,9 @@ Run this program with VS debugger attached, the first button will cause 'Cross-t
 
         }
 
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

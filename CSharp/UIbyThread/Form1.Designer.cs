@@ -32,11 +32,12 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.chkboxSleep = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(28, 130);
+            this.button1.Location = new System.Drawing.Point(14, 147);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(160, 30);
             this.button1.TabIndex = 1;
@@ -58,7 +59,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(233, 130);
+            this.button2.Location = new System.Drawing.Point(250, 147);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(160, 30);
             this.button2.TabIndex = 2;
@@ -68,18 +69,30 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(28, 184);
+            this.textBox2.Location = new System.Drawing.Point(14, 187);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(365, 20);
+            this.textBox2.Size = new System.Drawing.Size(396, 20);
             this.textBox2.TabIndex = 3;
             this.textBox2.TabStop = false;
+            // 
+            // chkboxSleep
+            // 
+            this.chkboxSleep.AutoSize = true;
+            this.chkboxSleep.Location = new System.Drawing.Point(14, 121);
+            this.chkboxSleep.Name = "chkboxSleep";
+            this.chkboxSleep.Size = new System.Drawing.Size(303, 17);
+            this.chkboxSleep.TabIndex = 4;
+            this.chkboxSleep.Text = "After creating worker thread, main thread Sleep 2 seconds.";
+            this.chkboxSleep.UseVisualStyleBackColor = true;
+            this.chkboxSleep.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(422, 221);
+            this.Controls.Add(this.chkboxSleep);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.textBox1);
@@ -98,6 +111,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.CheckBox chkboxSleep;
     }
 }
 
