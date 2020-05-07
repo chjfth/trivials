@@ -9,7 +9,6 @@
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #include "utils.h"
-#include "Checker2m.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -18,16 +17,32 @@ struct DlgPrivate_st
 	const WCHAR *mystr;
 };
 
-BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) 
+void Draw_CtlBorder(HWND hdlg, int idCtl, COLORREF colorref)
 {
-	chSETDLGICONS(hwnd, IDI_WINMAIN);
+	HWND hctl = GetDlgItem(hdlg, idCtl);
+	HDC hdc = GetDC(hctl);
+
+	RECT r = { 0 };
+	GetClientRect(hctl, &r);
+
+	HPEN hPen = CreatePen(PS_SOLID, 1, colorref);
+	SelectObject(hdc, hPen);
+	Rectangle(hdc, r.left, r.top, r.right, r.bottom);
+
+	DeleteObject(GetStockObject(BLACK_PEN));
+	ReleaseDC(hctl, hdc);
+}
+
+BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
+{
+	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
 	DlgPrivate_st *pr = new DlgPrivate_st;
 	pr->mystr = (const WCHAR*)lParam;
 
-	SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)pr);
+	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)pr);
 
-	SetDlgItemText(hwnd, IDC_LBL_HIDDEN, L"");
+	SetDlgItemText(hdlg, IDC_LBL_HIDDEN, L"");
 	const WCHAR *text_banner = 
 L"Click a button to launch a thread.\r\n"
 L"\r\n"
@@ -37,12 +52,13 @@ L"\r\n"
 L"(TODO) Run this program with VS debugger attached, the first button will cause "
 L"'Cross-thread operation not valid' exception. and the second will be fine.\r\n"
 	;
-	SetDlgItemText(hwnd, IDC_BANNER_TEXT, text_banner);
+	SetDlgItemText(hdlg, IDC_BANNER_TEXT, text_banner);
 
-//	HWND hwndRootKey = GetDlgItem(hwnd, IDC_ROOTKEY);
+	SetDlgItemText(hdlg, IDC_COLOR_BLOCK, TEXT(""));
+	Draw_CtlBorder(hdlg, IDC_COLOR_BLOCK, RGB(0, 222, 0));
 
-	Checker2_RegisterClass();
-
+	PostMessage(hdlg, WM_APP, 0, 0);
+	
 	return(TRUE);
 }
 
@@ -54,58 +70,65 @@ void Dlg_OnDestroy(HWND hwnd)
 	delete pr;
 }
 
+void Paint_ColorBlock(HWND hdlg, bool isRightSide, COLORREF colorref)
+{
+	HWND hctl = GetDlgItem(hdlg, IDC_COLOR_BLOCK);
+
+	HDC hdc = GetDC(hctl);
+
+	RECT rColorBlock = { 0 };
+	GetClientRect(hctl, &rColorBlock);
+
+	RECT rLeft = rColorBlock;
+	rLeft.right = rColorBlock.right / 2;
+	RECT rRight = rColorBlock;
+	rRight.left = rColorBlock.right / 2;
+
+	HBRUSH hBrush = CreateSolidBrush(colorref);
+	FillRect(hdc, isRightSide ? &rRight : &rLeft, hBrush);
+
+	DeleteObject(GetStockObject(BLACK_BRUSH));
+	ReleaseDC(hctl, hdc);
+}
+
 int thread_DirectUI(void *param)
 {
-	HWND hwnd = (HWND)param;
-	SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"Direct text from worker thread.");
+	HWND hdlg = (HWND)param;
+	Paint_ColorBlock(hdlg, false, RGB(255, 0, 0));
+
+//	SetDlgItemText(hdlg, IDC_LBL_MESSAGE, L"Direct text from worker thread.");
 	return 0;
 }
 
 int thread_extraGUI(void *param)
 {
-	Checker2_RunGUIThread();
+//	Checker2_RunGUIThread();
 	return 0;
 }
 
-void CreateGUIThreads(HWND hParent)
+void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
-	// Chj:
-	// Here I create two worker threads who respectively creates a checker window.
-	// We will see that: if the thread quits pre-maturely(break out of message loop code),
-	// its associating window is destroyed by system automatically.
-
-	HANDLE arth[2] = {};
-	arth[0] = winCreateThread(thread_extraGUI, NULL);
-	arth[1] = winCreateThread(thread_extraGUI, NULL);
-	
-	DWORD waitre = WaitForMultipleObjects(2, arth, TRUE, INFINITE);
-
-	MessageBox(hParent, L"2 GUI threads done.", L"Info", MB_OK);
-}
-
-void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) 
-{
-//	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hwnd, DWLP_USER);
+//	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 
 	switch (id) 
 	{{
 	case IDOK:
 	case IDCANCEL:
-		EndDialog(hwnd, id);
+		EndDialog(hdlg, id);
 		break;
-	
+
 	case ID_BTN_UIDIRECT:
 	{
-		HANDLE hThread = winCreateThread(thread_DirectUI, hwnd);
+		HANDLE hThread = winCreateThread(thread_DirectUI, hdlg);
 
-		SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"Created the DirectUI thread. Waiting 3 seconds for thread end...");
+		SetDlgItemText(hdlg, IDC_LBL_MESSAGE, L"Created the DirectUI thread. Waiting 3 seconds for thread end...");
 		DWORD thread_ret = winWaitThreadEnd(hThread, 3000); (void)thread_ret;
 
 		if (thread_ret == 0) {
-			SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"DirectUI thread done.");
+			SetDlgItemText(hdlg, IDC_LBL_MESSAGE, L"DirectUI thread done.");
 		}
 		else {
-			SetDlgItemText(hwnd, IDC_LBL_MESSAGE, L"DirectUI thread not finished yet.");
+			SetDlgItemText(hdlg, IDC_LBL_MESSAGE, L"DirectUI thread not finished yet.");
 			Sleep(1000);
 		}
 
@@ -113,7 +136,9 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	}
 	case ID_BTN_UIMARSHAL:
-	{	CreateGUIThreads(hwnd);
+	{
+Draw_CtlBorder(hdlg, IDC_COLOR_BLOCK, RGB(0, 222, 0));			
+		Paint_ColorBlock(hdlg, true, RGB(0,0,255)); // temp
 		break;
 	}
 	}}
@@ -135,15 +160,22 @@ void Dlg_OnGetMinMaxInfo(HWND hwnd, PMINMAXINFO pMinMaxInfo)
 }
 
 
-INT_PTR WINAPI Dlg_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
 	switch (uMsg) 
 	{
-		chHANDLE_DLGMSG(hwnd, WM_INITDIALOG,    Dlg_OnInitDialog);
-		chHANDLE_DLGMSG(hwnd, WM_DESTROY,       Dlg_OnDestroy);
-		chHANDLE_DLGMSG(hwnd, WM_COMMAND,       Dlg_OnCommand);
-		chHANDLE_DLGMSG(hwnd, WM_SIZE,          Dlg_OnSize);
-		chHANDLE_DLGMSG(hwnd, WM_GETMINMAXINFO, Dlg_OnGetMinMaxInfo);
+		chHANDLE_DLGMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
+		chHANDLE_DLGMSG(hdlg, WM_DESTROY,       Dlg_OnDestroy);
+		chHANDLE_DLGMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+		chHANDLE_DLGMSG(hdlg, WM_SIZE,          Dlg_OnSize);
+		chHANDLE_DLGMSG(hdlg, WM_GETMINMAXINFO, Dlg_OnGetMinMaxInfo);
+
+	case WM_APP:
+		MessageBox(hdlg,
+			IsWindowVisible(hdlg) ? TEXT("parent Visible") : TEXT("parent Not Visible"),
+			TEXT("case WM_APP:"),
+			MB_OK);
+		break;
 	}
 	return(FALSE);
 }
