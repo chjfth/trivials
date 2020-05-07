@@ -15,6 +15,9 @@
 struct DlgPrivate_st
 {
 	const WCHAR *mystr;
+	bool is_init_done;
+	bool left_toggle;
+	bool right_toggle;
 };
 
 void Draw_CtlBorder(HWND hdlg, int idCtl, COLORREF colorref)
@@ -33,43 +36,6 @@ void Draw_CtlBorder(HWND hdlg, int idCtl, COLORREF colorref)
 	ReleaseDC(hctl, hdc);
 }
 
-BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
-{
-	chSETDLGICONS(hdlg, IDI_WINMAIN);
-
-	DlgPrivate_st *pr = new DlgPrivate_st;
-	pr->mystr = (const WCHAR*)lParam;
-
-	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)pr);
-
-	SetDlgItemText(hdlg, IDC_LBL_HIDDEN, L"");
-	const WCHAR *text_banner = 
-L"Click a button to launch a thread.\r\n"
-L"\r\n"
-L" >> For first button, the thread will call UI function directly;\r\n"
-L" >> For second button, marshaling call is carried out.\r\n"
-L"\r\n"
-L"(TODO) Run this program with VS debugger attached, the first button will cause "
-L"'Cross-thread operation not valid' exception. and the second will be fine.\r\n"
-	;
-	SetDlgItemText(hdlg, IDC_BANNER_TEXT, text_banner);
-
-	SetDlgItemText(hdlg, IDC_COLOR_BLOCK, TEXT(""));
-	Draw_CtlBorder(hdlg, IDC_COLOR_BLOCK, RGB(0, 222, 0));
-
-	PostMessage(hdlg, WM_APP, 0, 0);
-	
-	return(TRUE);
-}
-
-void Dlg_OnDestroy(HWND hwnd)
-{
-	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hwnd, DWLP_USER);
-
-	// Destroy all resources allocated back in Dlg_OnInitDialog().
-	delete pr;
-}
-
 void Paint_ColorBlock(HWND hdlg, bool isRightSide, COLORREF colorref)
 {
 	HWND hctl = GetDlgItem(hdlg, IDC_COLOR_BLOCK);
@@ -78,6 +44,7 @@ void Paint_ColorBlock(HWND hdlg, bool isRightSide, COLORREF colorref)
 
 	RECT rColorBlock = { 0 };
 	GetClientRect(hctl, &rColorBlock);
+	InflateRect(&rColorBlock, -1, -1);
 
 	RECT rLeft = rColorBlock;
 	rLeft.right = rColorBlock.right / 2;
@@ -91,10 +58,53 @@ void Paint_ColorBlock(HWND hdlg, bool isRightSide, COLORREF colorref)
 	ReleaseDC(hctl, hdc);
 }
 
+
+
+BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
+{
+	chSETDLGICONS(hdlg, IDI_WINMAIN);
+
+	DlgPrivate_st *pr = new DlgPrivate_st;
+	memset(pr, 0, sizeof(DlgPrivate_st));
+	pr->mystr = (const WCHAR*)lParam;
+	pr->is_init_done = false;
+
+	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)pr);
+
+	SetDlgItemText(hdlg, IDC_LBL_HIDDEN, L"");
+	const WCHAR *text_banner = 
+L"Click a button to launch a thread.\r\n"
+L"\r\n"
+L" >> For first button, the thread will call UI function directly;\r\n"
+L" >> For second button, the thread marshals the call to main thread.\r\n"
+L"\r\n"
+L"(TODO) Run this program with VS debugger attached, the first button will cause "
+L"'Cross-thread operation not valid' exception. and the second will be fine.\r\n"
+	;
+	SetDlgItemText(hdlg, IDC_BANNER_TEXT, text_banner);
+
+	SetDlgItemText(hdlg, IDC_COLOR_BLOCK, TEXT(""));
+	Draw_CtlBorder(hdlg, IDC_COLOR_BLOCK, RGB(0, 222, 0));
+
+	return(TRUE);
+}
+
+void Dlg_OnDestroy(HWND hwnd)
+{
+	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hwnd, DWLP_USER);
+
+	// Destroy all resources allocated back in Dlg_OnInitDialog().
+	delete pr;
+}
+
 int thread_DirectUI(void *param)
 {
 	HWND hdlg = (HWND)param;
-	Paint_ColorBlock(hdlg, false, RGB(255, 0, 0));
+	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	pr->left_toggle = !pr->left_toggle;
+	
+	COLORREF color = pr->left_toggle ? RGB(255, 0, 0) : RGB(255, 255, 255);
+	Paint_ColorBlock(hdlg, false, color);
 
 //	SetDlgItemText(hdlg, IDC_LBL_MESSAGE, L"Direct text from worker thread.");
 	return 0;
@@ -137,13 +147,12 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	}
 	case ID_BTN_UIMARSHAL:
 	{
-Draw_CtlBorder(hdlg, IDC_COLOR_BLOCK, RGB(0, 222, 0));			
+		// TODO: Use true marshalling to paint the block.
 		Paint_ColorBlock(hdlg, true, RGB(0,0,255)); // temp
 		break;
 	}
 	}}
 }
-
 
 
 void Dlg_OnSize(HWND hwnd, UINT state, int cx, int cy) 
@@ -159,6 +168,19 @@ void Dlg_OnGetMinMaxInfo(HWND hwnd, PMINMAXINFO pMinMaxInfo)
 //	g_UILayout.HandleMinMax(pMinMaxInfo);
 }
 
+void Dlg_OnWindowPosChanged(HWND hdlg, const LPWINDOWPOS lpwpos)
+{
+	// [Raymond] Waiting until the dialog box is displayed before doing something
+	// https://devblogs.microsoft.com/oldnewthing/20060925-02/?p=29603
+
+	DlgPrivate_st *pr = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+
+	if ((lpwpos->flags & SWP_SHOWWINDOW) && !pr->is_init_done) {
+		pr->is_init_done = TRUE;
+		PostMessage(hdlg, WM_APP, 0, 0);
+	}
+}
+
 
 INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
@@ -169,12 +191,17 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		chHANDLE_DLGMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
 		chHANDLE_DLGMSG(hdlg, WM_SIZE,          Dlg_OnSize);
 		chHANDLE_DLGMSG(hdlg, WM_GETMINMAXINFO, Dlg_OnGetMinMaxInfo);
+		chHANDLE_DLGMSG(hdlg, WM_WINDOWPOSCHANGED, Dlg_OnWindowPosChanged);
 
 	case WM_APP:
-		MessageBox(hdlg,
-			IsWindowVisible(hdlg) ? TEXT("parent Visible") : TEXT("parent Not Visible"),
-			TEXT("case WM_APP:"),
-			MB_OK);
+#if 0
+  		MessageBox(hdlg,
+		 	IsWindowVisible(hdlg) ? TEXT("parent Visible") : TEXT("parent Not Visible"),
+		 	TEXT("case WM_APP:"),
+		 	MB_OK);
+#endif
+
+		Draw_CtlBorder(hdlg, IDC_COLOR_BLOCK, RGB(144, 144, 144));
 		break;
 	}
 	return(FALSE);
