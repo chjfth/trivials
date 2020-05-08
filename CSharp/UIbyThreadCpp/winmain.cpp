@@ -148,6 +148,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case ID_BTN_UIMARSHAL:
 	{
 		// TODO: Use true marshalling to paint the block.
+//		Sleep(12000);
 		Paint_ColorBlock(hdlg, true, RGB(0,0,255)); // temp
 		break;
 	}
@@ -181,6 +182,11 @@ void Dlg_OnWindowPosChanged(HWND hdlg, const LPWINDOWPOS lpwpos)
 	}
 }
 
+void Cls_OnShowWindow(HWND hwnd, BOOL fShow, UINT status)
+{
+	
+}
+
 
 INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
@@ -192,7 +198,7 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		chHANDLE_DLGMSG(hdlg, WM_SIZE,          Dlg_OnSize);
 		chHANDLE_DLGMSG(hdlg, WM_GETMINMAXINFO, Dlg_OnGetMinMaxInfo);
 		chHANDLE_DLGMSG(hdlg, WM_WINDOWPOSCHANGED, Dlg_OnWindowPosChanged);
-
+		chHANDLE_DLGMSG(hdlg, WM_SHOWWINDOW, Cls_OnShowWindow);
 	case WM_APP:
 #if 0
   		MessageBox(hdlg,
