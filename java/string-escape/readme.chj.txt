@@ -2,7 +2,7 @@
 This folder shows a puzzle for java beginners.
 In Teacher.java, there is an unfinished part in the code, denoted by ??? below:
 
-	System.out.println(\"???\");\n
+	System.out.println(\"???\");
 
 What should we substitute the ??? for, so to achieve such a result:
 When Teacher.class is run, it outputs content for Student.java, 
