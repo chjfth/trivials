@@ -2,6 +2,7 @@
 #coding: utf-8
 
 import os, sys, time
+import traceback
 
 def nowtimestr():
 	return time.strftime('%Y%m%d.%H%M%S', time.localtime())
@@ -36,10 +37,30 @@ class ChsFile:
 		if isprint:
 			print(line)
 
+	def fence(func):
+		# func is an unbound object
+		def wrapper(self, *args, **kwargs):
+#			print(">>>>>>>")
+			try:
+				ret = func(self, *args, **kwargs)
+			except: 
+				excpt_text = traceback.format_exc()
+				ChsFile.mlog(excpt_text)
+				raise
+#			print("<<<<<<<")
+			return ret
+		return wrapper
+
 	def __init__(self, filepath):
 		__class__.CreateModuleLogfile() # Create ChsFile-module logfile first
 		self.filepath = filepath        # Record protagonist filepath
 
+	@fence
+	def GetSize(self):
+		filebytes = os.path.getsize(self.filepath)
+		return filebytes
+	
+	@fence
 	def GetText(self):
 		with open(self.filepath, "r", encoding="utf8") as fh:
 			try:
@@ -59,10 +80,7 @@ class ChsFile:
 		
 		raise __class__.Err("The file is in neither UTF8 or GBK.")
 	
-	def GetSize(self):
-		filebytes = os.path.getsize(self.filepath)
-		return filebytes
-	
+	@fence
 	def GetBoth(self):
 		filebytes = os.path.getsize(self.filepath)
 		
