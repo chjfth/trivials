@@ -29,6 +29,14 @@ class ChsFile:
 		
 		raise ChsFile.Err("The file is in neither UTF8 or GBK.")
 	
+	def GetBoth(self):
+		filebytes = os.path.getsize(self.filepath)
+		
+		text = self.GetText()
+		nchars = len(text)
+		
+		return filebytes, nchars, text
+		
 
 if __name__=='__main__':
 	print("Python version: {}.{}.{}".format(*sys.version_info[0:3]))
@@ -40,7 +48,11 @@ if __name__=='__main__':
 	
 	try:
 		chsfile = ChsFile(filepath)
-		chstext = chsfile.GetText()
-		print(chstext)
+
+		bytes, chars, text = chsfile.GetBoth()
+		print(f"File bytes: {bytes}")
+		print(f"Characters: {chars}")
+		print(text)
+
 	except ChsFile.Err as e:
 		print("[ERROR] "+e.msg)
