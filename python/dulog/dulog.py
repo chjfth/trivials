@@ -15,6 +15,8 @@ class ChsFile:
 	logfiledir = "__logs__"
 	logfh = None
 	
+	nested = 0
+	
 	class Err(Exception):
 		def __init__(self, msg):
 			self.msg = msg
@@ -40,15 +42,18 @@ class ChsFile:
 	def fence(func):
 		# func is an unbound object
 		def wrapper(self, *args, **kwargs):
-#			print(">>>>>>>")
+			ChsFile.nested += 1
 			try:
 				ret = func(self, *args, **kwargs)
 			except: 
-				excpt_text = traceback.format_exc()
-				ChsFile.mlog(excpt_text)
+				if ChsFile.nested==1:
+					excpt_text = traceback.format_exc()
+					ChsFile.mlog(excpt_text)
 				raise
-#			print("<<<<<<<")
+			finally:
+				ChsFile.nested -= 1
 			return ret
+		
 		return wrapper
 
 	def __init__(self, filepath):
