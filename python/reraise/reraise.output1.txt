@@ -1,0 +1,12 @@
+CMD$ reraise.py 1
+Python version: 3.7.4
+In task1().
+Start task2().
+Traceback (most recent call last):
+  File "D:\gitw\trivials\python\reraise\reraise.py", line 40, in <module>
+    job1()
+  File "D:\gitw\trivials\python\reraise\reraise.py", line 21, in job1
+    task2()
+  File "D:\gitw\trivials\python\reraise\reraise.py", line 11, in task2
+    fh = open("somefile.txt", "r")
+FileNotFoundError: [Errno 2] No such file or directory: 'somefile.txt'
