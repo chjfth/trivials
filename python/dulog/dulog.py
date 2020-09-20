@@ -59,6 +59,10 @@ class ChsFile:
 		
 		raise __class__.Err("The file is in neither UTF8 or GBK.")
 	
+	def GetSize(self):
+		filebytes = os.path.getsize(self.filepath)
+		return filebytes
+	
 	def GetBoth(self):
 		filebytes = os.path.getsize(self.filepath)
 		
@@ -79,7 +83,10 @@ if __name__=='__main__':
 	try:
 		chsfile = ChsFile(filepath)
 
-		bytes, chars, text = chsfile.GetBoth()
+		bytes = chsfile.GetSize()
+		bytes2, chars, text = chsfile.GetBoth()
+		
+		assert(bytes==bytes2)
 		print(f"File bytes: {bytes}")
 		print(f"Characters: {chars}")
 		print(text)
