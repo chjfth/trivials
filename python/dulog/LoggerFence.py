@@ -10,7 +10,6 @@ class LoggerFence:
 		def __init__(self, msg):
 			self.msg = msg
 
-
 	def __init__(self, logfilepath="", is_append=False, fd=None):
 		if fd!=None:
 			self.__logfh = fd
@@ -20,6 +19,7 @@ class LoggerFence:
 			assert(self.__logfh)
 
 		self.nested = 0 # not private, can improve?
+		self.excpt_count = 0
 
 	def logfile_create(self, is_append=False):
 		try:
@@ -50,6 +50,8 @@ class LoggerFence:
 				if self.nested == 1:
 					excpt_text = traceback.format_exc()
 					self.log_once(excpt_text)
+
+					self.excpt_count += 1
 				raise
 			finally:
 				self.nested -= 1

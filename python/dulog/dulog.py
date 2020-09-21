@@ -8,9 +8,7 @@ from LoggerFence import LoggerFence
 def nowtimestr():
 	return time.strftime('%Y%m%d.%H%M%S', time.localtime())
 
-# start_ts = nowtimestr()
-
-class ChsFile(LoggerFence):
+class ChsFile(LoggerFence): # inherit from LoggerFence
 	
 	class Err(Exception):
 		def __init__(self, msg):
@@ -20,7 +18,11 @@ class ChsFile(LoggerFence):
 		logfilepath = os.path.join("__logs__", nowtimestr()+".ChsFile.log")
 		super().__init__(logfilepath)
 
-		self.filepath = filepath
+		self.filepath = os.path.abspath(filepath)
+		self.log_once("Processing: {}".format(self.filepath))
+
+	def __del__(self):
+		self.log_once("Done. excpt_count={}".format(self.excpt_count))
 
 	@LoggerFence.mark_api
 	def GetSize(self):
