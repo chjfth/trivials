@@ -42,16 +42,17 @@ class ChsFile:
 	def fence(func):
 		# func is an unbound object
 		def wrapper(self, *args, **kwargs):
-			ChsFile.nested += 1
+			__class__.nested += 1
 			try:
 				ret = func(self, *args, **kwargs)
-			except: 
-				if ChsFile.nested==1:
+			except:
+				# We log the exception to this-module logfile and let it propagate.
+				if __class__.nested==1:
 					excpt_text = traceback.format_exc()
-					ChsFile.mlog(excpt_text)
+					__class__.mlog(excpt_text)
 				raise
 			finally:
-				ChsFile.nested -= 1
+				__class__.nested -= 1
 			return ret
 		
 		return wrapper
