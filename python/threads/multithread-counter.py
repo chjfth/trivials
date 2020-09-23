@@ -8,13 +8,20 @@ COUNTS_PER_THREAD = 10
 sleep_millisec = 0
 use_lock = False
 
+class CtxNull:
+	def __enter__(self):
+		return None
+	def __exit__(self, exc_type, exc_val, exc_tb):
+		return False
+   
+
 class Counter:
 	def __init__(self):
 		self._value = 0
 		self._lock = Lock()
 
 	def inc(self, i):
-		with self._lock:
+		with self._lock if use_lock else CtxNull():
 			old_value = self._value
 			time.sleep(sleep_millisec/1000)
 			self._value = old_value + i
