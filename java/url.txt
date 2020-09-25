@@ -1,0 +1,3 @@
+[2020-08-03]
+commons-text-1.9.jar https://commons.apache.org/proper/commons-text/
+commons-lang3-3.11.jar https://commons.apache.org/proper/commons-lang/download_lang.cgi
