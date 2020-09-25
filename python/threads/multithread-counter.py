@@ -7,6 +7,8 @@ from threading import Thread, Lock
 COUNTS_PER_THREAD = 10
 sleep_millisec = 0
 use_lock = False
+stat = {}
+
 
 class CtxNull:
 	def __enter__(self):
@@ -23,8 +25,12 @@ class Counter:
 	def inc(self):
 		with self._lock if use_lock else CtxNull():
 			old_stars = self._stars
+			
 			time.sleep(sleep_millisec/1000)
-			self._stars = old_stars + 1
+			
+			new_stars = old_stars + 1
+			self._stars = new_stars
+			return new_stars
 
 	@property
 	def value(self):
@@ -32,9 +38,28 @@ class Counter:
 
 	def Count(self, n, tid):
 		for i in range(n):
-			self.inc()
-			print("[tid-{}] => {}".format(tid, self._stars))
+			new_stars = self.inc() # increase stars by one
+			PrintProgress(tid, new_stars)
+			
 
+g_lock = Lock()
+g_idx = 0
+#
+def PrintProgress(tid, new_stars):
+	global g_idx
+	with g_lock:
+		g_idx += 1
+		print("#{}. [tid-{}] => {}.".format(g_idx, tid, new_stars))
+		if not new_stars in stat:
+			stat[new_stars] = []
+		stat[new_stars].append((g_idx, tid))
+
+def PrintAbnormals():
+	for i in sorted(stat, key=lambda x:len(stat[x])):
+		if len(stat[i])>1:
+			print("=> {} is counted by threads: {}".format(i, 
+					', '.join([ "(#{})tid-{}".format(item[0], item[1]) for item in stat[i] ])
+					))
 
 def do_test(nthreads):
 	# create a single counter to be shared by ALL threads
@@ -59,6 +84,7 @@ def do_test(nthreads):
 	if diff!=0:
 		print("*"*50)
 		print("PANIC! The Correct result is {}. Diff = {}".format(correct_final, diff))
+		PrintAbnormals()
 		print("*"*50)
 
 if __name__ == '__main__':
