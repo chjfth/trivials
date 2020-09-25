@@ -17,23 +17,23 @@ class CtxNull:
 
 class Counter:
 	def __init__(self):
-		self._value = 0
+		self._stars = 0
 		self._lock = Lock()
 
-	def inc(self, i):
+	def inc(self):
 		with self._lock if use_lock else CtxNull():
-			old_value = self._value
+			old_stars = self._stars
 			time.sleep(sleep_millisec/1000)
-			self._value = old_value + i
+			self._stars = old_stars + 1
 
 	@property
 	def value(self):
-		return self._value
+		return self._stars
 
 	def Count(self, n, tid):
 		for i in range(n):
-			self.inc(1)
-			print("[tid-{}] => {}".format(tid, self._value))
+			self.inc()
+			print("[tid-{}] => {}".format(tid, self._stars))
 
 
 def do_test(nthreads):
