@@ -78,3 +78,5 @@ if __name__=='__main__':
 
 	except ChsFile.Err as e:
 		print("[ERROR] "+e.msg)
+
+#	text = chsfile.GetText()
