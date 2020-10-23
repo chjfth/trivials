@@ -28,16 +28,7 @@ namespace CsvFieldsEnum
         
         public string HeaderLine
         {
-            get
-            {
-                string s = Enum.GetName(typeof(TEnum), 0);
-
-                for(int i=1; i<nFields; i++)
-                {
-                    s += "," + Enum.GetName(typeof(TEnum), i);
-                }
-                return s;
-            }
+            get { return String.Join(",", Enum.GetNames(typeof(TEnum))); }
         }
 
         public string[] Set(string csvline)
@@ -60,7 +51,7 @@ namespace CsvFieldsEnum
 
         public string this[TEnum e]
         {
-            get { return Fields[ e.GetHashCode() ]; }
+            get { return Fields[ e.GetHashCode() ]; } // any alternative to get e's int value?
         }
 
     }
