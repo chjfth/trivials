@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "echosterm", "echosterm.vcproj", "{0F97813C-CFD5-404C-AC4E-FD7A756492DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug-i686|Win32 = Debug-i686|Win32
+		Debug-raspi|Win32 = Debug-raspi|Win32
+		Debug-x64|Win32 = Debug-x64|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Debug-i686|Win32.ActiveCfg = Debug-i686|Win32
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Debug-i686|Win32.Build.0 = Debug-i686|Win32
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Debug-raspi|Win32.ActiveCfg = Debug-raspi|Win32
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Debug-raspi|Win32.Build.0 = Debug-raspi|Win32
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Debug-x64|Win32.ActiveCfg = Debug-x64|Win32
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Debug-x64|Win32.Build.0 = Debug-x64|Win32
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Release|Win32.ActiveCfg = Release|Win32
+		{0F97813C-CFD5-404C-AC4E-FD7A756492DE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

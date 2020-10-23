@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="gb2312"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9.00"
+	Name="piperw"
+	ProjectGUID="{0F97813C-CFD5-404C-AC4E-ED7A756492DF}"
+	RootNamespace="piperw"
+	TargetFrameworkVersion="196613"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /build &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				ReBuildCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /rebuild &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				CleanCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /clean &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				Output="$(ProjectDir)piperw-Release.vgdbsettings"
+				PreprocessorDefinitions="__VisualGDB_CFG_Release"
+				IncludeSearchPath="$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0000\include\c++\4.8;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0000\include\c++\4.8\x86_64-suse-linux;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0000\include\c++\4.8\backward;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0001\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0003\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0002\include-fixed;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0004\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\192.168.18.121\0000\include"
+				ForcedIncludes="$(ProjectDir)\gcc_Release.h;$(VISUALGDB_DIR)\gcc_compat.h"
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug-x64|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /build &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				ReBuildCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /rebuild &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				CleanCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /clean &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				Output="$(ProjectDir)piperw-Debug-x64.vgdbsettings"
+				PreprocessorDefinitions="__VisualGDB_CFG_Debug_x64"
+				IncludeSearchPath="sdkin\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0000\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0001\include"
+				ForcedIncludes="$(ProjectDir)\gcc_Debug-x64.h;$(VISUALGDB_DIR)\gcc_compat.h"
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug-i686|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /build &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				ReBuildCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /rebuild &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				CleanCommandLine="&quot;$(VISUALGDB_DIR)\VisualGDB.exe&quot; /clean &quot;$(ProjectPath)&quot; &quot;/solution:$(SolutionPath)&quot;  &quot;/config:$(ConfigurationName)&quot; &quot;/platform:$(PlatformName)&quot;"
+				Output="$(ProjectDir)piperw-Debug-i686.vgdbsettings"
+				PreprocessorDefinitions="__VisualGDB_CFG_Debug_i686"
+				IncludeSearchPath="$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0001\include\c++\4.8;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0001\include\c++\4.8\i586-suse-linux;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0001\include\c++\4.8\backward;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0002\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0004\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0003\include-fixed;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0000\include;$(LOCALAPPDATA)\VisualGDB\RemoteSourceCache\vgdb-linux64\0001\include;.\sdkin\include"
+				ForcedIncludes="$(ProjectDir)\gcc_Debug-i686.h;$(VISUALGDB_DIR)\gcc_compat.h"
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			>
+			<File
+				RelativePath=".\piperw.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\simple_thread.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\simple_thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\utils.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\utils.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			>
+		</Filter>
+		<Filter
+			Name="Make files"
+			Filter="mak"
+			>
+			<File
+				RelativePath=".\debug-i686.mak"
+				>
+			</File>
+			<File
+				RelativePath=".\debug-x64.mak"
+				>
+			</File>
+			<File
+				RelativePath=".\release.mak"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="VisualGDB settings"
+			Filter="vgdbsettings"
+			>
+			<File
+				RelativePath=".\piperw-Debug-i686.vgdbsettings"
+				>
+			</File>
+			<File
+				RelativePath=".\piperw-Debug-x64.vgdbsettings"
+				>
+			</File>
+			<File
+				RelativePath=".\piperw-Release.vgdbsettings"
+				>
+			</File>
+		</Filter>
+		<File
+			RelativePath=".\Makefile"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

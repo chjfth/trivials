@@ -1,0 +1,13 @@
+
+REM .................same FooX in two dlls  ........................
+
+cl /c /DMYEXPORT=__declspec(dllexport) bar.c use_bar.c foo2.c use_foo2.c vmain.c
+
+link /dll /out:bar.dll bar.obj /map
+link /dll /out:use_bar.dll use_bar.obj bar.lib /map
+
+link /dll /out:foo2.dll foo2.obj /map
+link /dll /out:use_foo2.dll use_foo2.obj foo2.lib /map
+
+link vmain.obj use_bar.lib use_foo2.lib /map
+
