@@ -75,8 +75,14 @@ namespace CsvLiner
 			int[] idxcols2 = CsvLiner<CRecord>.Idx(strcols2);
 			Debug.Assert(idxcols2[0] == 2 && idxcols2[1] == 1 && idxcols2[2] == 0);
 
+			CRecord r2 = CsvLiner<CRecord>.Get("10,Pear", new int[] {2, 0});
+			Debug.Assert(r2.Food=="Pear" && r2.Price=="" && r2.Qty=="10");
+
+			string s2 = CsvLiner<CRecord>.Put(r2, new int[] {2, 0});
+			Debug.Assert(s2=="10,Pear");
+
 			//
-			// Simplify typing like this:
+			// Simplify typing a bit like this:
 			//
 
 			var cc = new CsvLiner<CRecord>();
