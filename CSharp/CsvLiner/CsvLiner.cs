@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 /*
 [2020-10-25]
@@ -50,6 +50,8 @@ namespace CsvLiner
 		/// </summary>
 		private static FieldInfo[] _ufis = Init();
 
+		public static T uso; // the static object for some trick
+
 		/// <summary>
 		/// Determine all of T's fields and build a FieldInfo[] array for T.
 		/// 
@@ -80,6 +82,13 @@ namespace CsvLiner
 				Debug.Assert(ufis[idx] == null);
 
 				ufis[idx] = fi;
+			}
+
+			// Now a trick: I use uso's fields to store its own fieldnames.
+			uso = new T();
+			foreach (FieldInfo fi in fis)
+			{
+				fi.SetValue(uso, fi.Name);
 			}
 
 			return ufis;
@@ -168,6 +177,41 @@ namespace CsvLiner
 		{
 			return Put(uo);
 		}
+
+		/// <summary>
+		/// Query column index from field name.
+		/// You can query multiple fields at once.
+		/// </summary>
+		/// <param name="fieldnames"></param>
+		/// <returns></returns>
+		public static int[] Idx(string[] fieldnames)
+		{
+			int[] arret = new int[fieldnames.Length];
+
+			for (int i = 0; i < fieldnames.Length; i++)
+			{
+				int j;
+				for(j=0; j<_ufis.Length; j++)
+				{
+					if (fieldnames[i] == _ufis[j].Name)
+					{
+						arret[i] = j;
+						break;
+					}
+				}
+
+				if(j==_ufis.Length)
+					throw new Exception("Fieldname is not valid: "+fieldnames[i]);
+			}
+
+			return arret;
+		}
+
+		public int[] idx(string[] fieldnames)
+		{
+			return Idx(fieldnames);
+		}
+
 	}
 
 }

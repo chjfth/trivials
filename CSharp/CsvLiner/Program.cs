@@ -61,6 +61,20 @@ namespace CsvLiner
 				Console.WriteLine("OK. Match.");
 			}
 
+			string[] strcols = {"Qty", "Price", "Food"};
+			int[] idxcols = CsvLiner<CRecord>.Idx(strcols);
+			Debug.Assert(idxcols[0]==2 && idxcols[1]==1 && idxcols[2]==0);
+
+			// If you are a freak insisting on existing symbols...
+			string[] strcols2 = new string[]
+			{
+				CsvLiner<CRecord>.uso.Qty,
+				CsvLiner<CRecord>.uso.Price,
+				CsvLiner<CRecord>.uso.Food,
+			};
+			int[] idxcols2 = CsvLiner<CRecord>.Idx(strcols2);
+			Debug.Assert(idxcols2[0] == 2 && idxcols2[1] == 1 && idxcols2[2] == 0);
+
 			//
 			// Simplify typing like this:
 			//
