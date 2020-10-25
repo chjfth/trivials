@@ -101,9 +101,23 @@ namespace CsvLiner
 		/// Define this instance method, so that user can call it via a CsvLiner instance.
 		/// </summary>
 		/// <returns></returns>
-		public string headerLine()
+		public string headerLine
 		{
-			return HeaderLine();
+			get { return HeaderLine(); }
+		}
+
+		/// <summary>
+		/// Return total column count of the CSV record.
+		/// </summary>
+		/// <returns></returns>
+		public static int Columns()
+		{
+			return _ufis.Length;
+		}
+
+		public int columns
+		{
+			get { return Columns(); }
 		}
 
 		/// <summary>

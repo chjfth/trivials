@@ -45,7 +45,8 @@ namespace CsvLiner
 		/// </summary>
 		static void Demo_CsvLiner()
 		{
-			Console.WriteLine(CsvLiner<CRecord>.HeaderLine());
+			string headerline = CsvLiner<CRecord>.HeaderLine();
+			Console.WriteLine(headerline);
 
 			string csvinput1 = "Apple,1.5,100";
 			CRecord rec1 = CsvLiner<CRecord>.Get(csvinput1);
@@ -60,11 +61,17 @@ namespace CsvLiner
 				Console.WriteLine("OK. Match.");
 			}
 
+			//
 			// Simplify typing like this:
+			//
+
 			var cc = new CsvLiner<CRecord>();
 			rec1 = cc.get(csvinput1);
 			csvoutput1 = cc.put(rec1);
 			Debug.Assert( csvoutput1==csvinput1);
+
+			Debug.Assert(cc.headerLine == headerline);
+			Debug.Assert( cc.columns == CsvLiner<CRecord>.Columns());
 		}
-    }
+	}
 }
