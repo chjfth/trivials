@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CsvLiner
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+			Demo_CsvLiner();
+        }
+
+		/// <summary>
+		/// Our CSV contains 3 fields(columns).
+		/// We use enum symbols to represent their order (although optional).
+		/// So Food=0, Price=1, Qty=2.
+		/// </summary>
+        enum ColIdx { Food, Price, Qty }
+
+		/// <summary>
+		/// Define this class to describe a CSV line.
+		/// Each class field represents a CSV field(CSV column).
+		/// The [csv_column] attribute of each class field tells the order of the CSV column.
+		///
+		/// You can use an int or a string for the order number.
+		/// </summary>
+		class CRecord
+		{
+			[csv_column(0)]  public string Food;
+
+			[csv_column("1")] public string Price;
+			
+			[csv_column((int)ColIdx.Qty)]  public string Qty;
+		}
+
+		/// <summary>
+		/// Demo code.
+		/// You see, we can use natural C# obj.field syntax to access each CSV field,
+		/// no need to touch any ugly/verbose/redundant number for csv column index.
+		/// What a breeze!
+		/// </summary>
+		static void Demo_CsvLiner()
+		{
+			Console.WriteLine(CsvLiner<CRecord>.HeaderLine());
+
+			string csvinput1 = "Apple,1.5,100";
+			CRecord rec1 = CsvLiner<CRecord>.Get(csvinput1);
+			string csvoutput1 = CsvLiner<CRecord>.Put(rec1);
+
+			if (csvoutput1 == csvinput1)
+			{
+				Console.WriteLine(rec1.Food);
+				Console.WriteLine(rec1.Price);
+				Console.WriteLine(rec1.Qty);
+
+				Console.WriteLine("OK. Match.");
+			}
+
+			// Simplify typing like this:
+			var cc = new CsvLiner<CRecord>();
+			rec1 = cc.get(csvinput1);
+			csvoutput1 = cc.put(rec1);
+			Debug.Assert( csvoutput1==csvinput1);
+		}
+    }
+}

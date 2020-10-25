@@ -1,0 +1,159 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+/*
+[2020-10-25]
+CsvLiner helper class to ease mapping a CSV line to/from user-defined C# class.
+
+	-- Jimm Chen
+*/
+
+namespace CsvLiner
+{
+	/// <summary>
+	/// The attribute class that specifies the column order of a CSV field.
+	/// </summary>
+	public class csv_column : System.Attribute
+	{
+		/// <summary>
+		/// idx represent the order index of a csv-column, counting from 0.
+		/// </summary>
+		public int idx { get; set; }
+
+		public csv_column(int idx)
+		{
+			this.idx = idx;
+		}
+
+		public csv_column(string sidx)
+		{
+			this.idx = Int32.Parse(sidx);
+		}
+	}
+
+	/// <summary>
+	/// A generic class that maps a CSV record to a concrete C# class,
+	/// so that each *CSV field* can be easily accessed via C# *class field*,
+	/// with no code redundancy.
+	/// </summary>
+	/// <typeparam name="T"> a class name representing a complete row of a CSV.
+	/// </typeparam>
+	class CsvLiner<T> where T : class, new()
+	{
+		/// <summary>
+		/// static FieldInfo[]s for our T.
+		/// </summary>
+		private static FieldInfo[] _ufis = Init();
+
+		/// <summary>
+		/// Determine all of T's fields and build a FieldInfo[] array for T.
+		/// 
+		/// On call finish, the array-subscript represents csv column index;
+		/// the array element is corresponding C#-class-field info.
+		/// So, given a column idx, we know which C#-class-field to get/set.
+		/// </summary>
+		/// <returns></returns>
+		public static FieldInfo[] Init()
+		{
+			Type utype = typeof(T);
+			FieldInfo[] fis = utype.GetFields();
+
+			int csv_columns = fis.Length;
+			FieldInfo[] ufis = new FieldInfo[csv_columns];
+
+			foreach (FieldInfo fi in fis)
+			{
+				Attribute attr = fi.GetCustomAttribute(typeof(csv_column));
+
+				// Get the column order(idx) from our custom attribute named "csv_column".
+				int idx = ((csv_column) attr).idx;
+
+				// ensure idx must not exceed CSV-class total fields.
+				Debug.Assert(idx < csv_columns);
+				
+				// ensure this idx slot not used yet
+				Debug.Assert(ufis[idx] == null);
+
+				ufis[idx] = fi;
+			}
+
+			return ufis;
+		}
+
+		/// <summary>
+		/// Output a header line for the CSV (as described by user class T)
+		/// </summary>
+		/// <returns>the header line string</returns>
+		public static string HeaderLine()
+		{
+			// Each FieldInfo.Name property is the "field name" of user class T
+
+			string s = String.Join(",", _ufis.Select(fi => fi.Name));
+			return s;
+		}
+
+		/// <summary>
+		/// Define this instance method, so that user can call it via a CsvLiner instance.
+		/// </summary>
+		/// <returns></returns>
+		public string headerLine()
+		{
+			return HeaderLine();
+		}
+
+		/// <summary>
+		/// Load a real CSV line to generate a new T instance.
+		/// </summary>
+		/// <param name="csvline">The csvline can have fewer fields than defined in T.</param>
+		/// <returns></returns>
+		public static T Get(string csvline)
+		{
+			string[] fields = csvline.Split(',');
+
+			Debug.Assert(fields.Length <= _ufis.Length);
+
+			T uo = new T();
+
+			int i = 0;
+			for (; i < fields.Length; i++)
+			{
+				_ufis[i].SetValue(uo, fields[i]);
+			}
+
+			for (; i < _ufis.Length; i++)
+			{
+				_ufis[i].SetValue(uo, "");
+			}
+
+			return uo;
+		}
+
+		public T get(string csvline)
+		{
+			return Get(csvline);
+		}
+
+		/// <summary>
+		/// Convert a T instance into CSV line string.
+		/// </summary>
+		/// <param name="uo"></param>
+		/// <returns>A csvline string, with comma separated fields.</returns>
+		public static string Put(T uo)
+		{
+			string[] ss = _ufis.Select(fi => (string)fi.GetValue(uo)).ToArray();
+
+			return String.Join(",", ss);
+		}
+
+		public string put(T uo)
+		{
+			return Put(uo);
+		}
+	}
+
+}
