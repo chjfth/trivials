@@ -5,64 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-// [2020-10-23] Use an enum type as generic-class's type parameter,
-// in order to eliminate some repetitive code typing.
-// Refs:
-// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters#enum-constraints
-
 namespace CsvFieldsEnum
 {
-    public class CSV_Record<TEnum>
-    {
-        public int nFields { get; }
-        public string[] Fields { get; private set; }
-
-        public CSV_Record()
-        {
-            var enums = Enum.GetValues(typeof(TEnum));
-            nFields = enums.Length;
-            
-            // Ensure that enums are exactly counted 0,1,2,3... continuously
-            Debug.Assert(nFields == (int)enums.GetValue(enums.Length - 1) + 1);
-        }
-        
-        public string HeaderLine
-        {
-            get { return String.Join(",", Enum.GetNames(typeof(TEnum))); }
-        }
-
-        public string[] Set(string csvline)
-        {
-            string[] ss = csvline.Split(',');
-            Debug.Assert(ss.Length==nFields);
-            Fields = ss;
-            return Fields;
-        }
-
-        public string this[int index]
-        {
-            get { return Fields[index]; }
-        }
-
-        public string this[string key]
-        {
-            get { return Fields[Enum.Parse(typeof(TEnum), key).GetHashCode()]; }
-        }
-
-        public string this[TEnum e]
-        {
-            get { return Fields[ e.GetHashCode() ]; } // any alternative to get e's int value?
-        }
-
-    }
-
-    //////////////////// USAGE EXAMPLE ////////////////////
-
-    enum Purchase { Food, Price, Qty }
+	enum Purchase { Food, Price, Qty }
 
     class Program
     {
-        static void Test()
+	    static void Main(string[] args)
+	    {
+		    Test();
+	    }
+
+		static void Test()
         {
             var pc = new CSV_Record<Purchase>();
 
@@ -83,13 +37,10 @@ namespace CsvFieldsEnum
             Console.Out.WriteLine("pc[\"Price\"] = {0}", pc["Price"]);
             Console.Out.WriteLine("pc[\"Qty\"] = {0}", pc["Qty"]);
 
-            // Q: Can I go one step further?
-            //Console.Out.WriteLine("pc.Price = {0}", pc.Price);
-        }
+			// Q: Can I go one step further?
+			// Console.Out.WriteLine("pc.Price = {0}", pc.Price);
+			// [2020-10-26] Yes, check out my CsvLiner demo project.
+		}
 
-        static void Main(string[] args)
-        {
-            Test();
-        }
-    }
+	}
 }
