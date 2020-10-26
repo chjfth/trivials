@@ -153,6 +153,27 @@ namespace CsvLiner
 				Console.Out.WriteLine(ex.InnerException.Message);
 			}
 
+			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : Too many input columns ====");
+			//
+			try
+			{
+				CRecord rec = CsvLiner<CRecord>.Get("Apple,1.5,100,XYZ");
+			}
+			catch (CsvLinerException ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
+			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : Invalid column name ====");
+			//
+			try
+			{
+				int[] idxcols = CsvLiner<CRecord>.Idx(new string[] { "Qty", "PriZe" });
+			}
+			catch (CsvLinerException ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
 
 		}
 	}

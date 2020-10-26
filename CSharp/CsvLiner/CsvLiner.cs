@@ -189,8 +189,9 @@ namespace CsvLiner
 			if (fields.Length > _ufis.Length)
 			{
 				string s = $"Input CSV line contains too many fields.\r\n" +
-				           $"  Input: {fields.Length}\r\n" +
-				           $"  Max allowed: {_ufis.Length}\r\n";
+						   $"  Input csvline: {csvline}\r\n" +
+						   $"  Input fields : {fields.Length}\r\n" +
+				           $"  Max allowed  : {_ufis.Length}\r\n";
 				throw new CsvLinerException(s);
 			}
 
