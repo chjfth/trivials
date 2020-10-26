@@ -98,7 +98,7 @@ namespace CsvLiner
 				// ensure idx must not exceed CSV-class total fields.
 				if (idx >= csv_columns)
 				{
-					string s = $"Column index for {fi.Name} exceeds column count({csv_columns}).\r\n" +
+					string s = $"Column index for {fi.Name} exceeds column count.\r\n" +
 					           $"  Input column index: {idx}\r\n" +
 					           $"  Max valid index: {csv_columns - 1}\r\n";
 					throw new CsvLinerException(s);
@@ -109,7 +109,7 @@ namespace CsvLiner
 				{
 					string s = $"Find duplicate column index for the following two fields:\r\n" +
 					           $"  {fi.Name}\r\n" +
-					           $"  {_ufis[idx].Name}\r\n";
+					           $"  {ufis[idx].Name}\r\n";
 
 					throw new CsvLinerException(s);
 				}

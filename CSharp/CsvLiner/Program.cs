@@ -117,7 +117,7 @@ namespace CsvLiner
 		static void Demo_CsvLiner_Exception()
 		{
 			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : ERecord1 ====");
-
+			//
 			try
 			{
 				string headerline = CsvLiner<ERecord1>.HeaderLine();
@@ -133,13 +133,26 @@ namespace CsvLiner
 				// Actually, we got this:
 				Console.Out.WriteLine("Oops! Got TypeInitializationException. \r\n" +
 					"This means we give wrong CsvLiner type parameters at compile time.\r\n" +
-					"BUT, Even InnerException does not report CsvLinerException, but NullReferenceException, WHY?");
+					"So we must check InnerException to get CsvLinerException.");
 
 				Type inner_exctype = ex.InnerException.GetType(); 
 				string inner_message = ex.InnerException.Message;
-				Console.Out.WriteLine("  "+inner_exctype.FullName);
-				Console.Out.WriteLine("  " + inner_message);
+				Console.Out.WriteLine(inner_exctype.FullName);
+				Console.Out.WriteLine(inner_message);
 			}
+
+			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : ERecord2 ====");
+			//
+			try
+			{
+				string headerline = CsvLiner<ERecord2>.HeaderLine();
+				Console.WriteLine(headerline);
+			}
+			catch (TypeInitializationException ex)
+			{
+				Console.Out.WriteLine(ex.InnerException.Message);
+			}
+
 
 		}
 	}
