@@ -98,21 +98,20 @@ namespace CsvLiner
 				// ensure idx must not exceed CSV-class total fields.
 				if (idx >= csv_columns)
 				{
-					throw new CsvLinerException(
-						$"Column index for {fi.Name} exceeds column count({csv_columns}).\r\n" +
-						$"  Input column index: {idx}\r\n" +
-						$"  Max valid index: {csv_columns-1}\r\n"
-						);
+					string s = $"Column index for {fi.Name} exceeds column count({csv_columns}).\r\n" +
+					           $"  Input column index: {idx}\r\n" +
+					           $"  Max valid index: {csv_columns - 1}\r\n";
+					throw new CsvLinerException(s);
 				}
 
 				// ensure this idx slot not used yet
 				if (ufis[idx] != null)
 				{
-					throw new CsvLinerException(
-						$"Find duplicate column index for the following two fields:\r\n" +
-						$"  {fi.Name}\r\n" +
-						$"  {_ufis[idx].Name}\r\n"
-						);
+					string s = $"Find duplicate column index for the following two fields:\r\n" +
+					           $"  {fi.Name}\r\n" +
+					           $"  {_ufis[idx].Name}\r\n";
+
+					throw new CsvLinerException(s);
 				}
 
 				ufis[idx] = fi;
@@ -189,11 +188,10 @@ namespace CsvLiner
 
 			if (fields.Length > _ufis.Length)
 			{
-				throw new CsvLinerException(
-					$"Input CSV line contains too many fields.\r\n" +
-					$"  Input: {fields.Length}\r\n" +
-					$"  Max allowed: {_ufis.Length}\r\n"
-					);
+				string s = $"Input CSV line contains too many fields.\r\n" +
+				           $"  Input: {fields.Length}\r\n" +
+				           $"  Max allowed: {_ufis.Length}\r\n";
+				throw new CsvLinerException(s);
 			}
 
 			T uo = new T();
@@ -307,9 +305,8 @@ namespace CsvLiner
 
 				if (j == _ufis.Length)
 				{
-					throw new CsvLinerException(
-						$"Input fieldname is not valid: {fieldnames[i]}" 
-						);
+					string s = $"Input fieldname is not valid: {fieldnames[i]}";
+					throw new CsvLinerException(s);
 				}
 			}
 

@@ -128,13 +128,18 @@ namespace CsvLiner
 				// Something undesired HERE! We hope to catch CsvLinerException, but in vain.
 				Console.Out.WriteLine(ex.Message + "\r\n");
 			}
-			catch (TypeInitializationException)
+			catch (TypeInitializationException ex)
 			{
 				// Actually, we got this:
 				Console.Out.WriteLine("Oops! Got TypeInitializationException. \r\n" +
-					"Ths is not the correct way to use capture CsvLiner initialization error.");
-			}
+					"This means we give wrong CsvLiner type parameters at compile time.\r\n" +
+					"BUT, Even InnerException does not report CsvLinerException, but NullReferenceException, WHY?");
 
+				Type inner_exctype = ex.InnerException.GetType(); 
+				string inner_message = ex.InnerException.Message;
+				Console.Out.WriteLine("  "+inner_exctype.FullName);
+				Console.Out.WriteLine("  " + inner_message);
+			}
 
 		}
 	}
