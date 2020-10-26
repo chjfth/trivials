@@ -50,6 +50,8 @@ namespace CsvLiner
 			string headerline = CsvLiner<CRecord>.HeaderLine();
 			Console.WriteLine(headerline);
 
+			CsvLiner<CRecord>.VerifyHeaderLine("Food,Price,Qty");
+
 			string csvinput1 = "Apple,1.5,100";
 			CRecord rec1 = CsvLiner<CRecord>.Get(csvinput1);
 			string csvoutput1 = CsvLiner<CRecord>.Put(rec1);
@@ -121,12 +123,13 @@ namespace CsvLiner
 			try
 			{
 				string headerline = CsvLiner<ERecord1>.HeaderLine();
-				Console.WriteLine(headerline);
+				Debug.Assert(false);
 			}
 			catch (CsvLinerException ex)
 			{
 				// Something undesired HERE! We hope to catch CsvLinerException, but in vain.
 				Console.Out.WriteLine(ex.Message + "\r\n");
+				Debug.Assert(false);
 			}
 			catch (TypeInitializationException ex)
 			{
@@ -146,7 +149,7 @@ namespace CsvLiner
 			try
 			{
 				string headerline = CsvLiner<ERecord2>.HeaderLine();
-				Console.WriteLine(headerline);
+				Debug.Assert(false);
 			}
 			catch (TypeInitializationException ex)
 			{
@@ -158,6 +161,7 @@ namespace CsvLiner
 			try
 			{
 				CRecord rec = CsvLiner<CRecord>.Get("Apple,1.5,100,XYZ");
+				Debug.Assert(false);
 			}
 			catch (CsvLinerException ex)
 			{
@@ -169,6 +173,17 @@ namespace CsvLiner
 			try
 			{
 				int[] idxcols = CsvLiner<CRecord>.Idx(new string[] { "Qty", "PriZe" });
+				Debug.Assert(false);
+			}
+			catch (CsvLinerException ex)
+			{
+				Console.WriteLine(ex.Message);
+			}
+
+			try
+			{
+				CsvLiner<CRecord>.VerifyHeaderLine("--Food,Price,Qty--");
+				Debug.Assert(false);
 			}
 			catch (CsvLinerException ex)
 			{

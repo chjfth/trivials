@@ -178,6 +178,29 @@ namespace CsvLiner
 		}
 
 		/// <summary>
+		/// Check whether inputline matches correct headerline. If not throw exception.
+		/// </summary>
+		/// <param name="inputline">the line to verify</param>
+		/// <param name="selected_columns">Tells which columns to care. If null, verify all columns.</param>
+		public static void VerifyHeaderLine(string inputline, int[] selected_columns=null)
+		{
+			string correct;
+			if (selected_columns == null)
+				correct = CsvLiner<T>.HeaderLine();
+			else
+				correct = CsvLiner<T>.HeaderLine(selected_columns);
+
+			if (correct != inputline)
+			{
+				string s = $"VerifyHeaderLine() mismatch.\r\n" +
+				           $"  Input :  {inputline}\r\n" +
+				           $"  Correct: {correct}\r\n";
+				throw new CsvLinerException(s);
+			}
+		}
+
+
+		/// <summary>
 		/// Load a real CSV line to generate a new T instance.
 		/// </summary>
 		/// <param name="csvline">The csvline can have fewer fields than defined in T.</param>
@@ -210,6 +233,7 @@ namespace CsvLiner
 
 			return uo;
 		}
+
 
 		public T get(string csvline)
 		{
