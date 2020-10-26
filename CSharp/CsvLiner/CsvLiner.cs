@@ -11,6 +11,8 @@ using System.Text;
 [2020-10-25]
 CsvLiner helper class to ease mapping a CSV line to/from user-defined C# class.
 
+Limitation: CSV actual field should not contain commas.
+
 	-- Jimm Chen
 */
 
@@ -34,6 +36,23 @@ namespace CsvLiner
 		public csv_column(string sidx)
 		{
 			this.idx = Int32.Parse(sidx);
+		}
+	}
+
+	public class CsvLinerException : Exception
+	{
+		public CsvLinerException()
+		{
+		}
+
+		public CsvLinerException(string message)
+			: base(message)
+		{
+		}
+
+		public CsvLinerException(string message, Exception inner)
+			: base(message, inner)
+		{
 		}
 	}
 
@@ -77,10 +96,24 @@ namespace CsvLiner
 				int idx = ((csv_column)attr).idx;
 
 				// ensure idx must not exceed CSV-class total fields.
-				Debug.Assert(idx < csv_columns);
+				if (idx >= csv_columns)
+				{
+					throw new CsvLinerException(
+						$"Column index for {fi.Name} exceeds column count({csv_columns}).\r\n" +
+						$"  Input column index: {idx}\r\n" +
+						$"  Max valid index: {csv_columns-1}\r\n"
+						);
+				}
 
 				// ensure this idx slot not used yet
-				Debug.Assert(ufis[idx] == null);
+				if (ufis[idx] != null)
+				{
+					throw new CsvLinerException(
+						$"Find duplicate column index for the following two fields:\r\n" +
+						$"  {fi.Name}\r\n" +
+						$"  {_ufis[idx].Name}\r\n"
+						);
+				}
 
 				ufis[idx] = fi;
 			}
@@ -154,7 +187,14 @@ namespace CsvLiner
 		{
 			string[] fields = csvline.Split(',');
 
-			Debug.Assert(fields.Length <= _ufis.Length);
+			if (fields.Length > _ufis.Length)
+			{
+				throw new CsvLinerException(
+					$"Input CSV line contains too many fields.\r\n" +
+					$"  Input: {fields.Length}\r\n" +
+					$"  Max allowed: {_ufis.Length}\r\n"
+					);
+			}
 
 			T uo = new T();
 
@@ -266,7 +306,11 @@ namespace CsvLiner
 				}
 
 				if (j == _ufis.Length)
-					throw new Exception("Fieldname is not valid: " + fieldnames[i]);
+				{
+					throw new CsvLinerException(
+						$"Input fieldname is not valid: {fieldnames[i]}" 
+						);
+				}
 			}
 
 			return arret;

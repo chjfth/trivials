@@ -12,6 +12,8 @@ namespace CsvLiner
         static void Main(string[] args)
         {
 			Demo_CsvLiner();
+
+			Demo_CsvLiner_Exception();
         }
 
 		/// <summary>
@@ -92,6 +94,48 @@ namespace CsvLiner
 
 			Debug.Assert(cc.headerLine == headerline);
 			Debug.Assert( cc.columns == CsvLiner<CRecord>.Columns());
+		}
+
+
+
+		class ERecord1
+		{
+			[csv_column(1)] public string Food;
+			[csv_column(0)] public string Price;
+			[csv_column(1)] public string Qty; // ERROR: duplicate column index
+		}
+		class ERecord2
+		{
+			[csv_column(0)] public string Food;
+			[csv_column(1)] public string Price;
+			[csv_column(3)] public string Qty; // ERROR: index out-of-bound
+		}
+
+		/// <summary>
+		/// See CsvLinerException in action, when we pass wrong parameters.
+		/// </summary>
+		static void Demo_CsvLiner_Exception()
+		{
+			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : ERecord1 ====");
+
+			try
+			{
+				string headerline = CsvLiner<ERecord1>.HeaderLine();
+				Console.WriteLine(headerline);
+			}
+			catch (CsvLinerException ex)
+			{
+				// Something undesired HERE! We hope to catch CsvLinerException, but in vain.
+				Console.Out.WriteLine(ex.Message + "\r\n");
+			}
+			catch (TypeInitializationException)
+			{
+				// Actually, we got this:
+				Console.Out.WriteLine("Oops! Got TypeInitializationException. \r\n" +
+					"Ths is not the correct way to use capture CsvLiner initialization error.");
+			}
+
+
 		}
 	}
 }
