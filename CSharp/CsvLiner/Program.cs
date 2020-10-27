@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,187 +10,102 @@ namespace CsvLiner
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-			Demo_CsvLiner();
+            for (int i = 0; i < 10; i++)
+            {
+                Console.Out.WriteLine($"=== Cycle {i+1}");
+                Demo_Speedtest_List();
+                Demo_Speedtest_Enum();
+            }
 
-			Demo_CsvLiner_Exception();
         }
 
-		/// <summary>
-		/// Our CSV contains 3 fields(columns).
-		/// We use enum symbols to represent their order (although optional).
-		/// So Food=0, Price=1, Qty=2.
-		/// </summary>
-        enum ColIdx { Food, Price, Qty }
+        static string filepath = @"D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv";
 
-		/// <summary>
-		/// Define this class to describe a CSV line.
-		/// Each class field represents a CSV field(CSV column).
-		/// The [csv_column] attribute of each class field tells the order of the CSV column.
-		///
-		/// You can use an int or a string for the order number.
-		/// </summary>
-		class CRecord
-		{
-			[csv_column(0)]  public string Food;
+        public class CSVL_Deposit
+	    {
+		    [csv_column(0)] public string L1NAME;
+		    [csv_column(1)] public string PROVINCE;
+		    [csv_column(2)] public string CITY;
+		    [csv_column(3)] public string BANKCODE12D;
+		    [csv_column(4)] public string L2NAME;
+		    [csv_column(5)] public string DATETIME;
+	    }
 
-			[csv_column("1")] public string Price;
-			
-			[csv_column((int)ColIdx.Qty)]  public string Qty;
-		}
+        private static void Demo_Speedtest_List()
+        {
+            int msec_start = Environment.TickCount;
 
-		/// <summary>
-		/// Demo code.
-		/// You see, we can use natural C# obj.field syntax to access each CSV field,
-		/// no need to touch any ugly/verbose/redundant number for csv column index.
-		/// What a breeze!
-		/// </summary>
-		static void Demo_CsvLiner()
-		{
-			string headerline = CsvLiner<CRecord>.HeaderLine();
-			Console.WriteLine(headerline);
+            string[] csvlines = File.ReadAllLines(filepath, Encoding.GetEncoding("GBK"));
 
-			CsvLiner<CRecord>.VerifyHeaderLine("Food,Price,Qty");
+            var csvlist = new List<CSVL_Deposit>();
 
-			string csvinput1 = "Apple,1.5,100";
-			CRecord rec1 = CsvLiner<CRecord>.Get(csvinput1);
-			string csvoutput1 = CsvLiner<CRecord>.Put(rec1);
+            foreach (string csvline in csvlines)
+            {
+                csvlist.Add( CsvLiner<CSVL_Deposit>.Get(csvline));
+            }
 
-			if (csvoutput1 == csvinput1)
-			{
-				Console.WriteLine(rec1.Food);
-				Console.WriteLine(rec1.Price);
-				Console.WriteLine(rec1.Qty);
+            int msec_used = Environment.TickCount - msec_start;
 
-				Console.WriteLine("OK. Match.");
-			}
+            int lines = csvlist.Count;
+            Console.Out.WriteLine($"[CsvLiner List]{filepath} Loading cost {msec_used} ms , {lines} lines.");
+        }
 
-			string[] strcols = {"Qty", "Price", "Food"};
-			int[] idxcols = CsvLiner<CRecord>.Idx(strcols);
-			Debug.Assert(idxcols[0]==2 && idxcols[1]==1 && idxcols[2]==0);
+        private static void Demo_Speedtest_Enum()
+        {
+            int msec_start = Environment.TickCount;
 
-			// If you are a freak insisting on existing symbols...
-			string[] strcols2 = new string[]
-			{
-				CsvLiner<CRecord>.uso.Qty,
-				CsvLiner<CRecord>.uso.Price,
-				CsvLiner<CRecord>.uso.Food,
-			};
-			int[] idxcols2 = CsvLiner<CRecord>.Idx(strcols2);
-			Debug.Assert(idxcols2[0] == 2 && idxcols2[1] == 1 && idxcols2[2] == 0);
+            IEnumerable<string> csvlines = File.ReadLines(filepath, Encoding.GetEncoding("GBK"));
 
-			CRecord r2 = CsvLiner<CRecord>.Get("10,Pear", new int[] {2, 0});
-			Debug.Assert(r2.Food=="Pear" && r2.Price=="" && r2.Qty=="10");
+            var csvlist = new List<CSVL_Deposit>();
 
-			string s2 = CsvLiner<CRecord>.Put(r2, new int[] {2, 0});
-			Debug.Assert(s2=="10,Pear");
+            foreach (string csvline in csvlines)
+            {
+                csvlist.Add(CsvLiner<CSVL_Deposit>.Get(csvline));
+            }
 
-			//
-			// Simplify typing a bit like this:
-			//
+            int msec_used = Environment.TickCount - msec_start;
 
-			var cc = new CsvLiner<CRecord>();
-			rec1 = cc.get(csvinput1);
-			csvoutput1 = cc.put(rec1);
-			Debug.Assert( csvoutput1==csvinput1);
+            int lines = csvlist.Count;
+            Console.Out.WriteLine($"[CsvLiner Enum]{filepath} Loading cost {msec_used} ms , {lines} lines.");
+        }
 
-			Debug.Assert(cc.headerLine == headerline);
-			Debug.Assert( cc.columns == CsvLiner<CRecord>.Columns());
-		}
-
-
-
-		class ERecord1
-		{
-			[csv_column(1)] public string Food;
-			[csv_column(0)] public string Price;
-			[csv_column(1)] public string Qty; // ERROR: duplicate column index
-		}
-		class ERecord2
-		{
-			[csv_column(0)] public string Food;
-			[csv_column(1)] public string Price;
-			[csv_column(3)] public string Qty; // ERROR: index out-of-bound
-		}
-
-		/// <summary>
-		/// See CsvLinerException in action, when we pass wrong parameters.
-		/// </summary>
-		static void Demo_CsvLiner_Exception()
-		{
-			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : ERecord1 ====");
-			//
-			try
-			{
-				string headerline = CsvLiner<ERecord1>.HeaderLine();
-				Debug.Assert(false);
-			}
-			catch (CsvLinerException ex)
-			{
-				// Something undesired HERE! We hope to catch CsvLinerException, but in vain.
-				Console.Out.WriteLine(ex.Message + "\r\n");
-				Debug.Assert(false);
-			}
-			catch (TypeInitializationException ex)
-			{
-				// Actually, we got this:
-				Console.Out.WriteLine("Oops! Got TypeInitializationException. \r\n" +
-					"This means we give wrong CsvLiner type parameters at compile time.\r\n" +
-					"So we must check InnerException to get CsvLinerException.");
-
-				Type inner_exctype = ex.InnerException.GetType(); 
-				string inner_message = ex.InnerException.Message;
-				Console.Out.WriteLine(inner_exctype.FullName);
-				Console.Out.WriteLine(inner_message);
-			}
-
-			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : ERecord2 ====");
-			//
-			try
-			{
-				string headerline = CsvLiner<ERecord2>.HeaderLine();
-				Debug.Assert(false);
-			}
-			catch (TypeInitializationException ex)
-			{
-				Console.Out.WriteLine(ex.InnerException.Message);
-			}
-
-			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : Too many input columns ====");
-			//
-			try
-			{
-				CRecord rec = CsvLiner<CRecord>.Get("Apple,1.5,100,XYZ");
-				Debug.Assert(false);
-			}
-			catch (CsvLinerException ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
-
-			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : Invalid column name ====");
-			//
-			try
-			{
-				int[] idxcols = CsvLiner<CRecord>.Idx(new string[] { "Qty", "PriZe" });
-				Debug.Assert(false);
-			}
-			catch (CsvLinerException ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
-
-			try
-			{
-				CsvLiner<CRecord>.VerifyHeaderLine("--Food,Price,Qty--");
-				Debug.Assert(false);
-			}
-			catch (CsvLinerException ex)
-			{
-				Console.WriteLine(ex.Message);
-			}
-
-		}
-	}
+    }
 }
+/*
+[2020-10-27] On AMD 3950X, Win7 VM, I get following result:
+
+=== Cycle 1
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 593 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 391 ms , 146385 lines.
+=== Cycle 2
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 453 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 406 ms , 146385 lines.
+=== Cycle 3
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 453 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 375 ms , 146385 lines.
+=== Cycle 4
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 438 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 391 ms , 146385 lines.
+=== Cycle 5
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 437 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 391 ms , 146385 lines.
+=== Cycle 6
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 437 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 375 ms , 146385 lines.
+=== Cycle 7
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 438 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 437 ms , 146385 lines.
+=== Cycle 8
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 438 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 390 ms , 146385 lines.
+=== Cycle 9
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 453 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 391 ms , 146385 lines.
+=== Cycle 10
+[CsvLiner List]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 422 ms , 146385 lines.
+[CsvLiner Enum]D:\cruxcode\AutoCrawler\cmbcsub-gbk.csv Loading cost 406 ms , 146385 lines.
+
+ */
