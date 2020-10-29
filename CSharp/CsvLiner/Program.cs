@@ -17,13 +17,6 @@ namespace CsvLiner
         }
 
 		/// <summary>
-		/// Our CSV contains 3 fields(columns).
-		/// We use enum symbols to represent their order (although optional).
-		/// So Food=0, Price=1, Qty=2.
-		/// </summary>
-        enum ColIdx { Food, Price, Qty }
-
-		/// <summary>
 		/// Define this class to describe a CSV line.
 		/// Each class field represents a CSV field(CSV column).
 		/// The [csv_column] attribute of each class field tells the order of the CSV column.
@@ -32,11 +25,11 @@ namespace CsvLiner
 		/// </summary>
 		class CRecord
 		{
-			[csv_column(0)]  public string Food;
+			[csv_column(0)] public string FOOD;
 
-			[csv_column("1")] public string Price;
+			[csv_column("1")] public string PRICE;
 			
-			[csv_column((int)ColIdx.Qty)]  public string Qty;
+			[csv_column(2)]  public string QTY;
 		}
 
 		/// <summary>
@@ -50,7 +43,7 @@ namespace CsvLiner
 			string headerline = CsvLiner<CRecord>.HeaderLine();
 			Console.WriteLine(headerline);
 
-			CsvLiner<CRecord>.VerifyHeaderLine("Food,Price,Qty");
+			CsvLiner<CRecord>.VerifyHeaderLine("FOOD,PRICE,QTY");
 
 			string csvinput1 = "Apple,1.5,100";
 			CRecord rec1 = CsvLiner<CRecord>.Get(csvinput1);
@@ -58,29 +51,29 @@ namespace CsvLiner
 
 			if (csvoutput1 == csvinput1)
 			{
-				Console.WriteLine(rec1.Food);
-				Console.WriteLine(rec1.Price);
-				Console.WriteLine(rec1.Qty);
+				Console.WriteLine(rec1.FOOD);
+				Console.WriteLine(rec1.PRICE);
+				Console.WriteLine(rec1.QTY);
 
 				Console.WriteLine("OK. Match.");
 			}
 
-			string[] strcols = {"Qty", "Price", "Food"};
+			string[] strcols = {"QTY", "PRICE", "FOOD"};
 			int[] idxcols = CsvLiner<CRecord>.Idx(strcols);
 			Debug.Assert(idxcols[0]==2 && idxcols[1]==1 && idxcols[2]==0);
 
 			// If you are a freak insisting on existing symbols...
 			string[] strcols2 = new string[]
 			{
-				CsvLiner<CRecord>.uso.Qty,
-				CsvLiner<CRecord>.uso.Price,
-				CsvLiner<CRecord>.uso.Food,
+				CsvLiner<CRecord>.uso.QTY,
+				CsvLiner<CRecord>.uso.PRICE,
+				CsvLiner<CRecord>.uso.FOOD,
 			};
 			int[] idxcols2 = CsvLiner<CRecord>.Idx(strcols2);
 			Debug.Assert(idxcols2[0] == 2 && idxcols2[1] == 1 && idxcols2[2] == 0);
 
 			CRecord r2 = CsvLiner<CRecord>.Get("10,Pear", new int[] {2, 0});
-			Debug.Assert(r2.Food=="Pear" && r2.Price=="" && r2.Qty=="10");
+			Debug.Assert(r2.FOOD=="Pear" && r2.PRICE=="" && r2.QTY=="10");
 
 			string s2 = CsvLiner<CRecord>.Put(r2, new int[] {2, 0});
 			Debug.Assert(s2=="10,Pear");
@@ -102,15 +95,15 @@ namespace CsvLiner
 
 		class ERecord1
 		{
-			[csv_column(1)] public string Food;
-			[csv_column(0)] public string Price;
-			[csv_column(1)] public string Qty; // ERROR: duplicate column index
+			[csv_column(1)] public string FOOD;
+			[csv_column(0)] public string PRICE;
+			[csv_column(1)] public string QTY; // ERROR: duplicate column index
 		}
 		class ERecord2
 		{
-			[csv_column(0)] public string Food;
-			[csv_column(1)] public string Price;
-			[csv_column(3)] public string Qty; // ERROR: index out-of-bound
+			[csv_column(0)] public string FOOD;
+			[csv_column(1)] public string PRICE;
+			[csv_column(3)] public string QTY; // ERROR: index out-of-bound
 		}
 
 		/// <summary>
@@ -172,7 +165,7 @@ namespace CsvLiner
 			//
 			try
 			{
-				int[] idxcols = CsvLiner<CRecord>.Idx(new string[] { "Qty", "PriZe" });
+				int[] idxcols = CsvLiner<CRecord>.Idx(new string[] { "QTY", "PriZe" });
 				Debug.Assert(false);
 			}
 			catch (CsvLinerException ex)
@@ -182,7 +175,7 @@ namespace CsvLiner
 
 			try
 			{
-				CsvLiner<CRecord>.VerifyHeaderLine("--Food,Price,Qty--");
+				CsvLiner<CRecord>.VerifyHeaderLine("--FOOD,PRICE,QTY--");
 				Debug.Assert(false);
 			}
 			catch (CsvLinerException ex)
