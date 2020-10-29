@@ -9,9 +9,9 @@ using System.Runtime.ExceptionServices;
 using System.Text;
 
 /*
-[2020-10-25]
+[2020-10-25] https://github.com/chjfth/trivials/tree/master/CSharp/CsvLiner
 
-	CsvLiner helper class to ease mapping a CSV line to/from user-defined C# class.
+CsvLiner helper class to ease mapping a CSV line to/from user-defined C# class.
 
 Limitation: CSV actual field should not contain commas.
 
@@ -448,7 +448,7 @@ namespace CsvLiner
 			{
 				if ((hc & HeaderCare.Preserve) != 0)
 				{
-					textwriter.WriteLine(CsvLiner<T>.HeaderLine());
+					textwriter.WriteLine(correct_header_line);
 				}
 
 				foreach (T tobj in list)
