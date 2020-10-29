@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
@@ -9,7 +10,8 @@ using System.Text;
 
 /*
 [2020-10-25]
-CsvLiner helper class to ease mapping a CSV line to/from user-defined C# class.
+
+	CsvLiner helper class to ease mapping a CSV line to/from user-defined C# class.
 
 Limitation: CSV actual field should not contain commas.
 
@@ -93,7 +95,7 @@ namespace CsvLiner
 				Attribute attr = fi.GetCustomAttribute(typeof(csv_column));
 
 				// Get the column order(idx) from our custom attribute named "csv_column".
-				int idx = ((csv_column)attr).idx;
+				int idx = ((csv_column) attr).idx;
 
 				// ensure idx must not exceed CSV-class total fields.
 				if (idx >= csv_columns)
@@ -182,7 +184,7 @@ namespace CsvLiner
 		/// </summary>
 		/// <param name="inputline">the line to verify</param>
 		/// <param name="selected_columns">Tells which columns to care. If null, verify all columns.</param>
-		public static void VerifyHeaderLine(string inputline, int[] selected_columns=null)
+		public static void VerifyHeaderLine(string inputline, int[] selected_columns = null)
 		{
 			string correct;
 			if (selected_columns == null)
@@ -212,8 +214,8 @@ namespace CsvLiner
 			if (fields.Length > _ufis.Length)
 			{
 				string s = $"Input CSV line contains too many fields.\r\n" +
-						   $"  Input csvline: {csvline}\r\n" +
-						   $"  Input fields : {fields.Length}\r\n" +
+				           $"  Input csvline: {csvline}\r\n" +
+				           $"  Input fields : {fields.Length}\r\n" +
 				           $"  Max allowed  : {_ufis.Length}\r\n";
 				throw new CsvLinerException(s);
 			}
@@ -301,7 +303,7 @@ namespace CsvLiner
 				fi_selected[i] = _ufis[idx_column];
 			}
 
-			string[] ss = fi_selected.Select(fi => (string)fi.GetValue(uo)).ToArray();
+			string[] ss = fi_selected.Select(fi => (string) fi.GetValue(uo)).ToArray();
 
 			return String.Join(",", ss);
 		}
@@ -345,4 +347,115 @@ namespace CsvLiner
 
 	}
 
+	//////// Some utility function below ////////
+
+	[Flags]
+	public enum HeaderCare
+	{
+		None = 0,
+
+		/// <summary>
+		/// When reading a csv file, Verify the cvs header does exist and is correct.
+		/// When writing, no effect.
+		/// </summary>
+		Verify = 1,
+
+		/// <summary>
+		/// When reading a csv file, the csv header line is loaded as a csv data line.
+		/// When writing a csv file, the output contains a header line.
+		/// </summary>
+		Preserve = 2,
+	}
+
+	class Utils
+	{
+		/// <summary>
+		/// Load a csv file and return a list of objects of user-given type(T).
+		/// </summary>
+		/// <typeparam name="T">Path to a csv file.</typeparam>
+		/// <param name="csvpath"></param>
+		/// <param name="hc">See comments of enum HeaderCare.</param>
+		/// <param name="encoding"></param>
+		/// <returns></returns>
+		public static List<T> LoadCsvFile<T>(string csvpath,
+			HeaderCare hc = HeaderCare.None,
+			Encoding encoding = null)
+			where T : class, new()
+		{
+			if (encoding == null)
+				encoding = System.Text.Encoding.Default;
+
+			string correct_header_line = CsvLiner<T>.HeaderLine();
+
+			var retlist = new List<T>();
+
+			var csvlines = File.ReadLines(csvpath, encoding);
+
+			using (var enumer = csvlines.GetEnumerator())
+			{
+				if (!enumer.MoveNext())
+					return null;
+
+				string line0 = enumer.Current;
+
+				bool is_line0_header = (line0 == correct_header_line) ? true : false;
+
+				if ((hc & HeaderCare.Verify) != 0)
+				{
+					// Need verify CSV header
+					if (!is_line0_header)
+					{
+						string s = $"CSV file does not have required headerline.\r\n" +
+						           $"CSV file:\r\n" +
+						           $"  {csvpath}\r\n" +
+						           $"Required header line:\r\n" +
+						           $"  {correct_header_line}\r\n";
+						throw new CsvLinerException(s);
+					}
+				}
+
+				if ((hc & HeaderCare.Preserve) != 0) // user want to preserve first line
+				{
+					retlist.Add(CsvLiner<T>.Get(line0));
+				}
+
+				if (!is_line0_header) // first line is not a csv header
+				{
+					retlist.Add(CsvLiner<T>.Get(line0));
+				}
+
+				while (enumer.MoveNext())
+				{
+					retlist.Add(CsvLiner<T>.Get(enumer.Current));
+				}
+
+			} // using enumerator
+
+			return retlist;
+		}
+
+		public static void SaveCsvFile<T>(List<T> list, string csvpath,
+			HeaderCare hc = HeaderCare.None,
+			Encoding encoding = null)
+			where T : class, new()
+		{
+			if (encoding == null)
+				encoding = System.Text.Encoding.Default;
+
+			string correct_header_line = CsvLiner<T>.HeaderLine();
+
+			using (StreamWriter textwriter = new StreamWriter(csvpath, false, encoding))
+			{
+				if ((hc & HeaderCare.Preserve) != 0)
+				{
+					textwriter.WriteLine(CsvLiner<T>.HeaderLine());
+				}
+
+				foreach (T tobj in list)
+				{
+					textwriter.WriteLine(CsvLiner<T>.Put(tobj));
+				}
+			} // using file
+		}
+	}
 }

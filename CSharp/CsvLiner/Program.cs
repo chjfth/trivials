@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +16,11 @@ namespace CsvLiner
 			Demo_CsvLiner();
 
 			Demo_CsvLiner_Exception();
-        }
+
+			Demo_CsvLiner_Utils();
+
+			Console.Out.WriteLine("==== DONE ====");
+		}
 
 		/// <summary>
 		/// Define this class to describe a CSV line.
@@ -183,6 +189,46 @@ namespace CsvLiner
 				Console.WriteLine(ex.Message);
 			}
 
+		}
+
+		public static void Demo_CsvLiner_Utils()
+		{
+			Console.Out.WriteLine("==== Demo_CsvLiner_Utils ====");
+
+			string csvpath_with_header = @"purchase-with-header.csv";
+			string csvpath_no_header = @"purchase-no-header.csv";
+
+			List<CRecord> recsH1 = Utils.LoadCsvFile<CRecord>(csvpath_with_header);
+			Debug.Assert(recsH1.Count==3);
+
+			List<CRecord> recsH2 = Utils.LoadCsvFile<CRecord>(csvpath_with_header, HeaderCare.Preserve);
+			Debug.Assert(recsH2.Count == 4);
+
+			List<CRecord> recsH3 = Utils.LoadCsvFile<CRecord>(csvpath_with_header, 
+				HeaderCare.Verify|HeaderCare.Preserve);
+			Debug.Assert(recsH3.Count == 4);
+
+			List<CRecord> recsN1 = Utils.LoadCsvFile<CRecord>(csvpath_no_header, HeaderCare.None);
+			Debug.Assert(recsN1.Count == 3);
+
+			try
+			{
+				List<CRecord> recsN2 = Utils.LoadCsvFile<CRecord>(csvpath_no_header, HeaderCare.Verify);
+				Debug.Assert(false);
+			}
+			catch (CsvLinerException)
+			{
+				Console.Out.WriteLine("OK. HeaderCare.Verify success.");
+			}
+
+			// Test writing.
+
+			string copy_with_header = @"copy-with-header.csv";
+			Utils.SaveCsvFile(recsH1, copy_with_header, HeaderCare.Preserve, Encoding.UTF8);
+
+			string text1 = File.ReadAllText(csvpath_with_header);
+			string text2 = File.ReadAllText(copy_with_header, Encoding.UTF8);
+			Debug.Assert(text1==text2);
 		}
 	}
 }
