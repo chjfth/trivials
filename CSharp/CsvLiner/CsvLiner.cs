@@ -394,7 +394,7 @@ namespace CsvLiner
 			using (var enumer = csvlines.GetEnumerator())
 			{
 				if (!enumer.MoveNext())
-					return null;
+					return retlist;
 
 				string line0 = enumer.Current;
 
