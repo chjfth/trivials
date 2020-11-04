@@ -31,11 +31,20 @@ namespace CsvLiner
 		/// </summary>
 		class CRecord
 		{
-			[csv_column(0)] public string FOOD;
+			[csv_column(0)] public string FOOD = null;
+			[csv_column("1")] public string PRICE = null;
+			[csv_column(2)]  public string QTY = null;
+		}
 
-			[csv_column("1")] public string PRICE;
-			
-			[csv_column(2)]  public string QTY;
+		class CRecordB
+		{
+			public int aux1; // we can mix in non-csv-column fields 
+
+			[csv_column(0)] public string FOOD = null;
+			[csv_column(1)] public string PRICE = null;
+			[csv_column(2)]  public string QTY = null;
+
+			public int aux2; // we can mix in non-csv-column fields 
 		}
 
 		/// <summary>
@@ -88,10 +97,10 @@ namespace CsvLiner
 			// Simplify typing a bit like this:
 			//
 
-			var cc = new CsvLiner<CRecord>();
-			rec1 = cc.get(csvinput1);
-			csvoutput1 = cc.put(rec1);
-			Debug.Assert( csvoutput1==csvinput1);
+			var cc = new CsvLiner<CRecordB>();
+			CRecordB rec2 = cc.get(csvinput1);
+			string csvoutput2 = cc.put(rec2);
+			Debug.Assert( csvoutput2==csvinput1);
 
 			Debug.Assert(cc.headerLine == headerline);
 			Debug.Assert( cc.columns == CsvLiner<CRecord>.Columns());
@@ -103,13 +112,22 @@ namespace CsvLiner
 		{
 			[csv_column(1)] public string FOOD;
 			[csv_column(0)] public string PRICE;
-			[csv_column(1)] public string QTY; // ERROR: duplicate column index
+			[csv_column(1)] public string QTY; // ERROR Demo: duplicate column index
 		}
 		class ERecord2
 		{
 			[csv_column(0)] public string FOOD;
 			[csv_column(1)] public string PRICE;
-			[csv_column(3)] public string QTY; // ERROR: index out-of-bound
+			[csv_column(3)] public string QTY; // ERROR Demo: index out-of-bound
+		}
+
+		class ERecord3
+		{
+			public int aux1;
+			[csv_column(0)] public string FOOD;
+			[csv_column(3)] public string PRICE; // ERROR Demo: index exceeds column count
+			public int aux2;
+			[csv_column(4)] public string QTY; // ERROR Demo: index exceeds column count
 		}
 
 		/// <summary>
@@ -153,6 +171,18 @@ namespace CsvLiner
 			catch (TypeInitializationException ex)
 			{
 				Console.Out.WriteLine(ex.InnerException.Message);
+			}
+
+			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : ERecord3 ====");
+			//
+			try
+			{
+				string headerline = CsvLiner<ERecord3>.HeaderLine();
+				Debug.Assert(false);
+			}
+			catch (TypeInitializationException ex)
+			{
+				Console.WriteLine(ex.InnerException.Message);
 			}
 
 			Console.Out.WriteLine("==== Demo_CsvLiner_Exception : Too many input columns ====");

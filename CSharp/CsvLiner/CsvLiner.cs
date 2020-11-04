@@ -69,6 +69,7 @@ namespace CsvLiner
 	{
 		/// <summary>
 		/// static FieldInfo[]s for our T.
+		/// _ufis[n] will map n-th csv column to the corresponding FieldInfo.
 		/// </summary>
 		private static FieldInfo[] _ufis = Init();
 
@@ -87,22 +88,30 @@ namespace CsvLiner
 			Type utype = typeof(T);
 			FieldInfo[] fis = utype.GetFields();
 
-			int csv_columns = fis.Length;
-			FieldInfo[] ufis = new FieldInfo[csv_columns];
+			int csv_max_columns = fis.Length;
+			int csv_real_columns = 0;
+
+			FieldInfo[] ufis = new FieldInfo[csv_max_columns];
 
 			foreach (FieldInfo fi in fis)
 			{
 				Attribute attr = fi.GetCustomAttribute(typeof(csv_column));
 
+				if (attr == null)
+				{
+					// this field does not have [csv_column] attribute, so ignore this field
+					continue;
+				}
+
 				// Get the column order(idx) from our custom attribute named "csv_column".
 				int idx = ((csv_column) attr).idx;
 
 				// ensure idx must not exceed CSV-class total fields.
-				if (idx >= csv_columns)
+				if (idx >= csv_max_columns)
 				{
 					string s = $"Column index for {fi.Name} exceeds column count.\r\n" +
 					           $"  Input column index: {idx}\r\n" +
-					           $"  Max valid index: {csv_columns - 1}\r\n";
+					           $"  Max valid index: {csv_max_columns - 1}\r\n";
 					throw new CsvLinerException(s);
 				}
 
@@ -116,17 +125,39 @@ namespace CsvLiner
 					throw new CsvLinerException(s);
 				}
 
+				csv_real_columns++;
 				ufis[idx] = fi;
+			}
+
+			// Final check: Ensure there is no "hole" in user-assigned csv_column indexes.
+			//
+			List<int> invalid_idxs = new List<int>();
+			for (int i = csv_real_columns; i < csv_max_columns; i++)
+			{
+				if (ufis[i] != null)
+				{
+					invalid_idxs.Add(i);
+				}
+			}
+			//
+			if (invalid_idxs.Count > 0)
+			{
+				string sinvalid = String.Join(",", invalid_idxs.Select(n => n.ToString()));
+				string s = $"Some [csv_column] index(es) exceeds your column count:\r\n" +
+				           $"  Max valid index : {csv_real_columns-1}\r\n" +
+				           $"  Invalid input index(es): {sinvalid}\r\n";
+				throw new CsvLinerException(s);
 			}
 
 			// Now a trick: I use uso's fields to store its own fieldnames.
 			uso = new T();
-			foreach (FieldInfo fi in fis)
+			for(int i=0; i<csv_real_columns; i++)
 			{
-				fi.SetValue(uso, fi.Name);
+				ufis[i].SetValue(uso, ufis[i].Name);
 			}
 
-			return ufis;
+			var ret= ufis.Take(csv_real_columns).ToArray();
+			return ret;
 		}
 
 		/// <summary>
