@@ -401,14 +401,14 @@ namespace CsvLiner
 	class Utils
 	{
 		/// <summary>
-		/// Load a csv file and return a list of objects of user-given type(T).
+		/// Load a csv file and return an iterator of objects of user-given type(T).
 		/// </summary>
-		/// <typeparam name="T">Path to a csv file.</typeparam>
-		/// <param name="csvpath"></param>
+		/// <typeparam name="T">User's object type.</typeparam>
+		/// <param name="csvpath">Path to a csv file.</param>
 		/// <param name="hc">See comments of enum HeaderCare.</param>
-		/// <param name="encoding"></param>
+		/// <param name="encoding">Text file encoding of the csv.</param>
 		/// <returns></returns>
-		public static List<T> LoadCsvFile<T>(string csvpath,
+		public static IEnumerable<T> LoadCsvFile<T>(string csvpath,
 			HeaderCare hc = HeaderCare.None,
 			Encoding encoding = null)
 			where T : class, new()
@@ -418,14 +418,12 @@ namespace CsvLiner
 
 			string correct_header_line = CsvLiner<T>.HeaderLine();
 
-			var retlist = new List<T>();
-
 			var csvlines = File.ReadLines(csvpath, encoding);
 
 			using (var enumer = csvlines.GetEnumerator())
 			{
 				if (!enumer.MoveNext())
-					return retlist;
+					yield break;
 
 				string line0 = enumer.Current;
 
@@ -447,29 +445,38 @@ namespace CsvLiner
 
 				if ((hc & HeaderCare.Preserve) != 0) // user want to preserve first line
 				{
-					retlist.Add(CsvLiner<T>.Get(line0));
+					yield return CsvLiner<T>.Get(line0);
 				}
 
 				if (!is_line0_header) // first line is not a csv header
 				{
-					retlist.Add(CsvLiner<T>.Get(line0));
+					yield return CsvLiner<T>.Get(line0);
 				}
 
 				while (enumer.MoveNext())
 				{
-					retlist.Add(CsvLiner<T>.Get(enumer.Current));
+					yield return CsvLiner<T>.Get(enumer.Current);
 				}
 
 			} // using enumerator
+        }
 
-			return retlist;
-		}
-
-		public static void SaveCsvFile<T>(List<T> list, string csvpath,
+        /// <summary>
+        /// Save a list, or an array of, type-T objects to a file.
+        /// </summary>
+        /// <typeparam name="T">User's object type.</typeparam>
+        /// <param name="list">An enumerable object providing CSV data source.</param>
+        /// <param name="csvpath">Path to a csv file.</param>
+        /// <param name="hc">See comments of enum HeaderCare.</param>
+        /// <param name="encoding">Text file encoding of the csv.</param>
+        /// <returns>CSV data lines written, not including the header line.</returns>
+		public static int SaveCsvFile<T>(IEnumerable<T> list, string csvpath,
 			HeaderCare hc = HeaderCare.None,
 			Encoding encoding = null)
 			where T : class, new()
-		{
+        {
+            int count = 0;
+
 			if (encoding == null)
 				encoding = System.Text.Encoding.Default;
 
@@ -485,8 +492,11 @@ namespace CsvLiner
 				foreach (T tobj in list)
 				{
 					textwriter.WriteLine(CsvLiner<T>.Put(tobj));
-				}
+                    count++;
+                }
 			} // using file
-		}
+
+            return count;
+        }
 	}
 }

@@ -22,6 +22,7 @@ namespace CsvLiner
 			Console.Out.WriteLine("==== DONE ====");
 		}
 
+
 		/// <summary>
 		/// Define this class to describe a CSV line.
 		/// Each class field represents a CSV field(CSV column).
@@ -228,22 +229,22 @@ namespace CsvLiner
 			string csvpath_with_header = @"purchase-with-header.csv";
 			string csvpath_no_header = @"purchase-no-header.csv";
 
-			List<CRecord> recsH1 = Utils.LoadCsvFile<CRecord>(csvpath_with_header);
+			List<CRecord> recsH1 = Utils.LoadCsvFile<CRecord>(csvpath_with_header).ToList();
 			Debug.Assert(recsH1.Count==3);
 
-			List<CRecord> recsH2 = Utils.LoadCsvFile<CRecord>(csvpath_with_header, HeaderCare.Preserve);
+			List<CRecord> recsH2 = Utils.LoadCsvFile<CRecord>(csvpath_with_header, HeaderCare.Preserve).ToList();
 			Debug.Assert(recsH2.Count == 4);
 
 			List<CRecord> recsH3 = Utils.LoadCsvFile<CRecord>(csvpath_with_header, 
-				HeaderCare.Verify|HeaderCare.Preserve);
+				HeaderCare.Verify|HeaderCare.Preserve).ToList();
 			Debug.Assert(recsH3.Count == 4);
 
-			List<CRecord> recsN1 = Utils.LoadCsvFile<CRecord>(csvpath_no_header, HeaderCare.None);
+			List<CRecord> recsN1 = Utils.LoadCsvFile<CRecord>(csvpath_no_header, HeaderCare.None).ToList();
 			Debug.Assert(recsN1.Count == 3);
 
 			try
 			{
-				List<CRecord> recsN2 = Utils.LoadCsvFile<CRecord>(csvpath_no_header, HeaderCare.Verify);
+				List<CRecord> recsN2 = Utils.LoadCsvFile<CRecord>(csvpath_no_header, HeaderCare.Verify).ToList();
 				Debug.Assert(false);
 			}
 			catch (CsvLinerException)
@@ -254,7 +255,8 @@ namespace CsvLiner
 			// Test writing.
 
 			string copy_with_header = @"copy-with-header.csv";
-			Utils.SaveCsvFile(recsH1, copy_with_header, HeaderCare.Preserve, Encoding.UTF8);
+			int count = Utils.SaveCsvFile(recsH1, copy_with_header, HeaderCare.Preserve, Encoding.UTF8);
+            Debug.Assert(count==3);
 
 			string text1 = File.ReadAllText(csvpath_with_header);
 			string text2 = File.ReadAllText(copy_with_header, Encoding.UTF8);
