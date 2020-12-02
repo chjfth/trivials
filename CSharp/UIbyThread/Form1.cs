@@ -19,7 +19,10 @@ namespace UIbyThread
         {
             InitializeComponent();
 
-            string text =
+            // false will suppress debugger assert on wrong thread op
+			// CheckForIllegalCrossThreadCalls = false; 
+
+			string text =
 @"Click a button to launch a thread.
 
 ※ For first button, the thread will call UI function directly; 
