@@ -22,7 +22,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="1_certlist.cpp">
+    <ClCompile Include="2_enumstore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
