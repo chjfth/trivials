@@ -107,7 +107,7 @@ void main(void)
 			pszNameString,
 			128))
 		{
-			printf("\nCertificate for %s \n", pszNameString);
+			printf("\nCertificate for \"%s\" \n", pszNameString);
 		}
 		else
 			fprintf(stderr, "CertGetName failed. \n");
@@ -127,7 +127,7 @@ void main(void)
 			// When the loop is executed, a property identifier has been found.
 			// Print the property number.
 
-			printf("Property # %d found->", dwPropId);
+			printf("Property #%d found->", dwPropId);
 
 			//-------------------------------------------------------------------
 			// Indicate the kind of property found.
@@ -136,101 +136,144 @@ void main(void)
 			{{
 			case CERT_FRIENDLY_NAME_PROP_ID:
 			{
-				printf("Display name: ");
+				printf("CERT_FRIENDLY_NAME_PROP_ID");
 				break;
 			}
 			case CERT_SIGNATURE_HASH_PROP_ID:
 			{
-				printf("Signature hash identifier ");
+				printf("CERT_SIGNATURE_HASH_PROP_ID");
 				break;
 			}
 			case CERT_KEY_PROV_HANDLE_PROP_ID:
 			{
-				printf("KEY PROVE HANDLE ");
+				printf("CERT_KEY_PROV_HANDLE_PROP_ID");
 				break;
 			}
 			case CERT_KEY_PROV_INFO_PROP_ID:
-			{	// CRYPT_KEY_PROV_INFO 
-				printf("KEY PROV INFO PROP ID ");
+			{	// data: CRYPT_KEY_PROV_INFO 
+				printf("CERT_KEY_PROV_INFO_PROP_ID");
 				break;
 			}
 			case CERT_SHA1_HASH_PROP_ID:
 			{
-				printf("SHA1 HASH identifier");
+				printf("CERT_SHA1_HASH_PROP_ID");
 				break;
 			}
 			case CERT_MD5_HASH_PROP_ID:
 			{
-				printf("md5 hash identifier ");
+				printf("CERT_MD5_HASH_PROP_ID");
 				break;
 			}
 			case CERT_KEY_CONTEXT_PROP_ID:
 			{
-				printf("KEY CONTEXT PROP identifier");
+				printf("KEY CONTEXT PROP identifier ");
 				break;
 			}
 			case CERT_KEY_SPEC_PROP_ID:
 			{
-				printf("KEY SPEC PROP identifier");
+				printf("CERT_KEY_SPEC_PROP_ID ");
 				break;
 			}
 			case CERT_ENHKEY_USAGE_PROP_ID:
 			{
-				printf("ENHKEY USAGE PROP identifier");
+				printf("CERT_ENHKEY_USAGE_PROP_ID");
 				break;
 			}
 			case CERT_NEXT_UPDATE_LOCATION_PROP_ID:
 			{
-				printf("NEXT UPDATE LOCATION PROP identifier");
+				printf("CERT_NEXT_UPDATE_LOCATION_PROP_ID");
 				break;
 			}
 			case CERT_PVK_FILE_PROP_ID:
 			{
-				printf("PVK FILE PROP identifier ");
+				printf("CERT_PVK_FILE_PROP_ID");
 				break;
 			}
 			case CERT_DESCRIPTION_PROP_ID:
 			{
-				printf("DESCRIPTION PROP identifier ");
+				printf("CERT_DESCRIPTION_PROP_ID");
 				break;
 			}
 			case CERT_ACCESS_STATE_PROP_ID:
 			{
-				printf("ACCESS STATE PROP identifier ");
+				printf("CERT_ACCESS_STATE_PROP_ID");
 				break;
 			}
 			case CERT_SMART_CARD_DATA_PROP_ID:
 			{
-				printf("SMART_CARD DATA PROP identifier ");
+				printf("CERT_SMART_CARD_DATA_PROP_ID");
 				break;
 			}
 			case CERT_EFS_PROP_ID:
 			{
-				printf("EFS PROP identifier ");
+				printf("CERT_EFS_PROP_ID");
 				break;
 			}
 			case CERT_FORTEZZA_DATA_PROP_ID:
 			{
-				printf("FORTEZZA DATA PROP identifier ");
+				printf("CERT_FORTEZZA_DATA_PROP_ID");
 				break;
 			}
 			case CERT_ARCHIVED_PROP_ID:
 			{
-				printf("ARCHIVED PROP identifier ");
+				printf("CERT_ARCHIVED_PROP_ID");
 				break;
 			}
 			case CERT_KEY_IDENTIFIER_PROP_ID:
 			{
-				printf("KEY IDENTIFIER PROP identifier ");
+				printf("CERT_KEY_IDENTIFIER_PROP_ID");
 				break;
 			}
 			case CERT_AUTO_ENROLL_PROP_ID:
 			{
-				printf("AUTO ENROLL identifier. ");
+				printf("CERT_AUTO_ENROLL_PROP_ID");
 				break;
 			}
+			case CERT_SUBJECT_PUBLIC_KEY_MD5_HASH_PROP_ID:
+			{
+				printf("CERT_SUBJECT_PUBLIC_KEY_MD5_HASH_PROP_ID");
+				break;
+			}
+			case CERT_ISSUER_PUBLIC_KEY_MD5_HASH_PROP_ID:
+			{
+				printf("CERT_ISSUER_PUBLIC_KEY_MD5_HASH_PROP_ID");
+				break;
+			}
+			case CERT_SUBJECT_NAME_MD5_HASH_PROP_ID:
+			{
+				printf("CERT_SUBJECT_NAME_MD5_HASH_PROP_ID");
+				break;
+			}
+			case CERT_SUBJECT_PUB_KEY_BIT_LENGTH_PROP_ID:
+			{
+				printf("CERT_SUBJECT_PUB_KEY_BIT_LENGTH_PROP_ID");
+				break;
+			}
+			case CERT_ROOT_PROGRAM_CHAIN_POLICIES_PROP_ID:
+			{
+				printf("CERT_ROOT_PROGRAM_CHAIN_POLICIES_PROP_ID");
+				break;
+			}
+			case CERT_ROOT_PROGRAM_CERT_POLICIES_PROP_ID:
+			{
+				printf("CERT_ROOT_PROGRAM_CERT_POLICIES_PROP_ID");
+				break;
+			}
+			case CERT_AUTH_ROOT_SHA256_HASH_PROP_ID:
+			{
+				printf("CERT_AUTH_ROOT_SHA256_HASH_PROP_ID");
+				break;
+			}
+			case CERT_SIGN_HASH_CNG_ALG_PROP_ID:
+			{
+				printf("CERT_SIGN_HASH_CNG_ALG_PROP_ID");
+				break;
+			}
+
 			}} // End switch.
 
+			printf(" (dwPropId=%d) ", dwPropId);
+			
 			//-------------------------------------------------------------------
 			// Retrieve information on the property by first getting the 
 			// property size. 
@@ -288,7 +331,7 @@ void main(void)
 			//---------------------------------------------------------------
 			// Show the results.
 
-			printf("The Property Content is 0x%p \n", pvData);
+			printf("The Property Content is @ 0x%p\n", pvData);
 
 			//----------------------------------------------------------------
 			// Free the certificate context property memory.
