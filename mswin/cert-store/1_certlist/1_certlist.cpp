@@ -60,8 +60,7 @@ void main(void)
 		NULL,
 		pszStoreName))
 	{
-		fprintf(stderr, "The %s store has been opened. \n",
-			pszStoreName);
+		fprintf(stderr, "The %s store has been opened. \n", pszStoreName);
 	}
 	else
 	{
@@ -74,11 +73,9 @@ void main(void)
 	// from the open store. pCertContext must be reset to
 	// NULL to retrieve the first certificate in the store.
 
-	// pCertContext = NULL;
+	pCertContext = NULL;
 
-	while (pCertContext = CertEnumCertificatesInStore(
-		hCertStore,
-		pCertContext))
+	while (pCertContext = CertEnumCertificatesInStore(hCertStore, pCertContext))
 	{
 		//-------------------------------------------------------------------
 		// A certificate was retrieved. Continue.
@@ -93,7 +90,7 @@ void main(void)
 			0,
 			NULL))
 		{
-			//     printf("OK\n");
+			printf("CryptUIDlgViewContext() returns OK.\n");
 		}
 		else
 		{
@@ -134,7 +131,7 @@ void main(void)
 			// Indicate the kind of property found.
 
 			switch (dwPropId)
-			{
+			{{
 			case CERT_FRIENDLY_NAME_PROP_ID:
 			{
 				printf("Display name: ");
@@ -230,12 +227,12 @@ void main(void)
 				printf("AUTO ENROLL identifier. ");
 				break;
 			}
-			} // End switch.
+			}} // End switch.
 
-			  //-------------------------------------------------------------------
-			  // Retrieve information on the property by first getting the 
-			  // property size. 
-			  // For more information, see CertGetCertificateContextProperty.
+			//-------------------------------------------------------------------
+			// Retrieve information on the property by first getting the 
+			// property size. 
+			// For more information, see CertGetCertificateContextProperty.
 
 			if (CertGetCertificateContextProperty(
 				pCertContext,
