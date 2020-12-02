@@ -87,7 +87,9 @@ void main(void)
 	dwFlags |= (dwLocationID << CERT_SYSTEM_STORE_LOCATION_SHIFT) &
 		CERT_SYSTEM_STORE_LOCATION_MASK;
 
-	printf("Begin enumeration of store locations. \n");
+	printf("=====================================\n");
+	printf("Begin enumeration of store locations.\n");
+	printf("=====================================\n");
 	if (CertEnumSystemStoreLocation(
 		dwFlags,
 		&EnumArg,
@@ -100,7 +102,12 @@ void main(void)
 	{
 		MyHandleError("Enumeration of locations failed.");
 	}
-	printf("\nBegin enumeration of system stores. \n");
+
+	printf("\n");
+	
+	printf("===================================\n");
+	printf("Begin enumeration of system stores.\n");
+	printf("===================================\n");
 
 	if (CertEnumSystemStore(
 		dwFlags,
@@ -116,8 +123,12 @@ void main(void)
 		MyHandleError("Enumeration of system stores failed.");
 	}
 
-	printf("\n\nEnumerate the physical stores "
-		"for the MY system store. \n");
+	printf("\n");
+	
+	printf("=======================================================\n");
+	printf("Enumerate the physical stores for the MY system store. \n");
+	printf("=======================================================\n");
+
 	if (CertEnumPhysicalStore(
 		L"MY",
 		dwFlags,
@@ -132,6 +143,8 @@ void main(void)
 		MyHandleError("Enumeration of physical stores failed.");
 	}
 }    //   End of main
+
+
 
 	 //-------------------------------------------------------------------
 	 //   Define function GetSystemName.
@@ -162,8 +175,7 @@ static BOOL GetSystemName(
 			{
 				MyHandleError("Failed => RELOCATE_FLAG is set in callback");
 			}
-			pRelocatePara = (PCERT_SYSTEM_STORE_RELOCATE_PARA)
-				pvSystemStore;
+			pRelocatePara = (PCERT_SYSTEM_STORE_RELOCATE_PARA)pvSystemStore;
 			if (pRelocatePara->hKeyBase != pEnumArg->hKeyBase)
 			{
 				MyHandleError("Wrong hKeyBase passed to callback");
