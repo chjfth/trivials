@@ -2,6 +2,8 @@
 
 #include "stdafx.h"
 
+
+#include <cassert>
 #include <stdio.h>
 #include <windows.h>
 #include <wincrypt.h>
@@ -144,11 +146,11 @@ void main(void)
 			}
 			case CERT_KEY_PROV_HANDLE_PROP_ID:
 			{
-				printf("KEY PROVE HANDLE");
+				printf("KEY PROVE HANDLE ");
 				break;
 			}
 			case CERT_KEY_PROV_INFO_PROP_ID:
-			{
+			{	// CRYPT_KEY_PROV_INFO 
 				printf("KEY PROV INFO PROP ID ");
 				break;
 			}
@@ -271,6 +273,11 @@ void main(void)
 				&cbData))
 			{
 				// The data has been retrieved. Continue.
+				if (dwPropId == CERT_KEY_PROV_INFO_PROP_ID)
+				{
+					CRYPT_KEY_PROV_INFO *info = (CRYPT_KEY_PROV_INFO*)pvData;
+					assert(info);
+				}
 			}
 			else
 			{
