@@ -369,7 +369,7 @@ void MyHandleError(LPTSTR psz)
 {
 	_ftprintf(stderr, TEXT("An error occurred in the program. \n"));
 	_ftprintf(stderr, TEXT("%s\n"), psz);
-	_ftprintf(stderr, TEXT("Error number %x.\n"), GetLastError());
+	_ftprintf(stderr, TEXT("Error number 0x%x.\n"), GetLastError());
 	_ftprintf(stderr, TEXT("Program terminating. \n"));
 	exit(1);
 } // End of MyHandleError.
