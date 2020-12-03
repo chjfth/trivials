@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+// https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-listing-the-certificates-in-a-store
 
 #include <cassert>
 #include <stdio.h>

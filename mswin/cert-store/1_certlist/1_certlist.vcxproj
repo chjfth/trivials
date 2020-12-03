@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{D04813DC-1D68-46A6-AC7F-9F3A34AA1852}</ProjectGuid>
+    <ProjectGuid>{D04813DC-1D68-46A6-AC7F-9F3A34AA1851}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>My1_certlist</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>

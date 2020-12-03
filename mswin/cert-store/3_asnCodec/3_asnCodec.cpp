@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-// https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-asn1-encoding-and-decoding
+// 
 
 #include <stdio.h>
 #include <windows.h>
@@ -208,7 +208,6 @@ void main(void)
 		free(pbDecoded);
 
 	printf("Processing completed without error.\n");
-	
 }  // end of main()
 
    //-------------------------------------------------------------------
@@ -226,6 +225,7 @@ void ByteToStr(
 	//    sz -- a pointer to the string to be returned.
 
 {
+
 	//-------------------------------------------------------------------
 	//  Declare and initialize local variables.
 
