@@ -101,11 +101,18 @@ void main(void)
 
 	printf("\n");
 
+	//
+	// Chj:
+	// Following CertEnumSystemStore() and CertEnumPhysicalStore() is redundant,
+	// bcz they have actually been demonstrated inside CertEnumSystemStoreLocation().
+	// Following code should produce same partial result from CertEnumSystemStoreLocation().
+	// 
+	
 	DWORD dwFlags = CERT_SYSTEM_STORE_CURRENT_USER;
 	
-	printf("===================================\n");
-	printf("Begin enumeration of system stores.\n");
-	printf("===================================\n");
+	printf("=============================================================================\n");
+	printf("Begin enumeration of system stores(again for CERT_SYSTEM_STORE_CURRENT_USER).\n");
+	printf("=============================================================================\n");
 
 	if (CertEnumSystemStore(
 		dwFlags,
@@ -306,7 +313,7 @@ static BOOL WINAPI EnumLocCallback(
 	//-------------------------------------------------------------------
 	//  Prepare and display the next detail line.
 
-	printf("======   %S   ======\n", pwszStoreLocation);
+	printf("======   %S (loc:0x%X)  ======\n", pwszStoreLocation, dwFlags);
 	//
 	// Output sample: "CurrentUser", "LocalMachine", "CurrentService", "CurrentUserGroupPolicy",
 	// "LocalMachineGroupPolicy", "LocalMachineEnterprise" etc.
