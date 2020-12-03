@@ -50,8 +50,7 @@ void main(void)
 	// Declare and initialize variables.
 
 	DWORD dwExpectedError = 0;
-	DWORD dwLocationID = CERT_SYSTEM_STORE_CURRENT_USER_ID;
-	DWORD dwFlags = 0;
+//	DWORD dwFlags = 0;
 	CERT_PHYSICAL_STORE_INFO PhyStoreInfo;
 	ENUM_ARG EnumArg;
 	LPSTR pszStoreParameters = NULL;
@@ -78,20 +77,17 @@ void main(void)
 	pvStoreLocationPara = pwszStoreLocationPara;
 
 	memset(&EnumArg, 0, sizeof(EnumArg));
-	EnumArg.dwFlags = dwFlags;
 	EnumArg.hKeyBase = hKeyBase;
 
 	EnumArg.pvStoreLocationPara = pvStoreLocationPara;
 	EnumArg.fAll = TRUE;
-	dwFlags &= ~CERT_SYSTEM_STORE_LOCATION_MASK;
-	dwFlags |= (dwLocationID << CERT_SYSTEM_STORE_LOCATION_SHIFT) &
-		CERT_SYSTEM_STORE_LOCATION_MASK;
 
 	printf("=====================================\n");
 	printf("Begin enumeration of store locations.\n");
 	printf("=====================================\n");
+
 	if (CertEnumSystemStoreLocation(
-		dwFlags,
+		0, // MSDN says this parameter is reserved for CertEnumSystemStoreLocation()
 		&EnumArg,
 		EnumLocCallback
 	))
@@ -104,6 +100,8 @@ void main(void)
 	}
 
 	printf("\n");
+
+	DWORD dwFlags = CERT_SYSTEM_STORE_CURRENT_USER;
 	
 	printf("===================================\n");
 	printf("Begin enumeration of system stores.\n");
@@ -221,9 +219,13 @@ static BOOL WINAPI EnumPhyCallback(
 	{
 		MyHandleError("GetSystemName failed.");
 	}
+	
 	if (pEnumArg->fVerbose &&
 		(dwFlags & CERT_PHYSICAL_STORE_PREDEFINED_ENUM_FLAG))
+	{
 		printf(" (implicitly created)");
+	}
+	
 	printf("\n");
 	return TRUE;
 }
@@ -242,7 +244,6 @@ static BOOL WINAPI EnumSysCallback(
 
 	PENUM_ARG pEnumArg = (PENUM_ARG)pvArg;
 	LPCWSTR pwszSystemStore;
-	char x;
 
 	//-------------------------------------------------------------------
 	//  Prepare and display the next detail line.
@@ -255,10 +256,12 @@ static BOOL WINAPI EnumSysCallback(
 	{
 		MyHandleError("GetSystemName failed.");
 	}
+	
 	if (pEnumArg->fAll || pEnumArg->fVerbose)
 	{
 		dwFlags &= CERT_SYSTEM_STORE_MASK;
 		dwFlags |= pEnumArg->dwFlags & ~CERT_SYSTEM_STORE_MASK;
+		//
 		if (!CertEnumPhysicalStore(
 			pvSystemStore,
 			dwFlags,
@@ -288,9 +291,9 @@ static BOOL WINAPI EnumLocCallback(
 	//  Declare and initialize local variables.
 
 	PENUM_ARG pEnumArg = (PENUM_ARG)pvArg;
-	DWORD dwLocationID = (dwFlags & CERT_SYSTEM_STORE_LOCATION_MASK) >>
-		CERT_SYSTEM_STORE_LOCATION_SHIFT;
-	char x;
+
+//	DWORD dwLocationID = (dwFlags & CERT_SYSTEM_STORE_LOCATION_MASK) >> CERT_SYSTEM_STORE_LOCATION_SHIFT;
+	// Chj: -- looks like no use!
 
 	//-------------------------------------------------------------------
 	//  Prepare and display the next detail line.
@@ -300,6 +303,7 @@ static BOOL WINAPI EnumLocCallback(
 	{
 		dwFlags &= CERT_SYSTEM_STORE_MASK;
 		dwFlags |= pEnumArg->dwFlags & ~CERT_SYSTEM_STORE_LOCATION_MASK;
+
 		CertEnumSystemStore(
 			dwFlags,
 			(void *)pEnumArg->pvStoreLocationPara,
