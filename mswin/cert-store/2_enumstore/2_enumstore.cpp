@@ -212,6 +212,9 @@ static BOOL WINAPI EnumPhyCallback(
 		pEnumArg,
 		&pwszSystemStore))
 	{
+		// [2020-12-03]Chj: Silly code here!
+		// The returned pwszSystemStore("My", "Root" etc) above is actually not used here.
+		
 		// Sample output:
 		//	".Default" , ".GroupPolicy" , ".LocalMachine", ...
 		//	
@@ -268,7 +271,7 @@ static BOOL WINAPI EnumSysCallback(
 		dwFlags |= pEnumArg->dwFlags & ~CERT_SYSTEM_STORE_MASK;
 		//
 		if (!CertEnumPhysicalStore(
-			pvSystemStore,
+			pvSystemStore, // Chj: tell which system-store to operate on.
 			dwFlags,
 			pEnumArg,
 			EnumPhyCallback
