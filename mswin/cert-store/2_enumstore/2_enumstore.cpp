@@ -158,8 +158,7 @@ static BOOL helper_GetSystemName(
 
 	*ppwszSystemName = NULL;
 
-	if (pEnumArg->hKeyBase && 0 == (dwFlags &
-		CERT_SYSTEM_STORE_RELOCATE_FLAG))
+	if (pEnumArg->hKeyBase && 0==(dwFlags & CERT_SYSTEM_STORE_RELOCATE_FLAG))
 	{
 		printf("Failed => RELOCATE_FLAG not set in callback. \n");
 		return FALSE;
@@ -213,6 +212,9 @@ static BOOL WINAPI EnumPhyCallback(
 		pEnumArg,
 		&pwszSystemStore))
 	{
+		// Sample output:
+		//	".Default" , ".GroupPolicy" , ".LocalMachine", ...
+		//	
 		printf("    %S", pwszStoreName);
 	}
 	else
@@ -237,7 +239,7 @@ static BOOL WINAPI EnumSysCallback(
 	void *pvReserved,
 	void *pvArg)
 	//-------------------------------------------------------------------
-	//  Begin callback process.
+	//  Begin callback process. (Chj: We've got a system-store.)
 {
 	//-------------------------------------------------------------------
 	//  Declare and initialize local variables.
@@ -250,6 +252,9 @@ static BOOL WINAPI EnumSysCallback(
 
 	if (helper_GetSystemName(pvSystemStore, dwFlags, pEnumArg, &pwszSystemStore))
 	{
+		// Chj: We'll see sth like:
+		//	"My", "Root", "Trust", "TrustedPublisher", "AuthRoot", "TrustedPeople", "SmartCardRoot"...
+		//	
 		printf("  %S\n", pwszSystemStore);
 	}
 	else
@@ -299,6 +304,10 @@ static BOOL WINAPI EnumLocCallback(
 	//  Prepare and display the next detail line.
 
 	printf("======   %S   ======\n", pwszStoreLocation);
+	//
+	// Output sample: "CurrentUser", "LocalMachine", "CurrentService", "CurrentUserGroupPolicy",
+	// "LocalMachineGroupPolicy", "LocalMachineEnterprise" etc.
+	
 	if (pEnumArg->fAll)
 	{
 		dwFlags &= CERT_SYSTEM_STORE_MASK;
