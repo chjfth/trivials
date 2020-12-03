@@ -313,6 +313,9 @@ static BOOL WINAPI EnumLocCallback(
 	
 	if (pEnumArg->fAll)
 	{
+		// Chj: Each time this callback is executed, we see different dwFlags(0x10000, 0x20000, 0x40000, 0x50000,...),
+		// so that CertEnumSystemStore() below knows which "location" to operate on.
+		
 		dwFlags &= CERT_SYSTEM_STORE_MASK;
 		dwFlags |= pEnumArg->dwFlags & ~CERT_SYSTEM_STORE_LOCATION_MASK;
 
