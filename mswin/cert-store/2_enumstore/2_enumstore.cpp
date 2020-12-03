@@ -10,7 +10,7 @@ void MyHandleError(char *s);
 typedef struct _ENUM_ARG {
 	BOOL        fAll;
 	BOOL        fVerbose;
-	DWORD       dwFlags;
+	DWORD       dwFlags; // chj: always 0 in demo code, no use
 	const void  *pvStoreLocationPara;
 	HKEY        hKeyBase;
 } ENUM_ARG, *PENUM_ARG;
@@ -145,9 +145,9 @@ void main(void)
 
 
 	 //-------------------------------------------------------------------
-	 //   Define function GetSystemName.
+	 //   Define function helper_GetSystemName.
 
-static BOOL GetSystemName(
+static BOOL helper_GetSystemName(
 	const void *pvSystemStore,
 	DWORD dwFlags,
 	PENUM_ARG pEnumArg,
@@ -207,7 +207,7 @@ static BOOL WINAPI EnumPhyCallback(
 	//-------------------------------------------------------------------
 	//  Begin callback process.
 
-	if (GetSystemName(
+	if (helper_GetSystemName(
 		pvSystemStore,
 		dwFlags,
 		pEnumArg,
@@ -217,7 +217,7 @@ static BOOL WINAPI EnumPhyCallback(
 	}
 	else
 	{
-		MyHandleError("GetSystemName failed.");
+		MyHandleError("helper_GetSystemName failed.");
 	}
 	
 	if (pEnumArg->fVerbose &&
@@ -248,13 +248,13 @@ static BOOL WINAPI EnumSysCallback(
 	//-------------------------------------------------------------------
 	//  Prepare and display the next detail line.
 
-	if (GetSystemName(pvSystemStore, dwFlags, pEnumArg, &pwszSystemStore))
+	if (helper_GetSystemName(pvSystemStore, dwFlags, pEnumArg, &pwszSystemStore))
 	{
 		printf("  %S\n", pwszSystemStore);
 	}
 	else
 	{
-		MyHandleError("GetSystemName failed.");
+		MyHandleError("helper_GetSystemName failed.");
 	}
 	
 	if (pEnumArg->fAll || pEnumArg->fVerbose)
