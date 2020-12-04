@@ -16,7 +16,31 @@
 #define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 void MyHandleError(char *s);
 
-int chj_DecodeSubject(const CERT_CONTEXT* pCertContext)
+static void myFormatSystemTime(const SYSTEMTIME &st, char outstr[], int bufchars)
+{
+	_snprintf_s(outstr, bufchars, _TRUNCATE, "%04d-%02d-%02d %02d:%02d:%02d",
+		st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond
+		);
+}
+
+void chj_DecodeValidity(const CERT_CONTEXT* pCertContext)
+{
+	SYSTEMTIME stStart = {}, stEnd={};
+	FILETIME localStart, localEnd;
+
+	FileTimeToLocalFileTime(&pCertContext->pCertInfo->NotBefore, &localStart);
+	FileTimeToLocalFileTime(&pCertContext->pCertInfo->NotAfter, &localEnd);
+	
+	FileTimeToSystemTime(&localStart, &stStart);
+	FileTimeToSystemTime(&localEnd, &stEnd);
+
+	char szStart[20], szEnd[20];
+	myFormatSystemTime(stStart, szStart, _countof(szStart));
+	myFormatSystemTime(stEnd, szEnd, _countof(szEnd));
+	printf("Validity from %s to %s\n", szStart, szEnd);
+}
+
+void chj_DecodeSubject(const CERT_CONTEXT* pCertContext)
 {
 	char buf1[500];
 	int retchars = CertNameToStr(X509_ASN_ENCODING,
@@ -24,20 +48,28 @@ int chj_DecodeSubject(const CERT_CONTEXT* pCertContext)
 		CERT_X500_NAME_STR,
 		buf1,
 		_countof(buf1));
+	// buf1[] Sample output:
+	//	C=US, S=Washington, L=Redmond, O="Emurasoft, Inc.", OU=SECURE APPLICATION DEVELOPMENT, CN="Emurasoft, Inc."
 	
 	char decbuf[8000] = {};
 	DWORD bufsize = sizeof(decbuf);
 	BOOL succ = CryptDecodeObject(MY_ENCODING_TYPE,
-		X509_SUBJECT_INFO_ACCESS,
+		X509_NAME,
 		pCertContext->pCertInfo->Subject.pbData,
 		pCertContext->pCertInfo->Subject.cbData,
 		0,
 		decbuf,
 		&bufsize
-		); // This fails! Got CRYPT_E_ASN1_BADTAG(0x8009310b)
-	_CERT_AUTHORITY_INFO_ACCESS *pds = (_CERT_AUTHORITY_INFO_ACCESS*)decbuf;
-
-	return bufsize;
+		); // This success.
+	CERT_NAME_INFO *pds = (CERT_NAME_INFO*)decbuf;
+	//
+	printf("Dumping Subject sub-fields:\n");
+	for(int i=0; i<(int)pds->cRDN; i++)
+	{
+		CERT_RDN_ATTR *pattr = pds->rgRDN[i].rgRDNAttr;
+		const char *pszfinal = (char*)(pattr->Value.pbData);
+		printf("  [%s] = %s\n", pattr->pszObjId, pszfinal);
+	}
 }
 
 void main(void)
@@ -136,6 +168,7 @@ void main(void)
 			fprintf(stderr, "CertGetName failed. \n");
 
 
+		chj_DecodeValidity(pCertContext);
 		chj_DecodeSubject(pCertContext);
 
 
@@ -361,13 +394,6 @@ void main(void)
 
 			printf("The Property Content is @ 0x%p\n", pvData);
 
-
-
-
-
-
-
-			
 			//----------------------------------------------------------------
 			// Free the certificate context property memory.
 
