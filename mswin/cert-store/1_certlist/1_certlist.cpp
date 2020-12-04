@@ -68,7 +68,15 @@ void chj_DecodeSubject(const CERT_CONTEXT* pCertContext)
 	{
 		CERT_RDN_ATTR *pattr = pds->rgRDN[i].rgRDNAttr;
 		const char *pszfinal = (char*)(pattr->Value.pbData);
-		printf("  [%s] = %s\n", pattr->pszObjId, pszfinal);
+
+		if(pattr->dwValueType==CERT_RDN_UNICODE_STRING || pattr->dwValueType==CERT_RDN_UTF8_STRING)
+		{
+			printf("  [%s] = %S\n", pattr->pszObjId, pszfinal);
+		}
+		else
+		{
+			printf("  [%s] = %s\n", pattr->pszObjId, pszfinal);
+		}
 	}
 }
 
