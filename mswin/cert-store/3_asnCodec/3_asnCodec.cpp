@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-// 
+// https://docs.microsoft.com/en-us/windows/win32/seccrypto/example-c-program-asn1-encoding-and-decoding
 
 #include <stdio.h>
 #include <windows.h>
