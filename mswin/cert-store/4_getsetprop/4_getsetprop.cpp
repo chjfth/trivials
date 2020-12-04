@@ -192,7 +192,7 @@ void main(void)
 				}
 				else
 				{
-					printf("\n  The display name is -> %s.", pvData);
+					printf("\n  The display name is -> %S.", (wchar_t*)pvData);
 					free(pvData);
 				}
 				break;
