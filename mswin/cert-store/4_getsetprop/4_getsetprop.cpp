@@ -39,9 +39,13 @@ void main(void)
 	char pszNameString[256];
 	char pszStoreName[256];
 	char fResponse;
-	char fExtra;
-	BYTE *pName = (BYTE *)"Temp Name.";
-	CRYPT_DATA_BLOB  Friendly_Name_Blob = { 32,pName };
+
+	wchar_t suTempName[] = L"My Temp Name.";
+	CRYPT_DATA_BLOB  Friendly_Name_Blob = {
+		wcslen(suTempName)*sizeof(wchar_t),
+		(BYTE*)suTempName
+	};
+
 	void*            pvData;
 	DWORD            cbData;
 	DWORD            dwFlags = CERT_STORE_NO_CRYPT_RELEASE_FLAG;
@@ -111,13 +115,13 @@ void main(void)
 			}
 		}
 		else
-			//--------------------------------------------------------------------
+		{
 			//   Do not set the usage, but reset the counter so that the property
 			//   will be set on the next certificate.
 			//   Ask if the user would like to set a display name.
-		{
+			//   
 			printf("Would you like to set the display name ?");
-			scanf_s("%c%c", &fResponse, &fExtra);
+			scanf_s("%c", &fResponse, 1);
 			if (fResponse == 'y')
 			{
 				if (CertSetCertificateContextProperty(
@@ -152,7 +156,7 @@ void main(void)
 
 			printf("Property # %d found->", dwPropId);
 			switch (dwPropId)
-			{
+			{{
 			case CERT_FRIENDLY_NAME_PROP_ID:
 			{
 				//--------------------------------------------------------------------
@@ -316,7 +320,7 @@ void main(void)
 				printf("AUTO ENROLL id. ");
 				break;
 			}
-			}  // end switch
+			}}  // end switch
 			printf("\n");
 		} // end the inner while loop. This is the end of the display of
 		  // a single property of a single certificate.
