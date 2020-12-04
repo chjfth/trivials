@@ -16,6 +16,30 @@
 #define MY_ENCODING_TYPE  (PKCS_7_ASN_ENCODING | X509_ASN_ENCODING)
 void MyHandleError(char *s);
 
+int chj_DecodeSubject(const CERT_CONTEXT* pCertContext)
+{
+	char buf1[500];
+	int retchars = CertNameToStr(X509_ASN_ENCODING,
+		&pCertContext->pCertInfo->Subject,
+		CERT_X500_NAME_STR,
+		buf1,
+		_countof(buf1));
+	
+	char decbuf[8000] = {};
+	DWORD bufsize = sizeof(decbuf);
+	BOOL succ = CryptDecodeObject(MY_ENCODING_TYPE,
+		X509_SUBJECT_INFO_ACCESS,
+		pCertContext->pCertInfo->Subject.pbData,
+		pCertContext->pCertInfo->Subject.cbData,
+		0,
+		decbuf,
+		&bufsize
+		); // This fails! Got CRYPT_E_ASN1_BADTAG(0x8009310b)
+	_CERT_AUTHORITY_INFO_ACCESS *pds = (_CERT_AUTHORITY_INFO_ACCESS*)decbuf;
+
+	return bufsize;
+}
+
 void main(void)
 {
 
@@ -111,6 +135,11 @@ void main(void)
 		else
 			fprintf(stderr, "CertGetName failed. \n");
 
+
+		chj_DecodeSubject(pCertContext);
+
+
+		
 		//-------------------------------------------------------------------
 		// Loop to find all of the property identifiers for the specified  
 		// certificate. The loop continues until 
@@ -332,6 +361,13 @@ void main(void)
 
 			printf("The Property Content is @ 0x%p\n", pvData);
 
+
+
+
+
+
+
+			
 			//----------------------------------------------------------------
 			// Free the certificate context property memory.
 
