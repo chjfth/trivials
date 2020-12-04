@@ -53,7 +53,7 @@ void main(void)
 	int count = 0;
 
 	fprintf(stderr, "Please enter the store name :");
-	scanf_s("%s", pszStoreName);
+	scanf_s("%s", pszStoreName, _countof(pszStoreName));
 	fprintf(stderr, "The store name is %s .\n", pszStoreName);
 	My_Wait();
 
