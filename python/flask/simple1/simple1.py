@@ -38,7 +38,7 @@ def cookie1():
 		path='/mypath')
 	
 	resp.set_cookie('mycook_with_domain', '3domain', expires=dt_expire,
-		domain='otherdomain.com')
+		domain='.chjhost.com')
 	
 	resp.set_cookie('mycook_httponly', '4httponly', expires=dt_expire,
 		httponly=True)
