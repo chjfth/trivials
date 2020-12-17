@@ -1,6 +1,7 @@
 import time, datetime
 from flask import Flask
 from flask import make_response
+from flask import send_file
 
 app = Flask(__name__)
 
@@ -45,9 +46,10 @@ def cookie1():
 		secure=True)
 	
 	resp.set_cookie('mycook_with_domain_attr', 'yum5', expires=dt_expire,
-		domain='.chjwork.com')
+		domain='chjhost.com')
 	
 	return resp
+
 
 @app.route('/cookie4')
 def cookie4():
@@ -61,5 +63,56 @@ def cookie4():
 @app.route('/cookie5')
 def cookie5():
 	resp = make_response('<p>Meet cookie5.</p>')
-	resp.set_cookie('Meet5', 'Yum5', expires=dt_expire, domain='chjhost.com:5000')
+	resp.set_cookie('MeetCookie5', 'Yum5', expires=dt_expire)
 	return resp
+
+@app.route('/cookover')
+def cookover():
+
+	resp = make_response('<p>Server Set-cookies without Domain=... attribute.</p>')
+	
+	resp.set_cookie('cookover', 'naturalYum', expires=dt_expire) 
+	
+	return resp
+
+@app.route('/getimg/<int:idx>')
+def getimg(idx):
+
+	if idx==0:
+		filename = 'cross.png'
+	elif idx==1:
+		filename = 'tick.png'
+	else:
+		idx = -1
+		filename = 'question.png'
+	
+	resp = send_file(filename, mimetype='image/png')
+	resp.set_cookie('mycook_last_img', str(idx), 
+		domain='chjimg.com',
+		expires=dt_expire)
+	return resp
+
+
+@app.route('/cookieimg')
+def cookieimg():
+	html = """\
+<p>A page with 3rd-party image and cookie.</p>
+<img src="http://chjimg.com:5000/getimg/0"/>
+"""
+	resp = make_response(html)
+	resp.set_cookie('cook_htmlwithimg', 'yes')
+	return resp
+
+
+@app.route('/useiframe')
+def useiframe():
+	html = """\
+<p>** A page with iframe and cookie.</p>
+%s
+<iframe src="http://chj3rd.com:5000/cookie5"></iframe>
+<p>== A page with iframe and cookie.</p>
+"""%("")
+	resp = make_response(html)
+	resp.set_cookie('cook_htmlwithiframe', 'yes', expires=dt_expire)
+	return resp
+
