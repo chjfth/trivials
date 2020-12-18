@@ -3,6 +3,22 @@ from flask import Flask
 from flask import make_response
 from flask import send_file
 
+""" We need following hosts to accomplish these experiments.
+
+10.22.3.84	chjhost.com
+10.22.3.84	abc.chjhost.com
+10.22.3.84	chjimg.com
+10.22.3.84	chj3rd.com
+
+Start Flask https server with command:
+
+	python -m flask run --host=0.0.0.0 --cert=adhoc
+	
+Experiments record:
+
+	https://www.evernote.com/l/ABUcJByCCDVFsqoj8YRpgL0i9UZzkBrOYag/
+"""
+
 app = Flask(__name__)
 
 tzchina = datetime.timezone(datetime.timedelta(hours=8)) 
@@ -60,12 +76,6 @@ def cookie4():
 	resp.set_cookie('WithSemicolon', 'xxx;yyy')
 	return resp
 	
-@app.route('/cookie3rd')
-def cookie3rd():
-	resp = make_response('<p>Meet cookie from 3rd-party.</p>')
-	resp.set_cookie('Meet3rd', 'Yum3rd', expires=dt_expire, domain='chj3rd.com')
-	return resp
-
 @app.route('/cookover')
 def cookover():
 
@@ -106,13 +116,30 @@ def cookieimg():
 
 @app.route('/useiframe')
 def useiframe():
+	return in_useiframe()
+
+@app.route('/useiframe_ssl')
+def useiframe_ssl():
+	return in_useiframe(True)
+
+def in_useiframe(use_ssl=False):
 	html = """\
 <p>** A page with iframe and 3rd-party cookie.</p>
 %s
-<iframe src="http://chj3rd.com:5000/cookie3rd"></iframe>
+<iframe src="%s://chj3rd.com:5000/cookie3rd"></iframe>
 <p>== A page with iframe and 3rd-party cookie.</p>
-"""%("")
+"""%("", 'https' if use_ssl else 'http')
 	resp = make_response(html)
 	resp.set_cookie('cook_htmlwithiframe', 'yes', expires=dt_expire)
+	return resp
+
+@app.route('/cookie3rd')
+def cookie3rd():
+	resp = make_response('<p>Meet cookie from 3rd-party.</p>')
+	resp.set_cookie('Meet3rd', 'Yum3rd',
+		domain='chj3rd.com',
+		samesite='None',
+		secure=True,
+		expires=dt_expire)
 	return resp
 
