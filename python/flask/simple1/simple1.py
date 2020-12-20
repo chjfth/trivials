@@ -24,29 +24,29 @@ def cookie0():
 	resp.set_cookie('mycook0.2', 'sweet02')
 	return resp
 
-@app.route('/cookie1')
-def cookie1():
-
-	resp = make_response('<p>Persistent cookies set.</p>')
+@app.route('/wantcookie')
+def wantcookie():
+	resp = make_response('<p>Cookies set from Flask server.</p>')
 	
-	resp.set_cookie('mycook_shortlive', 'short-lived', expires=dt_expire)
+	resp.set_cookie('mycook_shortlive', 'short-lived')
 	
-	resp.set_cookie('mycook_persist', 'yum0', expires=dt_expire)
+	resp.set_cookie('mycook_persist', 'yum0', 
+		expires=dt_expire)
 	
-	resp.set_cookie('mycook_path_cookie1', 'yum1', expires=dt_expire,
-		path='/cookie1')
+	resp.set_cookie('mycook_path1', 'yum1', path='/wantcookie',
+		expires=dt_expire,)
 	#
-	resp.set_cookie('mycook_path_cookie2', 'yum2', expires=dt_expire,
-		path='/cookie2')
+	resp.set_cookie('mycook_path2', 'yum2', path='/cookie2',
+		expires=dt_expire)
 	
-	resp.set_cookie('mycook_httponly', 'yum3', expires=dt_expire,
-		httponly=True)
+	resp.set_cookie('mycook_httponly', 'yum3', httponly=True,
+		expires=dt_expire)
 	
-	resp.set_cookie('mycook_secure', 'yum4', expires=dt_expire,
-		secure=True)
+	resp.set_cookie('mycook_secure', 'yum4', secure=True,
+		expires=dt_expire)
 	
-	resp.set_cookie('mycook_with_domain_attr', 'yum5', expires=dt_expire,
-		domain='chjhost.com')
+	resp.set_cookie('mycook_domain_attr', 'yum5', domain='chjhost.com',
+		expires=dt_expire)
 	
 	return resp
 
@@ -60,10 +60,10 @@ def cookie4():
 	resp.set_cookie('WithSemicolon', 'xxx;yyy')
 	return resp
 	
-@app.route('/cookie5')
-def cookie5():
-	resp = make_response('<p>Meet cookie5.</p>')
-	resp.set_cookie('MeetCookie5', 'Yum5', expires=dt_expire)
+@app.route('/cookie3rd')
+def cookie3rd():
+	resp = make_response('<p>Meet cookie from 3rd-party.</p>')
+	resp.set_cookie('Meet3rd', 'Yum3rd', expires=dt_expire, domain='chj3rd.com')
 	return resp
 
 @app.route('/cookover')
@@ -107,10 +107,10 @@ def cookieimg():
 @app.route('/useiframe')
 def useiframe():
 	html = """\
-<p>** A page with iframe and cookie.</p>
+<p>** A page with iframe and 3rd-party cookie.</p>
 %s
-<iframe src="http://chj3rd.com:5000/cookie5"></iframe>
-<p>== A page with iframe and cookie.</p>
+<iframe src="http://chj3rd.com:5000/cookie3rd"></iframe>
+<p>== A page with iframe and 3rd-party cookie.</p>
 """%("")
 	resp = make_response(html)
 	resp.set_cookie('cook_htmlwithiframe', 'yes', expires=dt_expire)
