@@ -1,6 +1,6 @@
 import time, datetime
 from flask import Flask
-from flask import make_response
+from flask import request, make_response
 from flask import send_file
 
 """ We need following hosts to accomplish these experiments.
@@ -22,7 +22,7 @@ Experiments record:
 app = Flask(__name__)
 
 tzchina = datetime.timezone(datetime.timedelta(hours=8)) 
-dt_expire = datetime.datetime(2020, 12, 20, 9,2,3, 0, tzchina)
+dt_expire = datetime.datetime(2020, 12, 30, 9,2,3, 0, tzchina)
 
 @app.route('/')
 def index():
@@ -85,8 +85,8 @@ def cookover():
 	
 	return resp
 
-@app.route('/getimg/<int:idx>')
-def getimg(idx):
+@app.route('/image/<int:idx>')
+def image(idx):
 
 	if idx==0:
 		filename = 'cross.png'
@@ -97,38 +97,30 @@ def getimg(idx):
 		filename = 'question.png'
 	
 	resp = send_file(filename, mimetype='image/png')
-	resp.set_cookie('mycook_last_img', str(idx), 
+	resp.set_cookie('mycook_last_image_idx', str(idx), 
 		domain='chjimg.com',
 		expires=dt_expire)
 	return resp
 
 
-@app.route('/cookieimg')
-def cookieimg():
+@app.route('/wantimage<int:idx>')
+def wantimage(idx):
 	html = """\
 <p>A page with 3rd-party image and cookie.</p>
-<img src="http://chjimg.com:5000/getimg/0"/>
-"""
+<img src="%s://chjimg.com:5000/image/%d"/>
+"""%(request.scheme, idx)
 	resp = make_response(html)
-	resp.set_cookie('cook_htmlwithimg', 'yes')
+	resp.set_cookie('cook_wantimage', 'yes')
 	return resp
 
 
 @app.route('/useiframe')
 def useiframe():
-	return in_useiframe()
-
-@app.route('/useiframe_ssl')
-def useiframe_ssl():
-	return in_useiframe(True)
-
-def in_useiframe(use_ssl=False):
 	html = """\
 <p>** A page with iframe and 3rd-party cookie.</p>
-%s
 <iframe src="%s://chj3rd.com:5000/cookie3rd"></iframe>
 <p>== A page with iframe and 3rd-party cookie.</p>
-"""%("", 'https' if use_ssl else 'http')
+"""%(request.scheme)
 	resp = make_response(html)
 	resp.set_cookie('cook_htmlwithiframe', 'yes', expires=dt_expire)
 	return resp
@@ -142,4 +134,3 @@ def cookie3rd():
 		secure=True,
 		expires=dt_expire)
 	return resp
-
