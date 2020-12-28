@@ -12,7 +12,6 @@ namespace wqConnLimit
 
     class ClientGetAsync
     {
-
         // This class is used in the worker thread to pass information in
         public class threadStateInfo
         {
@@ -38,7 +37,7 @@ namespace wqConnLimit
 
                 System.Threading.Thread.Sleep(500); //simulate a half second delay for the server to process the request
 
-                aResp.Close(); // if you do not do this close, you will timeout for sure!  The socket will not be freed.
+                aResp.Close(); // if you do not Close(), you will timeout for sure!  The socket will not be freed.
 
                 Console.WriteLine("End Request {0}", tsInfo.iReqNumber);
             }
@@ -53,7 +52,6 @@ namespace wqConnLimit
         }
 
         public static void Main(string[] args)
-
         {
             if (args.Length < 1)
             {
@@ -62,7 +60,6 @@ namespace wqConnLimit
             }
 
             // The number of worker threads to make simultaneous requests (do not go over 64)       
-
             int numberRequests = 64;
 
             // Used to keep the Main thread alive until all requests are done
