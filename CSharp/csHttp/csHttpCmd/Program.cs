@@ -70,7 +70,12 @@ namespace csHttpCmd
             req.Method = WebRequestMethods.Http.Post;
             req.ContentLength = bytes2post.Length;
 
-            using (Stream postStream = req.GetRequestStream())
+            // NOTE:
+            // * Inside req.GetRequestStream(), HTTP request header is actually emitted
+            //   (to the network).
+            // * Inside postStream.Write(), HTTP body is actually emitted.
+
+            using (Stream postStream = req.GetRequestStream()) 
             {
                 postStream.Write(bytes2post, 0, bytes2post.Length);
             }
