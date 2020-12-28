@@ -63,13 +63,27 @@ namespace csHttpCmd
             s_last_DateTime = nowdt;
         }
 
+        static void UseHttpPostMethod(HttpWebRequest req)
+        {
+            string spost = "Hi!";
+            byte[] bytes2post = Encoding.ASCII.GetBytes(spost);
+            req.Method = WebRequestMethods.Http.Post;
+            req.ContentLength = bytes2post.Length;
+
+            using (Stream postStream = req.GetRequestStream())
+            {
+                postStream.Write(bytes2post, 0, bytes2post.Length);
+            }
+        }
+
         static void DoHttpClient(string url)
         {
             log("Connecting to " + url);
 
             HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
-//          start = Environment.TickCount;
             req.Timeout = s_default_timeout;
+
+            // UseHttpPostMethod(req); // Tested.
 
             // ==== Receive HTTP headers ====
 
