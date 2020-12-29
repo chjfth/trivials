@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -59,10 +60,59 @@ namespace seeWebreqLimit
                         log(" ");
                     }
                 }
+
+                log($"Good. All {nRequests} HTTP requests success, no connection leak.");
             }
             catch (WebException e)
             {
                 if (e.Status == WebExceptionStatus.Timeout && i>0)
+                {
+                    log($"PANIC! Second try of HTTP connection SHOULD NOT Timeout!");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        static void MyHttpRequests_ImplicitReaderClose(int clim, string url)
+        {
+            int i = 0;
+            try
+            {
+                Console.Out.WriteLine("==== WebRequest *implicit* Close() ====");
+                ServicePointManager.DefaultConnectionLimit = clim;
+                Console.Out.WriteLine($"Now set ServicePointManager.DefaultConnectionLimit={clim}");
+
+                int nRequests = clim + 1;
+                Console.Out.WriteLine($"Will send {nRequests} HTTP requests.");
+                Console.Out.WriteLine($"Will set HttpWebRequest timeout={s_default_timeout}ms");
+
+                for (i = 0; i < nRequests; i++)
+                {
+                    log($"Creating WebRequest object #{i + 1}.");
+
+                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                    req.Timeout = s_default_timeout;
+
+                    log($"#{i + 1} Sending HTTP request ...");
+                    HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+
+                    // KEY: Read all http response body, to achieve the implicit Close() effect.
+                    //
+                    Stream rcvStream = res.GetResponseStream();
+                    //
+                    BinaryReader binreader = new BinaryReader(rcvStream);
+                    byte[] rbytes = binreader.ReadBytes(10*1024*1024);
+                    log($"HTTP response body all received, {rbytes.Length} bytes.");
+                }
+
+                log($"Good. All {nRequests} HTTP requests success, implicit Close() verified.");
+            }
+            catch (WebException e)
+            {
+                if (e.Status == WebExceptionStatus.Timeout && i > 0)
                 {
                     log($"PANIC! Second try of HTTP connection SHOULD NOT Timeout!");
                 }
@@ -101,7 +151,7 @@ namespace seeWebreqLimit
             log($"PANIC! All {nRequests} responses received. This SHOULD NOT happen!");
         }
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             if (args.Length != 2)
             {
@@ -110,6 +160,7 @@ namespace seeWebreqLimit
                 Console.Out.WriteLine("  seeWebreqLimit 3 http://chjhost.com:8000/");
                 Console.Out.WriteLine("");
                 Console.Out.WriteLine("This will make 3 pending HTTP message-exchange, and we will see the 4th timeout.");
+                return 1;
             }
 
             int clim = int.Parse(args[0]);
@@ -121,13 +172,17 @@ namespace seeWebreqLimit
 
                 Console.Out.WriteLine("");
 
+                MyHttpRequests_ImplicitReaderClose(clim, url);
+
+                Console.Out.WriteLine("");
+
                 MyHttpRequests_NoReaderClose(clim, url);
             }
             catch (WebException e)
             {
                 if (e.Status == WebExceptionStatus.Timeout)
                 {
-                    log("Really. We encounter WebExceptionStatus.Timeout on recent request. This is bound to connection limit.");
+                    log("BAD! We encounter WebExceptionStatus.Timeout on recent request. This is bound to connection limit.");
                 }
                 else // other unexpected error
                 {
@@ -135,6 +190,8 @@ namespace seeWebreqLimit
                     throw;
                 }
             }
+
+            return 0;
         }
     }
 }
