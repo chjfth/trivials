@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("wqConnLimit")]
+[assembly: AssemblyTitle("jsanWebreqLimit")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("wqConnLimit")]
+[assembly: AssemblyProduct("jsanWebreqLimit")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("078453a9-4264-495f-9eae-a48029940e1a")]
+[assembly: Guid("6eaa1d29-ad75-4065-8844-ba7dd14cac8a")]
 
 // Version information for an assembly consists of the following four values:
 //

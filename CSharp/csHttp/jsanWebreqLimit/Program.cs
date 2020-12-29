@@ -6,8 +6,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace wqConnLimit
+// Code from:
+// http://jsandersblog.azurewebsites.net/2009/05/20/understanding-maxservicepointidletime-and-defaultconnectionlimit/
+
+namespace jsanWebreqLimit
 {
+
     // ClientGetAsync issues the async request.
 
     class ClientGetAsync
@@ -116,4 +120,6 @@ namespace wqConnLimit
         }
 
     }
+
+
 }

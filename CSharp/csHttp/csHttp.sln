@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csHttpCmd", "csHttpCmd\csHt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "seeWebreqLimit", "seeWebreqLimit\seeWebreqLimit.csproj", "{71F17D9A-BE65-4AA6-8233-E3C5C13B2C1D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jsanWebreqLimit", "jsanWebreqLimit\jsanWebreqLimit.csproj", "{6EAA1D29-AD75-4065-8844-BA7DD14CAC8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{71F17D9A-BE65-4AA6-8233-E3C5C13B2C1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71F17D9A-BE65-4AA6-8233-E3C5C13B2C1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71F17D9A-BE65-4AA6-8233-E3C5C13B2C1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EAA1D29-AD75-4065-8844-BA7DD14CAC8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EAA1D29-AD75-4065-8844-BA7DD14CAC8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EAA1D29-AD75-4065-8844-BA7DD14CAC8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EAA1D29-AD75-4065-8844-BA7DD14CAC8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
