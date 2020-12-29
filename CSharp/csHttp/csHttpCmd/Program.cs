@@ -70,15 +70,18 @@ namespace csHttpCmd
             req.Method = WebRequestMethods.Http.Post;
             req.ContentLength = bytes2post.Length;
 
-            using (Stream postStream = req.GetRequestStream())
-            {
-                postStream.Write(bytes2post, 0, bytes2post.Length);
-            }
+            log("Calling req.GetRequestStream()...");
+            Stream postStream = req.GetRequestStream();
+            
+            postStream.Write(bytes2post, 0, bytes2post.Length);
+
+            postStream.Close(); // If not Close(), will leak socket resource
+            return;
         }
 
         static void DoHttpClient(string url)
         {
-            log("Connecting to " + url);
+            log("Calling WebRequest.Create(\"{url}\")... ");
 
             HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
             req.Timeout = s_default_timeout;
@@ -86,6 +89,8 @@ namespace csHttpCmd
             // UseHttpPostMethod(req); // Tested.
 
             // ==== Receive HTTP headers ====
+
+            log("Calling req.GetResponse()...");
 
             HttpWebResponse res = req.GetResponse() as HttpWebResponse;
             string info = $"req.GetResponse() returns. HTTP headers below:\n";
@@ -101,8 +106,10 @@ namespace csHttpCmd
             // Note: Content-Length may be -1, so we may not know the real content length in advance,
             // so we have to read the stream piece by piece.
 
-            Stream rcvstream = res.GetResponseStream();
-            rcvstream.ReadTimeout = s_default_timeout; // millisec
+            log("Calling res.GetResponseStream()...");
+
+            Stream rcvStream = res.GetResponseStream();
+            rcvStream.ReadTimeout = s_default_timeout; // millisec
 
             byte[] tmpbuf = new byte[64000]; // one-time buffer
             MemoryStream ms = new MemoryStream(); // accumulated buffer
@@ -111,7 +118,7 @@ namespace csHttpCmd
 
             while (true)
             {
-                int nrd = rcvstream.Read(tmpbuf, 0, tmpbuf.Length);
+                int nrd = rcvStream.Read(tmpbuf, 0, tmpbuf.Length);
 
                 if (nrd > 0)
                 {
@@ -129,6 +136,8 @@ namespace csHttpCmd
                     break;
                 }
             }
+
+            rcvStream.Close(); // If not Close(), will leak socket resource
 
             if (res.ContentLength != -1)
             {
