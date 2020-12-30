@@ -8,6 +8,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+// [2020-12-30]
+// Simple program to show how we can submit HttpWebRequest and get HttpWebResponse.
+// To see POST data working, uncomment the line `UseHttpPostMethod(req);` .
+// We can use Python Flask or tcp-delay-send.py as, or common HTTP servers as server-side.
+
 namespace csHttpCmd
 {
     class Program
@@ -39,7 +44,6 @@ namespace csHttpCmd
                                                    | SecurityProtocolType.Ssl3;
 
             WebRequest.DefaultWebProxy = null;
-
         }
 
         static int s_default_timeout = 5000; // millisec
@@ -74,6 +78,9 @@ namespace csHttpCmd
             // * Inside req.GetRequestStream(), HTTP request header is actually emitted
             //   (to the network).
             // * Inside postStream.Write(), HTTP body is actually emitted.
+            //
+            // I do not use `using{...}` for resource management here, instead, I write
+            // Close() explicitly so that you can try skipping the Close() in a debugger.
 			
             log("Calling req.GetRequestStream()...");
             Stream postStream = req.GetRequestStream();
@@ -86,7 +93,7 @@ namespace csHttpCmd
 
         static void DoHttpClient(string url)
         {
-            log("Calling WebRequest.Create(\"{url}\")... ");
+            log($"Calling WebRequest.Create(\"{url}\")... ");
 
             HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
             req.Timeout = s_default_timeout;
@@ -143,6 +150,8 @@ namespace csHttpCmd
             }
 
             rcvStream.Close(); // If not Close(), will leak socket resource
+
+            res.Close(); // Not a must, bcz rcvStream.Close() implicitly did it.
 
             if (res.ContentLength != -1)
             {
