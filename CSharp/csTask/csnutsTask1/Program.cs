@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 
 // Code from [CSNUT7] CH14
 
@@ -134,7 +135,7 @@ namespace csnutsTask1
             });
         }
 
-        static async void p591_Await()
+        static async Task<int> p591_Await()
         {
             string funcname = "p591_Await()";
             logtid($"{funcname} Start.");
@@ -148,6 +149,8 @@ namespace csnutsTask1
             Console.WriteLine("p591 answer is " + result);
 
             logtid($"{funcname} End.");
+
+            return result;
         }
 
         static void Main(string[] args)
@@ -158,10 +161,19 @@ namespace csnutsTask1
             task = p581_AwaiterConti();
             task.Wait();
 
-            p591_Await();
+            var syncctx = SynchronizationContext.Current;
+
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
+            task = p591_Await();
+            //
+            logtid("Main-thread calls task.Wait() .");
+            task.Wait();
+            logtid("Main-thread done task.Wait() .");
+
 
             log("==== Main thread final Sleep then quit. ====");
-            Thread.Sleep(3000);
+            Thread.Sleep(500);
         }
     }
 }
