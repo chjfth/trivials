@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.XPath;
+using Nito.AsyncEx;
 
 // Code from [CSNUT7] CH14
 
@@ -145,7 +145,7 @@ namespace csnutsTask1
 
             int result = await GetPrimesCountAsync(2, 1000000);
 
-            logtid($"{funcname} Resume from await.");
+            logtid($"{funcname} ~~~ Resume from await.");
             Console.WriteLine("p591 answer is " + result);
 
             logtid($"{funcname} End.");
@@ -155,15 +155,17 @@ namespace csnutsTask1
 
         static void Main(string[] args)
         {
+            var syncctx = SynchronizationContext.Current;
+
             p579_CountPrimes();
+
+            ////
 
             Task<int> task = null;
             task = p581_AwaiterConti();
             task.Wait();
 
-            var syncctx = SynchronizationContext.Current;
-
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            ////
 
             task = p591_Await();
             //
@@ -171,6 +173,25 @@ namespace csnutsTask1
             task.Wait();
             logtid("Main-thread done task.Wait() .");
 
+            ////
+
+            try
+            {
+                // Try recipe 2.9 from *Concurrency in C# Cookbook* .
+
+                log("");
+                log("==== Now we will run p591_Await() inside an AsyncContext. ====");
+                log("====  This time, \"Resume from same thread\" is expected.   ====");
+                log("");
+                int ret = AsyncContext.Run(() => p591_Await());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            ////
 
             log("==== Main thread final Sleep then quit. ====");
             Thread.Sleep(500);
