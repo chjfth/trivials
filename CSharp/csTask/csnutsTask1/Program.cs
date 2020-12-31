@@ -119,8 +119,15 @@ namespace csnutsTask1
         static Task<int> GetPrimesCountAsync(int start, int count) // p591
         {
             return Task.Run(() =>
-                ParallelEnumerable.Range(start, count).Count(n =>
-                    Enumerable.Range(2, (int)Math.Sqrt(n) - 1).All(i => n % i > 0)));
+            {
+                logtid($"Task-p591 executing...");
+
+                int prime_count = ParallelEnumerable.Range(start, count).Count(n =>
+                    Enumerable.Range(2, (int) Math.Sqrt(n) - 1).All(i => n % i > 0)
+                    );
+
+                return prime_count;
+            });
         }
 
         static async void p591_Await()
