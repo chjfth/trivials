@@ -184,6 +184,7 @@ namespace csnutsTask1
                 log("====  This time, \"Resume from same thread\" is expected.   ====");
                 log("");
                 int ret = AsyncContext.Run(() => p591_Await());
+                logtid($"Return value from async p591_Await() : {ret}");
             }
             catch (Exception e)
             {
