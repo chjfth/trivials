@@ -38,7 +38,7 @@ namespace csnutsTask1
                     Console.Out.WriteLine("".PadLeft(Math.Min(10, seconds_gap), '.'));
                 }
 
-                string tsprefix = string.Format("[{0:D2}:{1:D2}:{2:D2}.{3:D3}{4}]",
+                string tsprefix = string.Format("[{0:D2}:{1:D2}:{2:D2}.{3:D3}{4,-10}] ",
                     nowdt.Hour, nowdt.Minute, nowdt.Second, nowdt.Millisecond, text_elapse(millisec_gap)
                 );
                 Console.Out.WriteLine($"{tsprefix}{s}");
@@ -48,12 +48,16 @@ namespace csnutsTask1
 
         static string tid()
         {
-            return $"<tid={AppDomain.GetCurrentThreadId()}>";
+            int tidnow = AppDomain.GetCurrentThreadId();
+            if (tidnow == s_mainthread_tid)
+                return "<tid=main>";
+            else
+                return $"<tid={tidnow}>";
         }
 
         static void logtid(string s)
         {
-            log($"{tid()} {s}");
+            log(string.Format("{0,-11} {1}", tid(), s));
         }
         #endregion
 
@@ -156,7 +160,7 @@ namespace csnutsTask1
 
             p591_Await();
 
-            log("Main thread final Sleep then quit.");
+            log("==== Main thread final Sleep then quit. ====");
             Thread.Sleep(3000);
         }
     }
