@@ -67,15 +67,16 @@ namespace csTaskExcpt
         {
             // Start a Task that throws a NullReferenceException:
 
-            logtid("Now start a Task.");
+            logtid("p580_TaskThrowExcpt() Now start a Task.");
 
             Task task = Task.Run(() =>
             {
-                logtid("Task executing, throwing an Exception.");
+                logtid("Task executing, now throwing an Exception.");
                 throw null;
             });
 
-            logtid("Task launched, main-thread sleep for 500ms, we'll see.");
+            logtid($"Task launched. task.Status={task.Status}");
+            logtid("Main-thread sleep for 500ms deliberately.");
             Thread.Sleep(500);
 
             try
@@ -85,17 +86,64 @@ namespace csTaskExcpt
             }
             catch (AggregateException aex)
             {
-                logtid("Got Exception.");
+                logtid($"Got Exception. task.Status={task.Status}");
                 if (aex.InnerException is NullReferenceException)
-                    Console.WriteLine("Null!");
+                    Console.WriteLine("Got Null!");
                 else
                     throw;
             }
         }
 
+        static void p580_NoWait_NoCatch()
+        {
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            logtid($"{funcname} Now start a Task.");
+
+            Task task = Task.Run(() =>
+            {
+                logtid("Task executing, throwing an Exception.");
+                throw null;
+            });
+
+            logtid("Task launched, main-thread sleep for 500ms.");
+            Thread.Sleep(500);
+
+            logtid($"Main-thread checks: task.Result={task.Status}");
+
+            logtid($"Calling task.Dispose(), a must?");
+            task.Dispose();
+        }
+
+        static void p580_DoWait_NoCatch()
+        {
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            logtid($"{funcname} Now start a Task.");
+
+            Task task = Task.Run(() =>
+            {
+                logtid("Task executing, throwing an Exception.");
+                throw null;
+            });
+
+            logtid("Task launched, main-thread sleep for 500ms.");
+            Thread.Sleep(500);
+
+            logtid("Calling task.Wait() but NO catch.");
+            task.Wait(); // .Wait will throw out execption.
+            logtid($"task.Wait() returned, and task.Result={task.Status}");
+        }
+
         static void Main(string[] args)
         {
             p580_TaskThrowExcpt();
+
+            Console.Out.WriteLine("");
+
+            p580_NoWait_NoCatch();
+
+            Console.Out.WriteLine("");
+
+            p580_DoWait_NoCatch();
         }
     }
 }
