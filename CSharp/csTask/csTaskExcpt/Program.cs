@@ -112,6 +112,8 @@ namespace csTaskExcpt
 
             logtid($"Calling task.Dispose(), a must?");
             task.Dispose();
+
+            // This runs smoothly without problem.
         }
 
         static void p580_DoWait_NoCatch()
