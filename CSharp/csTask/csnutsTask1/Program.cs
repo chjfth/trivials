@@ -14,6 +14,8 @@ namespace csnutsTask1
     class Program
     {
         #region Logger
+        private static int s_mainthread_tid = AppDomain.GetCurrentThreadId();
+
         static readonly object _locker = new object();
         static DateTime s_last_DateTime = new DateTime(0);
         //
@@ -62,7 +64,6 @@ namespace csnutsTask1
         }
         #endregion
 
-        private static int s_mainthread_tid = AppDomain.GetCurrentThreadId();
 
         static void AssertMainThread(bool b)
         {
@@ -112,8 +113,12 @@ namespace csnutsTask1
 
                 AssertMainThread(false); // due to lack of Synchronization-context
 
+                // Add a sleep here so that we can see whether main-thread's task.Wait() coveres this.
+                // This result is: No.
+                Thread.Sleep(222); 
+
                 int result = awaiter.GetResult();
-                Console.WriteLine("p581 answer is " + result); // Writes result
+                logtid("p581 answer is " + result); // Writes result
             });
 
             logtid($"{funcname} End.");
@@ -164,6 +169,9 @@ namespace csnutsTask1
             Task<int> task = null;
             task = p581_AwaiterConti();
             task.Wait();
+            logtid($"task.Wait() success, task.Status={task.Status}, task.Result={task.Result}");
+
+            Thread.Sleep(222+50);
 
             ////
 
