@@ -113,7 +113,7 @@ namespace csnutsTask1
 
                 AssertMainThread(false); // due to lack of Synchronization-context
 
-                // Add a sleep here so that we can see whether main-thread's task.Wait() coveres this.
+                // Add a sleep here so that we can see whether main-thread's task.Wait() covers this.
                 // This result is: No.
                 Thread.Sleep(222); 
 
@@ -199,6 +199,22 @@ namespace csnutsTask1
                 Console.WriteLine(e);
                 throw;
             }
+
+            ////
+
+            /*
+            try
+            {
+                log("");
+                int ret = AsyncContext.Run(() => p581_AwaiterConti());
+                logtid($"Return value from async p581_AwaiterConti() : {ret}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            */
 
             ////
 

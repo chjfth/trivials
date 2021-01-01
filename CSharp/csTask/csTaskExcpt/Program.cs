@@ -113,7 +113,9 @@ namespace csTaskExcpt
             logtid($"Calling task.Dispose(), a must?");
             task.Dispose();
 
-            // This runs smoothly without problem.
+            logtid($"{funcname} End.");
+            
+            // -- This function runs smoothly without problem.
         }
 
         static void p580_DoWait_NoCatch()
@@ -133,6 +135,32 @@ namespace csTaskExcpt
             logtid("Calling task.Wait() but NO catch.");
             task.Wait(); // .Wait will throw out execption.
             logtid($"task.Wait() returned, and task.Result={task.Status}");
+
+            logtid($"{funcname} End.");
+        }
+
+        static void TaskThrow_with_Conti()
+        {
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            logtid($"{funcname} Now start a Task. See whether Conti will execute if task throws.");
+
+            Task task = Task.Run(() =>
+            {
+                logtid("Task executing, throwing an Exception in 500ms.");
+                Thread.Sleep(500);
+                throw null;
+            });
+
+            var awaiter = task.GetAwaiter();
+            awaiter.OnCompleted(() =>
+            {
+                logtid("Conti executing...");
+            });
+
+            logtid("Sleep for 500+50ms");
+            Thread.Sleep(500+50);
+
+            logtid($"{funcname} End.");
         }
 
         static void Main(string[] args)
@@ -140,12 +168,15 @@ namespace csTaskExcpt
             p580_TaskThrowExcpt();
 
             Console.Out.WriteLine("");
-
             p580_NoWait_NoCatch();
 
             Console.Out.WriteLine("");
+            TaskThrow_with_Conti();
 
-            p580_DoWait_NoCatch();
+            Console.Out.WriteLine("");
+            p580_DoWait_NoCatch(); // this will err with exception, so I place it at end
         }
     }
 }
+
+// More to try: p581 TaskScheduler.UnobservedTaskException;
