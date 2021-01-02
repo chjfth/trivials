@@ -158,9 +158,9 @@ namespace csnutsTask1
             });
         }
 
-        static async Task<int> p591_Await()
+        static async Task<int> p591_CountPrimes_AsyncWay()
         {
-            string funcname = "p591_Await()";
+            string funcname = "p591_CountPrimes_AsyncWay()";
             logtid($"{funcname} Start.");
 
             Console.Out.WriteLine("ChjNote: System.Reflection.MethodBase.GetCurrentMethod().Name=" +
@@ -193,7 +193,7 @@ namespace csnutsTask1
 
             ////
 
-            task = p591_Await();
+            task = p591_CountPrimes_AsyncWay();
             //
             logtid("Main-thread calls task.Wait() .");
             task.Wait();
@@ -206,11 +206,11 @@ namespace csnutsTask1
                 // Try recipe 2.9 from *Concurrency in C# Cookbook* .
 
                 log("");
-                log("==== Now we will run p591_Await() inside an AsyncContext. ====");
-                log("====  This time, \"Resume from same thread\" is expected.   ====");
+                log("==== Now we will run p591_CountPrimes_AsyncWay() inside an AsyncContext. ====");
+                log("============  This time, \"Resume from same thread\" is expected.   ===========");
                 log("");
-                int ret = AsyncContext.Run(() => p591_Await());
-                logtid($"Return value from async p591_Await() : {ret}");
+                int ret = AsyncContext.Run(() => p591_CountPrimes_AsyncWay());
+                logtid($"Return value from async p591_CountPrimes_AsyncWay() : {ret}");
             }
             catch (Exception e)
             {
