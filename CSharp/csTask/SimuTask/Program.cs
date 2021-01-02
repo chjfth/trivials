@@ -85,9 +85,45 @@ namespace SimuTask
             logtid($"Wait done. We see task.Result={task.Result}"); // 42            
         }
 
+        /// <summary>
+        /// [CSNUT7] p583-584: Our own implementation of Task.Run()
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        static Task<TResult> MyTaskRun<TResult>(Func<TResult> function)
+        {
+            var tcs = new TaskCompletionSource<TResult>();
+            new Thread(() =>
+            {
+                try { tcs.SetResult(function()); }
+                catch (Exception ex) { tcs.SetException(ex); }
+            }).Start();
+            return tcs.Task;
+        }
+
+        static void p584_use_MyTaskRun()
+        {
+            logtid($"Calling MyTaskRun() to execute a snippet...");
+
+            Task<int> mytask = MyTaskRun(() =>
+                {
+                    Thread.Sleep(1000);
+                    return 42;
+                }
+            );
+
+            logtid($"Calling(Waiting for) mytask.Result ...");
+            int result = mytask.Result;
+            logtid($"Got mytask.Result={result}");
+        }
+
         static void Main(string[] args)
         {
             p583_TurnThreadIntoTask();
+
+            Console.Out.WriteLine("");
+            p584_use_MyTaskRun();
         }
     }
 }
