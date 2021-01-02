@@ -144,7 +144,7 @@ namespace csnutsTask1
             return primeNumberTask;
         }
 
-        static Task<int> GetPrimesCountAsync(int start, int count) // p591
+        static Task<int> GetPrimesCountAsync(int start, int count) // p588 & p591
         {
             return Task.Run(() =>
             {
@@ -156,6 +156,31 @@ namespace csnutsTask1
 
                 return prime_count;
             });
+        }
+
+        static void p588_TrickyUseOfTask()
+        {
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            logtid($"{funcname} Start. Just experiment, with tricky output.");
+
+            int complete_count = 0;
+
+            for (int i = 0; i < 10; i++)
+            {
+                var awaiter = GetPrimesCountAsync(i * 1000000 + 2, 1000000).GetAwaiter();
+                awaiter.OnCompleted(delegate ()
+                    {
+                        complete_count++;
+                        logtid(awaiter.GetResult() + $" primes between... (i={i})");
+                    }
+                );
+            }
+
+            logtid($"Now, we need to wait that bunch of tasks done...");
+
+            while (complete_count < 10) Thread.Sleep(100);
+
+            logtid($"{funcname} Done tricky experiment.");
         }
 
         static async Task<int> p591_CountPrimes_AsyncWay()
@@ -176,6 +201,8 @@ namespace csnutsTask1
             return result;
         }
 
+        ////
+
         static void Main(string[] args)
         {
             var syncctx = SynchronizationContext.Current;
@@ -183,6 +210,8 @@ namespace csnutsTask1
             p588_CountPrimes_MultiCore();
 
             ////
+
+            Console.Out.WriteLine("");
 
             Task<int> task = null;
             task = p581_AwaiterConti();
@@ -192,6 +221,13 @@ namespace csnutsTask1
             Thread.Sleep(222+50);
 
             ////
+
+            Console.Out.WriteLine("");
+            p588_TrickyUseOfTask();
+
+            ////
+
+            Console.Out.WriteLine("");
 
             task = p591_CountPrimes_AsyncWay();
             //
