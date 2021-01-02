@@ -76,7 +76,7 @@ namespace csnutsTask1
 
         ////////
 
-        static void p579_CountPrimes()
+        static void p579_CountPrimes_SingleCore()
         {
             string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name+"()";
             log($"{funcname} Start.");
@@ -92,6 +92,24 @@ namespace csnutsTask1
 
             log($"{funcname} End.");
         }
+
+        static void p588_CountPrimes_MultiCore()
+        {
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            log($"{funcname} Start.");
+
+            Task<int> primeNumberTask = Task.Run(() =>
+                ParallelEnumerable.Range(2, 3000000).Count(n =>
+                    Enumerable.Range(2, (int)Math.Sqrt(n) - 1).All(i => n % i > 0)
+                )
+            );
+
+            // Fetching `primeNumberTask.Result` will block the caller until Task finish.
+            Console.WriteLine("The answer is " + primeNumberTask.Result);
+
+            log($"{funcname} End.");
+        }
+
 
         static Task<int> p581_AwaiterConti()
         {
@@ -162,7 +180,7 @@ namespace csnutsTask1
         {
             var syncctx = SynchronizationContext.Current;
 
-            p579_CountPrimes();
+            p588_CountPrimes_MultiCore();
 
             ////
 
