@@ -137,6 +137,7 @@ namespace csnutsTask1
 
                 int result = awaiter.GetResult();
                 logtid("p581 answer is " + result); // Writes result
+                Debug.Assert( result == primeNumberTask.Result );
             });
 
             logtid($"{funcname} End.");
