@@ -82,7 +82,7 @@ namespace SimuTask
             logtid("Waiting task.Result ...");
 
             Task<int> task = tcs.Task; // Our "slave" task.
-            logtid($"Wait done. We see task.Result={task.Result}"); // 42            
+            logtid($"{funcname} Wait done. We see task.Result={task.Result}"); // 42            
         }
 
         /// <summary>
@@ -104,7 +104,8 @@ namespace SimuTask
 
         static void p584_use_MyTaskRun()
         {
-            logtid($"Calling MyTaskRun() to execute a snippet...");
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            logtid($"{funcname} Calling MyTaskRun() to execute a snippet...");
 
             Task<int> mytask = MyTaskRun(() =>
                 {
@@ -118,12 +119,50 @@ namespace SimuTask
             logtid($"Got mytask.Result={result}");
         }
 
+        ////
+
+        static Task<int> GetAnswerToLife_TimerDelay(int delayms)
+        {
+            var tcs = new TaskCompletionSource<int>();
+
+            // Create a timer that fires once in 2000 ms:
+            var timer = new System.Timers.Timer(delayms) { AutoReset = false };
+            timer.Elapsed += delegate
+                {
+                    timer.Dispose(); // Chj: must do it?
+                    tcs.SetResult(42);
+                };
+            timer.Start();
+
+            return tcs.Task;
+        }
+
+        static void p584_use_GetAnswerToLife_withSimuTask()
+        {
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            logtid($"{funcname} Launching GetAnswerToLife task and wait for result...");
+
+            int delayms = 2000;
+            var awaiter = GetAnswerToLife_TimerDelay(delayms).GetAwaiter();
+            awaiter.OnCompleted(() => 
+                logtid($"Timer due. Result: {awaiter.GetResult()}")
+                );
+
+            int waitms = delayms + 200;
+            logtid($"Deliberate {waitms}ms wait, so that we see awaiter.OnCompleted() before go to next case.");
+            Thread.Sleep(waitms);
+            logtid($"Deliberate {waitms}ms wait done.");
+        }
+
         static void Main(string[] args)
         {
             p583_TurnThreadIntoTask();
 
             Console.Out.WriteLine("");
             p584_use_MyTaskRun();
+
+            Console.Out.WriteLine("");
+            p584_use_GetAnswerToLife_withSimuTask();
         }
     }
 }
