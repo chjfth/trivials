@@ -154,6 +154,39 @@ namespace SimuTask
             logtid($"Deliberate {waitms}ms wait done.");
         }
 
+        ////
+
+        static Task Simutask_Delay(int milliseconds) // p584-585
+        {
+            var tcs = new TaskCompletionSource<object>();
+            var timer = new System.Timers.Timer(milliseconds) {AutoReset = false};
+            timer.Elapsed += delegate
+            {
+                timer.Dispose();
+                tcs.SetResult(null);
+            };
+            timer.Start();
+
+            return tcs.Task;
+        }
+
+        static void p585_use_SimutaskDelay()
+        {
+            int millisec = 2000;
+
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            logtid($"{funcname} Launching Simutask_Delay({millisec}) ...");
+
+            Simutask_Delay(millisec).GetAwaiter().OnCompleted(() =>
+            {
+                logtid($"This is what I do after delay time elapsed.");
+            });
+
+            Thread.Sleep(millisec+200);
+        }
+
+        ////
+
         static void Main(string[] args)
         {
             p583_TurnThreadIntoTask();
@@ -163,6 +196,9 @@ namespace SimuTask
 
             Console.Out.WriteLine("");
             p584_use_GetAnswerToLife_withSimuTask();
+
+            Console.Out.WriteLine("");
+            p585_use_SimutaskDelay();
         }
     }
 }
