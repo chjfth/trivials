@@ -155,6 +155,16 @@ namespace csTaskExcpt
             awaiter.OnCompleted(() =>
             {
                 logtid("Conti executing...");
+
+                try
+                {
+                    awaiter.GetResult();
+                }
+                catch (Exception e)
+                {
+                    logtid("Well, awaiter.GetResult() has picked-up the exception originally thrown from the task:");
+                    Console.WriteLine("e.Message=" + e.Message);
+                }
             });
 
             logtid("Sleep for 500+50ms");
