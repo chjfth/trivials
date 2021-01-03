@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csTaskExcpt", "csTaskExcpt\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimuTask", "SimuTask\SimuTask.csproj", "{5354CF0E-96A8-4815-BFDD-A50D31A797C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csCancelTask", "csCancelTask\csCancelTask.csproj", "{79D59169-F59B-4DA1-98FF-0F0DEF57EB9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5354CF0E-96A8-4815-BFDD-A50D31A797C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5354CF0E-96A8-4815-BFDD-A50D31A797C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5354CF0E-96A8-4815-BFDD-A50D31A797C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79D59169-F59B-4DA1-98FF-0F0DEF57EB9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79D59169-F59B-4DA1-98FF-0F0DEF57EB9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79D59169-F59B-4DA1-98FF-0F0DEF57EB9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79D59169-F59B-4DA1-98FF-0F0DEF57EB9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
