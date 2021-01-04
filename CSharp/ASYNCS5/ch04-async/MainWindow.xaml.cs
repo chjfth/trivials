@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Windows;
@@ -44,23 +43,18 @@ namespace FaviconBrowser
 
         private void GetButton_OnClick(object sender, RoutedEventArgs e)
         {
-            AddRemainingFavicons(s_Domains, 0);
+            foreach (string domain in s_Domains)
+            {
+                AddAFavicon(domain);
+            }
         }
 
-        private void AddRemainingFavicons(List<string> domains, int i)
+        private async void AddAFavicon(string domain)
         {
             WebClient webClient = new WebClient();
-            webClient.DownloadDataCompleted += (o, args) =>
-                {
-                    Image imageControl = MakeImageControl(args.Result);
-                    m_WrapPanel.Children.Add(imageControl);
-
-                    if (i + 1 < domains.Count)
-                    {
-                        AddRemainingFavicons(domains, i + 1);
-                    }
-                };
-            webClient.DownloadDataAsync(new Uri("http://" + domains[i] + "/favicon.ico"));
+            byte[] bytes = await webClient.DownloadDataTaskAsync("http://" + domain + "/favicon.ico");
+            Image imageControl = MakeImageControl(bytes);
+            m_WrapPanel.Children.Add(imageControl);
         }
 
         private static Image MakeImageControl(byte[] bytes)
