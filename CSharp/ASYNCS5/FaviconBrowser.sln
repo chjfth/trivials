@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FaviconBrowser", "FaviconBrowser\FaviconBrowser.csproj", "{FF26F65E-0DF6-4DC9-B37A-7CB5387244ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch02-default", "ch02-default\ch02-default.csproj", "{FF26F65E-0DF6-4DC9-B37A-7CB5387244ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
