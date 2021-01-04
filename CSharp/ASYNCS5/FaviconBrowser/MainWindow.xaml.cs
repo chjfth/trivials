@@ -14,16 +14,18 @@ namespace FaviconBrowser
     {
         private static readonly List<string> s_Domains = new List<string>
                                                              {
-                                                                 "google.com",
+                                                                 //"google.com",
+                                                                 "www.apple.com",
                                                                  "bing.com",
-                                                                 "oreilly.com",
-                                                                 "simple-talk.com",
+                                                                 // "oreilly.com",
+                                                                 //"simple-talk.com",
                                                                  "microsoft.com",
-                                                                 "facebook.com",
-                                                                 "twitter.com",
-                                                                 "reddit.com",
+                                                                 //"facebook.com",
+                                                                 //"twitter.com",
+                                                                 //"reddit.com",
                                                                  "baidu.com",
-                                                                 "bbc.co.uk"
+                                                                 //"bbc.co.uk",
+                                                                 "www.amazon.com",
                                                              };
 
         public MainWindow()
