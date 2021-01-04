@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch02-default", "ch02-defaul
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch03-manual", "ch03-manual\ch03-manual.csproj", "{8328216F-1099-4F04-97D3-3ED2BDD855EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch03-orderedManual", "ch03-orderedManual\ch03-orderedManual.csproj", "{F3E28CD6-72D7-4F3B-961D-4C87DF67C77C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{8328216F-1099-4F04-97D3-3ED2BDD855EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8328216F-1099-4F04-97D3-3ED2BDD855EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8328216F-1099-4F04-97D3-3ED2BDD855EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3E28CD6-72D7-4F3B-961D-4C87DF67C77C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3E28CD6-72D7-4F3B-961D-4C87DF67C77C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3E28CD6-72D7-4F3B-961D-4C87DF67C77C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3E28CD6-72D7-4F3B-961D-4C87DF67C77C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
