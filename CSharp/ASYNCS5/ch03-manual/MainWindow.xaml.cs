@@ -34,9 +34,9 @@ namespace FaviconBrowser
             InitializeComponent();
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
-                                                   | SecurityProtocolType.Tls11 // require .NET 4.5
-                                                   | SecurityProtocolType.Tls12 // require .NET 4.5
-                                                   | SecurityProtocolType.Ssl3;
+                       | SecurityProtocolType.Tls11 // require .NETFX 4.5
+                       | SecurityProtocolType.Tls12 // require .NETFX 4.5
+                       | SecurityProtocolType.Ssl3;
             // [2021-01-04] Chj:
             // http://www.oreilly.com/favicon.ico will be automatically redirected to
             // https://www.oreilly.com/favicon.ico , which requires Tls11, Tls12 .
