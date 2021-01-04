@@ -59,6 +59,9 @@ namespace FaviconBrowser
 
         private void OnWebClientOnDownloadDataCompleted(object sender, DownloadDataCompletedEventArgs args)
         {
+            // Chj Note: If web-request fails, accessing `args.Result` triggers TargetInvocationException,
+            // and its InnerException tells the actual error reason. 
+
             Image imageControl = MakeImageControl(args.Result);
             m_WrapPanel.Children.Add(imageControl);
         }

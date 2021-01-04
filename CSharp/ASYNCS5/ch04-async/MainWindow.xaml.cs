@@ -53,6 +53,9 @@ namespace FaviconBrowser
         {
             WebClient webClient = new WebClient();
             byte[] bytes = await webClient.DownloadDataTaskAsync("http://" + domain + "/favicon.ico");
+            //
+            // -- If web-request fails, WebException will be thrown from above await statement.
+
             Image imageControl = MakeImageControl(bytes);
             m_WrapPanel.Children.Add(imageControl);
         }
