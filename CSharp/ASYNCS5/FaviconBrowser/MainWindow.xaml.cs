@@ -17,7 +17,7 @@ namespace FaviconBrowser
                                                                  //"google.com",
                                                                  "www.apple.com",
                                                                  "bing.com",
-                                                                 // "oreilly.com",
+                                                                 "oreilly.com",
                                                                  //"simple-talk.com",
                                                                  "microsoft.com",
                                                                  //"facebook.com",
@@ -31,6 +31,14 @@ namespace FaviconBrowser
         public MainWindow()
         {
             InitializeComponent();
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                   | SecurityProtocolType.Tls11 // require .NET 4.5
+                   | SecurityProtocolType.Tls12 // require .NET 4.5
+                   | SecurityProtocolType.Ssl3;
+            // [2021-01-04] Chj:
+            // http://www.oreilly.com/favicon.ico will be automatically redirected to
+            // https://www.oreilly.com/favicon.ico , which requires Tls11, Tls12 .
         }
 
         private void GetButton_OnClick(object sender, RoutedEventArgs e)
@@ -46,6 +54,7 @@ namespace FaviconBrowser
             WebClient webClient = new WebClient();
             byte[] bytes = webClient.DownloadData("http://" + domain + "/favicon.ico");
             Image imageControl = MakeImageControl(bytes);
+
             m_WrapPanel.Children.Add(imageControl);
         }
 
