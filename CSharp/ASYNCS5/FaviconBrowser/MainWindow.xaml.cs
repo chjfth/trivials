@@ -53,6 +53,7 @@ namespace FaviconBrowser
         {
             WebClient webClient = new WebClient();
             byte[] bytes = webClient.DownloadData("http://" + domain + "/favicon.ico");
+
             Image imageControl = MakeImageControl(bytes);
 
             m_WrapPanel.Children.Add(imageControl);
