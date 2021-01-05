@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Windows;
@@ -59,13 +61,26 @@ namespace FaviconBrowser
 
         private async void AddAFavicon(string domain)
         {
-            WebClient webClient = new WebClient();
-            byte[] bytes = await webClient.DownloadDataTaskAsync("http://" + domain + "/favicon.ico");
-            //
-            // -- If web-request fails, WebException will be thrown from above await statement.
+            string url = "http://" + domain + "/favicon.ico";
+            try
+            {
+                WebClient webClient = new WebClient();
+                byte[] bytes = await webClient.DownloadDataTaskAsync(url);
+                //
+                // -- If web-request fails, WebException will be thrown from above await statement.
 
-            Image imageControl = MakeImageControl(bytes);
-            m_WrapPanel.Children.Add(imageControl);
+                Image imageControl = MakeImageControl(bytes);
+                m_WrapPanel.Children.Add(imageControl);
+            }
+            catch (WebException e)
+            {
+                string errReason = e.Message;
+
+                string info = $"HTTP error on: {url}\nReason: {errReason}";
+                Debug.WriteLine(info);
+                MessageBox.Show(info, "HTTP Error",
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         private static Image MakeImageControl(byte[] bytes)
