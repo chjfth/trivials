@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -53,8 +55,13 @@ namespace FaviconBrowser
         private void AddAFavicon(string domain)
         {
             WebClient webClient = new WebClient();
+            string url = "http://" + domain + "/favicon.ico";
+            webClient.BaseAddress = url; // we have to set this ourselves, so to retrieve it later
+
             webClient.DownloadDataCompleted += OnWebClientOnDownloadDataCompleted;
-            webClient.DownloadDataAsync(new Uri("http://" + domain + "/favicon.ico"));
+            webClient.DownloadDataAsync(new Uri(url));
+
+            //Debug.WriteLine("DownloadDataAsync() started: "+ url);
         }
 
         private void OnWebClientOnDownloadDataCompleted(object sender, DownloadDataCompletedEventArgs args)
@@ -62,8 +69,24 @@ namespace FaviconBrowser
             // Chj Note: If web-request fails, accessing `args.Result` triggers TargetInvocationException,
             // and its InnerException tells the actual error reason. 
 
-            Image imageControl = MakeImageControl(args.Result);
-            m_WrapPanel.Children.Add(imageControl);
+            try
+            {
+                Image imageControl = MakeImageControl(args.Result);
+                m_WrapPanel.Children.Add(imageControl);
+            }
+            catch (Exception e)
+            {
+                WebClient webClient = (WebClient) sender;
+
+                string errReason = e.Message;
+                if (e is TargetInvocationException)
+                    errReason = e.InnerException.Message;
+
+                string info = $"HTTP error on: {webClient.BaseAddress}\nReason: {errReason}";
+                Debug.WriteLine(info);
+                MessageBox.Show(info, "HTTP Error",
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         private static Image MakeImageControl(byte[] bytes)
