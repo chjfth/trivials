@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch04-async", "ch04-async\ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch06-permission", "ch06-permission\ch06-permission.csproj", "{A1440E3C-B124-4D53-9E87-55605464149A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch07-whenAll", "ch07-whenAll\ch07-whenAll.csproj", "{FD14D17A-F2D3-410F-9654-F353064B8373}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{A1440E3C-B124-4D53-9E87-55605464149A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1440E3C-B124-4D53-9E87-55605464149A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1440E3C-B124-4D53-9E87-55605464149A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD14D17A-F2D3-410F-9654-F353064B8373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD14D17A-F2D3-410F-9654-F353064B8373}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD14D17A-F2D3-410F-9654-F353064B8373}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD14D17A-F2D3-410F-9654-F353064B8373}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
