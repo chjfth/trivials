@@ -39,6 +39,14 @@ namespace FaviconBrowser
             // [2021-01-04] Chj:
             // http://www.oreilly.com/favicon.ico will be automatically redirected to
             // https://www.oreilly.com/favicon.ico , which requires Tls11, Tls12 .
+
+            //ServicePointManager.DefaultConnectionLimit = 5;
+            //
+            // -- not useful for this program, bcz I find that this value(5) limits pending 
+            // HTTP msg-exchange destined for a specific HOST. 
+            // Because we access different HOSTs in this program, so that this program
+            // can always launch 5 HTTP requests simultaneously (verified on Win7, with
+            // the help of tcp-send-delay.py)
         }
 
         private void GetButton_OnClick(object sender, RoutedEventArgs e)
