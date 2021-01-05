@@ -50,7 +50,7 @@ namespace FaviconBrowser
             // CH 7.2 new
             //
 
-            IEnumerable<Task<Image>> tasks = s_Domains.Select(GetFavicon);
+            IEnumerable<Task<Image>> tasks = s_Domains.Select(GetFaviconAsync);
             Task<Image[]> allTask = Task.WhenAll(tasks);
             Image[] images = await allTask;
             foreach (Image eachImage in images)
@@ -59,7 +59,7 @@ namespace FaviconBrowser
             }
         }
 
-        private async Task<Image> GetFavicon(string domain)
+        private async Task<Image> GetFaviconAsync(string domain)
         {
             WebClient webClient = new WebClient();
             byte[] bytes = await webClient.DownloadDataTaskAsync("http://" + domain + "/favicon.ico");
