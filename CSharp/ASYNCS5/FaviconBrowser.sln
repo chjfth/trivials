@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch03-orderedManual", "ch03-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch04-async", "ch04-async\ch04-async.csproj", "{4053AB1A-FF0C-4F07-BE84-F6FD7BD0C9DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ch06-permission", "ch06-permission\ch06-permission.csproj", "{A1440E3C-B124-4D53-9E87-55605464149A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{4053AB1A-FF0C-4F07-BE84-F6FD7BD0C9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4053AB1A-FF0C-4F07-BE84-F6FD7BD0C9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4053AB1A-FF0C-4F07-BE84-F6FD7BD0C9DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1440E3C-B124-4D53-9E87-55605464149A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1440E3C-B124-4D53-9E87-55605464149A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1440E3C-B124-4D53-9E87-55605464149A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1440E3C-B124-4D53-9E87-55605464149A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
