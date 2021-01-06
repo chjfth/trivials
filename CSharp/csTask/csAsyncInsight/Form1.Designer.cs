@@ -43,7 +43,7 @@ namespace csAsyncInsight
             this.ckbThrowBeforeAwait = new System.Windows.Forms.CheckBox();
             this.ckbEnableAwait = new System.Windows.Forms.CheckBox();
             this.btnRun = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblTaskDelayMillis = new System.Windows.Forms.Label();
             this.edtTaskDelayMillis = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -85,7 +85,7 @@ namespace csAsyncInsight
             // panel2
             // 
             this.panel2.Controls.Add(this.edtTaskDelayMillis);
-            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.lblTaskDelayMillis);
             this.panel2.Controls.Add(this.edtUIThreadMillis);
             this.panel2.Controls.Add(this.ckbMainUISleep);
             this.panel2.Controls.Add(this.lblRunParam);
@@ -205,14 +205,14 @@ namespace csAsyncInsight
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
-            // label1
+            // lblTaskDelayMillis
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 106);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(123, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Async task delay millisec";
+            this.lblTaskDelayMillis.AutoSize = true;
+            this.lblTaskDelayMillis.Location = new System.Drawing.Point(4, 106);
+            this.lblTaskDelayMillis.Name = "lblTaskDelayMillis";
+            this.lblTaskDelayMillis.Size = new System.Drawing.Size(123, 13);
+            this.lblTaskDelayMillis.TabIndex = 10;
+            this.lblTaskDelayMillis.Text = "Async task delay millisec";
             // 
             // edtTaskDelayMillis
             // 
@@ -257,7 +257,7 @@ namespace csAsyncInsight
         private System.Windows.Forms.TextBox edtUIThreadMillis;
         private System.Windows.Forms.CheckBox ckbMainUISleep;
         private System.Windows.Forms.TextBox edtTaskDelayMillis;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblTaskDelayMillis;
     }
 }
 

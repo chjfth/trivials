@@ -240,6 +240,26 @@ namespace csAsyncInsight
 
             this.lblRunParam.Text = param1;
 
+            if (is_await==1)
+            {
+                lblTaskDelayMillis.Show();
+                edtTaskDelayMillis.Show();
+            }
+            else
+            {
+                lblTaskDelayMillis.Hide();
+                edtTaskDelayMillis.Hide();
+            }
+            //
+            if (is_throw_before == 1)
+            {
+                ckbThrowAfterAwait.Hide();
+            }
+            else
+            {
+                ckbThrowAfterAwait.Show();
+            }
+
             if (ckbMainUISleep.Checked)
             {
                 s_UISleepMillis = int.Parse(edtUIThreadMillis.Text);
