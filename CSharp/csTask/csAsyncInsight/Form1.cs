@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Management;
@@ -79,6 +80,8 @@ namespace csAsyncInsight
 
         void PrintLine(string s)
         {
+            Debug.WriteLine(s);
+
             textBox1.BeginInvoke(new Action(() =>
             {
                 textBox1.AppendText(s + Environment.NewLine);
@@ -115,21 +118,27 @@ namespace csAsyncInsight
             logtid($"{funcname} Start.");
 
 
-            if (is_throw_before==1)
+            if (is_throw_before == 1)
+            {
+                logtid($"{funcname} throwing (before await)...");
                 throw new ArgumentNullException("Null-Before-await");
+            }
 
             if (is_await==1)
             {
                 Task tskdelay = Task.Delay(1000);
                 int hashcode = tskdelay.GetHashCode();
 
-                logtid($"Task.Delay(1000) created. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
-
+                logtid($"{funcname} Task.Delay(1000) created and await it. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
                 await tskdelay;
+                logtid($"{funcname} await done.");
             }
 
-            if (is_throw_after==1)
+            if (is_throw_after == 1)
+            {
+                logtid($"{funcname} throwing (after await)...");
                 throw new ArgumentNullException("Null-After-await");
+            }
 
             int ret = 8000 + is_await*100 + is_throw_before*10 + is_throw_after*1;
             logtid($"{funcname} End. Will return {ret}.");
@@ -145,7 +154,7 @@ namespace csAsyncInsight
             Task<int> tskout = MyAsync(is_await, is_throw_before, is_throw_after);
 
             int ohash = tskout.GetHashCode();
-            logtid($"tskout.GetHashCode()={ohash} , tskout.Id={tskout.Id}");
+            logtid($"{funcname} tskout.GetHashCode()={ohash} , tskout.Id={tskout.Id}");
 
             var awaiter = tskout.GetAwaiter();
             awaiter.OnCompleted(delegate ()
@@ -157,9 +166,8 @@ namespace csAsyncInsight
                 }
                 catch (Exception e)
                 {
-                    string info = $"{funcname} awaiter.GetResult() got exception.\r\n" +
-                                  $"e.Message=\r\n" +
-                                  $"  {e.Message}";
+                    string info = $"{funcname} awaiter.GetResult() got exception.\r\n";
+//                           info += $"e.Message=\r\n  {e.Message}";
                     logtid(info);
                 }
             });
