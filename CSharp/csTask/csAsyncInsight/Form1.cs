@@ -23,6 +23,9 @@ namespace csAsyncInsight
         public Form1()
         {
             InitializeComponent();
+
+            ckbStickUIThread.Checked = true;
+            RunParamChanged(null, EventArgs.Empty);
         }
 
         #region Logger
@@ -99,14 +102,13 @@ namespace csAsyncInsight
             }));
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnRun_Click(object sender, EventArgs e)
         {
             RunMain();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            RunMain();
         }
         #endregion
 
@@ -175,23 +177,43 @@ namespace csAsyncInsight
             logtid($"{funcname} End.");
         }
 
+        private static int s_section_count = 0;
 
         void RunMain()
         {
-            UseTask(0, 0, 0);
-            PrintLine("----");
+            if (this.ckbAppendText.Checked)
+            {
+                s_section_count++;
+                PrintLine("");
+                PrintLine($"---- [ {s_section_count} ] ----");
+                PrintLine("");
+            }
+            else
+            {
+                s_section_count = 0;
+                s_last_DateTime = DateTime.Now;
 
-            UseTask(0, 1, 0);
-            PrintLine("----");
+                this.textBox1.Clear();
+            }
 
-            UseTask(1, 0, 0);
-            PrintLine("----");
+            UseTask(ckbEnableAwait.Checked ? 1 : 0, 
+                ckbThrowBeforeAwait.Checked ? 1 : 0, 
+                ckbThrowAfterAwait.Checked ? 1 : 0);
+        }
 
-            UseTask(1, 1, 0);
-            PrintLine("----");
+        private void btnClearText_Click(object sender, EventArgs e)
+        {
+            this.textBox1.Clear();
+        }
 
-            UseTask(1, 0, 1);
-            PrintLine("----");
+        private void RunParamChanged(object sender, EventArgs e)
+        {
+            int is_await = ckbEnableAwait.Checked ? 1 : 0;
+            int is_throw_before = ckbThrowBeforeAwait.Checked ? 1 : 0;
+            int is_throw_after = ckbThrowAfterAwait.Checked ? 1 : 0;
+            string param1 = $"({is_await},{is_throw_before},{is_throw_after})";
+
+            this.lblRunParam.Text = param1;
         }
     }
 }

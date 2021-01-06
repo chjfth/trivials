@@ -33,7 +33,14 @@ namespace csAsyncInsight
             this.panel3 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.ckbAppendText = new System.Windows.Forms.CheckBox();
+            this.ckbStickUIThread = new System.Windows.Forms.CheckBox();
+            this.ckbThrowAfterAwait = new System.Windows.Forms.CheckBox();
+            this.ckbThrowBeforeAwait = new System.Windows.Forms.CheckBox();
+            this.ckbEnableAwait = new System.Windows.Forms.CheckBox();
+            this.btnRun = new System.Windows.Forms.Button();
+            this.btnClearText = new System.Windows.Forms.Button();
+            this.lblRunParam = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -53,40 +60,124 @@ namespace csAsyncInsight
             // 
             this.panel3.Controls.Add(this.textBox1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(103, 0);
+            this.panel3.Location = new System.Drawing.Point(130, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(822, 497);
+            this.panel3.Size = new System.Drawing.Size(795, 497);
             this.panel3.TabIndex = 1;
             // 
             // textBox1
             // 
+            this.textBox1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox1.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(0, 0);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(822, 497);
+            this.textBox1.Size = new System.Drawing.Size(795, 497);
             this.textBox1.TabIndex = 0;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.button1);
+            this.panel2.Controls.Add(this.lblRunParam);
+            this.panel2.Controls.Add(this.btnClearText);
+            this.panel2.Controls.Add(this.ckbAppendText);
+            this.panel2.Controls.Add(this.ckbStickUIThread);
+            this.panel2.Controls.Add(this.ckbThrowAfterAwait);
+            this.panel2.Controls.Add(this.ckbThrowBeforeAwait);
+            this.panel2.Controls.Add(this.ckbEnableAwait);
+            this.panel2.Controls.Add(this.btnRun);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(103, 497);
+            this.panel2.Size = new System.Drawing.Size(130, 497);
             this.panel2.TabIndex = 0;
             // 
-            // button1
+            // ckbAppendText
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 25);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "&Run again";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.ckbAppendText.AutoSize = true;
+            this.ckbAppendText.Location = new System.Drawing.Point(25, 326);
+            this.ckbAppendText.Name = "ckbAppendText";
+            this.ckbAppendText.Size = new System.Drawing.Size(87, 17);
+            this.ckbAppendText.TabIndex = 5;
+            this.ckbAppendText.Text = "Append Text";
+            this.ckbAppendText.UseVisualStyleBackColor = true;
+            // 
+            // ckbStickUIThread
+            // 
+            this.ckbStickUIThread.AutoSize = true;
+            this.ckbStickUIThread.Location = new System.Drawing.Point(4, 109);
+            this.ckbStickUIThread.Name = "ckbStickUIThread";
+            this.ckbStickUIThread.Size = new System.Drawing.Size(109, 17);
+            this.ckbStickUIThread.TabIndex = 4;
+            this.ckbStickUIThread.Text = "Stick &to UI thread";
+            this.ckbStickUIThread.UseVisualStyleBackColor = true;
+            // 
+            // ckbThrowAfterAwait
+            // 
+            this.ckbThrowAfterAwait.AutoSize = true;
+            this.ckbThrowAfterAwait.Location = new System.Drawing.Point(4, 61);
+            this.ckbThrowAfterAwait.Name = "ckbThrowAfterAwait";
+            this.ckbThrowAfterAwait.Size = new System.Drawing.Size(104, 17);
+            this.ckbThrowAfterAwait.TabIndex = 3;
+            this.ckbThrowAfterAwait.Text = "throw &after await";
+            this.ckbThrowAfterAwait.UseVisualStyleBackColor = true;
+            this.ckbThrowAfterAwait.CheckedChanged += new System.EventHandler(this.RunParamChanged);
+            // 
+            // ckbThrowBeforeAwait
+            // 
+            this.ckbThrowBeforeAwait.AutoSize = true;
+            this.ckbThrowBeforeAwait.Location = new System.Drawing.Point(4, 37);
+            this.ckbThrowBeforeAwait.Name = "ckbThrowBeforeAwait";
+            this.ckbThrowBeforeAwait.Size = new System.Drawing.Size(113, 17);
+            this.ckbThrowBeforeAwait.TabIndex = 2;
+            this.ckbThrowBeforeAwait.Text = "throw &before await";
+            this.ckbThrowBeforeAwait.UseVisualStyleBackColor = true;
+            this.ckbThrowBeforeAwait.CheckedChanged += new System.EventHandler(this.RunParamChanged);
+            // 
+            // ckbEnableAwait
+            // 
+            this.ckbEnableAwait.AutoSize = true;
+            this.ckbEnableAwait.Location = new System.Drawing.Point(4, 13);
+            this.ckbEnableAwait.Name = "ckbEnableAwait";
+            this.ckbEnableAwait.Size = new System.Drawing.Size(86, 17);
+            this.ckbEnableAwait.TabIndex = 1;
+            this.ckbEnableAwait.Text = "&enable await";
+            this.ckbEnableAwait.UseVisualStyleBackColor = true;
+            this.ckbEnableAwait.CheckedChanged += new System.EventHandler(this.RunParamChanged);
+            // 
+            // btnRun
+            // 
+            this.btnRun.Location = new System.Drawing.Point(25, 294);
+            this.btnRun.Name = "btnRun";
+            this.btnRun.Size = new System.Drawing.Size(83, 25);
+            this.btnRun.TabIndex = 0;
+            this.btnRun.Text = "&Run";
+            this.btnRun.UseVisualStyleBackColor = true;
+            this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
+            // 
+            // btnClearText
+            // 
+            this.btnClearText.Location = new System.Drawing.Point(25, 471);
+            this.btnClearText.Name = "btnClearText";
+            this.btnClearText.Size = new System.Drawing.Size(75, 23);
+            this.btnClearText.TabIndex = 6;
+            this.btnClearText.Text = "&Clear text";
+            this.btnClearText.UseVisualStyleBackColor = true;
+            this.btnClearText.Click += new System.EventHandler(this.btnClearText_Click);
+            // 
+            // lblRunParam
+            // 
+            this.lblRunParam.BackColor = System.Drawing.SystemColors.Control;
+            this.lblRunParam.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lblRunParam.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRunParam.Location = new System.Drawing.Point(4, 84);
+            this.lblRunParam.Name = "lblRunParam";
+            this.lblRunParam.Size = new System.Drawing.Size(100, 15);
+            this.lblRunParam.TabIndex = 7;
+            this.lblRunParam.Text = "(,,)";
+            this.lblRunParam.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // Form1
             // 
@@ -95,12 +186,13 @@ namespace csAsyncInsight
             this.ClientSize = new System.Drawing.Size(925, 497);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "csAsyncInsight";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -111,7 +203,14 @@ namespace csAsyncInsight
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnRun;
+        private System.Windows.Forms.CheckBox ckbThrowAfterAwait;
+        private System.Windows.Forms.CheckBox ckbThrowBeforeAwait;
+        private System.Windows.Forms.CheckBox ckbEnableAwait;
+        private System.Windows.Forms.CheckBox ckbStickUIThread;
+        private System.Windows.Forms.CheckBox ckbAppendText;
+        private System.Windows.Forms.Button btnClearText;
+        private System.Windows.Forms.TextBox lblRunParam;
     }
 }
 
