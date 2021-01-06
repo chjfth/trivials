@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -61,8 +62,12 @@ namespace FaviconBrowser
 
         private async Task<Image> GetFaviconAsync(string domain)
         {
+            string url = "http://" + domain + "/favicon.ico";
             WebClient webClient = new WebClient();
-            byte[] bytes = await webClient.DownloadDataTaskAsync("http://" + domain + "/favicon.ico");
+
+            Debug.WriteLine($"DownloadDataTaskAsync: {url}");
+
+            byte[] bytes = await webClient.DownloadDataTaskAsync(url);
             return MakeImageControl(bytes);
         }
 
