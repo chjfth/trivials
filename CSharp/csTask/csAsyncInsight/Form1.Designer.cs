@@ -46,16 +46,16 @@ namespace csAsyncInsight
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(800, 488);
+            this.panel1.Size = new System.Drawing.Size(925, 497);
             this.panel1.TabIndex = 0;
             // 
             // panel3
             // 
             this.panel3.Controls.Add(this.textBox1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(140, 0);
+            this.panel3.Location = new System.Drawing.Point(103, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(660, 488);
+            this.panel3.Size = new System.Drawing.Size(822, 497);
             this.panel3.TabIndex = 1;
             // 
             // textBox1
@@ -66,7 +66,7 @@ namespace csAsyncInsight
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(660, 488);
+            this.textBox1.Size = new System.Drawing.Size(822, 497);
             this.textBox1.TabIndex = 0;
             // 
             // panel2
@@ -75,16 +75,16 @@ namespace csAsyncInsight
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(140, 488);
+            this.panel2.Size = new System.Drawing.Size(103, 497);
             this.panel2.TabIndex = 0;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(31, 40);
+            this.button1.Location = new System.Drawing.Point(12, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 25);
             this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
+            this.button1.Text = "&Run again";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -92,7 +92,7 @@ namespace csAsyncInsight
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 488);
+            this.ClientSize = new System.Drawing.Size(925, 497);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "Form1";
