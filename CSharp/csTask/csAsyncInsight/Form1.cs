@@ -107,6 +107,7 @@ namespace csAsyncInsight
         #endregion
 
         private static int s_UISleepMillis = 0;
+        private static int s_TaskDelayMillis = 0;
 
         async Task<int> MyAsync(int is_await=0, int is_throw_before=0, int is_throw_after=0)
         {
@@ -123,10 +124,12 @@ namespace csAsyncInsight
 
             if (is_await==1)
             {
-                Task tskdelay = Task.Delay(1000);
+                int delayms = s_TaskDelayMillis;
+
+                Task tskdelay = Task.Delay(delayms);
                 int hashcode = tskdelay.GetHashCode();
 
-                logtid($"{funcname} Task.Delay(1000) created and await it. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
+                logtid($"{funcname} Task.Delay({delayms}) created and await it. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
                 await tskdelay;
                 logtid($"{funcname} await done.");
             }
@@ -190,6 +193,8 @@ namespace csAsyncInsight
                 this.textBox1.Clear();
             }
 
+            RunParamChanged(null, EventArgs.Empty);
+
             RunTask(ckbEnableAwait.Checked ? 1 : 0, 
                 ckbThrowBeforeAwait.Checked ? 1 : 0, 
                 ckbThrowAfterAwait.Checked ? 1 : 0);
@@ -227,6 +232,13 @@ namespace csAsyncInsight
             else
             {
                 s_UISleepMillis = 0;
+            }
+
+            bool succ = int.TryParse(edtTaskDelayMillis.Text, out s_TaskDelayMillis);
+            if (!succ || s_TaskDelayMillis<=0)
+            {
+                s_TaskDelayMillis = 1;
+                edtTaskDelayMillis.Text = s_TaskDelayMillis.ToString();
             }
         }
     }

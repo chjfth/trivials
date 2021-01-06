@@ -43,6 +43,8 @@ namespace csAsyncInsight
             this.ckbThrowBeforeAwait = new System.Windows.Forms.CheckBox();
             this.ckbEnableAwait = new System.Windows.Forms.CheckBox();
             this.btnRun = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.edtTaskDelayMillis = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -82,6 +84,8 @@ namespace csAsyncInsight
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.edtTaskDelayMillis);
+            this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.edtUIThreadMillis);
             this.panel2.Controls.Add(this.ckbMainUISleep);
             this.panel2.Controls.Add(this.lblRunParam);
@@ -100,18 +104,18 @@ namespace csAsyncInsight
             // 
             // edtUIThreadMillis
             // 
-            this.edtUIThreadMillis.Location = new System.Drawing.Point(25, 135);
+            this.edtUIThreadMillis.Location = new System.Drawing.Point(25, 183);
             this.edtUIThreadMillis.Name = "edtUIThreadMillis";
             this.edtUIThreadMillis.Size = new System.Drawing.Size(92, 20);
-            this.edtUIThreadMillis.TabIndex = 9;
+            this.edtUIThreadMillis.TabIndex = 6;
             this.edtUIThreadMillis.Text = "1000";
             // 
             // ckbMainUISleep
             // 
-            this.ckbMainUISleep.Location = new System.Drawing.Point(4, 106);
+            this.ckbMainUISleep.Location = new System.Drawing.Point(4, 154);
             this.ckbMainUISleep.Name = "ckbMainUISleep";
             this.ckbMainUISleep.Size = new System.Drawing.Size(125, 31);
-            this.ckbMainUISleep.TabIndex = 8;
+            this.ckbMainUISleep.TabIndex = 5;
             this.ckbMainUISleep.Text = "UI thread sleep millisec before return";
             this.ckbMainUISleep.UseVisualStyleBackColor = true;
             this.ckbMainUISleep.CheckedChanged += new System.EventHandler(this.RunParamChanged);
@@ -144,17 +148,17 @@ namespace csAsyncInsight
             this.ckbAppendText.Location = new System.Drawing.Point(25, 326);
             this.ckbAppendText.Name = "ckbAppendText";
             this.ckbAppendText.Size = new System.Drawing.Size(87, 17);
-            this.ckbAppendText.TabIndex = 5;
-            this.ckbAppendText.Text = "Append Text";
+            this.ckbAppendText.TabIndex = 20;
+            this.ckbAppendText.Text = "&Append Text";
             this.ckbAppendText.UseVisualStyleBackColor = true;
             // 
             // ckbStickUIThread
             // 
             this.ckbStickUIThread.AutoSize = true;
-            this.ckbStickUIThread.Location = new System.Drawing.Point(4, 162);
+            this.ckbStickUIThread.Location = new System.Drawing.Point(4, 210);
             this.ckbStickUIThread.Name = "ckbStickUIThread";
             this.ckbStickUIThread.Size = new System.Drawing.Size(109, 17);
-            this.ckbStickUIThread.TabIndex = 4;
+            this.ckbStickUIThread.TabIndex = 7;
             this.ckbStickUIThread.Text = "Stick &to UI thread";
             this.ckbStickUIThread.UseVisualStyleBackColor = true;
             // 
@@ -201,6 +205,23 @@ namespace csAsyncInsight
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(4, 106);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(123, 13);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Async task delay millisec";
+            // 
+            // edtTaskDelayMillis
+            // 
+            this.edtTaskDelayMillis.Location = new System.Drawing.Point(25, 123);
+            this.edtTaskDelayMillis.Name = "edtTaskDelayMillis";
+            this.edtTaskDelayMillis.Size = new System.Drawing.Size(92, 20);
+            this.edtTaskDelayMillis.TabIndex = 4;
+            this.edtTaskDelayMillis.Text = "1000";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -235,6 +256,8 @@ namespace csAsyncInsight
         private System.Windows.Forms.TextBox lblRunParam;
         private System.Windows.Forms.TextBox edtUIThreadMillis;
         private System.Windows.Forms.CheckBox ckbMainUISleep;
+        private System.Windows.Forms.TextBox edtTaskDelayMillis;
+        private System.Windows.Forms.Label label1;
     }
 }
 
