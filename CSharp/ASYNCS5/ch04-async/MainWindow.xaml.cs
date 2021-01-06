@@ -72,8 +72,12 @@ namespace FaviconBrowser
                 Image imageControl = MakeImageControl(bytes);
                 m_WrapPanel.Children.Add(imageControl);
             }
-            catch (WebException e)
+            catch (Exception e)
             {
+                // may be:
+                // ArgumentException, when URI format error
+                // WebException, when network error on Web-request 
+
                 string errReason = e.Message;
 
                 string info = $"HTTP error on: {url}\nReason: {errReason}";
