@@ -57,7 +57,7 @@ namespace csAsyncInsight
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(925, 497);
+            this.panel1.Size = new System.Drawing.Size(925, 438);
             this.panel1.TabIndex = 0;
             // 
             // panel3
@@ -66,7 +66,7 @@ namespace csAsyncInsight
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(135, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(790, 497);
+            this.panel3.Size = new System.Drawing.Size(790, 438);
             this.panel3.TabIndex = 1;
             // 
             // textBox1
@@ -79,7 +79,7 @@ namespace csAsyncInsight
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(790, 497);
+            this.textBox1.Size = new System.Drawing.Size(790, 438);
             this.textBox1.TabIndex = 0;
             // 
             // panel2
@@ -99,7 +99,7 @@ namespace csAsyncInsight
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(135, 497);
+            this.panel2.Size = new System.Drawing.Size(135, 438);
             this.panel2.TabIndex = 0;
             // 
             // edtUIThreadMillis
@@ -134,7 +134,7 @@ namespace csAsyncInsight
             // 
             // btnClearText
             // 
-            this.btnClearText.Location = new System.Drawing.Point(25, 471);
+            this.btnClearText.Location = new System.Drawing.Point(25, 400);
             this.btnClearText.Name = "btnClearText";
             this.btnClearText.Size = new System.Drawing.Size(75, 23);
             this.btnClearText.TabIndex = 6;
@@ -145,7 +145,7 @@ namespace csAsyncInsight
             // ckbAppendText
             // 
             this.ckbAppendText.AutoSize = true;
-            this.ckbAppendText.Location = new System.Drawing.Point(25, 326);
+            this.ckbAppendText.Location = new System.Drawing.Point(25, 288);
             this.ckbAppendText.Name = "ckbAppendText";
             this.ckbAppendText.Size = new System.Drawing.Size(87, 17);
             this.ckbAppendText.TabIndex = 20;
@@ -197,7 +197,7 @@ namespace csAsyncInsight
             // 
             // btnRun
             // 
-            this.btnRun.Location = new System.Drawing.Point(25, 294);
+            this.btnRun.Location = new System.Drawing.Point(25, 256);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(83, 25);
             this.btnRun.TabIndex = 0;
@@ -226,7 +226,7 @@ namespace csAsyncInsight
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(925, 497);
+            this.ClientSize = new System.Drawing.Size(925, 438);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "csAsyncInsight";

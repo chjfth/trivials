@@ -93,6 +93,9 @@ namespace csAsyncInsight
 
             ckbStickUIThread.Checked = true;
             ckbMainUISleep.Checked = true;
+
+            this.MinimumSize = new Size(760, this.Size.Height);
+
             RunParamChanged(null, EventArgs.Empty);
         }
 
@@ -137,6 +140,10 @@ namespace csAsyncInsight
                 logtid($"{funcname} Task.Delay({delayms}) created and await it. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
                 await tskdelay;
                 logtid($"{funcname} Task.Delay()'s await done.");
+            }
+            else
+            {
+                logtid($"{funcname} No executing Task.Delay(), no await.");
             }
 
             if (is_throw_after == 1)
