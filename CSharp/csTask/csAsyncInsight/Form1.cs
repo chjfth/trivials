@@ -19,15 +19,6 @@ namespace csAsyncInsight
 {
     public partial class Form1 : Form
     {
-        private static object locker = new object();
-        public Form1()
-        {
-            InitializeComponent();
-
-            ckbStickUIThread.Checked = true;
-            RunParamChanged(null, EventArgs.Empty);
-        }
-
         #region Logger
         private static int s_mainthread_tid = AppDomain.GetCurrentThreadId();
 
@@ -94,12 +85,18 @@ namespace csAsyncInsight
         #endregion
 
         #region UIcode
-        private void Log(string s)
+
+        public Form1()
         {
-            textBox1.BeginInvoke(new Action(() =>
-            {
-                textBox1.AppendText(s + Environment.NewLine);
-            }));
+            InitializeComponent();
+
+            ckbStickUIThread.Checked = true;
+            ckbMainUISleep.Checked = true;
+            RunParamChanged(null, EventArgs.Empty);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
         }
 
         private void btnRun_Click(object sender, EventArgs e)
@@ -107,11 +104,9 @@ namespace csAsyncInsight
             RunMain();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-        }
         #endregion
 
+        private static int s_UISleepMillis = 0;
 
         async Task<int> MyAsync(int is_await=0, int is_throw_before=0, int is_throw_after=0)
         {
@@ -147,7 +142,7 @@ namespace csAsyncInsight
             return ret;
         }
 
-        void UseTask(int is_await = 0, int is_throw_before = 0, int is_throw_after = 0)
+        void RunTask(int is_await = 0, int is_throw_before = 0, int is_throw_after = 0)
         {
             string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + 
                               $"({is_await},{is_throw_before},{is_throw_after})";
@@ -181,6 +176,7 @@ namespace csAsyncInsight
 
         void RunMain()
         {
+            s_last_DateTime = DateTime.Now;
             if (this.ckbAppendText.Checked)
             {
                 s_section_count++;
@@ -191,19 +187,28 @@ namespace csAsyncInsight
             else
             {
                 s_section_count = 0;
-                s_last_DateTime = DateTime.Now;
-
                 this.textBox1.Clear();
             }
 
-            UseTask(ckbEnableAwait.Checked ? 1 : 0, 
+            RunTask(ckbEnableAwait.Checked ? 1 : 0, 
                 ckbThrowBeforeAwait.Checked ? 1 : 0, 
                 ckbThrowAfterAwait.Checked ? 1 : 0);
+
+            if (s_UISleepMillis > 0)
+            {
+                int sleepms = s_UISleepMillis;
+                logtid($"UI thread now sleep {sleepms} milliseconds...");
+                Thread.Sleep(sleepms);
+                logtid($"UI thread done sleep {sleepms} milliseconds.");
+            }
         }
 
         private void btnClearText_Click(object sender, EventArgs e)
         {
             this.textBox1.Clear();
+
+            this.textBox1.Invalidate();
+            this.textBox1.Update(); // no instant redraw, why?
         }
 
         private void RunParamChanged(object sender, EventArgs e)
@@ -214,6 +219,15 @@ namespace csAsyncInsight
             string param1 = $"({is_await},{is_throw_before},{is_throw_after})";
 
             this.lblRunParam.Text = param1;
+
+            if (ckbMainUISleep.Checked)
+            {
+                s_UISleepMillis = int.Parse(edtUIThreadMillis.Text);
+            }
+            else
+            {
+                s_UISleepMillis = 0;
+            }
         }
     }
 }

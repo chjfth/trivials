@@ -33,14 +33,16 @@ namespace csAsyncInsight
             this.panel3 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.edtUIThreadMillis = new System.Windows.Forms.TextBox();
+            this.ckbMainUISleep = new System.Windows.Forms.CheckBox();
+            this.lblRunParam = new System.Windows.Forms.TextBox();
+            this.btnClearText = new System.Windows.Forms.Button();
             this.ckbAppendText = new System.Windows.Forms.CheckBox();
             this.ckbStickUIThread = new System.Windows.Forms.CheckBox();
             this.ckbThrowAfterAwait = new System.Windows.Forms.CheckBox();
             this.ckbThrowBeforeAwait = new System.Windows.Forms.CheckBox();
             this.ckbEnableAwait = new System.Windows.Forms.CheckBox();
             this.btnRun = new System.Windows.Forms.Button();
-            this.btnClearText = new System.Windows.Forms.Button();
-            this.lblRunParam = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -60,9 +62,9 @@ namespace csAsyncInsight
             // 
             this.panel3.Controls.Add(this.textBox1);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(130, 0);
+            this.panel3.Location = new System.Drawing.Point(135, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(795, 497);
+            this.panel3.Size = new System.Drawing.Size(790, 497);
             this.panel3.TabIndex = 1;
             // 
             // textBox1
@@ -75,11 +77,13 @@ namespace csAsyncInsight
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(795, 497);
+            this.textBox1.Size = new System.Drawing.Size(790, 497);
             this.textBox1.TabIndex = 0;
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.edtUIThreadMillis);
+            this.panel2.Controls.Add(this.ckbMainUISleep);
             this.panel2.Controls.Add(this.lblRunParam);
             this.panel2.Controls.Add(this.btnClearText);
             this.panel2.Controls.Add(this.ckbAppendText);
@@ -91,8 +95,48 @@ namespace csAsyncInsight
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(130, 497);
+            this.panel2.Size = new System.Drawing.Size(135, 497);
             this.panel2.TabIndex = 0;
+            // 
+            // edtUIThreadMillis
+            // 
+            this.edtUIThreadMillis.Location = new System.Drawing.Point(25, 135);
+            this.edtUIThreadMillis.Name = "edtUIThreadMillis";
+            this.edtUIThreadMillis.Size = new System.Drawing.Size(92, 20);
+            this.edtUIThreadMillis.TabIndex = 9;
+            this.edtUIThreadMillis.Text = "1000";
+            // 
+            // ckbMainUISleep
+            // 
+            this.ckbMainUISleep.Location = new System.Drawing.Point(4, 106);
+            this.ckbMainUISleep.Name = "ckbMainUISleep";
+            this.ckbMainUISleep.Size = new System.Drawing.Size(125, 31);
+            this.ckbMainUISleep.TabIndex = 8;
+            this.ckbMainUISleep.Text = "UI thread sleep millisec before return";
+            this.ckbMainUISleep.UseVisualStyleBackColor = true;
+            this.ckbMainUISleep.CheckedChanged += new System.EventHandler(this.RunParamChanged);
+            // 
+            // lblRunParam
+            // 
+            this.lblRunParam.BackColor = System.Drawing.SystemColors.Control;
+            this.lblRunParam.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.lblRunParam.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRunParam.Location = new System.Drawing.Point(4, 84);
+            this.lblRunParam.Name = "lblRunParam";
+            this.lblRunParam.Size = new System.Drawing.Size(100, 15);
+            this.lblRunParam.TabIndex = 7;
+            this.lblRunParam.Text = "(,,)";
+            this.lblRunParam.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // btnClearText
+            // 
+            this.btnClearText.Location = new System.Drawing.Point(25, 471);
+            this.btnClearText.Name = "btnClearText";
+            this.btnClearText.Size = new System.Drawing.Size(75, 23);
+            this.btnClearText.TabIndex = 6;
+            this.btnClearText.Text = "&Clear text";
+            this.btnClearText.UseVisualStyleBackColor = true;
+            this.btnClearText.Click += new System.EventHandler(this.btnClearText_Click);
             // 
             // ckbAppendText
             // 
@@ -107,7 +151,7 @@ namespace csAsyncInsight
             // ckbStickUIThread
             // 
             this.ckbStickUIThread.AutoSize = true;
-            this.ckbStickUIThread.Location = new System.Drawing.Point(4, 109);
+            this.ckbStickUIThread.Location = new System.Drawing.Point(4, 162);
             this.ckbStickUIThread.Name = "ckbStickUIThread";
             this.ckbStickUIThread.Size = new System.Drawing.Size(109, 17);
             this.ckbStickUIThread.TabIndex = 4;
@@ -157,28 +201,6 @@ namespace csAsyncInsight
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
-            // btnClearText
-            // 
-            this.btnClearText.Location = new System.Drawing.Point(25, 471);
-            this.btnClearText.Name = "btnClearText";
-            this.btnClearText.Size = new System.Drawing.Size(75, 23);
-            this.btnClearText.TabIndex = 6;
-            this.btnClearText.Text = "&Clear text";
-            this.btnClearText.UseVisualStyleBackColor = true;
-            this.btnClearText.Click += new System.EventHandler(this.btnClearText_Click);
-            // 
-            // lblRunParam
-            // 
-            this.lblRunParam.BackColor = System.Drawing.SystemColors.Control;
-            this.lblRunParam.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.lblRunParam.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRunParam.Location = new System.Drawing.Point(4, 84);
-            this.lblRunParam.Name = "lblRunParam";
-            this.lblRunParam.Size = new System.Drawing.Size(100, 15);
-            this.lblRunParam.TabIndex = 7;
-            this.lblRunParam.Text = "(,,)";
-            this.lblRunParam.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -211,6 +233,8 @@ namespace csAsyncInsight
         private System.Windows.Forms.CheckBox ckbAppendText;
         private System.Windows.Forms.Button btnClearText;
         private System.Windows.Forms.TextBox lblRunParam;
+        private System.Windows.Forms.TextBox edtUIThreadMillis;
+        private System.Windows.Forms.CheckBox ckbMainUISleep;
     }
 }
 
