@@ -111,14 +111,12 @@ namespace csAsyncInsight
         async Task<int> MyAsync(int is_await=0, int is_throw_before=0, int is_throw_after=0)
         {
             //string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
-            string funcname = "MyAsync";
-            logtid($"{funcname} Start. (is_await={is_await}, is_throw_before={is_throw_before}, is_throw_after={is_throw_after})");
+            string funcname = $"MyAsync" + $"({is_await},{is_throw_before},{is_throw_after})";
+            logtid($"{funcname} Start.");
 
 
             if (is_throw_before==1)
                 throw new ArgumentNullException("Null-Before-await");
-
-//            Thread.Sleep(500);
 
             if (is_await==1)
             {
@@ -133,16 +131,15 @@ namespace csAsyncInsight
             if (is_throw_after==1)
                 throw new ArgumentNullException("Null-After-await");
 
-//            Thread.Sleep(500);
-
             int ret = 8000 + is_await*100 + is_throw_before*10 + is_throw_after*1;
             logtid($"{funcname} End. Will return {ret}.");
             return ret;
         }
 
-        void See_TaskId(int is_await = 0, int is_throw_before = 0, int is_throw_after = 0)
+        void UseTask(int is_await = 0, int is_throw_before = 0, int is_throw_after = 0)
         {
-            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + "()";
+            string funcname = System.Reflection.MethodBase.GetCurrentMethod().Name + 
+                              $"({is_await},{is_throw_before},{is_throw_after})";
             logtid($"{funcname} Start.");
 
             Task<int> tskout = MyAsync(is_await, is_throw_before, is_throw_after);
@@ -156,11 +153,11 @@ namespace csAsyncInsight
                 try
                 {
                     int rr = awaiter.GetResult();
-                    logtid("awaiter.GetResult()=" + rr);
+                    logtid($"{funcname} awaiter.GetResult()={rr}");
                 }
                 catch (Exception e)
                 {
-                    string info = $"awaiter.GetResult() got exception.\r\n" +
+                    string info = $"{funcname} awaiter.GetResult() got exception.\r\n" +
                                   $"e.Message=\r\n" +
                                   $"  {e.Message}";
                     logtid(info);
@@ -173,15 +170,20 @@ namespace csAsyncInsight
 
         void RunMain()
         {
-            See_TaskId(0, 0, 0);
+            UseTask(0, 0, 0);
             PrintLine("----");
 
-            See_TaskId(1, 0, 0);
+            UseTask(0, 1, 0);
             PrintLine("----");
 
-            See_TaskId(1, 1, 0);
+            UseTask(1, 0, 0);
             PrintLine("----");
 
+            UseTask(1, 1, 0);
+            PrintLine("----");
+
+            UseTask(1, 0, 1);
+            PrintLine("----");
         }
     }
 }
