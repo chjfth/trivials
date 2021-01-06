@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -108,6 +109,7 @@ namespace csAsyncInsight
 
         private static int s_UISleepMillis = 0;
         private static int s_TaskDelayMillis = 0;
+        private static bool s_isStickUIThread = true;
 
         async Task<int> MyAsync(int is_await=0, int is_throw_before=0, int is_throw_after=0)
         {
@@ -129,9 +131,12 @@ namespace csAsyncInsight
                 Task tskdelay = Task.Delay(delayms);
                 int hashcode = tskdelay.GetHashCode();
 
+                if (!s_isStickUIThread)
+                    tskdelay.ConfigureAwait(false);
+
                 logtid($"{funcname} Task.Delay({delayms}) created and await it. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
                 await tskdelay;
-                logtid($"{funcname} await done.");
+                logtid($"{funcname} Task.Delay()'s await done.");
             }
 
             if (is_throw_after == 1)
@@ -152,6 +157,9 @@ namespace csAsyncInsight
             logtid($"{funcname} Start.");
 
             Task<int> tskout = MyAsync(is_await, is_throw_before, is_throw_after);
+
+            if (!s_isStickUIThread)
+                tskout.ConfigureAwait(false);
 
             int ohash = tskout.GetHashCode();
             logtid($"{funcname} tskout.GetHashCode()={ohash} , tskout.Id={tskout.Id}");
@@ -240,6 +248,8 @@ namespace csAsyncInsight
                 s_TaskDelayMillis = 1;
                 edtTaskDelayMillis.Text = s_TaskDelayMillis.ToString();
             }
+
+            s_isStickUIThread = ckbStickUIThread.Checked ? true : false;
         }
     }
 }
