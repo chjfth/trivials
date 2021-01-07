@@ -15,12 +15,15 @@ namespace WackyTextBoxClear
 
             btnFill.Text = "&Fill";
             btnClearNoRefresh.Text = "&Clear, no Refresh !";
-            btnClearAndRefresh.Text = "&Clear, and Refresh";
+            btnClearAndRefresh.Text = "Clear, and &Refresh";
 
             lblHint.Text = 
                 "Click Fill to fill some old text into the Editbox, " +
                 "then click one of the Clear buttons. We'll see different " +
-                "effect with and without textBox.Refresh() call.";
+                "effect with and without textBox.Refresh() call.\r\n" +
+                "\r\n" +
+                "Without Refresh(), old drawing is not cleared until " +
+                "our code returns to system message loop.";
         }
 
         private void btnFill_Click(object sender, EventArgs e)

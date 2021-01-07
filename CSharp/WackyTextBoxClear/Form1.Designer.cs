@@ -38,7 +38,7 @@
             // btnFill
             // 
             this.btnFill.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFill.Location = new System.Drawing.Point(12, 70);
+            this.btnFill.Location = new System.Drawing.Point(12, 111);
             this.btnFill.Name = "btnFill";
             this.btnFill.Size = new System.Drawing.Size(123, 58);
             this.btnFill.TabIndex = 0;
@@ -49,7 +49,7 @@
             // btnClearNoRefresh
             // 
             this.btnClearNoRefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearNoRefresh.Location = new System.Drawing.Point(149, 70);
+            this.btnClearNoRefresh.Location = new System.Drawing.Point(149, 111);
             this.btnClearNoRefresh.Name = "btnClearNoRefresh";
             this.btnClearNoRefresh.Size = new System.Drawing.Size(123, 27);
             this.btnClearNoRefresh.TabIndex = 1;
@@ -60,24 +60,24 @@
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(12, 134);
+            this.textBox1.Location = new System.Drawing.Point(12, 175);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(260, 116);
+            this.textBox1.Size = new System.Drawing.Size(260, 75);
             this.textBox1.TabIndex = 2;
             // 
             // lblHint
             // 
             this.lblHint.Location = new System.Drawing.Point(13, 13);
             this.lblHint.Name = "lblHint";
-            this.lblHint.Size = new System.Drawing.Size(259, 52);
+            this.lblHint.Size = new System.Drawing.Size(259, 95);
             this.lblHint.TabIndex = 3;
             this.lblHint.Text = "label1";
             // 
             // btnClearAndRefresh
             // 
             this.btnClearAndRefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClearAndRefresh.Location = new System.Drawing.Point(149, 101);
+            this.btnClearAndRefresh.Location = new System.Drawing.Point(149, 142);
             this.btnClearAndRefresh.Name = "btnClearAndRefresh";
             this.btnClearAndRefresh.Size = new System.Drawing.Size(123, 27);
             this.btnClearAndRefresh.TabIndex = 4;
