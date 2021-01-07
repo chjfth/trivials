@@ -94,11 +94,11 @@ namespace FaviconBrowser
                         var inner = tsk.Exception.InnerException;
                         while (inner != null)
                         {
-                            excptmsg += "  " + inner.Message + "\r\n";
+                            excptmsg += "*** " + inner.Message + "\r\n";
                             inner = inner.InnerException;
                         }
 
-                        info += $"  ERROR: {excptmsg}\r\n";
+                        info += $"*** ERROR:\r\n{excptmsg}";
                     }
 
                     info_err += info;
