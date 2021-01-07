@@ -38,15 +38,20 @@ namespace csnutsTask1
                 int seconds_gap = millisec_gap / 1000;
                 if (s_last_DateTime.Ticks > 0 && seconds_gap > 0)
                 {
-                    Console.Out.WriteLine("".PadLeft(Math.Min(10, seconds_gap), '.'));
+                    PrintLine("".PadLeft(Math.Min(10, seconds_gap), '.'));
                 }
 
                 string tsprefix = string.Format("[{0:D2}:{1:D2}:{2:D2}.{3:D3}{4,-10}] ",
                     nowdt.Hour, nowdt.Minute, nowdt.Second, nowdt.Millisecond, text_elapse(millisec_gap)
                 );
-                Console.Out.WriteLine($"{tsprefix}{s}");
+                PrintLine($"{tsprefix}{s}");
                 s_last_DateTime = nowdt;
             }
+        }
+
+        static void PrintLine(string s)
+        {
+            Console.WriteLine(s);
         }
 
         static string tid()
