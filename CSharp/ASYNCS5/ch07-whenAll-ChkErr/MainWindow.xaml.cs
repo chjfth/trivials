@@ -31,6 +31,7 @@ namespace FaviconBrowser
             //"bbc.co.uk",
             "www.amazon.com",
             "www.somebaddomain.com",
+            @"what\the/heck?",
         };
 
         public MainWindow()
@@ -64,12 +65,6 @@ namespace FaviconBrowser
             try
             {
                 Image[] images = await allTask;
-                /*
-                foreach (Image eachImage in images)
-                {
-                    AddAFavicon(eachImage);
-                }
-            */
             }
             catch (Exception)
             {
