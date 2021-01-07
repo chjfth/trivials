@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Security.Authentication.ExtendedProtection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -76,8 +77,7 @@ namespace csAsyncInsight
         void PrintLine(string s)
         {
             Debug.WriteLine(s);
-
-            textBox1.BeginInvoke(new Action(() =>
+            textBox1.Invoke(new Action(() =>
             {
                 textBox1.AppendText(s + Environment.NewLine);
             }));
@@ -206,6 +206,10 @@ namespace csAsyncInsight
             {
                 s_section_count = 0;
                 this.textBox1.Clear();
+
+                // Note: After Clear(), We need Refresh() to force Clear UI drawing
+                // before we return to Windows message loop.
+                this.textBox1.Refresh(); 
             }
 
             RunParamChanged(null, EventArgs.Empty);
@@ -226,9 +230,6 @@ namespace csAsyncInsight
         private void btnClearText_Click(object sender, EventArgs e)
         {
             this.textBox1.Clear();
-
-            this.textBox1.Invalidate();
-            this.textBox1.Update(); // no instant redraw, why?
         }
 
         private void RunParamChanged(object sender, EventArgs e)
