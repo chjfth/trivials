@@ -35,7 +35,7 @@ namespace csAsyncInsight
         //
         private void log(string s)
         {
-            lock (_locker)
+//          lock (_locker)
             {
                 DateTime nowdt = DateTime.Now;
                 int millisec_gap = (int)(nowdt - s_last_DateTime).TotalMilliseconds;
@@ -128,6 +128,13 @@ namespace csAsyncInsight
 
                 Task tskdelay = Task.Delay(delayms);
                 int hashcode = tskdelay.GetHashCode();
+
+                /*
+                tskdelay.ContinueWith((tskc) =>
+                {   // This will be executed by worker thread!
+                    logtid("tskdelay.ContinueWith() callback executing........");
+                });
+                */
 
                 if (!s_isStickUIThread)
                     tskdelay.ConfigureAwait(false);
