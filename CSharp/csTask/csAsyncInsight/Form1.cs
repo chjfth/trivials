@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Management;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -136,12 +137,19 @@ namespace csAsyncInsight
                 });
                 */
 
-                if (!s_isStickUIThread)
-                    tskdelay.ConfigureAwait(false);
-
-                logtid($"{funcname} Task.Delay({delayms}) created and await it. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
-                await tskdelay;
-                logtid($"{funcname} Task.Delay()'s await done.");
+                if (s_isStickUIThread)
+                {
+                    logtid($"{funcname} Task.Delay({delayms}) created and await it. tskdelay.GetHashCode()={hashcode}, tskdelay.Id={tskdelay.Id}");
+                    await tskdelay;
+                    logtid($"{funcname} Task.Delay()'s await done.");
+                }
+                else
+                {
+                    ConfiguredTaskAwaitable tsk_anyctx = tskdelay.ConfigureAwait(false);
+                    logtid($"{funcname} Task.Delay({delayms}) created and await on its `tsk_anyctx`.");
+                    await tsk_anyctx;
+                    logtid($"{funcname} tsk_anyctx await done.");
+                }
             }
             else
             {
@@ -166,28 +174,51 @@ namespace csAsyncInsight
             logtid($"{funcname} Start.");
 
             Task<int> tskout = MyAsync(is_await, is_throw_before, is_throw_after);
-
-            if (!s_isStickUIThread)
-                tskout.ConfigureAwait(false);
+            ConfiguredTaskAwaitable<int> tskout_anyctx = tskout.ConfigureAwait(false);
 
             int ohash = tskout.GetHashCode();
-            logtid($"{funcname} tskout.GetHashCode()={ohash} , tskout.Id={tskout.Id}");
+            int ohash_anyctx = tskout_anyctx.GetHashCode();
 
-            var awaiter = tskout.GetAwaiter();
-            awaiter.OnCompleted(delegate ()
+            logtid($"{funcname} tskout.GetHashCode()={ohash} , tskout.Id={tskout.Id} ;" +
+                   $" tskout_anyctx.GetHashCode()={ohash_anyctx}" ); 
+                // Note: No such thing called ConfiguredTaskAwaitable.Id
+
+            if (s_isStickUIThread)
             {
-                try
+                TaskAwaiter<int> awaiter = tskout.GetAwaiter();
+                awaiter.OnCompleted(delegate()
                 {
-                    int rr = awaiter.GetResult();
-                    logtid($"{funcname} awaiter.GetResult()={rr}");
-                }
-                catch (Exception e)
-                {
-                    string info = $"{funcname} awaiter.GetResult() got exception.\r\n";
+                    try
+                    {
+                        int rr = awaiter.GetResult();
+                        logtid($"{funcname} awaiter.GetResult()={rr}");
+                    }
+                    catch (Exception e)
+                    {
+                        string info = $"{funcname} awaiter.GetResult() got exception.\r\n";
 //                           info += $"e.Message=\r\n  {e.Message}";
-                    logtid(info);
-                }
-            });
+                        logtid(info);
+                    }
+                });
+            }
+            else
+            {
+                ConfiguredTaskAwaitable<int>.ConfiguredTaskAwaiter awaiter = tskout_anyctx.GetAwaiter();
+                awaiter.OnCompleted(delegate ()
+                {
+                    try
+                    {
+                        int rr = awaiter.GetResult();
+                        logtid($"{funcname} awaiter.GetResult()={rr}");
+                    }
+                    catch (Exception e)
+                    {
+                        string info = $"{funcname} awaiter.GetResult() got exception.\r\n";
+//                           info += $"e.Message=\r\n  {e.Message}";
+                        logtid(info);
+                    }
+                });
+            }
 
             logtid($"{funcname} End.");
         }
