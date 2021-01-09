@@ -8,6 +8,7 @@ using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -84,18 +85,33 @@ namespace prjSkeleton
             InitializeComponent();
         }
 
-
-        private void Log(string s)
-        {
-            textBox1.BeginInvoke(new Action(() =>
-            {
-                textBox1.AppendText(s + Environment.NewLine);
-            }));
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            logtid("Run");
+            TaskGo();
+        }
+
+        async void TaskGo()
+        {
+            var progress = new Progress<int>(pct =>
+            {
+                logtid($"Working {pct}%");
+            });
+            await MyTask(progress);
+        }
+
+        static Task MyTask(IProgress<int> onProgressPercentChanged)
+        {
+            return Task.Run(() =>
+            {
+                const int max = 5;
+                for (int i = 0; i < max; i++)
+                {
+                    onProgressPercentChanged.Report((100*i) / max);
+                    Thread.Sleep(1000);
+                }
+
+                onProgressPercentChanged.Report(100);
+            });
         }
 
         private void Form1_Load(object sender, EventArgs e)
