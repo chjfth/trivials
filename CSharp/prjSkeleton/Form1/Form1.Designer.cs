@@ -1,5 +1,5 @@
 ﻿
-namespace csAsyncInsight
+namespace prjSkeleton
 {
     partial class Form1
     {
