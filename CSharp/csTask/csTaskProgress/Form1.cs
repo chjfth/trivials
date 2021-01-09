@@ -95,18 +95,34 @@ namespace prjSkeleton
         {
             InitializeComponent();
 
+            this.Text = "csTaskProgress";
+
             Button_MarkRunning(false);
         }
 
         void Button_MarkRunning(bool run)
         {
-            btn1.Enabled = run ? false : true;
-            btn2.Enabled = run ? true : false;
+            if (run)
+            {
+                btn1.Enabled = false;
+                btn2.Enabled = true;
+                btn2.Focus();
+            }
+            else
+            {
+                btn1.Enabled = true;
+                btn2.Enabled = false;
+                btn1.Focus();
+            }
 
         }
 
         async void btn1_Click(object sender, EventArgs e)
         {
+            s_last_DateTime = DateTime.Now;
+            textBox1.Clear();
+            textBox1.Refresh(); // to ensure redraw in case we stay in main UI for too long
+
             logtid("Run button clicked.");
             Button_MarkRunning(true);
 
