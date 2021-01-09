@@ -183,6 +183,11 @@ namespace csAsyncInsight
                    $" tskout_anyctx.GetHashCode()={ohash_anyctx}" ); 
                 // Note: No such thing called ConfiguredTaskAwaitable.Id
 
+            // Chj memo: I do not use `await tskout` but `tskout.GetAwaiter().OnCompleted()` here,
+            // bcz I want to verify that :
+            // "exceptions thrown from an async-method" are really "cached" in the associated tskout object,
+            // and those exceptions can be retrieved from `awaiter.GetResult()`.
+
             if (s_isStickUIThread)
             {
                 TaskAwaiter<int> awaiter = tskout.GetAwaiter();
