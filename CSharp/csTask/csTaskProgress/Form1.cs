@@ -86,21 +86,42 @@ namespace prjSkeleton
 
         #endregion
 
+        private CancellationTokenSource cts;
+
         public Form1()
         {
             InitializeComponent();
+
+            Button_MarkRunning(false);
         }
 
-        async void button1_Click(object sender, EventArgs e)
+        void Button_MarkRunning(bool run)
         {
-            button1.Enabled = false;
+            btn1.Enabled = run ? false : true;
+            btn2.Enabled = run ? true : false;
 
-            await TaskGo();
-
-            button1.Enabled = true;
         }
 
-        async Task TaskGo()
+        async void btn1_Click(object sender, EventArgs e)
+        {
+            Button_MarkRunning(true);
+
+            cts = new CancellationTokenSource();
+            using (cts)
+            {
+                await TaskGo(cts.Token);
+            }
+            cts = null;
+
+            Button_MarkRunning(false);
+        }
+
+        private void btn2_Click(object sender, EventArgs e)
+        {
+            cts.Cancel();
+        }
+
+        async Task TaskGo(CancellationToken ct)
         {
             // Two ways to attach progress callback.
 
@@ -121,12 +142,25 @@ namespace prjSkeleton
                 logtid($"See-ing {pct}%");
             };
 
-            await MyTask(progress);
-
-            logtid("Work Done.");
+            try
+            {
+                await MyTask(progress, ct);
+                logtid("Work Done.");
+            }
+            catch (Exception e)
+            {
+                if (e is OperationCanceledException)
+                {
+                    logtid("Work cancelled by user.");
+                }
+                else
+                {
+                    logtid("Work failed!");
+                }
+            }
         }
 
-        Task MyTask(IProgress<int> onProgressPercentChanged)
+        Task MyTask(IProgress<int> onProgressPercentChanged, CancellationToken ct)
         {
             return Task.Run(() =>
             {
@@ -137,7 +171,12 @@ namespace prjSkeleton
                     assert_not_main_thread();
 
                     onProgressPercentChanged.Report((100*i) / max);
-                    Thread.Sleep(1000);
+
+                    bool is_canceled = ct.WaitHandle.WaitOne(1000);
+                    if (is_canceled)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
 
                 onProgressPercentChanged.Report(100);

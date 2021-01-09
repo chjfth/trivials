@@ -33,7 +33,8 @@ namespace prjSkeleton
             this.panel3 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btn1 = new System.Windows.Forms.Button();
+            this.btn2 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -71,22 +72,33 @@ namespace prjSkeleton
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.button1);
+            this.panel2.Controls.Add(this.btn2);
+            this.panel2.Controls.Add(this.btn1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(140, 488);
             this.panel2.TabIndex = 0;
             // 
-            // button1
+            // btn1
             // 
-            this.button1.Location = new System.Drawing.Point(31, 40);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 25);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "&Run";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btn1.Location = new System.Drawing.Point(32, 12);
+            this.btn1.Name = "btn1";
+            this.btn1.Size = new System.Drawing.Size(75, 25);
+            this.btn1.TabIndex = 0;
+            this.btn1.Text = "&Run";
+            this.btn1.UseVisualStyleBackColor = true;
+            this.btn1.Click += new System.EventHandler(this.btn1_Click);
+            // 
+            // btn2
+            // 
+            this.btn2.Location = new System.Drawing.Point(32, 43);
+            this.btn2.Name = "btn2";
+            this.btn2.Size = new System.Drawing.Size(75, 25);
+            this.btn2.TabIndex = 1;
+            this.btn2.Text = "&Cancel";
+            this.btn2.UseVisualStyleBackColor = true;
+            this.btn2.Click += new System.EventHandler(this.btn2_Click);
             // 
             // Form1
             // 
@@ -111,7 +123,8 @@ namespace prjSkeleton
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btn1;
+        private System.Windows.Forms.Button btn2;
     }
 }
 
