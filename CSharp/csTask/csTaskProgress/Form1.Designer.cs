@@ -33,10 +33,11 @@ namespace prjSkeleton
             this.panel3 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.edtRunSeconds = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnRun = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.edtRunSeconds = new System.Windows.Forms.TextBox();
+            this.ckbSimuCancelLag = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -74,6 +75,7 @@ namespace prjSkeleton
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.ckbSimuCancelLag);
             this.panel2.Controls.Add(this.edtRunSeconds);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.btnCancel);
@@ -83,6 +85,22 @@ namespace prjSkeleton
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(140, 488);
             this.panel2.TabIndex = 0;
+            // 
+            // edtRunSeconds
+            // 
+            this.edtRunSeconds.Location = new System.Drawing.Point(96, 11);
+            this.edtRunSeconds.Name = "edtRunSeconds";
+            this.edtRunSeconds.Size = new System.Drawing.Size(37, 20);
+            this.edtRunSeconds.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Work seconds:";
             // 
             // btnCancel
             // 
@@ -104,21 +122,15 @@ namespace prjSkeleton
             this.btnRun.UseVisualStyleBackColor = true;
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
             // 
-            // label1
+            // ckbSimuCancelLag
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 13);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 13);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Work seconds:";
-            // 
-            // edtRunSeconds
-            // 
-            this.edtRunSeconds.Location = new System.Drawing.Point(96, 11);
-            this.edtRunSeconds.Name = "edtRunSeconds";
-            this.edtRunSeconds.Size = new System.Drawing.Size(37, 20);
-            this.edtRunSeconds.TabIndex = 1;
+            this.ckbSimuCancelLag.AutoSize = true;
+            this.ckbSimuCancelLag.Location = new System.Drawing.Point(16, 117);
+            this.ckbSimuCancelLag.Name = "ckbSimuCancelLag";
+            this.ckbSimuCancelLag.Size = new System.Drawing.Size(118, 17);
+            this.ckbSimuCancelLag.TabIndex = 4;
+            this.ckbSimuCancelLag.Text = "Simulate cancel lag";
+            this.ckbSimuCancelLag.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -129,6 +141,7 @@ namespace prjSkeleton
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
@@ -149,6 +162,7 @@ namespace prjSkeleton
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.TextBox edtRunSeconds;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox ckbSimuCancelLag;
     }
 }
 

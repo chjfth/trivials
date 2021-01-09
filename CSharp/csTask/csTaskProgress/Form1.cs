@@ -91,6 +91,11 @@ namespace prjSkeleton
 
         private CancellationTokenSource cts;
 
+        private int _lagmillis = 0; // cancel lagging millisec
+        private bool _is_closing = false;
+
+        private List<Task> _running_tasks = new List<Task>();
+
         public Form1()
         {
             InitializeComponent();
@@ -119,6 +124,8 @@ namespace prjSkeleton
 
         async void btnRun_Click(object sender, EventArgs e)
         {
+            Debug.Assert(_running_tasks.Count == 0);
+
             s_last_DateTime = DateTime.Now;
             textBox1.Clear();
             textBox1.Refresh(); // to ensure redraw in case we stay in main UI for too long
@@ -134,16 +141,25 @@ namespace prjSkeleton
             cts = null;
 
             Button_MarkRunning(false);
+
+            CloseIfRequested();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            Debug.Assert(_running_tasks.Count == 1);
+
             logtid("Cancel button clicked.");
             cts.Cancel();
+
+            btnCancel.Enabled = false;
         }
+
 
         async Task TaskGo(CancellationToken ct)
         {
+            _lagmillis = ckbSimuCancelLag.Checked ? 5000 : 0;
+
             // Two ways to attach progress callback.
 
             var progress = new Progress<int>(pct =>
@@ -156,20 +172,25 @@ namespace prjSkeleton
             progress.ProgressChanged += (Object sender, int pct) =>
             {
                 Debug.Assert(sender is Progress<int>);
-                Debug.Assert(pct is int);
 
                 assert_main_thread();
 
                 logtid($"See-ing {pct}%");
             };
 
+            Task tsk = null;
             try
             {
                 int run_seconds = int.Parse(edtRunSeconds.Text);
-                await MyTask(run_seconds, progress, ct);
+
+                tsk = MyTask(run_seconds, progress, ct);
+                _running_tasks.Add(tsk); // .Append(tsk) is wrong
+
+                await tsk;
+
                 logtid("Work Done.");
             }
-            catch (OperationCanceledException e)
+            catch (OperationCanceledException)
             {
                 logtid("Work cancelled by user.");
             }
@@ -180,6 +201,13 @@ namespace prjSkeleton
                               $"Work failed!";
                 logtid(info);
             }
+            finally
+            {
+                if (tsk!=null)
+                {
+                    _running_tasks.Remove(tsk);
+                }
+            }
         }
 
         Task MyTask(int run_seconds, IProgress<int> onProgressPercentChanged, CancellationToken ct)
@@ -188,14 +216,20 @@ namespace prjSkeleton
             {
                 for (int i = 0; i < run_seconds; i++)
                 {
-                    logtid("Task thread reporting progress...");
                     assert_not_main_thread();
+                    logtid("Task thread reporting progress...");
 
                     onProgressPercentChanged.Report((100*i) / run_seconds);
 
                     bool is_canceled = ct.WaitHandle.WaitOne(1000);
                     if (is_canceled)
                     {
+                        if (_lagmillis > 0)
+                        {
+                            logtid($"Cancel-request received, but delay for {_lagmillis}ms...");
+                            Thread.Sleep(_lagmillis);
+                        }
+
                         ct.ThrowIfCancellationRequested();
                     }
                 }
@@ -204,10 +238,28 @@ namespace prjSkeleton
             });
         }
 
+        void CloseIfRequested() // Return "should I close"?
+        {
+            if (_is_closing)
+                Close(); // would trigger Form1_FormClosing()
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             logtid($"Form1_Load. Main-thread-id={s_mainthread_tid}");
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _is_closing = true;
+
+            if (_running_tasks.Count != 0)
+            {
+                logtid("==== You're closing the window, but the task is still running. Please wait until it is cancelled...");
+
+                // Don't close the window now!
+                e.Cancel = true;
+            }
+        }
     }
 }
