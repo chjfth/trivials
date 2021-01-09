@@ -190,9 +190,9 @@ namespace prjSkeleton
 
                 logtid("Work Done.");
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException e)
             {
-                logtid("Work cancelled by user.");
+                logtid($"Work cancelled by user. The cancel message is:\r\n{e.Message}");
             }
             catch (Exception e)
             {
@@ -230,7 +230,9 @@ namespace prjSkeleton
                             Thread.Sleep(_lagmillis);
                         }
 
-                        ct.ThrowIfCancellationRequested();
+                        throw new OperationCanceledException("Wow, we can customize cancel-message!"); 
+                            // More explicit than:
+                            // ct.ThrowIfCancellationRequested();
                     }
                 }
 
