@@ -129,7 +129,7 @@ namespace prjSkeleton
             this.ckbSimuCancelLag.Name = "ckbSimuCancelLag";
             this.ckbSimuCancelLag.Size = new System.Drawing.Size(118, 17);
             this.ckbSimuCancelLag.TabIndex = 4;
-            this.ckbSimuCancelLag.Text = "Simulate cancel lag";
+            this.ckbSimuCancelLag.Text = "&Simulate cancel lag";
             this.ckbSimuCancelLag.UseVisualStyleBackColor = true;
             // 
             // Form1

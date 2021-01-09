@@ -253,8 +253,12 @@ namespace prjSkeleton
         {
             _is_closing = true;
 
+
             if (_running_tasks.Count != 0)
             {
+                // Automatically cancel the task.
+                cts.Cancel();
+
                 logtid("==== You're closing the window, but the task is still running. Please wait until it is cancelled...");
 
                 // Don't close the window now!
