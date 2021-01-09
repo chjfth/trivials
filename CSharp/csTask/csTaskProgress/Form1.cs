@@ -105,19 +105,19 @@ namespace prjSkeleton
         {
             if (run)
             {
-                btn1.Enabled = false;
-                btn2.Enabled = true;
-                btn2.Focus();
+                btnRun.Enabled = false;
+                btnCancel.Enabled = true;
+                btnCancel.Focus();
             }
             else
             {
-                btn1.Enabled = true;
-                btn2.Enabled = false;
-                btn1.Focus();
+                btnRun.Enabled = true;
+                btnCancel.Enabled = false;
+                btnRun.Focus();
             }
         }
 
-        async void btn1_Click(object sender, EventArgs e)
+        async void btnRun_Click(object sender, EventArgs e)
         {
             s_last_DateTime = DateTime.Now;
             textBox1.Clear();
@@ -136,7 +136,7 @@ namespace prjSkeleton
             Button_MarkRunning(false);
         }
 
-        private void btn2_Click(object sender, EventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
             logtid("Cancel button clicked.");
             cts.Cancel();
