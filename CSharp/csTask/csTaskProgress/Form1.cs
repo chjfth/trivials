@@ -96,6 +96,7 @@ namespace prjSkeleton
             InitializeComponent();
 
             this.Text = "csTaskProgress";
+            this.edtRunSeconds.Text = "5";
 
             Button_MarkRunning(false);
         }
@@ -114,7 +115,6 @@ namespace prjSkeleton
                 btn2.Enabled = false;
                 btn1.Focus();
             }
-
         }
 
         async void btn1_Click(object sender, EventArgs e)
@@ -165,33 +165,33 @@ namespace prjSkeleton
 
             try
             {
-                await MyTask(progress, ct);
+                int run_seconds = int.Parse(edtRunSeconds.Text);
+                await MyTask(run_seconds, progress, ct);
                 logtid("Work Done.");
+            }
+            catch (OperationCanceledException e)
+            {
+                logtid("Work cancelled by user.");
             }
             catch (Exception e)
             {
-                if (e is OperationCanceledException)
-                {
-                    logtid("Work cancelled by user.");
-                }
-                else
-                {
-                    logtid("Work failed!");
-                }
+                string info = $"Got exception:\r\n" +
+                              $"  {e.Message}\r\n" +
+                              $"Work failed!";
+                logtid(info);
             }
         }
 
-        Task MyTask(IProgress<int> onProgressPercentChanged, CancellationToken ct)
+        Task MyTask(int run_seconds, IProgress<int> onProgressPercentChanged, CancellationToken ct)
         {
             return Task.Run(() =>
             {
-                const int max = 5;
-                for (int i = 0; i < max; i++)
+                for (int i = 0; i < run_seconds; i++)
                 {
                     logtid("Task thread reporting progress...");
                     assert_not_main_thread();
 
-                    onProgressPercentChanged.Report((100*i) / max);
+                    onProgressPercentChanged.Report((100*i) / run_seconds);
 
                     bool is_canceled = ct.WaitHandle.WaitOne(1000);
                     if (is_canceled)

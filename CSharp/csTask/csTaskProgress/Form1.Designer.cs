@@ -33,8 +33,10 @@ namespace prjSkeleton
             this.panel3 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.btn1 = new System.Windows.Forms.Button();
             this.btn2 = new System.Windows.Forms.Button();
+            this.btn1 = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.edtRunSeconds = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -68,10 +70,12 @@ namespace prjSkeleton
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.textBox1.Size = new System.Drawing.Size(660, 488);
-            this.textBox1.TabIndex = 0;
+            this.textBox1.TabIndex = 40;
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.edtRunSeconds);
+            this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.btn2);
             this.panel2.Controls.Add(this.btn1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
@@ -80,28 +84,45 @@ namespace prjSkeleton
             this.panel2.Size = new System.Drawing.Size(140, 488);
             this.panel2.TabIndex = 0;
             // 
-            // btn1
-            // 
-            this.btn1.Location = new System.Drawing.Point(32, 12);
-            this.btn1.Name = "btn1";
-            this.btn1.Size = new System.Drawing.Size(75, 25);
-            this.btn1.TabIndex = 0;
-            this.btn1.Text = "&Run";
-            this.btn1.UseVisualStyleBackColor = true;
-            this.btn1.Click += new System.EventHandler(this.btn1_Click);
-            // 
             // btn2
             // 
-            this.btn2.Location = new System.Drawing.Point(32, 43);
+            this.btn2.Location = new System.Drawing.Point(32, 71);
             this.btn2.Name = "btn2";
             this.btn2.Size = new System.Drawing.Size(75, 25);
-            this.btn2.TabIndex = 1;
+            this.btn2.TabIndex = 3;
             this.btn2.Text = "&Cancel";
             this.btn2.UseVisualStyleBackColor = true;
             this.btn2.Click += new System.EventHandler(this.btn2_Click);
             // 
+            // btn1
+            // 
+            this.btn1.Location = new System.Drawing.Point(32, 40);
+            this.btn1.Name = "btn1";
+            this.btn1.Size = new System.Drawing.Size(75, 25);
+            this.btn1.TabIndex = 2;
+            this.btn1.Text = "&Run";
+            this.btn1.UseVisualStyleBackColor = true;
+            this.btn1.Click += new System.EventHandler(this.btn1_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 13);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 13);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Work seconds:";
+            // 
+            // edtRunSeconds
+            // 
+            this.edtRunSeconds.Location = new System.Drawing.Point(96, 11);
+            this.edtRunSeconds.Name = "edtRunSeconds";
+            this.edtRunSeconds.Size = new System.Drawing.Size(37, 20);
+            this.edtRunSeconds.TabIndex = 1;
+            // 
             // Form1
             // 
+            this.AcceptButton = this.btn1;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 488);
@@ -113,6 +134,7 @@ namespace prjSkeleton
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -125,6 +147,8 @@ namespace prjSkeleton
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btn1;
         private System.Windows.Forms.Button btn2;
+        private System.Windows.Forms.TextBox edtRunSeconds;
+        private System.Windows.Forms.Label label1;
     }
 }
 
