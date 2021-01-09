@@ -84,9 +84,18 @@ namespace prjSkeleton
             InitializeComponent();
         }
 
+
+        private void Log(string s)
+        {
+            textBox1.BeginInvoke(new Action(() =>
+            {
+                textBox1.AppendText(s + Environment.NewLine);
+            }));
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
-            logtid("btn1-click");
+            logtid("Run");
         }
 
         private void Form1_Load(object sender, EventArgs e)
