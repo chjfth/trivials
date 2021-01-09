@@ -13,6 +13,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// Key point:
+// Task progress reporting and the ability to cancel our own Task.
+
 namespace prjSkeleton
 {
     public partial class Form1 : Form
@@ -104,6 +107,7 @@ namespace prjSkeleton
 
         async void btn1_Click(object sender, EventArgs e)
         {
+            logtid("Run button clicked.");
             Button_MarkRunning(true);
 
             cts = new CancellationTokenSource();
@@ -118,6 +122,7 @@ namespace prjSkeleton
 
         private void btn2_Click(object sender, EventArgs e)
         {
+            logtid("Cancel button clicked.");
             cts.Cancel();
         }
 
