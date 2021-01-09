@@ -16,7 +16,9 @@ namespace prjSkeleton
     public partial class Form1 : Form
     {
         #region Logger
-        private static int s_mainthread_tid = AppDomain.GetCurrentThreadId();
+
+        static int get_thread_id() { return AppDomain.GetCurrentThreadId(); }
+        static int s_mainthread_tid = get_thread_id();
 
         static readonly object _locker = new object();
         static DateTime s_last_DateTime = new DateTime(0);
@@ -77,6 +79,9 @@ namespace prjSkeleton
             }));
         }
 
+        void assert_main_thread() { Debug.Assert(get_thread_id() == s_mainthread_tid); }
+        void assert_not_main_thread() { Debug.Assert(get_thread_id() != s_mainthread_tid); }
+
         #endregion
 
         public Form1()
@@ -84,9 +89,9 @@ namespace prjSkeleton
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btn1_Click(object sender, EventArgs e)
         {
-            logtid("btn1-click");
+            logtid("btn1_Click");
         }
 
         private void Form1_Load(object sender, EventArgs e)

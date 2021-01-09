@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,9 @@ namespace prjSkeleton
     public partial class Form1 : Form
     {
         #region Logger
-        private static int s_mainthread_tid = AppDomain.GetCurrentThreadId();
+
+        static int get_thread_id() { return AppDomain.GetCurrentThreadId(); }
+        static int s_mainthread_tid = get_thread_id();
 
         static readonly object _locker = new object();
         static DateTime s_last_DateTime = new DateTime(0);
@@ -78,6 +81,9 @@ namespace prjSkeleton
             }));
         }
 
+        void assert_main_thread() { Debug.Assert(get_thread_id()==s_mainthread_tid); }
+        void assert_not_main_thread() { Debug.Assert(get_thread_id() != s_mainthread_tid); }
+
         #endregion
 
         public Form1()
@@ -85,27 +91,51 @@ namespace prjSkeleton
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        async void button1_Click(object sender, EventArgs e)
         {
-            TaskGo();
+            button1.Enabled = false;
+
+            await TaskGo();
+
+            button1.Enabled = true;
         }
 
-        async void TaskGo()
+        async Task TaskGo()
         {
+            // Two ways to attach progress callback.
+
             var progress = new Progress<int>(pct =>
             {
+                assert_main_thread();
+
                 logtid($"Working {pct}%");
             });
+
+            progress.ProgressChanged += (Object sender, int pct) =>
+            {
+                Debug.Assert(sender is Progress<int>);
+                Debug.Assert(pct is int);
+
+                assert_main_thread();
+
+                logtid($"See-ing {pct}%");
+            };
+
             await MyTask(progress);
+
+            logtid("Work Done.");
         }
 
-        static Task MyTask(IProgress<int> onProgressPercentChanged)
+        Task MyTask(IProgress<int> onProgressPercentChanged)
         {
             return Task.Run(() =>
             {
                 const int max = 5;
                 for (int i = 0; i < max; i++)
                 {
+                    logtid("Task thread reporting progress...");
+                    assert_not_main_thread();
+
                     onProgressPercentChanged.Report((100*i) / max);
                     Thread.Sleep(1000);
                 }
