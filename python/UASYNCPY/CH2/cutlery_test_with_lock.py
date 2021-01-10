@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Code from: [UASYNCPY] p16, race condition among thread causes data error.
+# Code from: [UASYNCPY] p18, fix p16 with lock.
 
 import threading
 from queue import Queue
@@ -24,7 +24,10 @@ class ThreadBot (threading.Thread): # thread subclass inherits start / join meth
 from attr import attrs, attrib 
 	# open source library does not affect the thread or coroutine, make it easier to initialize instance attributes
 	# pip install attrs
- 
+
+
+g_lock = threading.Lock()
+
 @attrs
 class Cutlery:
     knives = attrib(default=0)
@@ -35,8 +38,9 @@ class Cutlery:
         to.change(knives, forks)
  
     def change(self, knives, forks):
-        self.knives += knives
-        self.forks += forks
+    	with g_lock:
+	        self.knives += knives
+	        self.forks += forks
  
 kitchen = Cutlery(knives=100, forks=100)
 bots = [ThreadBot () for i in range (10)] # 10 threads created robot
