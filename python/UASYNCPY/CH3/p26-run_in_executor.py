@@ -5,7 +5,7 @@
 import time
 import asyncio
 
-async def main():
+async def aswork():
 	print(f'{time.ctime()} Hello!')
 	await asyncio.sleep(1.0)
 	print(f'{time.ctime()} Goodbye!')
@@ -15,7 +15,8 @@ def blocking():     # (1)
 	print(f"{time.ctime()} Hello from a thread!")
 
 loop = asyncio.get_event_loop()
-task = loop.create_task(main())
+coro = aswork()
+task = loop.create_task(coro)
 
 loop.run_in_executor(None, blocking) # (3)
 loop.run_until_complete(task)
