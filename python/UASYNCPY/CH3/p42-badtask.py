@@ -27,3 +27,13 @@ with suppress(asyncio.CancelledError):
 print(fut.done()) #True
 
 print(fut.cancelled()) # True
+
+
+"""On Python 3.7.4:
+
+False
+No longer allowed: Task does not support set_result operation
+True
+True
+
+"""
