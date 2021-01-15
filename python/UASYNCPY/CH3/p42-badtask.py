@@ -13,11 +13,12 @@ async def main(f: asyncio.Future):
 		f.cancel()
 
 loop = asyncio.get_event_loop()
-coro = asyncio.sleep(1_000_000)
-fut = asyncio.Task(coro)
+coro_sleep = asyncio.sleep(1_000_000)
+fut = asyncio.Task(coro_sleep)
 print(fut.done()) # False
 
-tsk = loop.create_task(main(fut))
+coro_main = main(fut)
+tsk_main = loop.create_task(coro_main)
 # <Task pending name='Task-2' coro=<main() running at <console>:1>>
 
 with suppress(asyncio.CancelledError):
