@@ -4,7 +4,9 @@
 import asyncio
 
 async def main(f: asyncio.Future):
+	print("In main(), before sleep.")
 	await asyncio.sleep(1)
+	print("In main(), after sleep.")
 	f.set_result('I have finished.')
 
 loop = asyncio.get_event_loop()
@@ -19,3 +21,5 @@ loop.run_until_complete(fut)
 # 'I have finished.'
 
 print(fut.done()) # True
+
+print(fut.result())
