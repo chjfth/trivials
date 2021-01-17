@@ -1,19 +1,25 @@
-import time, datetime
+import time
+from datetime import datetime,tzinfo,timedelta,timezone
 from flask import Flask
 from flask import request, make_response
 from flask import send_file
 
-""" We need following hosts to accomplish these experiments.
+""" Flask launching envvar:
+
+	FLASK_APP=simple1.py
+	FLASK_ENV=development
+
+Start Flask https server with command:
+
+	python -m flask run --host=0.0.0.0 --cert=adhoc
+
+We need following hosts to accomplish cookie related experiments.
 
 10.22.3.84	chjhost.com
 10.22.3.84	abc.chjhost.com
 10.22.3.84	chjimg.com
 10.22.3.84	chj3rd.com
 
-Start Flask https server with command:
-
-	python -m flask run --host=0.0.0.0 --cert=adhoc
-	
 Experiments record:
 
 	https://www.evernote.com/l/ABUcJByCCDVFsqoj8YRpgL0i9UZzkBrOYag/
@@ -21,17 +27,35 @@ Experiments record:
 
 app = Flask(__name__)
 
-tzchina = datetime.timezone(datetime.timedelta(hours=8)) 
-dt_expire = datetime.datetime(2020, 12, 30, 9,2,3, 0, tzchina)
+tzchina = timezone(timedelta(hours=8)) 
+dt_expire = datetime(2020, 12, 30, 9,2,3, 0, tzchina)
 
 @app.route('/')
 def index():
-	return '<h1>Hello World !</h1>'
+	return '<h1>Hello World from Flask!</h1>'
+
+@app.route('/utc')
+def utc():
+	uesec = time.time()
+	dt0 = datetime.fromtimestamp(uesec, tz=timezone.utc)
+	line1 = 'UTC:       %s'%(dt0.strftime('%Y-%m-%d.%H:%M:%S.%f'))
+	line2 = 'Timestamp: %f'%(uesec)
+	html = """<pre>{}
+{}</pre>""".format(line1, line2)
+	return html
 
 @app.route('/delay/<int:millisec>')
 def delay(millisec):
 	time.sleep(millisec/1000)
 	return '<p>Done %d millisec sleep.</p>'%(millisec)
+
+@app.route('/burn/<int:millisec>')
+def burn(millisec):
+	# This consumes whole core of CPU
+	uesec_end = time.time() + millisec/1000
+	while time.time() <= uesec_end:
+		pass
+	return '<p>Done %d millisec CPU burning.</p>'%(millisec)
 
 @app.route('/cookie0')
 def cookie0():
