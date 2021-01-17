@@ -158,3 +158,8 @@ def cookie3rd():
 		secure=True,
 		expires=dt_expire)
 	return resp
+
+
+if __name__ == "__main__":
+	# Note: processes=3 is supported on Unix only.
+    app.run(host='0.0.0.0', threaded=False, processes=3)
