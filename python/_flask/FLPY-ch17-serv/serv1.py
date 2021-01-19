@@ -1,6 +1,6 @@
 import time
 from datetime import datetime,tzinfo,timedelta,timezone
-from flask import Flask
+from flask import Flask, abort
 from flask import request, make_response
 from flask import send_file
 
@@ -17,6 +17,10 @@ def index():
 @app.route('/data/flags/<cc1>/<cc2>.gif')
 def serv_flag(cc1, cc2):
 	time.sleep(1.0) # 1 second sleep to simulate network delay
+	
+	if cc1.upper()=='US':
+		abort(404)
+	
 	return "This is {}.gif".format(cc1)
 
 if __name__ == "__main__":
