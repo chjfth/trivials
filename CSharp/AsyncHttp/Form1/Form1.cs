@@ -6,10 +6,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Management;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
+using ZjbLib;
 
 namespace prjSkeleton
 {
@@ -92,6 +96,18 @@ namespace prjSkeleton
         private void btn1_Click(object sender, EventArgs e)
         {
             logtid("btn1_Click");
+
+            try
+            {
+                StartHttp();
+            }
+            catch (Exception exception)
+            {
+                // STRANG! I cannot catch this! C# BUG?
+                Console.WriteLine(exception);
+                throw;
+            }
+                
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -99,5 +115,35 @@ namespace prjSkeleton
             logtid($"Form1_Load. Main-thread-id={s_mainthread_tid}");
         }
 
+        ////
+
+        private CancellationTokenSource _cts;
+
+        async Task StartHttp()
+        {
+            string url = "http://10.22.3.92:2017";
+            AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
+            {
+                {
+                    HttpRequestHeader.UserAgent,
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0) like Gecko"
+                },
+            };
+
+            try
+            {
+                AsyncHttp ashttp = new AsyncHttp(url, headers, null);
+
+                _cts = new CancellationTokenSource();
+
+                byte[] rsbytes = await ashttp.Start(_cts.Token, 15000);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
     }
 }
