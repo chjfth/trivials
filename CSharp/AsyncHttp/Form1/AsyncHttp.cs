@@ -92,10 +92,11 @@ namespace ZjbLib
 
             if (_webreq.Method == WebRequestMethods.Http.Post)
             {
-                Stream postStream = await _webreq.GetRequestStreamAsync(); // todo cts
-                // -- This initiates an http connection to the server, and if connect success,
-                // the http headers will be sent to server automatically.
-
+                // To test postStream timeout, we can send request to a non-existence IP address,
+                // so GetRequestStreamAsync() will spend its time waiting for TCP handshaking.
+                // BTW: Once TCP connection is established, http headers will be sent to server automatically.
+                Task<Stream> tskConnect = _webreq.GetRequestStreamAsync();
+                Stream postStream = await Utils.WebRequest_TaskTimeout(_webreq, tskConnect, ct, timeout_millisec);
                 using (postStream)
                 {
                     // Closing postStream tells the system we have POSTed all http body bytes.

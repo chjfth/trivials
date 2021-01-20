@@ -131,7 +131,8 @@ namespace prjSkeleton
             try
             {
                 //string url = "http://10.22.3.92:2017/";
-                string url = "http://10.22.3.84:8000/abc";
+                //string url = "http://10.22.3.84:8000/abc";
+                string url = "http://10.22.244.44:4444/";
 
                 AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
                 {
@@ -141,7 +142,8 @@ namespace prjSkeleton
                     },
                 };
 
-                AsyncHttp ahttp = new AsyncHttp(url, headers, null);
+                string postbody = "MyPostText";
+                AsyncHttp ahttp = new AsyncHttp(url, headers, postbody);
 
                 _cts = new CancellationTokenSource();
 
