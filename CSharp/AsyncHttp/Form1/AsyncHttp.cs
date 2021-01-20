@@ -55,12 +55,17 @@ namespace ZjbLib
 
         }
 
-        private string _url;
-        private HttpWebRequest _webreq;
-        private string _postbody_text;
-        private byte[] _postbody_bytes;
+        public string _url { get; private set; }
 
-        private byte[] _respbody_bytes;
+        public string _postbody_text { get; private set; }
+
+        public byte[] _postbody_bytes { get; private set; }
+
+        public byte[] _respbody_bytes { get; private set; }
+
+        public string _respbody_text { get; private set; }
+
+        private HttpWebRequest _webreq;
 
         public HttpWebRequest webreq
         {
@@ -72,15 +77,15 @@ namespace ZjbLib
         {
             byte[] bodybytes = await Start(ct, timeout_millisec);
 
-            string bodytext = Encoding.UTF8.GetString(bodybytes);
-            return bodytext;
+            _respbody_text = Encoding.UTF8.GetString(bodybytes);
+            return _respbody_text;
         }
 
         public async Task<byte[]> Start(CancellationToken ct, int timeout_millisec)
         {
             try
             {
-                if(_webreq.Method==WebRequestMethods.Http.Post)
+                if (_webreq.Method == WebRequestMethods.Http.Post)
                 {
                     Stream postStream = await _webreq.GetRequestStreamAsync(); // todo cts
                     // -- This initiates an http connection to the server, and if connect success,
@@ -94,8 +99,8 @@ namespace ZjbLib
                     }
                 }
 
-                WebResponse webres = await _webreq.GetResponseAsync();
-                using (webres)
+                WebResponse webresp = await _webreq.GetResponseAsync();
+                using (webresp)
                 {
                     // Get HTTP response body Stream object, so that we can read the response body
                     // piece by piece from the Stream object.
@@ -103,7 +108,7 @@ namespace ZjbLib
                     // GetResponseStream() never block, and slow reading of http body is deferred to
                     // stream reading.
 
-                    Stream httpbodys = webres.GetResponseStream();
+                    Stream httpbodys = webresp.GetResponseStream();
 
                     // Since we cannot know in advance how long the http body is, especially for
                     // "chunked" transferring, so we need a temp stream as our own buffer.
@@ -119,8 +124,11 @@ namespace ZjbLib
                 Console.WriteLine(e);
                 throw;
             }
+            finally
+            {
+                // WebRequest object does not need Dispose, bcz it is NOT a resource-taking object.
+            }
 
-//            return _respbody_bytes;
         }
 
         #region AUX

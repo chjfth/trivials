@@ -93,11 +93,25 @@ namespace prjSkeleton
             InitializeComponent();
         }
 
-        private void btn1_Click(object sender, EventArgs e)
+        private void btnStart_Click(object sender, EventArgs e)
         {
-            logtid("btn1_Click");
+            if (_tskHttp!=null)
+            {
+                Utils.WarnMsg("Task already running.");
+                return;
+            }
 
-            TestHttp();
+            StartHttp();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (_tskHttp == null)
+            {
+                Utils.WarnMsg("Task not running yet. Nothing to cancel.");
+            }
+
+            CancelHttp();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -107,37 +121,67 @@ namespace prjSkeleton
 
         ////
 
+        private Task<string> _tskHttp;
         private CancellationTokenSource _cts;
 
-        async void TestHttp()
+        async void StartHttp()
         {
-            string url = "http://10.22.3.92:2017";
-            AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
-            {
-                {
-                    HttpRequestHeader.UserAgent,
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0) like Gecko"
-                },
-            };
-
+            // NOTE: For an `async void` function, we have to wrap all its code 
+            // inside try-catch-block, so that exception does NOT leak into unknown world.
             try
             {
+                //string url = "http://10.22.3.92:2017/";
+                string url = "http://10.22.3.84:8000/abc";
+
+                AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
+                {
+                    {
+                        HttpRequestHeader.UserAgent,
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0) like Gecko"
+                    },
+                };
+
                 AsyncHttp ahttp = new AsyncHttp(url, headers, null);
 
                 _cts = new CancellationTokenSource();
 
                 //byte[] rsbytes = await ahttp.Start(_cts.Token, 15000);
 
+                logtid("HTTP starts.");
 
-                string body = await ahttp.StartAsText(_cts.Token, 15000);
+                _tskHttp = ahttp.StartAsText(_cts.Token, 9900);
+                string body = await _tskHttp;
+
+                logtid(
+                    $"HTTP success. Body bytes: {ahttp._respbody_bytes.Length}, body chars: {ahttp._respbody_text.Length}");
             }
             catch (Exception e)
             {
+                logtid("HTTP fails with exception.");
+
                 string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
-                MessageBox.Show(this, info, "Exception occured.",
+                MessageBox.Show(this, info, "Exception occurred.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                _tskHttp.Dispose();
+                _tskHttp = null;
+            } // try-block end
 
+        } // async function end
+
+        async void CancelHttp()
+        {
+            try
+            {
+                _cts.Cancel();
+            }
+            catch (Exception e)
+            {
+                logtid("Unexpect! Exception in CancelHttp(). Program BUG!");
+            }
         }
+
     }
 }
