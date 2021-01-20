@@ -97,17 +97,7 @@ namespace prjSkeleton
         {
             logtid("btn1_Click");
 
-            try
-            {
-                StartHttp();
-            }
-            catch (Exception exception)
-            {
-                // STRANG! I cannot catch this! C# BUG?
-                Console.WriteLine(exception);
-                throw;
-            }
-                
+            TestHttp();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -119,7 +109,7 @@ namespace prjSkeleton
 
         private CancellationTokenSource _cts;
 
-        async Task StartHttp()
+        async void TestHttp()
         {
             string url = "http://10.22.3.92:2017";
             AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
@@ -132,16 +122,20 @@ namespace prjSkeleton
 
             try
             {
-                AsyncHttp ashttp = new AsyncHttp(url, headers, null);
+                AsyncHttp ahttp = new AsyncHttp(url, headers, null);
 
                 _cts = new CancellationTokenSource();
 
-                byte[] rsbytes = await ashttp.Start(_cts.Token, 15000);
+                //byte[] rsbytes = await ahttp.Start(_cts.Token, 15000);
+
+
+                string body = await ahttp.StartAsText(_cts.Token, 15000);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
+                MessageBox.Show(this, info, "Exception occured.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
