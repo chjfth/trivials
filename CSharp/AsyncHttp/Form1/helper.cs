@@ -11,7 +11,18 @@ using System.Windows.Forms;
 
 namespace ZjbLib
 {
-    class Utils
+    /// <summary>
+    /// HTTP related Utils
+    /// </summary>
+    static partial class Utils
+    {
+//        public static 
+    }
+
+    /// <summary>
+    /// MessageBox Utils
+    /// </summary>
+    static partial class Utils
     {
         public static void ErrorMsg(string err)
         {

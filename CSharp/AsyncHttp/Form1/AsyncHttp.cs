@@ -77,29 +77,43 @@ namespace ZjbLib
         {
             byte[] bodybytes = await Start(ct, timeout_millisec);
 
-            _respbody_text = Encoding.UTF8.GetString(bodybytes);
-            return _respbody_text;
+            if (bodybytes != null)
+            {
+                _respbody_text = Encoding.UTF8.GetString(bodybytes);
+                return _respbody_text;
+            }
+            else
+                return null;
         }
 
         public async Task<byte[]> Start(CancellationToken ct, int timeout_millisec)
         {
-            try
+            Task tskTimeout = Task.Delay(TimeSpan.FromMilliseconds(timeout_millisec), ct);
+
+            if (_webreq.Method == WebRequestMethods.Http.Post)
             {
-                if (_webreq.Method == WebRequestMethods.Http.Post)
+                Stream postStream = await _webreq.GetRequestStreamAsync(); // todo cts
+                // -- This initiates an http connection to the server, and if connect success,
+                // the http headers will be sent to server automatically.
+
+                using (postStream)
                 {
-                    Stream postStream = await _webreq.GetRequestStreamAsync(); // todo cts
-                    // -- This initiates an http connection to the server, and if connect success,
-                    // the http headers will be sent to server automatically.
+                    // Closing postStream tells the system we have POSTed all http body bytes.
 
-                    using (postStream)
-                    {
-                        // Closing postStream tells the system we have POSTed all http body bytes.
-
-                        await postStream.WriteAsync(_postbody_bytes, 0, _postbody_bytes.Length, ct);
-                    }
+                    await postStream.WriteAsync(_postbody_bytes, 0, _postbody_bytes.Length, ct);
                 }
+            }
 
-                WebResponse webresp = await _webreq.GetResponseAsync();
+            // WebRequest.GetResponseAsync() does not support Cancellation, 
+            // so we use a Delay Task to help implement the timeout. Works very well.
+
+            Task<WebResponse> tskWeb = _webreq.GetResponseAsync();
+
+            Task tskCompleted = await Task.WhenAny(tskWeb, tskTimeout);
+
+            if (tskCompleted == tskWeb)
+            {
+                WebResponse webresp = tskWeb.Result;
                 using (webresp)
                 {
                     // Get HTTP response body Stream object, so that we can read the response body
@@ -113,20 +127,42 @@ namespace ZjbLib
                     // Since we cannot know in advance how long the http body is, especially for
                     // "chunked" transferring, so we need a temp stream as our own buffer.
                     MemoryStream tempbodys = new MemoryStream();
-                    await httpbodys.CopyToAsync(tempbodys, 81920, ct);
 
-                    _respbody_bytes = tempbodys.GetBuffer();
-                    return _respbody_bytes;
+                    Task tskRecvBody = httpbodys.CopyToAsync(tempbodys, 81920, ct);
+
+                    tskCompleted = await Task.WhenAny(tskRecvBody, tskTimeout);
+
+                    if (tskCompleted == tskRecvBody)
+                    {
+                        _respbody_bytes = tempbodys.GetBuffer();
+                        return _respbody_bytes;
+                    }
+                    else
+                    {
+                        // Receiving body timeout
+                        _webreq.Abort();
+                        await tskRecvBody; 
+
+                        // todo: Save partial recv body
+                        _respbody_bytes = tempbodys.GetBuffer();
+                        return null;
+                    }
                 }
             }
-            catch (WebException e)
+            else
             {
-                Console.WriteLine(e);
-                throw;
-            }
-            finally
-            {
-                // WebRequest object does not need Dispose, bcz it is NOT a resource-taking object.
+// TODO: add logging facility to know the detailed timing
+                // Timeout. So we need to cancel(Abort) our "true" Task in turn.
+
+                // Hope this aborts EVERYTHING, inc DNS resolving, TCP connect,
+                // SSL certificate verification etc.
+                _webreq.Abort();
+
+                // The calm down may not be instant, so we still need to wait for true 
+                // WebRequest task finish.
+                await tskWeb;
+
+                return null;
             }
 
         }

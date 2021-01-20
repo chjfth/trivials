@@ -157,11 +157,24 @@ namespace prjSkeleton
             }
             catch (Exception e)
             {
-                logtid("HTTP fails with exception.");
+                if (e is WebException && 
+                    ((WebException) e).Status == WebExceptionStatus.RequestCanceled
+                    )
+                {
+                    logtid("HTTP request cancelled.");
 
-                string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
-                MessageBox.Show(this, info, "Exception occurred.",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
+                    MessageBox.Show(this, info, "Woo... Exception occurred.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    logtid("HTTP fails with exception.");
+
+                    string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
+                    MessageBox.Show(this, info, "Bad... Exception occurred.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             finally
             {
@@ -171,7 +184,7 @@ namespace prjSkeleton
 
         } // async function end
 
-        async void CancelHttp()
+        void CancelHttp()
         {
             try
             {
@@ -180,6 +193,7 @@ namespace prjSkeleton
             catch (Exception e)
             {
                 logtid("Unexpect! Exception in CancelHttp(). Program BUG!");
+                Utils.ErrorMsg(e.Message);
             }
         }
 
