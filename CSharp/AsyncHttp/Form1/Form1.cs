@@ -166,7 +166,14 @@ namespace prjSkeleton
                     logtid("HTTP request cancelled.");
 
                     string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
-                    MessageBox.Show(this, info, "Woo... Exception occurred.",
+                    MessageBox.Show(this, info, "Whoa... Exception occurred.",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else if (e is TimeoutException)
+                {
+                    logtid("HTTP request timeout.");
+                    string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
+                    MessageBox.Show(this, info, "Whoa... Exception occurred.",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else

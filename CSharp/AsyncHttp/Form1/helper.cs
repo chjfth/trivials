@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -26,7 +27,9 @@ namespace ZjbLib
         /// <param name="ct"></param>
         /// <param name="timeout_millisec"></param>
         /// <returns>The same meaning as tskOngoing's original semantics.
-        /// Return TResult value on success, or throw an exception on failure.</returns>
+        /// Return TResult value on success, or throw an exception on failure.
+        /// Will throw TimeoutException on timeout.
+        /// </returns>
         public async static Task<TResult> WebRequest_TaskTimeout<TResult>(
             WebRequest webreq, 
             Task<TResult> tskOngoing,
@@ -52,10 +55,18 @@ namespace ZjbLib
                 // SSL certificate verification etc.
                 webreq.Abort();
 
+                // Here, distinguish whether we report to user Cancelled or Timed-out.
+                if (tskTimeout.Status == TaskStatus.RanToCompletion)
+                {
+                    string info = $"Whoa! WebRequest operation timed out after {timeout_millisec} milliseconds.";
+                    throw new TimeoutException(info);
+                }
+
                 // We still need to wait for the true result of the webreq.
                 // This may give our success result,
                 // or an WebException with WebExceptionStatus.RequestCanceled .
                 TResult result = await tskOngoing;
+
                 return result;
             }
         }
