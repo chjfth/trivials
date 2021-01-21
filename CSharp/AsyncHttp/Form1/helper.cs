@@ -67,11 +67,11 @@ namespace ZjbLib
             int timeout_millisec
         )
         {
-            Task<object> tskhelper = TaskTFromTask(tskOngoing);
+            Task<object> tskhelper = TaskT_FromTask(tskOngoing);
             await WebRequest_TaskTimeout(webreq, tskhelper, ct, timeout_millisec);
         }
 
-        public static Task<object> TaskTFromTask(Task origtask)
+        public static Task<object> TaskT_FromTask(Task origtask)
         {
             // Hint from [CSNUT7] p613
 

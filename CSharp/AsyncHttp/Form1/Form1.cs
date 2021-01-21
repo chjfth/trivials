@@ -151,7 +151,7 @@ namespace prjSkeleton
 
                 logtid("HTTP starts.");
 
-                _tskHttp = ahttp.StartAsText(_cts.Token, 9900);
+                _tskHttp = ahttp.StartAsText(_cts.Token, 3300);
                 string body = await _tskHttp;
 
                 logtid(
