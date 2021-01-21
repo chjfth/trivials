@@ -95,7 +95,7 @@ namespace csCancelTask
         {
             var token = new MyCancellationToken();
 
-            Task.Delay(2000).ContinueWith(ant => 
+            var tskConti = Task.Delay(2000).ContinueWith(ant => 
                 token.Cancel()
                 );   // Tell it to cancel in two seconds.
 
@@ -140,7 +140,7 @@ namespace csCancelTask
         {
             var cancelSource = new CancellationTokenSource();
 
-            Task.Delay(2000).ContinueWith(ant => 
+            var tskConti = Task.Delay(2000).ContinueWith(ant => 
                 cancelSource.Cancel()
                 );   // Tell it to cancel in two seconds.
 
