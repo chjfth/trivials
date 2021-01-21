@@ -67,21 +67,27 @@ namespace ZjbLib
             int timeout_millisec
         )
         {
-            //[2020-01-20] Q: Can I avoid duplicating the generic WebRequest_TaskTimeout<TResult>'s code?
+            Task<object> tskhelper = TaskTFromTask(tskOngoing);
+            await WebRequest_TaskTimeout(webreq, tskhelper, ct, timeout_millisec);
+        }
 
-            Task tskTimeout = Task.Delay(TimeSpan.FromMilliseconds(timeout_millisec), ct);
+        public static Task<object> TaskTFromTask(Task origtask)
+        {
+            // Hint from [CSNUT7] p613
 
-            Task tskCompleted = await Task.WhenAny(tskOngoing, tskTimeout);
+            var tcs = new TaskCompletionSource<object>(); // mants: manual Task source
 
-            if (tskCompleted == tskOngoing)
+            origtask.ContinueWith(antecedent =>
             {
-            }
-            else
-            {
-                webreq.Abort();
-                await tskOngoing;
-            }
-            return;
+                if (antecedent.IsCanceled)
+                    tcs.TrySetCanceled();
+                else if (antecedent.IsFaulted)
+                    tcs.TrySetException(antecedent.Exception.InnerException);
+                else
+                    tcs.TrySetResult(null);
+            });
+
+            return tcs.Task;
         }
 
     }
