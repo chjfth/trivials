@@ -149,9 +149,9 @@ namespace prjSkeleton
 
                 //byte[] rsbytes = await ahttp.Start(_cts.Token, 15000);
 
-                logtid("HTTP starts.");
+                logtid($"HTTP starts. {url}");
 
-                _tskHttp = ahttp.StartAsText(_cts.Token, 3300);
+                _tskHttp = ahttp.StartAsText(_cts.Token, 9900);
                 string body = await _tskHttp;
 
                 logtid(
@@ -197,6 +197,7 @@ namespace prjSkeleton
         {
             try
             {
+                logtid("Requesting Cancel.");
                 _cts.Cancel();
             }
             catch (Exception e)
