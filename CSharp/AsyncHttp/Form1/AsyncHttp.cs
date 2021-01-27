@@ -9,6 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// AsyncHttp TODO:
+// (1) Accept a generator for sourcing mass HTTP POST bytes from client.
+// (2) Accept a delegate to sinking mass HTTP response bytes to client.
+
 namespace ZjbLib
 {
     class AsyncHttp
@@ -101,7 +105,8 @@ namespace ZjbLib
                 {
                     // Closing postStream tells the system we have POSTed all http body bytes.
 
-                    await postStream.WriteAsync(_postbody_bytes, 0, _postbody_bytes.Length, ct);
+                    Task tskPost = postStream.WriteAsync(_postbody_bytes, 0, _postbody_bytes.Length);
+                    await Utils.WebRequest_TaskTimeout(_webreq, tskPost, ct, timeout_millisec);
                 }
             }
 
@@ -124,8 +129,7 @@ namespace ZjbLib
                 // "chunked" transferring, so we need a temp stream as our own buffer.
                 MemoryStream tempbodys = new MemoryStream();
 
-
-                Task tskRecvBody = httpbodys.CopyToAsync(tempbodys, 81920, ct);
+                Task tskRecvBody = httpbodys.CopyToAsync(tempbodys, 81920);
                 await Utils.WebRequest_TaskTimeout(_webreq, tskRecvBody, ct, timeout_millisec);
                 
                 _respbody_bytes = tempbodys.GetBuffer();

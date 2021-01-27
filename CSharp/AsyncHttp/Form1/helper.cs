@@ -32,7 +32,7 @@ namespace ZjbLib
         /// </returns>
         public async static Task<TResult> WebRequest_TaskTimeout<TResult>(
             WebRequest webreq, 
-            Task<TResult> tskOngoing,
+            Task<TResult> tskOngoing, // how do I easily recognize webreq & tskOngoing are of the same source?
             CancellationToken ct,
             int timeout_millisec
         )
@@ -45,14 +45,19 @@ namespace ZjbLib
 
             if (tskCompleted == tskOngoing)
             {
+                // TODO: We should cancel the Delay Task.
+
                 return tskOngoing.Result;
             }
             else
             {
                 // Timeout. So we need to cancel(abort) our "true" Task in turn.
 
+                //// Thread.Sleep(1000); // Enable this in hope to see Abort() and success result.
+
                 // Hope this aborts EVERYTHING, inc DNS resolving, TCP connect,
                 // SSL certificate verification etc.
+
                 webreq.Abort();
 
                 // Here, distinguish whether we report to user Cancelled or Timed-out.
@@ -64,7 +69,7 @@ namespace ZjbLib
 
                 // We still need to wait for the true result of the webreq.
                 // This may give our success result,
-                // or an WebException with WebExceptionStatus.RequestCanceled .
+                // or throw an WebException with WebExceptionStatus.RequestCanceled .
                 TResult result = await tskOngoing;
 
                 return result;
