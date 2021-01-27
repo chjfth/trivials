@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -131,7 +132,22 @@ namespace ZjbLib
 
                 Task tskRecvBody = httpbodys.CopyToAsync(tempbodys, 81920);
                 await Utils.WebRequest_TaskTimeout(_webreq, tskRecvBody, ct, timeout_millisec);
-                
+
+                /* // the verbose way:
+                byte[] tmpbuf = new byte[81920];
+                int ntotal = 0;
+                while (true)
+                {
+                    int nbytes = await httpbodys.ReadAsync(tmpbuf, 0, tmpbuf.Length);
+                    Debug.Assert(nbytes>=0);
+                    if (nbytes == 0)
+                        break;
+                    tempbodys.Write(tmpbuf, 0, nbytes);
+                    ntotal += nbytes;
+                }
+                */
+
+                tempbodys.Capacity = (int)tempbodys.Length;
                 _respbody_bytes = tempbodys.GetBuffer();
                 return _respbody_bytes;
             }

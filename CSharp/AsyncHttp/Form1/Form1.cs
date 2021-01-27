@@ -104,6 +104,17 @@ namespace prjSkeleton
             StartHttp();
         }
 
+        private void btnStress_Click(object sender, EventArgs e)
+        {
+            btnStart.Enabled = false;
+            btnStress.Enabled = false;
+
+            StartStress();
+
+            btnStart.Enabled = true;
+            btnStress.Enabled = true;
+        }
+
         private void btnCancel_Click(object sender, EventArgs e)
         {
             if (_tskHttp == null)
@@ -120,6 +131,9 @@ namespace prjSkeleton
         }
 
         ////
+        //string url = "http://10.22.3.92:2017/";
+        string url = "http://10.22.3.84:8000/abc";
+        //string url = "http://10.22.244.44:4444/";
 
         private Task<string> _tskHttp;
         private CancellationTokenSource _cts;
@@ -130,10 +144,6 @@ namespace prjSkeleton
             // inside try-catch-block, so that exception does NOT leak into unknown world.
             try
             {
-                //string url = "http://10.22.3.92:2017/";
-                string url = "http://10.22.3.84:8000/abc";
-                //string url = "http://10.22.244.44:4444/";
-
                 AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
                 {
                     {
@@ -143,6 +153,8 @@ namespace prjSkeleton
                 };
 
                 string postbody = "MyPostText";
+                postbody = null;
+
                 AsyncHttp ahttp = new AsyncHttp(url, headers, postbody);
 
                 _cts = new CancellationTokenSource();
@@ -159,31 +171,7 @@ namespace prjSkeleton
             }
             catch (Exception e)
             {
-                if (e is WebException && 
-                    ((WebException) e).Status == WebExceptionStatus.RequestCanceled
-                    )
-                {
-                    logtid("HTTP request cancelled.");
-
-                    string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
-                    MessageBox.Show(this, info, "Whoa... Exception occurred.",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else if (e is TimeoutException)
-                {
-                    logtid("HTTP request timeout.");
-                    string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
-                    MessageBox.Show(this, info, "Whoa... Exception occurred.",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    logtid("HTTP fails with exception.");
-
-                    string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
-                    MessageBox.Show(this, info, "Bad... Exception occurred.",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                UIPromptException(e);
             }
             finally
             {
@@ -192,6 +180,55 @@ namespace prjSkeleton
             } // try-block end
 
         } // async function end
+
+        async void StartStress()
+        {
+            try
+            {
+                long mem_start = GC.GetTotalMemory(true);
+
+                AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
+                {
+                    {
+                        HttpRequestHeader.UserAgent,
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0) like Gecko"
+                    },
+                };
+
+                string postbody = "MyPostText";
+                postbody = null; 
+
+                for (int i=0; i<1000; i++)
+                {
+                    AsyncHttp ahttp = new AsyncHttp(url, headers, postbody);
+
+                    _cts = new CancellationTokenSource();
+
+                    logtid($"HTTP starts. {url}");
+
+                    _tskHttp = ahttp.StartAsText(_cts.Token, 1900);
+                    string body = await _tskHttp;
+
+                    logtid(
+                        $"[{i}]HTTP success. Body bytes: {ahttp._respbody_bytes.Length}, body chars: {ahttp._respbody_text.Length}");
+
+                }
+
+                long mem_end = GC.GetTotalMemory(true);
+                long mem_inc = mem_end - mem_start;
+                logtid($"Mem-start: {mem_start} , Mem-end: {mem_end} . Increase: {mem_inc}");
+            }
+            catch (Exception e)
+            {
+                UIPromptException(e);
+            }
+            finally
+            {
+//                _tskHttp.Dispose();
+                _tskHttp = null;
+            } // try-block end
+
+        }
 
         void CancelHttp()
         {
@@ -204,6 +241,35 @@ namespace prjSkeleton
             {
                 logtid("Unexpect! Exception in CancelHttp(). Program BUG!");
                 Utils.ErrorMsg(e.Message);
+            }
+        }
+
+        void UIPromptException(Exception e)
+        {
+            if (e is WebException &&
+                ((WebException)e).Status == WebExceptionStatus.RequestCanceled
+            )
+            {
+                logtid("HTTP request cancelled.");
+
+                string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
+                MessageBox.Show(this, info, "Whoa... Exception occurred.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (e is TimeoutException)
+            {
+                logtid("HTTP request timeout.");
+                string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
+                MessageBox.Show(this, info, "Whoa... Exception occurred.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                logtid("HTTP fails with exception.");
+
+                string info = $"{e.Message}\r\n\r\n{e.StackTrace}";
+                MessageBox.Show(this, info, "Bad... Exception occurred.",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

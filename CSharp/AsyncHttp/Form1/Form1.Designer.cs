@@ -35,6 +35,7 @@ namespace prjSkeleton
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
+            this.btnStress = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -74,6 +75,7 @@ namespace prjSkeleton
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnStress);
             this.panel2.Controls.Add(this.btnCancel);
             this.panel2.Controls.Add(this.btnStart);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
@@ -102,6 +104,16 @@ namespace prjSkeleton
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
+            // btnStress
+            // 
+            this.btnStress.Location = new System.Drawing.Point(12, 95);
+            this.btnStress.Name = "btnStress";
+            this.btnStress.Size = new System.Drawing.Size(122, 25);
+            this.btnStress.TabIndex = 2;
+            this.btnStress.Text = "S&tress HTTP";
+            this.btnStress.UseVisualStyleBackColor = true;
+            this.btnStress.Click += new System.EventHandler(this.btnStress_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -127,6 +139,7 @@ namespace prjSkeleton
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnStress;
     }
 }
 
