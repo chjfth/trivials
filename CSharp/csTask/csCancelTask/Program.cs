@@ -140,9 +140,24 @@ namespace csCancelTask
         {
             var cancelSource = new CancellationTokenSource();
 
-            var tskConti = Task.Delay(2000).ContinueWith(ant => 
-                cancelSource.Cancel()
-                );   // Tell it to cancel in two seconds.
+            var tskConti = Task.Delay(2000).ContinueWith(ant =>
+            {
+                logtid("p607 execute cancelling...");
+                cancelSource.Cancel();
+            });   // Tell it to cancel in two seconds.
+
+            cancelSource.Token.Register(() =>
+            {
+                logtid("cancelSource.Token Registered-action 1 executing ...");
+                Thread.Sleep(100);
+                logtid("cancelSource.Token Registered-action 1 executing done.");
+            });
+            cancelSource.Token.Register(() =>
+            {
+                logtid("cancelSource.Token Registered-action 2 executing ...");
+                Thread.Sleep(100);
+                logtid("cancelSource.Token Registered-action 2 executing done.");
+            });
 
             await p607_FooAsync(cancelSource.Token);
         }
