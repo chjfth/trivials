@@ -89,6 +89,8 @@ namespace prjSkeleton
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            ckbDoGC.Checked = true;
+
             long mem_used = GC.GetTotalMemory(true);
             logtid($"Program start. GC.GetTotalMemory()={mem_used}");
         }
@@ -141,22 +143,25 @@ namespace prjSkeleton
 
         void TestOnce(bool do_cancel)
         {
+            bool isGC = ckbDoGC.Checked;
+
             btnStartNoCancel.Enabled = false;
             btnStartWithCancel.Enabled = false;
 
-            char mark = do_cancel ? '-' : '*';
+            string mark = isGC ? "[GC]" : "";
+            mark += do_cancel ? '-' : '*';
 
-            long m1 = GC.GetTotalMemory(true);
+            long m1 = GC.GetTotalMemory(isGC);
             logtid($"{mark}MEM1: {m1}");
 
             CrazyTask(do_cancel);
 
-            long m2 = GC.GetTotalMemory(true);
+            long m2 = GC.GetTotalMemory(isGC);
             logtid($"{mark}MEM2: {m2}");
 
             Thread.Sleep(s_mainthread_wait_msec); // 2000
 
-            long m3 = GC.GetTotalMemory(true);
+            long m3 = GC.GetTotalMemory(isGC);
             logtid($"{mark}MEM3: {m3}");
 
             btnStartNoCancel.Enabled = true;

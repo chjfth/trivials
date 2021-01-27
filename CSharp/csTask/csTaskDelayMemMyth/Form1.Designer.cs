@@ -35,6 +35,7 @@ namespace prjSkeleton
             this.panel2 = new System.Windows.Forms.Panel();
             this.btnStartWithCancel = new System.Windows.Forms.Button();
             this.btnStartNoCancel = new System.Windows.Forms.Button();
+            this.ckbDoGC = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -74,6 +75,7 @@ namespace prjSkeleton
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.ckbDoGC);
             this.panel2.Controls.Add(this.btnStartWithCancel);
             this.panel2.Controls.Add(this.btnStartNoCancel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
@@ -102,6 +104,16 @@ namespace prjSkeleton
             this.btnStartNoCancel.UseVisualStyleBackColor = true;
             this.btnStartNoCancel.Click += new System.EventHandler(this.btnStartNoCancel_Click);
             // 
+            // ckbDoGC
+            // 
+            this.ckbDoGC.AutoSize = true;
+            this.ckbDoGC.Location = new System.Drawing.Point(13, 107);
+            this.ckbDoGC.Name = "ckbDoGC";
+            this.ckbDoGC.Size = new System.Drawing.Size(128, 17);
+            this.ckbDoGC.TabIndex = 2;
+            this.ckbDoGC.Text = "GC before mem query";
+            this.ckbDoGC.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -115,6 +127,7 @@ namespace prjSkeleton
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -127,6 +140,7 @@ namespace prjSkeleton
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button btnStartNoCancel;
         private System.Windows.Forms.Button btnStartWithCancel;
+        private System.Windows.Forms.CheckBox ckbDoGC;
     }
 }
 
