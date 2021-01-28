@@ -102,10 +102,12 @@ listBox.SelectionChanged += delegate { RunAgain(); };
 void RunAgain()
 {
 	btnRunAgain.Enabled = false;
+	listBox.Enabled = false;
 	
 	ProbeResolution(ops[(string)listBox.SelectedOption]);
 	
 	btnRunAgain.Enabled = true;
+	listBox.Enabled = true;
 }
 
 "Select a Ticking method to go:".Dump();
