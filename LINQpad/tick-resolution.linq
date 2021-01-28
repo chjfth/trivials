@@ -93,8 +93,9 @@ var ops = new Dictionary<string, Func<long>>()
 
 string[] menuitems = ops.Keys.ToArray();
 var listBox = new LINQPad.Controls.SelectBox(menuitems, 0);
+var btnRunAgain = new Button("Run again");
+btnRunAgain.Click += delegate { RunAgain(); };
 listBox.SelectionChanged += delegate { RunAgain(); };
-var btnRunAgain = new Button("Run again", btn=>RunAgain());
 
 // Show Question and Answer box
 
