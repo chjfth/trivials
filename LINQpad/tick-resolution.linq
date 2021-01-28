@@ -1,4 +1,6 @@
-<Query Kind="Statements" />
+<Query Kind="Statements">
+  <Namespace>LINQPad.Controls</Namespace>
+</Query>
 
 
 static long UintTickCount()
@@ -13,14 +15,14 @@ static long UintTickCount()
 // Create Answer box
 
 var listTicks = new List<string>();
-var listSummary = new List<string>();
-var yourResult = new DumpContainer(listTicks);
-yourResult.AppendContent(listSummary);
+var lblSummary = new Label("...");
+var yourResult = new DumpContainer(lblSummary);
+yourResult.AppendContent(listTicks);
 
 void ProbeResolution(Func<long> gettick)
 {
 	listTicks.Clear();
-	listSummary.Clear();
+	lblSummary.Text = "Probing...";
 	
 	long millisec_start = UintTickCount(); // use this as wall time elapse
 	
@@ -54,7 +56,7 @@ void ProbeResolution(Func<long> gettick)
 	// -- convert to uint so that we can cope with 32-bit TickCount wrap around.
 
 	long ticks_per_second = 1000 * total_ticks / millisec_elapsed;
-	listSummary.Add($"Total run {millisec_elapsed} millisec , Ticks per second: {ticks_per_second}");
+	lblSummary.Text = $"Total run {millisec_elapsed} millisec , Ticks per second: {ticks_per_second}";
 	yourResult.Refresh();
 }
 
