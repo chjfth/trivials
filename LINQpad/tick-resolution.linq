@@ -83,25 +83,32 @@ swatch.Start();
 
 var ops = new Dictionary<string, Func<long>>()
 {
-	["DateTime.Now.Ticks"] = () => DateTime.Now.Ticks,
 	["Environment.TickCount"] = UintTickCount,
+	["DateTime.Now.Ticks"] = () => DateTime.Now.Ticks,
 	["Stopwatch.ElapsedTicks"] = () => swatch.ElapsedTicks,
 	["Stopwatch.ElapsedMilliseconds"] = () => swatch.ElapsedMilliseconds ,
 };
 
-var yourChoice = new DumpContainer();
+//var yourChoice = new DumpContainer();
 
 string[] menuitems = ops.Keys.ToArray();
-var listBox = new LINQPad.Controls.SelectBox(menuitems, 0, 
-	lb => ProbeResolution(ops[(string)lb.SelectedOption])
-	);
+var listBox = new LINQPad.Controls.SelectBox(menuitems, 0);
+listBox.SelectionChanged += delegate { RunAgain(); };
+
 
 // Show Question and Answer box
 
+void RunAgain()
+{
+	ProbeResolution(ops[(string)listBox.SelectedOption]);
+}
+
 "Select a Ticking method to go:".Dump();
 
-listBox.Dump();
+new WrapPanel("1em",
+	listBox,
+	new Button("Run again", btn=>RunAgain())
+	).Dump();
+//
 yourResult.Dump();
-
-ProbeResolution(ops[(string)listBox.SelectedOption]);
-
+RunAgain();
