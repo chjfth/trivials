@@ -37,9 +37,9 @@ void ProbeResolution(Func<long> gettick)
 
 	// We'll run at least two seconds.
 	int inner_cycles = 100;
-	for(int outer=0; outer<50; outer++)
+	for(int outer=0; outer<500; outer++)
 	{
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < inner_cycles; i++)
 		{
 			long nowtick;
 			while (true)
@@ -53,11 +53,12 @@ void ProbeResolution(Func<long> gettick)
 			int idx_total = outer*inner_cycles + i;
 			
 			listTicks.Add($"[{idx_total}] {nowtick} (+{nowtick - prevtick})");
-			yourResult.Refresh();
 	
 			prevtick = nowtick;
 		}
-		
+
+		yourResult.Refresh();
+
 		if(WalltimeMillisec()-millisec_start > 2000)
 			break;
 	}
@@ -112,7 +113,7 @@ void RunAgain()
 
 "Select a Ticking method to go:".Dump();
 
-new WrapPanel("2em", listBox, btnRunAgain).Dump();
+new WrapPanel("1em", listBox, btnRunAgain).Dump();
 //
 yourResult.Dump();
 RunAgain();
