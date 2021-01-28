@@ -88,13 +88,6 @@ namespace prjSkeleton
 
         #endregion
 
-        static long TickCountElapsed(int from, int to)
-        {
-            if (to >= from)
-                return (long)to - from;
-            else
-                return (0x100000000 + to) - from;
-        }
         //string url = "http://10.22.3.92:2017/";
         private string url = "http://10.22.3.84:8000/abc";
         //string url = "http://10.22.244.44:4444/";
@@ -203,9 +196,10 @@ namespace prjSkeleton
 
                 bool is_eager_report = ckbEagerReport.Checked;
 
-                int msec_start = Environment.TickCount;
-                int msec_prev = 0;
-                int msec_now = Environment.TickCount;
+                Stopwatch sw = new Stopwatch();
+                sw.Restart();
+                long msec_prev = 0;
+                long msec_now = 0;
 
                 var dict_bytes2count = new Dictionary<int, int>(); // map http response-body bytes to count
 
@@ -248,17 +242,14 @@ namespace prjSkeleton
                     }
                     else // not eager report, report every 1 second
                     {
-                        msec_now = Environment.TickCount;
-                        if (TickCountElapsed(msec_prev, msec_now) >= 1000)
+                        msec_now = sw.ElapsedMilliseconds;
+                        if (msec_now - msec_prev >= 1000)
                         {
                             logtid($"{i+1} success");
                             msec_prev = msec_now;
                         }
                     }
                 }
-
-                msec_now = Environment.TickCount;
-                long msec_cost = TickCountElapsed(msec_start, msec_now);
 
                 // print summary
 
@@ -270,7 +261,7 @@ namespace prjSkeleton
                 }
                 logtid(info);
 
-                logtid($"Total milliseconds cost: {msec_cost}");
+                logtid($"Total milliseconds cost: {sw.ElapsedMilliseconds}");
 
                 long mem_end = GC.GetTotalMemory(true);
                 long mem_inc = mem_end - mem_start;
