@@ -40,6 +40,7 @@ namespace prjSkeleton
             this.lblURL = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.edtStressCycles = new System.Windows.Forms.TextBox();
+            this.ckbEagerReport = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -83,6 +84,7 @@ namespace prjSkeleton
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.ckbEagerReport);
             this.panel2.Controls.Add(this.edtStressCycles);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.btnStress);
@@ -160,6 +162,16 @@ namespace prjSkeleton
             this.edtStressCycles.Size = new System.Drawing.Size(75, 20);
             this.edtStressCycles.TabIndex = 4;
             // 
+            // ckbEagerReport
+            // 
+            this.ckbEagerReport.AutoSize = true;
+            this.ckbEagerReport.Location = new System.Drawing.Point(16, 144);
+            this.ckbEagerReport.Name = "ckbEagerReport";
+            this.ckbEagerReport.Size = new System.Drawing.Size(84, 17);
+            this.ckbEagerReport.TabIndex = 5;
+            this.ckbEagerReport.Text = "&Eager report";
+            this.ckbEagerReport.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -191,6 +203,7 @@ namespace prjSkeleton
         private System.Windows.Forms.TextBox edtURL;
         private System.Windows.Forms.TextBox edtStressCycles;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox ckbEagerReport;
     }
 }
 

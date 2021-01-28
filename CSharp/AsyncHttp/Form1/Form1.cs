@@ -118,12 +118,12 @@ namespace prjSkeleton
             StartHttp();
         }
 
-        private void btnStress_Click(object sender, EventArgs e)
+        private async void btnStress_Click(object sender, EventArgs e)
         {
             btnStart.Enabled = false;
             btnStress.Enabled = false;
 
-            StartStress();
+            await StartStress();
 
             btnStart.Enabled = true;
             btnStress.Enabled = true;
@@ -192,7 +192,7 @@ namespace prjSkeleton
 
         } // async function end
 
-        async void StartStress()
+        async Task StartStress()
         {
             try
             {
@@ -201,6 +201,14 @@ namespace prjSkeleton
 
                 long mem_start = GC.GetTotalMemory(true);
 
+                bool is_eager_report = ckbEagerReport.Checked;
+
+                int msec_start = Environment.TickCount;
+                int msec_prev = 0;
+                int msec_now = Environment.TickCount;
+
+                var dict_bytes2count = new Dictionary<int, int>(); // map http response-body bytes to count
+
                 AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
                 {
                     {
@@ -208,10 +216,6 @@ namespace prjSkeleton
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64; Trident/7.0; rv:11.0) like Gecko"
                     },
                 };
-
-                int msec_start = Environment.TickCount;
-                int msec_prev = 0;
-                int msec_now = Environment.TickCount;
 
                 string postbody = "MyPostText";
                 postbody = null;
@@ -222,22 +226,50 @@ namespace prjSkeleton
 
                     _cts = new CancellationTokenSource();
 
-                    //logtid($"HTTP starts. {url}");
+                    if(is_eager_report)
+                    {
+                        logtid($"HTTP starts. {url}");
+                    }
 
                     _tskHttp = ahttp.StartAsText(_cts.Token, 1900);
                     string body = await _tskHttp;
 
-                    msec_now = Environment.TickCount;
-                    if( TickCountElapsed(msec_prev, msec_now)>=1000 )
+                    int nrbyte = ahttp._respbody_bytes.Length;
+                    int nrchar = ahttp._respbody_text.Length;
+                    if (dict_bytes2count.ContainsKey(nrbyte))
+                        dict_bytes2count[nrbyte]++;
+                    else
+                        dict_bytes2count[nrbyte] = 1;
+
+                    if (is_eager_report)
                     {
                         logtid(
-                            $"[{i}]HTTP success. Body bytes: {ahttp._respbody_bytes.Length}, body chars: {ahttp._respbody_text.Length}");
-                        msec_prev = msec_now;
+                            $"[{i}]HTTP success. Body bytes: {nrbyte}, body chars: {nrchar}");
+                    }
+                    else // not eager report, report every 1 second
+                    {
+                        msec_now = Environment.TickCount;
+                        if (TickCountElapsed(msec_prev, msec_now) >= 1000)
+                        {
+                            logtid($"{i+1} success");
+                            msec_prev = msec_now;
+                        }
                     }
                 }
 
                 msec_now = Environment.TickCount;
                 long msec_cost = TickCountElapsed(msec_start, msec_now);
+
+                // print summary
+
+                string info = "HTTP response summary:\r\n";
+                foreach (int nrbyte in dict_bytes2count.Keys.OrderBy(key => key))
+                {
+                    string oneline = $"    [{nrbyte} bytes] {dict_bytes2count[nrbyte]} occurrence.";
+                    info += oneline + "\r\n";
+                }
+                logtid(info);
+
                 logtid($"Total milliseconds cost: {msec_cost}");
 
                 long mem_end = GC.GetTotalMemory(true);
