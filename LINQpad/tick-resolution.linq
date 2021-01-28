@@ -94,21 +94,22 @@ var ops = new Dictionary<string, Func<long>>()
 string[] menuitems = ops.Keys.ToArray();
 var listBox = new LINQPad.Controls.SelectBox(menuitems, 0);
 listBox.SelectionChanged += delegate { RunAgain(); };
-
+var btnRunAgain = new Button("Run again", btn=>RunAgain());
 
 // Show Question and Answer box
 
 void RunAgain()
 {
+	btnRunAgain.Enabled = false;
+	
 	ProbeResolution(ops[(string)listBox.SelectedOption]);
+	
+	btnRunAgain.Enabled = true;
 }
 
 "Select a Ticking method to go:".Dump();
 
-new WrapPanel("1em",
-	listBox,
-	new Button("Run again", btn=>RunAgain())
-	).Dump();
+new WrapPanel("2em", listBox, btnRunAgain).Dump();
 //
 yourResult.Dump();
 RunAgain();
