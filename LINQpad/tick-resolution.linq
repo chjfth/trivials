@@ -3,7 +3,13 @@
 </Query>
 
 
-static long UintTickCount()
+DateTime dt_origin = DateTime.UtcNow;
+long WalltimeMillisec()
+{
+	return (long)(DateTime.UtcNow - dt_origin).TotalMilliseconds;
+}
+
+static long UintTickCount() // wrapper for Environment.TickCount
 {
 	int tc = Environment.TickCount;
 	if (tc>=0)
@@ -23,35 +29,45 @@ void ProbeResolution(Func<long> gettick)
 {
 	listTicks.Clear();
 	lblSummary.Text = "Probing...";
-	
-	long millisec_start = UintTickCount(); // use this as wall time elapse
-	
-	long starttick = gettick(); 
+
+	long millisec_start = WalltimeMillisec(); // use this as wall time elapse
+
+	long starttick = gettick();
 	long prevtick = starttick;
 
-	for (int i = 0; i < 1000; i++)
+	// We'll run at least two seconds.
+	int inner_cycles = 100;
+	for(int outer=0; outer<50; outer++)
 	{
-		long nowtick;
-		while (true)
+		for (int i = 0; i < 100; i++)
 		{
-			// Stay here until the reported tick move forward.
-			nowtick = gettick();
-			if (nowtick != prevtick)
-				break;
-		}
-
-		listTicks.Add($"[{i}] {nowtick} (+{nowtick - prevtick})");
-		yourResult.Refresh();
-
-		prevtick = nowtick;
-	}
+			long nowtick;
+			while (true)
+			{
+				// Stay here until the reported tick move forward.
+				nowtick = gettick();
+				if (nowtick != prevtick)
+					break;
+			}
 	
+			int idx_total = outer*inner_cycles + i;
+			
+			listTicks.Add($"[{idx_total}] {nowtick} (+{nowtick - prevtick})");
+			yourResult.Refresh();
+	
+			prevtick = nowtick;
+		}
+		
+		if(WalltimeMillisec()-millisec_start > 2000)
+			break;
+	}
+
 	// Let's deduce how many ticks are in a second.
 	
 	long endtick = gettick();
 	long total_ticks = endtick -starttick;
 
-	long millisec_end = UintTickCount(); // use this as wall time elapse
+	long millisec_end = WalltimeMillisec(); 
 	uint millisec_elapsed = (uint)(millisec_end - millisec_start);
 	// -- convert to uint so that we can cope with 32-bit TickCount wrap around.
 
@@ -60,12 +76,17 @@ void ProbeResolution(Func<long> gettick)
 	yourResult.Refresh();
 }
 
+var swatch = new Stopwatch();
+swatch.Start();
+
 // Create Question box
 
 var ops = new Dictionary<string, Func<long>>()
 {
 	["DateTime.Now.Ticks"] = () => DateTime.Now.Ticks,
 	["Environment.TickCount"] = UintTickCount,
+	["Stopwatch.ElapsedTicks"] = () => swatch.ElapsedTicks,
+	["Stopwatch.ElapsedMilliseconds"] = () => swatch.ElapsedMilliseconds ,
 };
 
 var yourChoice = new DumpContainer();
