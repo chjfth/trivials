@@ -54,7 +54,7 @@ void ProbeResolution(Func<long> gettick)
 	// -- convert to uint so that we can cope with 32-bit TickCount wrap around.
 
 	long ticks_per_second = 1000 * total_ticks / millisec_elapsed;
-	listSummary.Add($"Ticks per second: {ticks_per_second}");
+	listSummary.Add($"Total run {millisec_elapsed} millisec , Ticks per second: {ticks_per_second}");
 	yourResult.Refresh();
 }
 
