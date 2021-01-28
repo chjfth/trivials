@@ -88,9 +88,23 @@ namespace prjSkeleton
 
         #endregion
 
+        static long TickCountElapsed(int from, int to)
+        {
+            if (to >= from)
+                return (long)to - from;
+            else
+                return (0x100000000 + to) - from;
+        }
+        //string url = "http://10.22.3.92:2017/";
+        private string url = "http://10.22.3.84:8000/abc";
+        //string url = "http://10.22.244.44:4444/";
+
         public Form1()
         {
             InitializeComponent();
+
+            edtURL.Text = url;
+            edtStressCycles.Text = "1000";
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -130,11 +144,6 @@ namespace prjSkeleton
             logtid($"Form1_Load. Main-thread-id={s_mainthread_tid}");
         }
 
-        ////
-        //string url = "http://10.22.3.92:2017/";
-        string url = "http://10.22.3.84:8000/abc";
-        //string url = "http://10.22.244.44:4444/";
-
         private Task<string> _tskHttp;
         private CancellationTokenSource _cts;
 
@@ -144,6 +153,8 @@ namespace prjSkeleton
             // inside try-catch-block, so that exception does NOT leak into unknown world.
             try
             {
+                string url = edtURL.Text;
+
                 AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
                 {
                     {
@@ -185,6 +196,9 @@ namespace prjSkeleton
         {
             try
             {
+                string url = edtURL.Text;
+                int cycles = int.Parse(edtStressCycles.Text);
+
                 long mem_start = GC.GetTotalMemory(true);
 
                 AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
@@ -195,24 +209,36 @@ namespace prjSkeleton
                     },
                 };
 
-                string postbody = "MyPostText";
-                postbody = null; 
+                int msec_start = Environment.TickCount;
+                int msec_prev = 0;
+                int msec_now = Environment.TickCount;
 
-                for (int i=0; i<1000; i++)
+                string postbody = "MyPostText";
+                postbody = null;
+
+                for (int i=0; i<cycles; i++)
                 {
                     AsyncHttp ahttp = new AsyncHttp(url, headers, postbody);
 
                     _cts = new CancellationTokenSource();
 
-                    logtid($"HTTP starts. {url}");
+                    //logtid($"HTTP starts. {url}");
 
                     _tskHttp = ahttp.StartAsText(_cts.Token, 1900);
                     string body = await _tskHttp;
 
-                    logtid(
-                        $"[{i}]HTTP success. Body bytes: {ahttp._respbody_bytes.Length}, body chars: {ahttp._respbody_text.Length}");
-
+                    msec_now = Environment.TickCount;
+                    if( TickCountElapsed(msec_prev, msec_now)>=1000 )
+                    {
+                        logtid(
+                            $"[{i}]HTTP success. Body bytes: {ahttp._respbody_bytes.Length}, body chars: {ahttp._respbody_text.Length}");
+                        msec_prev = msec_now;
+                    }
                 }
+
+                msec_now = Environment.TickCount;
+                long msec_cost = TickCountElapsed(msec_start, msec_now);
+                logtid($"Total milliseconds cost: {msec_cost}");
 
                 long mem_end = GC.GetTotalMemory(true);
                 long mem_inc = mem_end - mem_start;
