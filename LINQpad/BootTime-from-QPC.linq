@@ -12,7 +12,7 @@ long GetTick_QPC()
 }
 
 DateTime dt_now = DateTime.Now;
-$"Current system time is: {dt_now.ToString("yyyy-MM-dd hh:mm:ss")}".Dump();
+$"Current system time is: {dt_now.ToString("yyyy-MM-dd HH:mm:ss")}".Dump();
 
 long ticks_qpc = GetTick_QPC();
 $"Current QPC value: {ticks_qpc}".Dump();
@@ -21,4 +21,4 @@ DateTime dt_qpc = new DateTime(ticks_qpc);
 
 DateTime dt_deduced_boottime = new DateTime(dt_now.Ticks - ticks_qpc);
 dt_deduced_boottime.Dump("System boot time roughly at:");
-// -- This should closely match that of `net statistics workstation`.
+// -- This should closely match that from `net statistics workstation`.
