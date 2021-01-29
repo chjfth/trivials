@@ -1,7 +1,17 @@
 <Query Kind="Statements">
   <Namespace>LINQPad.Controls</Namespace>
+  <Namespace>System.Runtime.InteropServices</Namespace>
 </Query>
 
+[DllImport("Kernel32.dll", SetLastError = true)]
+static extern bool QueryPerformanceCounter(ref ulong qpcvalue); // import this WinAPI
+
+long GetTick_QPC()
+{
+	ulong qv = 0;
+	bool succ = QueryPerformanceCounter(ref qv);
+	return succ ? (long)qv : 0;
+}
 
 DateTime dt_origin = DateTime.UtcNow;
 long WalltimeMillisec()
@@ -44,21 +54,21 @@ void ProbeResolution(Func<long> gettick)
 			long nowtick;
 			while (true)
 			{
-				// Stay here until the reported tick move forward.
+				// Stay here until the reported tick value moves forward.
 				nowtick = gettick();
 				if (nowtick != prevtick)
 					break;
 			}
 	
 			int idx_total = outer*inner_cycles + i;
-			
+
 			listTicks.Add($"[{idx_total}] {nowtick} (+{nowtick - prevtick})");
-	
+
 			prevtick = nowtick;
 		}
 
 		yourResult.Refresh();
-
+		
 		if(WalltimeMillisec()-millisec_start > 2000)
 			break;
 	}
@@ -87,7 +97,8 @@ var ops = new Dictionary<string, Func<long>>()
 	["Environment.TickCount"] = UintTickCount,
 	["DateTime.Now.Ticks"] = () => DateTime.Now.Ticks,
 	["Stopwatch.ElapsedTicks"] = () => swatch.ElapsedTicks,
-	["Stopwatch.ElapsedMilliseconds"] = () => swatch.ElapsedMilliseconds ,
+	["Stopwatch.ElapsedMilliseconds"] = () => swatch.ElapsedMilliseconds,
+	["QueryPerformanceCounter"] = GetTick_QPC,
 };
 
 //var yourChoice = new DumpContainer();
