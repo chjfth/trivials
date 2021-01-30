@@ -293,7 +293,7 @@ namespace prjSkeleton
                         logtid($"HTTP starts. {url}");
                     }
 
-                    _tskHttp = ahttp.StartAsText(_cts.Token, 1900);
+                    _tskHttp = ahttp.StartAsText(_cts.Token, 6900);
                     string body = await _tskHttp;
 
                     int nrbyte = ahttp._respbody_bytes.Length;

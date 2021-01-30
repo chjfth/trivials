@@ -93,7 +93,7 @@ namespace ZjbLib
 
         public async Task<byte[]> Start(CancellationToken ct, int timeout_millisec)
         {
-            Task tskTimeout = Task.Delay(TimeSpan.FromMilliseconds(timeout_millisec), ct);
+//            Task tskTimeout = Task.Delay(TimeSpan.FromMilliseconds(timeout_millisec), ct);
 
             if (_webreq.Method == WebRequestMethods.Http.Post)
             {

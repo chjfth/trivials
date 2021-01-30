@@ -47,7 +47,7 @@ namespace ZjbLib
                 cts_inner.Cancel() // chain cancellation
             );
 
-            Task tskTimeout = Task.Delay(TimeSpan.FromMilliseconds(timeout_millisec), ct_user);
+            Task tskTimeout = Task.Delay(TimeSpan.FromMilliseconds(timeout_millisec), cts_inner.Token);
 
             Task tskCompleted = await Task.WhenAny(tskOngoing, tskTimeout);
 
