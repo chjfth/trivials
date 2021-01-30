@@ -48,10 +48,10 @@ void Main()
 		int actual;
 		int hresult = NtSetTimerResolution(userval, true, out actual);
 		Debug.Assert(hresult == 0);
-		$"actual value set: {userval} -> {actual}".Dump();
+		$"Request: {userval} -> Actual {actual}".Dump();
 		RefreshReso();
 		textBox.Text = reso.cur.ToString();
-		ResoHint(reso.cur);
+		lblHint.Text = ResoHint(reso.cur);
 	});
 	new WrapPanel("1em", textBox, btnSet).Dump();
 	lblHint.Dump();
