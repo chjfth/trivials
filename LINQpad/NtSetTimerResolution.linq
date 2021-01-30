@@ -38,6 +38,8 @@ void Main()
 	var textBox = new TextBox(reso.cur.ToString(), width: "6em"); 
 	var lblHint = new Label(ResoHint(reso.cur));
 	textBox.TextInput += (sender, args) => {
+		if(textBox.Text=="")
+			return;
 		lblHint.Text = ResoHint(int.Parse(textBox.Text));
 	};
 	var btnSet = new Button("NtSetTimerResolution", onClick: delegate
