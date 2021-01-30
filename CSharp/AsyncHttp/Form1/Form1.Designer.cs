@@ -31,16 +31,18 @@ namespace prjSkeleton
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.lblURL = new System.Windows.Forms.Label();
+            this.edtURL = new System.Windows.Forms.TextBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.ckbEagerReport = new System.Windows.Forms.CheckBox();
+            this.edtStressCycles = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnStress = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
-            this.btnStress = new System.Windows.Forms.Button();
-            this.edtURL = new System.Windows.Forms.TextBox();
-            this.lblURL = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.edtStressCycles = new System.Windows.Forms.TextBox();
-            this.ckbEagerReport = new System.Windows.Forms.CheckBox();
+            this.ckbReportMemUsage = new System.Windows.Forms.CheckBox();
+            this.btnReportMemNow = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -67,6 +69,26 @@ namespace prjSkeleton
             this.panel3.Size = new System.Drawing.Size(660, 488);
             this.panel3.TabIndex = 1;
             // 
+            // lblURL
+            // 
+            this.lblURL.AutoSize = true;
+            this.lblURL.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblURL.Location = new System.Drawing.Point(3, 3);
+            this.lblURL.Name = "lblURL";
+            this.lblURL.Size = new System.Drawing.Size(32, 14);
+            this.lblURL.TabIndex = 2;
+            this.lblURL.Text = "UR&L:";
+            // 
+            // edtURL
+            // 
+            this.edtURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.edtURL.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.edtURL.Location = new System.Drawing.Point(44, 0);
+            this.edtURL.Name = "edtURL";
+            this.edtURL.Size = new System.Drawing.Size(616, 22);
+            this.edtURL.TabIndex = 1;
+            // 
             // textBox1
             // 
             this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -84,6 +106,8 @@ namespace prjSkeleton
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.btnReportMemNow);
+            this.panel2.Controls.Add(this.ckbReportMemUsage);
             this.panel2.Controls.Add(this.ckbEagerReport);
             this.panel2.Controls.Add(this.edtStressCycles);
             this.panel2.Controls.Add(this.label1);
@@ -95,6 +119,42 @@ namespace prjSkeleton
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(140, 488);
             this.panel2.TabIndex = 0;
+            // 
+            // ckbEagerReport
+            // 
+            this.ckbEagerReport.AutoSize = true;
+            this.ckbEagerReport.Location = new System.Drawing.Point(16, 144);
+            this.ckbEagerReport.Name = "ckbEagerReport";
+            this.ckbEagerReport.Size = new System.Drawing.Size(84, 17);
+            this.ckbEagerReport.TabIndex = 5;
+            this.ckbEagerReport.Text = "&Eager report";
+            this.ckbEagerReport.UseVisualStyleBackColor = true;
+            // 
+            // edtStressCycles
+            // 
+            this.edtStressCycles.Location = new System.Drawing.Point(59, 124);
+            this.edtStressCycles.Name = "edtStressCycles";
+            this.edtStressCycles.Size = new System.Drawing.Size(75, 20);
+            this.edtStressCycles.TabIndex = 4;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 127);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(40, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "cycles:";
+            // 
+            // btnStress
+            // 
+            this.btnStress.Location = new System.Drawing.Point(12, 95);
+            this.btnStress.Name = "btnStress";
+            this.btnStress.Size = new System.Drawing.Size(122, 25);
+            this.btnStress.TabIndex = 2;
+            this.btnStress.Text = "S&tress HTTP";
+            this.btnStress.UseVisualStyleBackColor = true;
+            this.btnStress.Click += new System.EventHandler(this.btnStress_Click);
             // 
             // btnCancel
             // 
@@ -116,61 +176,25 @@ namespace prjSkeleton
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
-            // btnStress
+            // ckbReportMemUsage
             // 
-            this.btnStress.Location = new System.Drawing.Point(12, 95);
-            this.btnStress.Name = "btnStress";
-            this.btnStress.Size = new System.Drawing.Size(122, 25);
-            this.btnStress.TabIndex = 2;
-            this.btnStress.Text = "S&tress HTTP";
-            this.btnStress.UseVisualStyleBackColor = true;
-            this.btnStress.Click += new System.EventHandler(this.btnStress_Click);
+            this.ckbReportMemUsage.AutoSize = true;
+            this.ckbReportMemUsage.Location = new System.Drawing.Point(16, 168);
+            this.ckbReportMemUsage.Name = "ckbReportMemUsage";
+            this.ckbReportMemUsage.Size = new System.Drawing.Size(115, 17);
+            this.ckbReportMemUsage.TabIndex = 6;
+            this.ckbReportMemUsage.Text = "Report mem usage";
+            this.ckbReportMemUsage.UseVisualStyleBackColor = true;
             // 
-            // edtURL
+            // btnReportMemNow
             // 
-            this.edtURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.edtURL.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.edtURL.Location = new System.Drawing.Point(44, 0);
-            this.edtURL.Name = "edtURL";
-            this.edtURL.Size = new System.Drawing.Size(616, 22);
-            this.edtURL.TabIndex = 1;
-            // 
-            // lblURL
-            // 
-            this.lblURL.AutoSize = true;
-            this.lblURL.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblURL.Location = new System.Drawing.Point(3, 3);
-            this.lblURL.Name = "lblURL";
-            this.lblURL.Size = new System.Drawing.Size(32, 14);
-            this.lblURL.TabIndex = 2;
-            this.lblURL.Text = "UR&L:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 127);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(40, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "cycles:";
-            // 
-            // edtStressCycles
-            // 
-            this.edtStressCycles.Location = new System.Drawing.Point(59, 124);
-            this.edtStressCycles.Name = "edtStressCycles";
-            this.edtStressCycles.Size = new System.Drawing.Size(75, 20);
-            this.edtStressCycles.TabIndex = 4;
-            // 
-            // ckbEagerReport
-            // 
-            this.ckbEagerReport.AutoSize = true;
-            this.ckbEagerReport.Location = new System.Drawing.Point(16, 144);
-            this.ckbEagerReport.Name = "ckbEagerReport";
-            this.ckbEagerReport.Size = new System.Drawing.Size(84, 17);
-            this.ckbEagerReport.TabIndex = 5;
-            this.ckbEagerReport.Text = "&Eager report";
-            this.ckbEagerReport.UseVisualStyleBackColor = true;
+            this.btnReportMemNow.Location = new System.Drawing.Point(12, 453);
+            this.btnReportMemNow.Name = "btnReportMemNow";
+            this.btnReportMemNow.Size = new System.Drawing.Size(119, 23);
+            this.btnReportMemNow.TabIndex = 7;
+            this.btnReportMemNow.Text = "Report Mem now";
+            this.btnReportMemNow.UseVisualStyleBackColor = true;
+            this.btnReportMemNow.Click += new System.EventHandler(this.btnReportMemNow_Click);
             // 
             // Form1
             // 
@@ -204,6 +228,8 @@ namespace prjSkeleton
         private System.Windows.Forms.TextBox edtStressCycles;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox ckbEagerReport;
+        private System.Windows.Forms.CheckBox ckbReportMemUsage;
+        private System.Windows.Forms.Button btnReportMemNow;
     }
 }
 

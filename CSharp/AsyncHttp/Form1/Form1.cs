@@ -8,6 +8,7 @@ using System.Linq;
 using System.Management;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -111,15 +112,66 @@ namespace prjSkeleton
             StartHttp();
         }
 
+        private Task _tskReportMem;
+        private CancellationTokenSource _ctsReportMem;
+
+        private async Task ReportMemUse(int seconds, CancellationToken ct)
+        {
+            for (int i = 0; i < seconds; i++)
+            {
+                logtid($"({seconds-i})Mem-use now: {GC.GetTotalMemory(true)}");
+                await Task.Delay(1000, ct);
+            }
+        }
+
+        private async Task StartReportMemTask()
+        {
+            StopReportMemTask();
+
+            _ctsReportMem = new CancellationTokenSource();
+            _tskReportMem = ReportMemUse(10, _ctsReportMem.Token);
+            await _tskReportMem;
+        }
+
+        private void StopReportMemTask()
+        {
+            if (_tskReportMem != null)
+            {
+                Debug.Assert(_ctsReportMem != null);
+                _ctsReportMem.Cancel();
+                _tskReportMem.Wait();
+
+                _tskReportMem = null;
+                _ctsReportMem = null;
+            }
+        }
+
         private async void btnStress_Click(object sender, EventArgs e)
         {
+            StopReportMemTask();
+
             btnStart.Enabled = false;
             btnStress.Enabled = false;
+
+            long mem_start = GC.GetTotalMemory(true);
+            if (ckbReportMemUsage.Checked)
+            {
+                logtid($"Mem-start: {mem_start}");
+            }
 
             await StartStress();
 
             btnStart.Enabled = true;
             btnStress.Enabled = true;
+
+            if (ckbReportMemUsage.Checked)
+            {
+                long mem_end = GC.GetTotalMemory(true);
+                long mem_inc = mem_end - mem_start;
+                logtid($"Mem-start: {mem_start} , Mem-end: {mem_end} . Increase: {mem_inc}");
+
+                await StartReportMemTask();
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -192,8 +244,6 @@ namespace prjSkeleton
                 string url = edtURL.Text;
                 int cycles = int.Parse(edtStressCycles.Text);
 
-                long mem_start = GC.GetTotalMemory(true);
-
                 bool is_eager_report = ckbEagerReport.Checked;
 
                 Stopwatch sw = new Stopwatch();
@@ -262,10 +312,6 @@ namespace prjSkeleton
                 logtid(info);
 
                 logtid($"Total milliseconds cost: {sw.ElapsedMilliseconds}");
-
-                long mem_end = GC.GetTotalMemory(true);
-                long mem_inc = mem_end - mem_start;
-                logtid($"Mem-start: {mem_start} , Mem-end: {mem_end} . Increase: {mem_inc}");
             }
             catch (Exception e)
             {
@@ -322,5 +368,9 @@ namespace prjSkeleton
             }
         }
 
+        private void btnReportMemNow_Click(object sender, EventArgs e)
+        {
+            StartReportMemTask();
+        }
     }
 }
