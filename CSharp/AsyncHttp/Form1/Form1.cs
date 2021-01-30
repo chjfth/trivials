@@ -122,33 +122,39 @@ namespace prjSkeleton
                 logtid($"({seconds-i})Mem-use now: {GC.GetTotalMemory(true)}");
                 await Task.Delay(1000, ct);
             }
+            logtid($"Mem-use report done.");
         }
 
         private async Task StartReportMemTask()
         {
-            StopReportMemTask();
+            await StopReportMemTask();
 
             _ctsReportMem = new CancellationTokenSource();
             _tskReportMem = ReportMemUse(10, _ctsReportMem.Token);
             await _tskReportMem;
         }
 
-        private void StopReportMemTask()
+        private async Task StopReportMemTask()
         {
             if (_tskReportMem != null)
             {
                 Debug.Assert(_ctsReportMem != null);
                 _ctsReportMem.Cancel();
-                _tskReportMem.Wait();
+                await _tskReportMem; // _tskReportMem.Wait();
 
                 _tskReportMem = null;
                 _ctsReportMem = null;
             }
         }
 
+        private void btnReportMemNow_Click(object sender, EventArgs e)
+        {
+            StartReportMemTask();
+        }
+
         private async void btnStress_Click(object sender, EventArgs e)
         {
-            StopReportMemTask();
+            await StopReportMemTask();
 
             btnStart.Enabled = false;
             btnStress.Enabled = false;
@@ -366,11 +372,6 @@ namespace prjSkeleton
                 MessageBox.Show(this, info, "Bad... Exception occurred.",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void btnReportMemNow_Click(object sender, EventArgs e)
-        {
-            StartReportMemTask();
         }
     }
 }
