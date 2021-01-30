@@ -48,7 +48,7 @@ void Main()
 		Debug.Assert(hresult == 0);
 		$"actual value set: {userval} -> {actual}".Dump();
 		RefreshReso();
-		textBox.Text = reso.cur.ToString;
+		textBox.Text = reso.cur.ToString();
 		ResoHint(reso.cur);
 	});
 	new WrapPanel("1em", textBox, btnSet).Dump();
