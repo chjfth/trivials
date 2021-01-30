@@ -131,8 +131,14 @@ namespace prjSkeleton
 
             _ctsReportMem = new CancellationTokenSource();
             _tskReportMem = ReportMemUse(10, _ctsReportMem.Token);
-
-//            await _tskReportMem;
+            await _tskReportMem.ContinueWith((antetask) =>
+            {
+                logtid($"In Report-mem task's Conti, we are resetting _tskReportMem=null .");
+                _ctsReportMem = null;
+                _tskReportMem = null;
+            }, TaskContinuationOptions.ExecuteSynchronously);
+            // -- note: Without `ExecuteSynchronously`, the Conti-task will be run by working thread
+            // which is not desired.
         }
 
         private async Task StopReportMemTask()
@@ -150,9 +156,6 @@ namespace prjSkeleton
                 {
                     logtid("Mem-use report cancelled.");
                 }
-
-                _tskReportMem = null;
-                _ctsReportMem = null;
             }
         }
 
