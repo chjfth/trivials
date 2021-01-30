@@ -131,6 +131,7 @@ namespace prjSkeleton
 
             _ctsReportMem = new CancellationTokenSource();
             _tskReportMem = ReportMemUse(10, _ctsReportMem.Token);
+
             await _tskReportMem;
         }
 
@@ -140,16 +141,24 @@ namespace prjSkeleton
             {
                 Debug.Assert(_ctsReportMem != null);
                 _ctsReportMem.Cancel();
-                await _tskReportMem; // _tskReportMem.Wait();
+
+                try
+                {
+                    await _tskReportMem; // _tskReportMem.Wait();
+                }
+                catch (Exception e)
+                {
+                    logtid("Mem-use report cancelled.");
+                }
 
                 _tskReportMem = null;
                 _ctsReportMem = null;
             }
         }
 
-        private void btnReportMemNow_Click(object sender, EventArgs e)
+        private async void btnReportMemNow_Click(object sender, EventArgs e)
         {
-            StartReportMemTask();
+            await StartReportMemTask();
         }
 
         private async void btnStress_Click(object sender, EventArgs e)
