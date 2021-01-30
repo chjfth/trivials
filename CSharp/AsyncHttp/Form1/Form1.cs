@@ -132,7 +132,7 @@ namespace prjSkeleton
             _ctsReportMem = new CancellationTokenSource();
             _tskReportMem = ReportMemUse(10, _ctsReportMem.Token);
 
-            await _tskReportMem;
+//            await _tskReportMem;
         }
 
         private async Task StopReportMemTask()
