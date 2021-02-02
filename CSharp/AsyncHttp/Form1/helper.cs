@@ -24,7 +24,7 @@ namespace ZjbLib
         /// <typeparam name="TResult"></typeparam>
         /// <param name="webreq"></param>
         /// <param name="tskOngoing"></param>
-        /// <param name="ct"></param>
+        /// <param name="ct_user"></param>
         /// <param name="timeout_millisec"></param>
         /// <returns>The same meaning as tskOngoing's original semantics.
         /// Return TResult value on success, or throw an exception on failure.
@@ -33,20 +33,29 @@ namespace ZjbLib
         public async static Task<TResult> WebRequest_TaskTimeout<TResult>(
             WebRequest webreq, 
             Task<TResult> tskOngoing, // how do I easily recognize webreq & tskOngoing are of the same source?
-            CancellationToken ct,
+            CancellationToken ct_user,
             int timeout_millisec
         )
         {
-            // TResult maybe: WebRespone, ...
+            // TResult maybe: WebRespone, Stream(from WebRequest.GetResponseStream()), etc
 
-            Task tskTimeout = Task.Delay(TimeSpan.FromMilliseconds(timeout_millisec), ct);
+            var cts_inner = new CancellationTokenSource(); 
+            // -- use this to solely cancel our internal Delay Task.
+            // Cancellation of cts_inner will not affect user's own cancellation token.
+
+            ct_user.Register(() =>
+                cts_inner.Cancel() // chain cancellation
+            );
+
+            Task tskTimeout = Task.Delay(timeout_millisec, cts_inner.Token);
 
             Task tskCompleted = await Task.WhenAny(tskOngoing, tskTimeout);
 
             if (tskCompleted == tskOngoing)
             {
-                // TODO: We should cancel the Delay Task.
-
+                // We should explicitly cancel our now-useless internal Delay Task,
+                // in a timely manner, so that associated memory is freed.
+                cts_inner.Cancel();
                 return tskOngoing.Result;
             }
             else
@@ -79,12 +88,12 @@ namespace ZjbLib
         public async static Task WebRequest_TaskTimeout(
             WebRequest webreq,
             Task tskOngoing,
-            CancellationToken ct,
+            CancellationToken ct_user,
             int timeout_millisec
         )
         {
             Task<object> tskhelper = TaskT_FromTask(tskOngoing);
-            await WebRequest_TaskTimeout(webreq, tskhelper, ct, timeout_millisec);
+            await WebRequest_TaskTimeout(webreq, tskhelper, ct_user, timeout_millisec);
         }
 
         public static Task<object> TaskT_FromTask(Task origtask)
