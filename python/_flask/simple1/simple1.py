@@ -44,6 +44,10 @@ def utc():
 {}</pre>""".format(line1, line2)
 	return html
 
+@app.route('/test/<tail>')
+def test(tail):
+	return 'Tail is %d characters: %s'%(len(tail), tail)
+
 @app.route('/delay/<int:millisec>')
 def delay(millisec):
 	time.sleep(millisec/1000)
