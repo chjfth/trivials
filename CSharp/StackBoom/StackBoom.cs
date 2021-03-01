@@ -29,14 +29,14 @@ namespace StackBoom
         static void Recurse_with_class(int n)
         {
             MyClass obj = new MyClass();
-            Console.WriteLine($"Recurse_with_class ({++n})");
+            Console.WriteLine($"Recurse_with_class ({++n}) {obj.m1} {obj.m20}");
             Recurse_with_class(n);
         }
 
         static void Recurse_with_struct(int n)
         {
             MyStruct obj = new MyStruct();
-            Console.WriteLine($"Recurse_with_struct ({++n}) {obj.m1}");
+            Console.WriteLine($"Recurse_with_struct ({++n}) ");
             Recurse_with_struct(n);
         }
 
