@@ -19,13 +19,23 @@ namespace ZjbLib
     {
         /// <summary>
         /// For any WebRequest-related Task that does not support timeout or cancelling,
-        /// this encapsulation makes it capable of timeout and cancelling. Great idea.
+        /// this encapsulation makes it capable of timeout and cancelling. Great idea!
         /// </summary>
-        /// <typeparam name="TResult"></typeparam>
-        /// <param name="webreq"></param>
-        /// <param name="tskOngoing"></param>
-        /// <param name="ct_user"></param>
-        /// <param name="timeout_millisec"></param>
+        /// <typeparam name="TResult">The type of user task's result. </typeparam>
+        /// <param name="webreq">The WebRequest object that has already initiated an ongoing Task.
+        ///     On timeout, this function will call webreq.Abort() to enforce cancellation.
+        /// </param>
+        /// 
+        /// <param name="tskOngoing">The ongoing task "associated" with the webreq.
+        ///     This is the very Task this function await for.
+        /// </param>
+        /// 
+        /// <param name="ct_user">User provided cancellation token.
+        ///     If not given, you will not be able to actively cancel the Task, unless it timeouts.
+        /// </param>
+        /// 
+        /// <param name="timeout_millisec">Timeout milliseconds. Use -1 for infinite.</param>
+        /// 
         /// <returns>The same meaning as tskOngoing's original semantics.
         /// Return TResult value on success, or throw an exception on failure.
         /// Will throw TimeoutException on timeout.
@@ -33,11 +43,14 @@ namespace ZjbLib
         public async static Task<TResult> WebRequest_TaskTimeout<TResult>(
             WebRequest webreq, 
             Task<TResult> tskOngoing, // how do I easily recognize webreq & tskOngoing are of the same source?
-            CancellationToken ct_user,
-            int timeout_millisec
+            CancellationToken ct_user = new CancellationToken(),
+            int timeout_millisec = -1
         )
         {
             // TResult maybe: WebRespone, Stream(from WebRequest.GetResponseStream()), etc
+
+            if (timeout_millisec < 0)
+                timeout_millisec = -1; // Task.Delay() recognize -1 as infinite
 
             var cts_inner = new CancellationTokenSource(); 
             // -- use this to solely cancel our internal Delay Task.
@@ -72,7 +85,8 @@ namespace ZjbLib
                 // Here, distinguish whether we report to user Cancelled or Timed-out.
                 if (tskTimeout.Status == TaskStatus.RanToCompletion)
                 {
-                    string info = $"Whoa! WebRequest operation timed out after {timeout_millisec} milliseconds.";
+                    string info = $"Whoa! WebRequest operation timed out after {timeout_millisec} milliseconds." +
+                                  $"URL: {webreq.RequestUri}";
                     throw new TimeoutException(info);
                 }
 
