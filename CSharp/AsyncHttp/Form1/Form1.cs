@@ -152,7 +152,7 @@ namespace prjSkeleton
                 {
                     await _tskReportMem; // _tskReportMem.Wait();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     logtid("Mem-use report cancelled.");
                 }
@@ -217,6 +217,7 @@ namespace prjSkeleton
             try
             {
                 string url = edtURL.Text;
+                int timeout_millisec = int.Parse(edtTimeoutMs.Text);
 
                 AsyncHttp.HeaderDict headers = new AsyncHttp.HeaderDict()
                 {
@@ -233,11 +234,12 @@ namespace prjSkeleton
 
                 _cts = new CancellationTokenSource();
 
-                //byte[] rsbytes = await ahttp.Start(_cts.Token, 15000);
+                logtid($"HTTP starts. \r\n" +
+                       $"  URL:     {url}\r\n" +
+                       $"  Timeout: {timeout_millisec} millisec"
+                       ); // note: "\n" only does not cause line break
 
-                logtid($"HTTP starts. {url}");
-
-                _tskHttp = ahttp.StartAsText(_cts.Token, 9900);
+                _tskHttp = ahttp.StartAsText(_cts.Token, timeout_millisec);
                 string body = await _tskHttp;
 
                 logtid(
@@ -249,7 +251,9 @@ namespace prjSkeleton
             }
             finally
             {
-                _tskHttp.Dispose();
+                if(_tskHttp!=null)
+                    _tskHttp.Dispose();
+
                 _tskHttp = null;
             } // try-block end
 
@@ -261,6 +265,7 @@ namespace prjSkeleton
             {
                 string url = edtURL.Text;
                 int cycles = int.Parse(edtStressCycles.Text);
+                int timeout_millisec = int.Parse(edtTimeoutMs.Text);
 
                 bool is_eager_report = ckbEagerReport.Checked;
 
@@ -293,7 +298,7 @@ namespace prjSkeleton
                         logtid($"HTTP starts. {url}");
                     }
 
-                    _tskHttp = ahttp.StartAsText(_cts.Token, 6900);
+                    _tskHttp = ahttp.StartAsText(_cts.Token, timeout_millisec);
                     string body = await _tskHttp;
 
                     int nrbyte = ahttp._respbody_bytes.Length;
