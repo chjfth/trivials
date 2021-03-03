@@ -85,7 +85,7 @@ namespace ZjbLib
                 // Here, distinguish whether we report to user Cancelled or Timed-out.
                 if (tskTimeout.Status == TaskStatus.RanToCompletion)
                 {
-                    string info = $"Whoa! WebRequest operation timed out after {timeout_millisec} milliseconds." +
+                    string info = $"Whoa! WebRequest operation timed out after {timeout_millisec} milliseconds.\r\n" +
                                   $"URL: {webreq.RequestUri}";
                     throw new TimeoutException(info);
                 }
