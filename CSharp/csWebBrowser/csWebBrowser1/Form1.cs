@@ -95,12 +95,14 @@ namespace prjSkeleton
         {
             logtid($"Main-thread-id={s_mainthread_tid}");
 
-            LoadUrls();
+            LoadUrlsToComboBox();
         }
 
-        private void btn1_Click(object sender, EventArgs e)
+        private void btnNavigate_Click(object sender, EventArgs e)
         {
-            logtid("btn1_Click");
+            log("Navigate() " + cbxURL.Text);
+
+            wb1.Navigate(cbxURL.Text);
         }
 
     }

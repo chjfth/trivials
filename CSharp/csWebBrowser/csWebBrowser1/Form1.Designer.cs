@@ -33,13 +33,14 @@ namespace prjSkeleton
             this.panel3Right = new System.Windows.Forms.Panel();
             this.btn1 = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.wb1 = new System.Windows.Forms.WebBrowser();
+            this.btnClear = new System.Windows.Forms.Button();
             this.tboxStatus = new System.Windows.Forms.TextBox();
             this.tboxLog = new System.Windows.Forms.TextBox();
             this.lblURL = new System.Windows.Forms.Label();
             this.cbxURL = new System.Windows.Forms.ComboBox();
             this.panel2Left = new System.Windows.Forms.FlowLayoutPanel();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -80,7 +81,7 @@ namespace prjSkeleton
             this.btn1.TabIndex = 1;
             this.btn1.Text = "&Navigate";
             this.btn1.UseVisualStyleBackColor = true;
-            this.btn1.Click += new System.EventHandler(this.btn1_Click);
+            this.btn1.Click += new System.EventHandler(this.btnNavigate_Click);
             // 
             // splitContainer1
             // 
@@ -94,16 +95,37 @@ namespace prjSkeleton
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.splitContainer1.Panel1.Controls.Add(this.webBrowser1);
+            this.splitContainer1.Panel1.Controls.Add(this.wb1);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.splitContainer1.Panel2.Controls.Add(this.btnClear);
             this.splitContainer1.Panel2.Controls.Add(this.tboxStatus);
             this.splitContainer1.Panel2.Controls.Add(this.tboxLog);
             this.splitContainer1.Size = new System.Drawing.Size(762, 530);
             this.splitContainer1.SplitterDistance = 406;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // wb1
+            // 
+            this.wb1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.wb1.Location = new System.Drawing.Point(0, 0);
+            this.wb1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.wb1.Name = "wb1";
+            this.wb1.Size = new System.Drawing.Size(762, 406);
+            this.wb1.TabIndex = 0;
+            // 
+            // btnClear
+            // 
+            this.btnClear.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.btnClear.Location = new System.Drawing.Point(695, 100);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(67, 20);
+            this.btnClear.TabIndex = 2;
+            this.btnClear.Text = "&Clear";
+            this.btnClear.UseVisualStyleBackColor = false;
             // 
             // tboxStatus
             // 
@@ -112,7 +134,7 @@ namespace prjSkeleton
             this.tboxStatus.Location = new System.Drawing.Point(0, 100);
             this.tboxStatus.Name = "tboxStatus";
             this.tboxStatus.ReadOnly = true;
-            this.tboxStatus.Size = new System.Drawing.Size(762, 20);
+            this.tboxStatus.Size = new System.Drawing.Size(695, 20);
             this.tboxStatus.TabIndex = 1;
             // 
             // tboxLog
@@ -137,7 +159,7 @@ namespace prjSkeleton
             this.lblURL.Name = "lblURL";
             this.lblURL.Size = new System.Drawing.Size(32, 13);
             this.lblURL.TabIndex = 2;
-            this.lblURL.Text = "URL:";
+            this.lblURL.Text = "UR&L:";
             // 
             // cbxURL
             // 
@@ -168,15 +190,6 @@ namespace prjSkeleton
             this.checkBox1.TabIndex = 1;
             this.checkBox1.Text = "checkBox1";
             this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // webBrowser1
-            // 
-            this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.webBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(762, 406);
-            this.webBrowser1.TabIndex = 0;
             // 
             // Form1
             // 
@@ -213,7 +226,8 @@ namespace prjSkeleton
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox tboxStatus;
-        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser wb1;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 

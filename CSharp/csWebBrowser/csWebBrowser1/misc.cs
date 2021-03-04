@@ -17,25 +17,39 @@ namespace prjSkeleton
 {
     public partial class Form1 : Form
     {
-        void LoadUrls()
+        void LoadUrlsToComboBox()
         {
             string exedir = AppDomain.CurrentDomain.BaseDirectory; // with a trailing backslash
-            string inipath_url = Path.Combine(exedir, "urls.ini");
-            string[] urls;
+            string inipath_url1 = Path.Combine(exedir, "urls.user.txt");
+            string inipath_url2 = Path.Combine(exedir, "urls.txt");
+            string[] urls = null;
 
-            log($"Loading URLs from: {inipath_url}");
-
-            try
+            foreach (string inipath in new string[] {inipath_url1, inipath_url2})
             {
-                urls = File.ReadAllLines(inipath_url);
+                try
+                {
+                    log($"Loading URLs from: {inipath}");
+
+                    urls = File.ReadAllLines(inipath);
+                    if (urls.Length == 0)
+                        throw new FileNotFoundException("Empty file.");
+
+                    log("The ini file is loaded.");
+                    break;
+                }
+                catch (FileNotFoundException)
+                {
+                    log($"The ini file cannot be opened or is empty.");
+                    continue;
+                }
             }
-            catch (FileNotFoundException  e)
-            {
-                log($"The ini file cannot be opened.");
+
+            if(urls==null || urls.Length==0)
                 urls = new string[] {"http://localhost:8000"};
-            }
 
             cbxURL.Items.AddRange(urls);
+            cbxURL.Text = urls[0];
         }
+
     }
 }
