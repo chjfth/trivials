@@ -72,7 +72,7 @@ namespace prjSkeleton
 
         void PrintLine(string s)
         {
-            Debug.WriteLine(s);
+            // Debug.WriteLine(s);
             tboxLog.Invoke(new Action(() =>
             {
                 tboxLog.AppendText(s + Environment.NewLine);
@@ -87,16 +87,20 @@ namespace prjSkeleton
         public Form1()
         {
             InitializeComponent();
+
+            tboxStatus.Text = "Click [Navigate] button to Load the web page.";
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            logtid($"Main-thread-id={s_mainthread_tid}");
+
+            LoadUrls();
         }
 
         private void btn1_Click(object sender, EventArgs e)
         {
             logtid("btn1_Click");
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            logtid($"Form1_Load. Main-thread-id={s_mainthread_tid}");
         }
 
     }
