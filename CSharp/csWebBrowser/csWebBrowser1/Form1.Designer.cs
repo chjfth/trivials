@@ -35,8 +35,9 @@ namespace prjSkeleton
             this.tboxLog = new System.Windows.Forms.TextBox();
             this.lblURL = new System.Windows.Forms.Label();
             this.cbxURL = new System.Windows.Forms.ComboBox();
-            this.panel2Left = new System.Windows.Forms.Panel();
+            this.panel2Left = new System.Windows.Forms.FlowLayoutPanel();
             this.btn1 = new System.Windows.Forms.Button();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -122,6 +123,7 @@ namespace prjSkeleton
             // panel2Left
             // 
             this.panel2Left.Controls.Add(this.btn1);
+            this.panel2Left.Controls.Add(this.checkBox1);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
@@ -130,13 +132,23 @@ namespace prjSkeleton
             // 
             // btn1
             // 
-            this.btn1.Location = new System.Drawing.Point(31, 12);
+            this.btn1.Location = new System.Drawing.Point(3, 3);
             this.btn1.Name = "btn1";
             this.btn1.Size = new System.Drawing.Size(75, 25);
             this.btn1.TabIndex = 0;
             this.btn1.Text = "button1";
             this.btn1.UseVisualStyleBackColor = true;
             this.btn1.Click += new System.EventHandler(this.btn1_Click);
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(3, 34);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(80, 17);
+            this.checkBox1.TabIndex = 1;
+            this.checkBox1.Text = "checkBox1";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -155,6 +167,7 @@ namespace prjSkeleton
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.panel2Left.ResumeLayout(false);
+            this.panel2Left.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -164,11 +177,12 @@ namespace prjSkeleton
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel3Right;
         private System.Windows.Forms.TextBox tboxLog;
-        private System.Windows.Forms.Panel panel2Left;
+        private System.Windows.Forms.FlowLayoutPanel panel2Left;
         private System.Windows.Forms.Button btn1;
         private System.Windows.Forms.ComboBox cbxURL;
         private System.Windows.Forms.Label lblURL;
         private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
