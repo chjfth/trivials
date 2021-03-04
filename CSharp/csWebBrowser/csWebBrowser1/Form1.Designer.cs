@@ -31,12 +31,13 @@ namespace prjSkeleton
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3Right = new System.Windows.Forms.Panel();
+            this.btn1 = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.tboxStatus = new System.Windows.Forms.TextBox();
             this.tboxLog = new System.Windows.Forms.TextBox();
             this.lblURL = new System.Windows.Forms.Label();
             this.cbxURL = new System.Windows.Forms.ComboBox();
             this.panel2Left = new System.Windows.Forms.FlowLayoutPanel();
-            this.btn1 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
@@ -58,6 +59,7 @@ namespace prjSkeleton
             // 
             // panel3Right
             // 
+            this.panel3Right.Controls.Add(this.btn1);
             this.panel3Right.Controls.Add(this.splitContainer1);
             this.panel3Right.Controls.Add(this.lblURL);
             this.panel3Right.Controls.Add(this.cbxURL);
@@ -67,12 +69,23 @@ namespace prjSkeleton
             this.panel3Right.Size = new System.Drawing.Size(765, 557);
             this.panel3Right.TabIndex = 1;
             // 
+            // btn1
+            // 
+            this.btn1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btn1.Location = new System.Drawing.Point(702, 0);
+            this.btn1.Name = "btn1";
+            this.btn1.Size = new System.Drawing.Size(63, 22);
+            this.btn1.TabIndex = 1;
+            this.btn1.Text = "&Navigate";
+            this.btn1.UseVisualStyleBackColor = true;
+            this.btn1.Click += new System.EventHandler(this.btn1_Click);
+            // 
             // splitContainer1
             // 
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer1.Location = new System.Drawing.Point(3, 21);
+            this.splitContainer1.Location = new System.Drawing.Point(3, 22);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -82,23 +95,36 @@ namespace prjSkeleton
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.BackColor = System.Drawing.SystemColors.Info;
+            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.splitContainer1.Panel2.Controls.Add(this.tboxStatus);
             this.splitContainer1.Panel2.Controls.Add(this.tboxLog);
             this.splitContainer1.Size = new System.Drawing.Size(762, 530);
             this.splitContainer1.SplitterDistance = 406;
             this.splitContainer1.TabIndex = 3;
             // 
+            // tboxStatus
+            // 
+            this.tboxStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tboxStatus.Location = new System.Drawing.Point(0, 100);
+            this.tboxStatus.Name = "tboxStatus";
+            this.tboxStatus.ReadOnly = true;
+            this.tboxStatus.Size = new System.Drawing.Size(762, 20);
+            this.tboxStatus.TabIndex = 1;
+            // 
             // tboxLog
             // 
+            this.tboxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tboxLog.BackColor = System.Drawing.SystemColors.Window;
-            this.tboxLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tboxLog.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tboxLog.Location = new System.Drawing.Point(0, 0);
             this.tboxLog.Multiline = true;
             this.tboxLog.Name = "tboxLog";
             this.tboxLog.ReadOnly = true;
             this.tboxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tboxLog.Size = new System.Drawing.Size(762, 120);
+            this.tboxLog.Size = new System.Drawing.Size(762, 100);
             this.tboxLog.TabIndex = 0;
             // 
             // lblURL
@@ -114,15 +140,15 @@ namespace prjSkeleton
             // 
             this.cbxURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbxURL.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxURL.FormattingEnabled = true;
             this.cbxURL.Location = new System.Drawing.Point(52, 0);
             this.cbxURL.Name = "cbxURL";
-            this.cbxURL.Size = new System.Drawing.Size(713, 21);
-            this.cbxURL.TabIndex = 1;
+            this.cbxURL.Size = new System.Drawing.Size(646, 22);
+            this.cbxURL.TabIndex = 0;
             // 
             // panel2Left
             // 
-            this.panel2Left.Controls.Add(this.btn1);
             this.panel2Left.Controls.Add(this.checkBox1);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
@@ -130,20 +156,10 @@ namespace prjSkeleton
             this.panel2Left.Size = new System.Drawing.Size(140, 557);
             this.panel2Left.TabIndex = 0;
             // 
-            // btn1
-            // 
-            this.btn1.Location = new System.Drawing.Point(3, 3);
-            this.btn1.Name = "btn1";
-            this.btn1.Size = new System.Drawing.Size(75, 25);
-            this.btn1.TabIndex = 0;
-            this.btn1.Text = "button1";
-            this.btn1.UseVisualStyleBackColor = true;
-            this.btn1.Click += new System.EventHandler(this.btn1_Click);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(3, 34);
+            this.checkBox1.Location = new System.Drawing.Point(3, 3);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(80, 17);
             this.checkBox1.TabIndex = 1;
@@ -183,6 +199,7 @@ namespace prjSkeleton
         private System.Windows.Forms.Label lblURL;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.TextBox tboxStatus;
     }
 }
 
