@@ -78,7 +78,7 @@ namespace prjSkeleton
             this.btn1.Location = new System.Drawing.Point(702, 0);
             this.btn1.Name = "btn1";
             this.btn1.Size = new System.Drawing.Size(63, 22);
-            this.btn1.TabIndex = 1;
+            this.btn1.TabIndex = 3;
             this.btn1.Text = "&Navigate";
             this.btn1.UseVisualStyleBackColor = true;
             this.btn1.Click += new System.EventHandler(this.btnNavigate_Click);
@@ -159,7 +159,7 @@ namespace prjSkeleton
             this.lblURL.Location = new System.Drawing.Point(3, 3);
             this.lblURL.Name = "lblURL";
             this.lblURL.Size = new System.Drawing.Size(32, 13);
-            this.lblURL.TabIndex = 2;
+            this.lblURL.TabIndex = 1;
             this.lblURL.Text = "UR&L:";
             // 
             // cbxURL
@@ -171,7 +171,7 @@ namespace prjSkeleton
             this.cbxURL.Location = new System.Drawing.Point(52, 0);
             this.cbxURL.Name = "cbxURL";
             this.cbxURL.Size = new System.Drawing.Size(646, 22);
-            this.cbxURL.TabIndex = 0;
+            this.cbxURL.TabIndex = 2;
             // 
             // panel2Left
             // 
