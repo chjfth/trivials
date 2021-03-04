@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -94,6 +95,9 @@ namespace prjSkeleton
         private void Form1_Load(object sender, EventArgs e)
         {
             logtid($"Main-thread-id={s_mainthread_tid}");
+
+            string exename = Path.GetFileName(Application.ExecutablePath);
+            this.Text = exename;
 
             LoadUrlsToComboBox();
         }
