@@ -20,9 +20,7 @@ body { margin: 0px; }
 .block  { width: 50px; height: 50px; }
 .table-cell { display: table-cell; }
 
-#csstable1 { display: table; }
-
-.shrink { transform: scale(0.8); } 
+.shrink { transform: scale(0.6); } 
 
 </style>
 </head>
@@ -30,7 +28,7 @@ body { margin: 0px; }
 <body>
 	<div class="para">
 		<div>[CSS-Table, IE8+] If the color blocks are displayed vertically, the engine is IE7 or older.</div>
-		<div id="csstable1">
+		<div id="csstable1" style="display: table;">
 			<div id="csstable-cell-red" class="red-bg block table-cell"></div>
 			<div id="csstable-cell-green" class="green-bg block table-cell "></div>
 			<div id="csstable-cell-blue" class="blue-bg block table-cell"></div>
@@ -39,11 +37,21 @@ body { margin: 0px; }
 
 	<div class="para">
 		<div>[CSS Transform, IE9+] If the color blocks are not shrunk, the engine is IE8 or older.</div>
-		<div id="csstransform1">
+		<div id="csstransform1" style="display: table;">
 			<div id="csstransform-red" class="red-bg block table-cell shrink"></div>
 			<div id="csstransform-green" class="green-bg block table-cell shrink"></div>
 			<div id="csstransform-blue" class="blue-bg block table-cell shrink"></div>
 		</div>
 	</div>
+
+	<div class="para">
+		<div>[Flexbox, IE10+] If the color blocks are displayed vertically, the engine is IE9 or older.</div>
+		<div id="flexbox1" style="display: flex;">
+			<div id="csstransform-red" class="red-bg block shrink"></div>
+			<div id="csstransform-green" class="green-bg block shrink"></div>
+			<div id="csstransform-blue" class="blue-bg block shrink"></div>
+		</div>
+	</div>
+
 
 </body>
