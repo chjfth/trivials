@@ -46,10 +46,19 @@ body { margin: 0px; }
 
 	<div class="para">
 		<div>[Flexbox, IE10+] If the color blocks are displayed vertically, the engine is IE9 or older.</div>
-		<div id="flexbox1" style="display: flex;">
+		<div id="cssflexbox1" style="display: flex;">
 			<div id="csstransform-red" class="red-bg block shrink"></div>
 			<div id="csstransform-green" class="green-bg block shrink"></div>
 			<div id="csstransform-blue" class="blue-bg block shrink"></div>
+		</div>
+	</div>
+
+	<div class="para">
+		<div>[CSS Grid, Beyond IE11] If the color blocks are displayed vertically, the engine is IE11 or older.</div>
+		<div id="cssgrid1" style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+			<div id="csstransform-red" class="red-bg block"></div>
+			<div id="csstransform-green" class="green-bg block"></div>
+			<div id="csstransform-blue" class="blue-bg block"></div>
 		</div>
 	</div>
 
