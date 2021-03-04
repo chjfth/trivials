@@ -73,9 +73,9 @@ namespace prjSkeleton
         void PrintLine(string s)
         {
             Debug.WriteLine(s);
-            textBox1.Invoke(new Action(() =>
+            tboxLog.Invoke(new Action(() =>
             {
-                textBox1.AppendText(s + Environment.NewLine);
+                tboxLog.AppendText(s + Environment.NewLine);
             }));
         }
 
