@@ -12,7 +12,18 @@
 }
 body { margin: 0px; }
 
-.para { margin: 1em 0em; }
+#info { 
+	margin: 20px;
+	border: 1px solid #333;
+	padding: 5px;
+	text-align: center;
+	color: black;
+}
+
+.para { 
+	margin: 1em 0em;
+	color: #888;
+}
 
 .red-bg    { background-color: #fcc; }
 .green-bg  { background-color: #cfc; }
@@ -46,10 +57,12 @@ body { margin: 0px; }
 
 <body>
 
+	<div id="info" class="info">zzz</div>
+
 	<div class="para">
 		<div>[Detect IE Quirks mode(a.k.a. IE5)] If you see 3 <b>square</b> blocks, the engine is using Quirks mode.</div>
 		<div id="inline1">
-			<div id="quriks-red" class="red-bg block die6 Rmargin">red</div><div id="quriks-green" class="green-bg block die6 Lmargin Rmargin">green</div><div id="quriks-blue" class="blue-bg block die6 Lmargin">blue</div>
+			<div id="quirks-red" class="red-bg block die6 Rmargin">red</div><div id="quirks-green" class="green-bg block die6 Lmargin Rmargin">green</div><div id="quirks-blue" class="blue-bg block die6 Lmargin">blue</div>
 		</div>
 	</div>
 
@@ -79,22 +92,24 @@ body { margin: 0px; }
 
 	<div class="para">
 	<div>[SVG, IE9+] If you do not see SVG letters in a green circle, the engine is IE8 or older.</div>
-	<svg id="svg1" version="1.1"
-	     baseProfile="full"
-	     width="50" height="50"
-	     xmlns="http://www.w3.org/2000/svg">
+	<div id="svg1div">
+		<svg id="svg1" version="1.1"
+		     baseProfile="full"
+		     width="50" height="50"
+		     xmlns="http://www.w3.org/2000/svg">
 
-		<circle cx="25" cy="25" r="25" fill="green" />
-		<text x="25" y="30" font-size="16" text-anchor="middle" fill="yellow">SVG</text>
-	</svg>
+			<circle cx="25" cy="25" r="25" fill="green" />
+			<text x="25" y="30" font-size="16" text-anchor="middle" fill="yellow">SVG</text>
+		</svg>
+	</div>
 	</div>
 
 	<div class="para">
 		<div>[Flexbox, IE10+] If the color blocks are displayed vertically, the engine is IE9 or older.</div>
 		<div id="cssflexbox1" style="display: flex;">
-			<div id="csstransform-red" class="red-bg block shrink"></div>
-			<div id="csstransform-green" class="green-bg block shrink"></div>
-			<div id="csstransform-blue" class="blue-bg block shrink"></div>
+			<div id="flexbox-red" class="red-bg block shrink"></div>
+			<div id="flexbox-green" class="green-bg block shrink"></div>
+			<div id="flexbox-blue" class="blue-bg block shrink"></div>
 		</div>
 	</div>
 
@@ -116,3 +131,75 @@ body { margin: 0px; }
 	</div>
 
 </body>
+
+<script language="javascript">
+	function ShowResult(text) {
+	
+		// .innerText is available since IE 3.0
+		// .textContent is available since IE 9.0
+		
+		var einfo = document.getElementById('info');
+		einfo.innerText = text;
+	}
+
+	// Main function below:
+	(function(){
+		var einfo = document.getElementById('info');
+		einfo.textContent = "Detecting IE version...";
+
+		// Detect Quirks mode
+
+		var equirk = document.getElementById('quirks-green');
+		if (equirk.offsetHeight==50) {
+			ShowResult("IE Quirks mode (a.k.a. IE5)");
+			return;
+		}
+		
+		// Detect IE6 & IE7
+		
+		var eD67 = document.getElementById('border1');
+		// var stD67 = window.getComputedStyle(eD67);
+		// einfo.innerText = "stD67:" + stD67.borderTopColor;
+		// -- IE8 and below does not support getComputedStyle().
+		if (eD67.currentStyle) {
+			// IE5 ~ IE11
+			var c = eD67.currentStyle.borderTopColor;
+			if (c=="#00f") {
+				ShowResult("IE6");
+				return;
+			}
+			else if (c=="#0f0") {
+				ShowResult("IE7");
+				return;
+			}
+		}
+		
+		// Confirm IE8 with CSS-Table
+		
+		var eD8 = document.getElementById('csstable-cell-green');
+		if (eD8.offsetLeft!=50) {
+			// Unexpect: CSS-Table does NOT takes effect!
+			alert("I think it is IE8, but CSS-Table test fails.");
+			return;
+		}
+		
+		var eD9 = document.getElementById('svg1div');
+		if (eD9.offsetHeight<50) {
+			ShowResult("IE8");
+			return;		
+		} // For IE9+, eD9.offsetHeight>=50 
+		
+		var eD10 = document.getElementById('flexbox-green');
+		if (eD10.offsetLeft!=50) {
+			ShowResult("IE9");
+			return;
+		} // For IE10+, eD10.offsetLeft==50
+		
+		
+		
+		ShowResult("IE 10+...");
+		
+	})();
+	
+</script>
+</script>
