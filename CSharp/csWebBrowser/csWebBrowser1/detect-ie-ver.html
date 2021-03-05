@@ -99,7 +99,7 @@ body { margin: 0px; }
 	</div>
 
 	<div class="para">
-		<div>[CSS-Table, IE8+] If the color blocks are displayed vertically, the engine is IE7 or older.</div>
+		<div>[CSS-Table, IE8+] If the color blocks are side-by-side horizontally, the engine is IE8 or newer.</div>
 		<div id="csstable1" style="display: table;">
 			<div id="csstable-cell-red" class="red-bg block table-cell"></div>
 			<div id="csstable-cell-green" class="green-bg block table-cell"></div>
@@ -108,7 +108,7 @@ body { margin: 0px; }
 	</div>
 
 	<div class="para">
-		<div>[CSS Transform, IE9+] If the color blocks are not shrunk, the engine is IE8 or older.</div>
+		<div>[CSS Transform, IE9+] If the color blocks are shrunk, the engine is IE9 or newer.</div>
 		<div id="csstransform1" style="display: table;">
 			<div id="csstransform-red" class="red-bg block table-cell shrink"></div>
 			<div id="csstransform-green" class="green-bg block table-cell shrink"></div>
@@ -117,7 +117,7 @@ body { margin: 0px; }
 	</div>
 
 	<div class="para">
-	<div>[SVG, IE9+] If you do not see SVG letters in a green circle, the engine is IE8 or older.</div>
+	<div>[SVG, IE9+] If you can see SVG letters in a green circle, the engine is IE9 or newer.</div>
 	<div id="svg1div">
 		<svg id="svg1" version="1.1"
 		     baseProfile="full"
@@ -131,7 +131,7 @@ body { margin: 0px; }
 	</div>
 
 	<div class="para">
-		<div>[Flexbox, IE10+] If the color blocks are displayed vertically, the engine is IE9 or older.</div>
+		<div>[Flexbox, IE10+] If the color blocks are displayed horizontally, the engine is IE10 or newer.</div>
 		<div id="cssflexbox1" style="display: flex;">
 			<div id="flexbox-red" class="red-bg block shrink"></div>
 			<div id="flexbox-green" class="green-bg block shrink"></div>
@@ -150,12 +150,12 @@ body { margin: 0px; }
 	<div class="para">
 		<div>[IE11 specific CSS]</div>
 		<div id="detect-ie11" class="ie11only dark11">
-			If using IE11, this text will be red.
+			If using IE11, this text will be red, otherwise, grey.
 		</div>
 	</div>
 
 	<div class="para">
-		<div>[CSS Grid, Beyond IE11] If the color blocks are displayed vertically, the engine is IE11 or older.</div>
+		<div>[CSS Grid, Beyond IE11] If the color blocks are scattered horizontally, the engine is beyond IE11.</div>
 		<div id="cssgrid1" style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
 			<div id="cssgrid-red" class="red-bg block"></div>
 			<div id="cssgrid-green" class="green-bg block"></div>
