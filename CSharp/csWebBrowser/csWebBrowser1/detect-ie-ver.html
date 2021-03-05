@@ -69,8 +69,12 @@ body { margin: 0px; }
 }
 
 *::-ms-backdrop, .ie11only {
-	/* Thanks to https://stackoverflow.com/a/22085269/151453 */
-	color: red !important;
+	/* 
+	  CSS hack to distinguish IE 10 & 11.
+	  Thanks to https://stackoverflow.com/a/22085269/151453 
+	  Be aware, IE5/6/7 will get influenced as well, but not IE 8 & 9.
+	*/
+	color: red;
 }
 
 #gradient1 { background: linear-gradient(15deg, orange, yellow); }
@@ -166,7 +170,7 @@ body { margin: 0px; }
 </body>
 
 <script language="javascript">
-	function ShowResult(text) {
+	function ShowResult(text, undo_ie11_hack) {
 	
 		// .innerText is available since IE 3.0
 		// .textContent is available since IE 9.0
@@ -174,6 +178,10 @@ body { margin: 0px; }
 		
 		var eresult = document.getElementById('bigresult');
 		eresult.innerText = text;
+		
+		if(undo_ie11_hack) {
+			document.getElementById('detect-ie11').style.color = "grey";
+		}
 	}
 
 	// Main function below:
@@ -183,7 +191,7 @@ body { margin: 0px; }
 
 		var equirk = document.getElementById('quirks-green');
 		if (equirk.offsetHeight==50) {
-			ShowResult("IE Quirks mode (a.k.a. IE5)");
+			ShowResult("IE Quirks mode (a.k.a. IE5)", true);
 			return;
 		}
 		
@@ -195,11 +203,11 @@ body { margin: 0px; }
 			// IE5 ~ IE11
 			var c = eD67.currentStyle.borderTopColor;
 			if (c=="#00f") {
-				ShowResult("IE6");
+				ShowResult("IE6", true);
 				return;
 			}
 			else if (c=="#0f0") {
-				ShowResult("IE7");
+				ShowResult("IE7", true);
 				return;
 			}
 		}
@@ -215,7 +223,7 @@ body { margin: 0px; }
 		
 		var eD9 = document.getElementById('svg1div');
 		if (eD9.offsetHeight<50) {
-			ShowResult("IE8");
+			ShowResult("IE8", false);
 			return;		
 		} // For IE9+, eD9.offsetHeight>=50 
 		
@@ -223,7 +231,7 @@ body { margin: 0px; }
 		
 		var eD10 = document.getElementById('flexbox-green');
 		if (eD10.offsetLeft!=50) {
-			ShowResult("IE9");
+			ShowResult("IE9", false);
 			return;
 		} // For IE10+, eD10.offsetLeft==50
 		
@@ -242,11 +250,11 @@ body { margin: 0px; }
 			var st11 = window.getComputedStyle(eD11);
 			// alert(st11.color);
 			if (st11.color=="rgb(255, 0, 0)") { // red
-				ShowResult("IE11");
+				ShowResult("IE11", false);
 				return;
 			}
 			else {
-				ShowResult("IE10");
+				ShowResult("IE10", false);
 			}
 		}
 		
