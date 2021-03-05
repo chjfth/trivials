@@ -39,6 +39,8 @@ body { margin: 0px; }
   _border: 2px solid #00f; /* IE6 - blue border (confirmed, WinXP IE6, and IE8 Quirks mode) */
 }
 
+#gradient1 { background: linear-gradient(15deg, orange, yellow); }
+
 </style>
 </head>
 
@@ -96,6 +98,14 @@ body { margin: 0px; }
 		</div>
 	</div>
 
+<!-- IE10 & IE11 supports CSS linear-gradient .
+	<div class="para">
+		<div>[IE11].</div>
+		<div id="gradient1" class="block">
+		</div>
+	</div>
+-->
+
 	<div class="para">
 		<div>[CSS Grid, Beyond IE11] If the color blocks are displayed vertically, the engine is IE11 or older.</div>
 		<div id="cssgrid1" style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
@@ -104,6 +114,5 @@ body { margin: 0px; }
 			<div id="csstransform-blue" class="blue-bg block"></div>
 		</div>
 	</div>
-
 
 </body>
