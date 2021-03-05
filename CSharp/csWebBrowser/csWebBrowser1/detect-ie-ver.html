@@ -1,5 +1,6 @@
 <!doctype html>
 <head>
+<title>IE working version detection - by Jimm Chen</title>
 <style>
 :root {
     box-sizing: border-box;
@@ -90,7 +91,7 @@ body { margin: 0px; }
 	</div>
 
 	<div class="para">
-		<div>[Detect IE Quirks mode(a.k.a. IE5)] If you see 3 <b>square</b> blocks, the engine is using Quirks mode.</div>
+		<div>[Detect IE Quirks mode(a.k.a. IE5)] If you see 3 same-size <b>square</b> blocks, the engine is using Quirks mode.</div>
 		<div id="inline1">
 			<div id="quirks-red" class="red-bg block die6 Rmargin">red</div><div id="quirks-green" class="green-bg block die6 Lmargin Rmargin">green</div><div id="quirks-blue" class="blue-bg block die6 Lmargin">blue</div>
 		</div>
@@ -111,6 +112,7 @@ body { margin: 0px; }
 		</div>
 	</div>
 
+<!-- 
 	<div class="para">
 		<div>[CSS Transform, IE9+] If the color blocks are shrunk, the engine is IE9 or newer.</div>
 		<div id="csstransform1" style="display: table;">
@@ -119,7 +121,8 @@ body { margin: 0px; }
 			<div id="csstransform-blue" class="blue-bg block table-cell shrink"></div>
 		</div>
 	</div>
-
+-->
+ 
 	<div class="para">
 	<div>[SVG, IE9+] If you can see SVG letters in a green circle, the engine is IE9 or newer.</div>
 	<div id="svg1div">
