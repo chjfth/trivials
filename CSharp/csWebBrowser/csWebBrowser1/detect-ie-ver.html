@@ -29,15 +29,31 @@ body { margin: 0px; }
 .Lmargin { margin-left: 10px; }
 .Rmargin { margin-right: 10px; }
 
+#border1 { background-color: #eee; }
+
+.border-xcolor {
+  /* https://zeropointdevelopment.com/css-hacks-for-ie-targeting-only-ie8-ie7-and-ie6/ */
+  border: 2px solid #aaa;  /* IE8 to IE11 - grey border */
+  border: 2px solid #f009; /* Chrome 88 and Firefox 78 - red border */
+  *border: 2px solid #0f0; /* IE7 - green border (confirmed, Vista IE7) */
+  _border: 2px solid #00f; /* IE6 - blue border (confirmed, WinXP IE6, and IE8 Quirks mode) */
+}
+
 </style>
 </head>
 
 <body>
 
 	<div class="para">
-		<div>[Detect IE Quirks mode(a.k.a. IE5) If you see 3 <b>square</b> blocks, the engine is using Quirks mode.] </div>
+		<div>[Detect IE Quirks mode(a.k.a. IE5)] If you see 3 <b>square</b> blocks, the engine is using Quirks mode.</div>
 		<div id="inline1">
-			<div id="-red" class="red-bg block die6 Rmargin">red</div><div id="-green" class="green-bg block die6 Lmargin Rmargin">green</div><div id="-blue" class="blue-bg block die6 Lmargin">blue</div>
+			<div id="quriks-red" class="red-bg block die6 Rmargin">red</div><div id="quriks-green" class="green-bg block die6 Lmargin Rmargin">green</div><div id="quriks-blue" class="blue-bg block die6 Lmargin">blue</div>
+		</div>
+	</div>
+
+	<div class="para">
+		<div>[Distinguish IE6/IE7] IE6 in blue border, IE7 in green border. </div>
+		<div id="border1" class="border-xcolor block">
 		</div>
 	</div>
 
