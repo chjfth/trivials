@@ -22,15 +22,30 @@ body { margin: 0px; }
 
 .shrink { transform: scale(0.6); } 
 
+.die6 { 
+	display: inline;
+	font-size: 0.8em;
+}
+.Lmargin { margin-left: 10px; }
+.Rmargin { margin-right: 10px; }
+
 </style>
 </head>
 
 <body>
+
+	<div class="para">
+		<div>[Detect IE Quirks mode(a.k.a. IE5) If you see 3 <b>square</b> blocks, the engine is using Quirks mode.] </div>
+		<div id="inline1">
+			<div id="-red" class="red-bg block die6 Rmargin">red</div><div id="-green" class="green-bg block die6 Lmargin Rmargin">green</div><div id="-blue" class="blue-bg block die6 Lmargin">blue</div>
+		</div>
+	</div>
+
 	<div class="para">
 		<div>[CSS-Table, IE8+] If the color blocks are displayed vertically, the engine is IE7 or older.</div>
 		<div id="csstable1" style="display: table;">
 			<div id="csstable-cell-red" class="red-bg block table-cell"></div>
-			<div id="csstable-cell-green" class="green-bg block table-cell "></div>
+			<div id="csstable-cell-green" class="green-bg block table-cell"></div>
 			<div id="csstable-cell-blue" class="blue-bg block table-cell"></div>
 		</div>
 	</div>
