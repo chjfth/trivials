@@ -12,12 +12,20 @@
 }
 body { margin: 0px; }
 
-#info { 
+.infobanner { 
 	margin: 20px;
 	border: 1px solid #333;
 	padding: 5px;
 	text-align: center;
-	color: black;
+}
+
+.smalltitle {
+	color: #999;
+	font-size: 0.8em;
+}
+.bigresult {
+	font-weight: bold;
+	font-size: 1.5em;
 }
 
 .para { 
@@ -43,11 +51,26 @@ body { margin: 0px; }
 #border1 { background-color: #eee; }
 
 .border-xcolor {
-  /* https://zeropointdevelopment.com/css-hacks-for-ie-targeting-only-ie8-ie7-and-ie6/ */
+  /* Thanks to 
+  	https://zeropointdevelopment.com/css-hacks-for-ie-targeting-only-ie8-ie7-and-ie6/ 
+  */
   border: 2px solid #aaa;  /* IE8 to IE11 - grey border */
   border: 2px solid #f009; /* Chrome 88 and Firefox 78 - red border */
   *border: 2px solid #0f0; /* IE7 - green border (confirmed, Vista IE7) */
   _border: 2px solid #00f; /* IE6 - blue border (confirmed, WinXP IE6, and IE8 Quirks mode) */
+}
+
+.dark11 {
+	display: inline-block;
+	border: 1px solid grey;
+	color: grey;
+	margin: 20px;
+	padding: 10px;
+}
+
+*::-ms-backdrop, .ie11only {
+	/* Thanks to https://stackoverflow.com/a/22085269/151453 */
+	color: red !important;
 }
 
 #gradient1 { background: linear-gradient(15deg, orange, yellow); }
@@ -57,7 +80,10 @@ body { margin: 0px; }
 
 <body>
 
-	<div id="info" class="info">zzz</div>
+	<div class="infobanner">
+		<div id="smalltitle" class="smalltitle">Brower Detection Result</div>
+		<div id="bigresult" class="bigresult">...</div>
+	</div>
 
 	<div class="para">
 		<div>[Detect IE Quirks mode(a.k.a. IE5)] If you see 3 <b>square</b> blocks, the engine is using Quirks mode.</div>
@@ -122,11 +148,18 @@ body { margin: 0px; }
 -->
 
 	<div class="para">
+		<div>[IE11 specific CSS]</div>
+		<div id="detect-ie11" class="ie11only dark11">
+			If using IE11, this text will be red.
+		</div>
+	</div>
+
+	<div class="para">
 		<div>[CSS Grid, Beyond IE11] If the color blocks are displayed vertically, the engine is IE11 or older.</div>
 		<div id="cssgrid1" style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
-			<div id="csstransform-red" class="red-bg block"></div>
-			<div id="csstransform-green" class="green-bg block"></div>
-			<div id="csstransform-blue" class="blue-bg block"></div>
+			<div id="cssgrid-red" class="red-bg block"></div>
+			<div id="cssgrid-green" class="green-bg block"></div>
+			<div id="cssgrid-blue" class="blue-bg block"></div>
 		</div>
 	</div>
 
@@ -137,17 +170,16 @@ body { margin: 0px; }
 	
 		// .innerText is available since IE 3.0
 		// .textContent is available since IE 9.0
+		// so use .innerText .
 		
-		var einfo = document.getElementById('info');
-		einfo.innerText = text;
+		var eresult = document.getElementById('bigresult');
+		eresult.innerText = text;
 	}
 
 	// Main function below:
 	(function(){
-		var einfo = document.getElementById('info');
-		einfo.textContent = "Detecting IE version...";
 
-		// Detect Quirks mode
+		// Detect Quirks mode first.
 
 		var equirk = document.getElementById('quirks-green');
 		if (equirk.offsetHeight==50) {
@@ -158,9 +190,7 @@ body { margin: 0px; }
 		// Detect IE6 & IE7
 		
 		var eD67 = document.getElementById('border1');
-		// var stD67 = window.getComputedStyle(eD67);
-		// einfo.innerText = "stD67:" + stD67.borderTopColor;
-		// -- IE8 and below does not support getComputedStyle().
+		// IE8 and below does not support getComputedStyle(), so use .currentStyle
 		if (eD67.currentStyle) {
 			// IE5 ~ IE11
 			var c = eD67.currentStyle.borderTopColor;
@@ -189,17 +219,37 @@ body { margin: 0px; }
 			return;		
 		} // For IE9+, eD9.offsetHeight>=50 
 		
+		// IE9 or above
+		
 		var eD10 = document.getElementById('flexbox-green');
 		if (eD10.offsetLeft!=50) {
 			ShowResult("IE9");
 			return;
 		} // For IE10+, eD10.offsetLeft==50
 		
+		// IE10 or above
 		
-		
-		ShowResult("IE 10+...");
+		var eModern = document.getElementById('cssgrid-green');
+		if (eModern.offsetLeft>=50) {
+			ShowResult("Edge/Chrome/Firefox (a modern browser beyond IE11)");
+			return;
+		}
+		else {
+			// IE aligns those grids vertically, which means unsupported.
+			// Now check IE10 or IE11.
+
+			var eD11 = document.getElementById('detect-ie11');
+			var st11 = window.getComputedStyle(eD11);
+			// alert(st11.color);
+			if (st11.color=="rgb(255, 0, 0)") { // red
+				ShowResult("IE11");
+				return;
+			}
+			else {
+				ShowResult("IE10");
+			}
+		}
 		
 	})();
 	
-</script>
 </script>
