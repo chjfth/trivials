@@ -99,6 +99,8 @@ namespace prjSkeleton
             string exename = Path.GetFileName(Application.ExecutablePath);
             this.Text = exename;
 
+            CreateLocalHtmls();
+
             LoadUrlsToComboBox();
         }
 
