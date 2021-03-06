@@ -40,7 +40,7 @@ namespace prjSkeleton
             this.lblURL = new System.Windows.Forms.Label();
             this.cbxURL = new System.Windows.Forms.ComboBox();
             this.panel2Left = new System.Windows.Forms.FlowLayoutPanel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -175,22 +175,21 @@ namespace prjSkeleton
             // 
             // panel2Left
             // 
-            this.panel2Left.Controls.Add(this.checkBox1);
+            this.panel2Left.Controls.Add(this.label1);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
             this.panel2Left.Size = new System.Drawing.Size(140, 557);
             this.panel2Left.TabIndex = 0;
             // 
-            // checkBox1
+            // label1
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(3, 3);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 1;
-            this.checkBox1.Text = "checkBox1";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(102, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "IE engine detection:";
             // 
             // Form1
             // 
@@ -225,10 +224,10 @@ namespace prjSkeleton
         private System.Windows.Forms.ComboBox cbxURL;
         private System.Windows.Forms.Label lblURL;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.TextBox tboxStatus;
         private System.Windows.Forms.WebBrowser wb1;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Label label1;
     }
 }
 
