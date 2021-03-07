@@ -57,7 +57,7 @@ namespace prjSkeleton
                 File.WriteAllText(fp_xua, tx_xua);
 
                 string tx_xua_noDOCTYPE = tx_xua.RemoveDOCTYPE();
-                string fp_xua_noDOCTYPE = fp_xua.AppendStemSuffix("-ND");
+                string fp_xua_noDOCTYPE = tmplpath.AppendStemSuffix("-nDT-xua-" + xua);
                 File.WriteAllText(fp_xua_noDOCTYPE, tx_xua_noDOCTYPE);
 
                 file_urls.Add(fp_xua);
