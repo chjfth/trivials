@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="generator" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</head>
+<body>
+   <OBJECT type="text/site properties">
+     <param name="Window Styles" value="0x800025">
+     <param name="comment" value="title:Online Help">
+     <param name="comment" value="base:index.htm">
+   </OBJECT>
+   <UL>
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="IE engine version detection - by Jimm Chen">
+            <param name="Local" value="detect-ie-engine.html">
+            <param name="ImageNumber" value="11">
+          </OBJECT>
+      <LI><OBJECT type="text/sitemap">
+            <param name="Name" value="Navigate to Any">
+            <param name="Local" value="navigate-any.html">
+            <param name="ImageNumber" value="11">
+          </OBJECT>
+   </UL>
+</BODY>
+</HTML>

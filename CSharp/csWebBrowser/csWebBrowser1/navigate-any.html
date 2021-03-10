@@ -1,0 +1,54 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<title>Navigate</title>
+<style>
+:root {
+    box-sizing: border-box;
+}
+
+*,
+::before,
+::after {
+    box-sizing: inherit;
+}
+body { margin: 1em; }
+
+.infobanner { 
+	margin: 20px;
+	border: 1px solid #333;
+	padding: 5px;
+	text-align: center;
+}
+
+.textbox {
+	margin: 0.5em;
+	padding: 0.2em;
+	width: 80%;
+}
+
+</style>
+</head>
+<body>
+
+<div class="infobanner">
+Navigate to any URL
+</div>
+
+<div>
+	<div class="userinput">
+	    <label for="wordfrom">URL: </label>
+	    <input type="text" name="url" value="http://www.w3.org/" id="url" class="textbox" />
+	   
+	    <input type="submit" value="Go" id="startbtn" onclick="GotoURL();"/>
+	</div>
+</div>
+
+</body>
+
+<script language="javascript">
+	function GotoURL() {
+		var urlbox = document.getElementById('url');
+		window.location.href = urlbox.value;
+	}
+</script>
