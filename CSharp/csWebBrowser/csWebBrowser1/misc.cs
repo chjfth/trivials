@@ -152,7 +152,8 @@ namespace prjSkeleton
         void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             log($"[event] wb.DocumentCompleted\r\n" +
-                $"  URL: {e.Url.ToString()}");
+                $"  URL: {e.Url.ToString()}\r\n" +
+                $"  htmldoc.Uri: {wb1.Document.Url.AbsoluteUri}");
         }
 
         void wb_Navigate(string url)
