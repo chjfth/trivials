@@ -123,9 +123,44 @@ namespace prjSkeleton
 
             log("Detecting real IE software version via "+html_xua_edge_file);
 
-            wb1.Navigate(fp_xua_edge_html);
+            wb_Navigate(fp_xua_edge_html);
 
+        }
 
+        void wb_PrepareCallbacks()
+        {
+            wb1.Navigating += wbevt_Navigating;
+
+            wb1.Navigated += wbevt_Navigated;
+
+            wb1.DocumentCompleted += wbevt_DocumentCompleted;
+        }
+
+        void wbevt_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+        {
+            log($"[event] wb.Navigating\r\n" +
+                $"  URL: {e.Url.ToString()}\r\n" +
+                $"  TargetFrameName: {e.TargetFrameName}");
+        }
+
+        void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
+        {
+            log($"[event] wb.Navigated\r\n" +
+                $"  URL: {e.Url.ToString()}");
+        }
+
+        void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            log($"[event] wb.DocumentCompleted\r\n" +
+                $"  URL: {e.Url.ToString()}");
+        }
+
+        void wb_Navigate(string url)
+        {
+            log($"wb.Navigate()\r\n" +
+                $"  URL: {url}");
+
+            wb1.Navigate(url);
         }
     }
 

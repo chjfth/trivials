@@ -127,6 +127,7 @@ namespace prjSkeleton
             this.btnClear.TabIndex = 2;
             this.btnClear.Text = "&Clear";
             this.btnClear.UseVisualStyleBackColor = false;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // tboxStatus
             // 
@@ -172,6 +173,9 @@ namespace prjSkeleton
             this.cbxURL.Name = "cbxURL";
             this.cbxURL.Size = new System.Drawing.Size(646, 22);
             this.cbxURL.TabIndex = 2;
+            this.cbxURL.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbxURL_KeyDown);
+            this.cbxURL.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbxURL_KeyPress);
+            this.cbxURL.KeyUp += new System.Windows.Forms.KeyEventHandler(this.cbxURL_KeyUp);
             // 
             // panel2Left
             // 
@@ -199,6 +203,7 @@ namespace prjSkeleton
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "csWebBrowser1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
             this.panel3Right.ResumeLayout(false);

@@ -99,6 +99,8 @@ namespace prjSkeleton
             string exename = Path.GetFileName(Application.ExecutablePath);
             this.Text = exename;
 
+            wb_PrepareCallbacks();
+
             CreateLocalHtmls();
 
             Detect_IESoftwareVersion_hardcore();
@@ -108,12 +110,50 @@ namespace prjSkeleton
 
         }
 
-        private void btnNavigate_Click(object sender, EventArgs e)
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            log("Navigate() " + cbxURL.Text);
-
-            wb1.Navigate(cbxURL.Text);
+            wb1.Dispose(); // must I explicitly do this?
         }
 
+        private void btnNavigate_Click(object sender, EventArgs e)
+        {
+            wb_Navigate(cbxURL.Text);
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            this.tboxLog.Text = "";
+        }
+
+        private void cbxURL_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // [2021-03-11] 奇怪: 用 Alt+↓ 弹出下拉列表，按下箭头选中一项，然后回车，
+                // 此处代码竟然会被触发两次。why?
+                // 搞得我没法将 wb_Navigate() 放在这里了。
+
+//                wb_Navigate(cbxURL.Text);
+            }
+
+        }
+
+        private void cbxURL_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // We can see e.KeyChar==13 here.
+        }
+
+        private void cbxURL_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                // [2021-03-11] 奇怪: 用 Alt+↓ 弹出下拉列表，按下箭头选中一项，然后回车，
+                // 此处代码竟然会被触发两次。why?
+
+                wb_Navigate(cbxURL.Text);
+
+                //e.Handled = true; // must?
+            }
+        }
     }
 }
