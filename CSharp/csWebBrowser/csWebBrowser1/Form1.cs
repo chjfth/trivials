@@ -101,7 +101,11 @@ namespace prjSkeleton
 
             CreateLocalHtmls();
 
+            Detect_IESoftwareVersion_hardcore();
+
+
             LoadUrlsToComboBox();
+
         }
 
         private void btnNavigate_Click(object sender, EventArgs e)

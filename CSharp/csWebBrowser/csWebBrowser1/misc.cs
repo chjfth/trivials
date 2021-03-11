@@ -17,10 +17,13 @@ namespace prjSkeleton
 {
     public partial class Form1 : Form
     {
+        string s_exedir = AppDomain.CurrentDomain.BaseDirectory; // with a trailing backslash
 
         static string fname_urls_txt = "urls.txt";
         static string fname_urls_user_txt = fname_urls_txt.AppendStemSuffix(".user"); // urls.user.txt
         static string html_template_file = "detect-ie-engine.html";
+
+        static string html_xua_edge_file = "detect-ie-engine-xua-edge.html";
 
         void CreateLocalHtmls()
         {
@@ -83,9 +86,8 @@ namespace prjSkeleton
 
         void LoadUrlsToComboBox()
         {
-            string exedir = AppDomain.CurrentDomain.BaseDirectory; // with a trailing backslash
-            string inipath_url1 = Path.Combine(exedir, fname_urls_user_txt);
-            string inipath_url2 = Path.Combine(exedir, fname_urls_txt);
+            string inipath_url1 = Path.Combine(s_exedir, fname_urls_user_txt);
+            string inipath_url2 = Path.Combine(s_exedir, fname_urls_txt);
             string[] urls = null;
 
             foreach (string inipath in new string[] {inipath_url1, inipath_url2})
@@ -113,6 +115,17 @@ namespace prjSkeleton
 
             cbxURL.Items.AddRange(urls.Where(n => !String.IsNullOrWhiteSpace(n)).ToArray());
             cbxURL.Text = urls[0];
+        }
+
+        void Detect_IESoftwareVersion_hardcore()
+        {
+            string fp_xua_edge_html = Path.Combine(s_exedir, html_xua_edge_file);
+
+            log("Detecting real IE software version via "+html_xua_edge_file);
+
+            wb1.Navigate(fp_xua_edge_html);
+
+
         }
     }
 
