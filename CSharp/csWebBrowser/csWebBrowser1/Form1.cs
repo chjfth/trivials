@@ -103,11 +103,9 @@ namespace prjSkeleton
 
             CreateLocalHtmls();
 
-            Detect_IESoftwareVersion_hardcore();
-
-
             LoadUrlsToComboBox();
 
+            Detect_IESoftwareVersion_hardcore();
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -165,6 +163,39 @@ namespace prjSkeleton
         private void ckbProgressChanged_CheckedChanged(object sender, EventArgs e)
         {
             wb_PrepareCallbacks();
+        }
+
+        private void lnkRefresh_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            log("wb.Refresh()");
+            wb1.Refresh();
+        }
+
+        private void lnkBack_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if(wb1.CanGoBack)
+            {
+                log("wb.GoBack()");
+                wb1.GoBack();
+            }
+            else
+            {
+                log("Cannot GoBack() anymore.");
+            }
+        }
+
+        private void lnkForward_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (wb1.CanGoForward)
+            {
+                log("wb.GoForword()");
+                wb1.GoForward();
+            }
+            else
+            {
+                log("Cannot GoForward() anymore.");
+            }
+
         }
     }
 }

@@ -130,6 +130,8 @@ namespace prjSkeleton
 
             wb_Navigate(fp_xua_edge_html);
 
+            cbxURL.Text = fp_xua_edge_html;
+
             // PENDING... Async wait Navigating result
 
         }
