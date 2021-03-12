@@ -49,6 +49,8 @@ namespace prjSkeleton
             this.lblEvents = new System.Windows.Forms.Label();
             this.ckbProgressChanged = new System.Windows.Forms.CheckBox();
             this.ckbBlockNewWindow = new System.Windows.Forms.CheckBox();
+            this.lblWbProperties = new System.Windows.Forms.Label();
+            this.ckbScriptErrorsSuppressed = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -164,7 +166,7 @@ namespace prjSkeleton
             this.tboxLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tboxLog.BackColor = System.Drawing.SystemColors.Info;
+            this.tboxLog.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.tboxLog.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tboxLog.Location = new System.Drawing.Point(0, 0);
             this.tboxLog.Multiline = true;
@@ -207,6 +209,8 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.lblEvents);
             this.panel2Left.Controls.Add(this.ckbProgressChanged);
             this.panel2Left.Controls.Add(this.ckbBlockNewWindow);
+            this.panel2Left.Controls.Add(this.lblWbProperties);
+            this.panel2Left.Controls.Add(this.ckbScriptErrorsSuppressed);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
@@ -294,6 +298,26 @@ namespace prjSkeleton
             this.ckbBlockNewWindow.Text = "Block NewWindow";
             this.ckbBlockNewWindow.UseVisualStyleBackColor = true;
             // 
+            // lblWbProperties
+            // 
+            this.lblWbProperties.AutoSize = true;
+            this.lblWbProperties.Location = new System.Drawing.Point(3, 98);
+            this.lblWbProperties.Name = "lblWbProperties";
+            this.lblWbProperties.Size = new System.Drawing.Size(120, 13);
+            this.lblWbProperties.TabIndex = 8;
+            this.lblWbProperties.Text = "WebBrowser properties:";
+            // 
+            // ckbScriptErrorsSuppressed
+            // 
+            this.ckbScriptErrorsSuppressed.AutoSize = true;
+            this.ckbScriptErrorsSuppressed.Location = new System.Drawing.Point(3, 114);
+            this.ckbScriptErrorsSuppressed.Name = "ckbScriptErrorsSuppressed";
+            this.ckbScriptErrorsSuppressed.Size = new System.Drawing.Size(139, 17);
+            this.ckbScriptErrorsSuppressed.TabIndex = 9;
+            this.ckbScriptErrorsSuppressed.Text = "ScriptErrorsSuppressed ";
+            this.ckbScriptErrorsSuppressed.UseVisualStyleBackColor = true;
+            this.ckbScriptErrorsSuppressed.CheckedChanged += new System.EventHandler(this.ckbScriptErrorsSuppressed_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -340,6 +364,8 @@ namespace prjSkeleton
         private System.Windows.Forms.LinkLabel lnkBack;
         private System.Windows.Forms.LinkLabel lnkForward;
         private System.Windows.Forms.CheckBox ckbBlockNewWindow;
+        private System.Windows.Forms.Label lblWbProperties;
+        private System.Windows.Forms.CheckBox ckbScriptErrorsSuppressed;
     }
 }
 

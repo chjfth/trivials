@@ -172,9 +172,19 @@ namespace prjSkeleton
 
         void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            log($"[event] wb.DocumentCompleted\r\n" +
-                $"  URL: {e.Url.ToString()}\r\n" +
-                $"  htmldoc.Uri: {wb1.Document.Url.AbsoluteUri}");
+            if(wb1.Document!=null)
+            {
+                log($"[event] wb.DocumentCompleted\r\n" +
+                    $"  URL: {e.Url.ToString()}\r\n" +
+                    $"  htmldoc.Uri: {wb1.Document.Url.AbsoluteUri}");
+            }
+            else
+            {
+                // This can happen when we Navigate to a folder C:\Users\win7evn\AppData\Roaming
+                log($"[event] wb.DocumentCompleted\r\n" +
+                    $"  URL: {e.Url.ToString()}\r\n" +
+                    $"  wb.Document==null");
+            }
         }
 
         void wbevt_ProgressChanged(Object sender, WebBrowserProgressChangedEventArgs e)

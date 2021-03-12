@@ -106,6 +106,8 @@ namespace prjSkeleton
             LoadUrlsToComboBox();
 
             Detect_IESoftwareVersion_hardcore();
+
+            ckbScriptErrorsSuppressed_CheckedChanged(ckbScriptErrorsSuppressed, EventArgs.Empty);
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -188,14 +190,23 @@ namespace prjSkeleton
         {
             if (wb1.CanGoForward)
             {
-                log("wb.GoForword()");
+                log("wb.GoForward()");
                 wb1.GoForward();
             }
             else
             {
                 log("Cannot GoForward() anymore.");
             }
+        }
 
+        private void ckbScriptErrorsSuppressed_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox ckb = ((CheckBox)sender);
+
+            if (ckb.Checked)
+                wb1.ScriptErrorsSuppressed = true;
+            else
+                wb1.ScriptErrorsSuppressed = false;
         }
     }
 }
