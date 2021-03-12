@@ -150,6 +150,9 @@ namespace prjSkeleton
             wb1.ProgressChanged -= wbevt_ProgressChanged;
             if(ckbProgressChanged.Checked)
                 wb1.ProgressChanged += wbevt_ProgressChanged;
+
+            wb1.NewWindow -= wbevt_NewWindow;
+            wb1.NewWindow += wbevt_NewWindow;
         }
 
         void wbevt_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -161,8 +164,10 @@ namespace prjSkeleton
 
         void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
         {
-            log($"[event] wb.Navigated\r\n" +
+            log($"[event] wb.Navigated (updating address bar)\r\n" +
                 $"  URL: {e.Url.ToString()}");
+
+            cbxURL.Text = e.Url.ToString();
         }
 
         void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -182,6 +187,21 @@ namespace prjSkeleton
 
             log($"[event] wb.ProgressChanged {e.CurrentProgress}/{e.MaximumProgress} ({pct})");
         }
+
+        void wbevt_NewWindow(Object sender, CancelEventArgs e)
+        {
+            if (ckbBlockNewWindow.Checked)
+            {
+                e.Cancel = true;
+
+                log($"[event] wb.NewWindow (new window pop out blocked)");
+            }
+            else
+            {
+                log($"[event] wb.NewWindow");
+            }
+        }
+
 
         void wb_Navigate(string url)
         {

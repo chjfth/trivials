@@ -48,6 +48,7 @@ namespace prjSkeleton
             this.lnkForward = new System.Windows.Forms.LinkLabel();
             this.lblEvents = new System.Windows.Forms.Label();
             this.ckbProgressChanged = new System.Windows.Forms.CheckBox();
+            this.ckbBlockNewWindow = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -205,6 +206,7 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.lnkForward);
             this.panel2Left.Controls.Add(this.lblEvents);
             this.panel2Left.Controls.Add(this.ckbProgressChanged);
+            this.panel2Left.Controls.Add(this.ckbBlockNewWindow);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
@@ -282,6 +284,16 @@ namespace prjSkeleton
             this.ckbProgressChanged.UseVisualStyleBackColor = true;
             this.ckbProgressChanged.CheckedChanged += new System.EventHandler(this.ckbProgressChanged_CheckedChanged);
             // 
+            // ckbBlockNewWindow
+            // 
+            this.ckbBlockNewWindow.AutoSize = true;
+            this.ckbBlockNewWindow.Location = new System.Drawing.Point(3, 78);
+            this.ckbBlockNewWindow.Name = "ckbBlockNewWindow";
+            this.ckbBlockNewWindow.Size = new System.Drawing.Size(117, 17);
+            this.ckbBlockNewWindow.TabIndex = 7;
+            this.ckbBlockNewWindow.Text = "Block NewWindow";
+            this.ckbBlockNewWindow.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -327,6 +339,7 @@ namespace prjSkeleton
         private System.Windows.Forms.Label lblWbCommands;
         private System.Windows.Forms.LinkLabel lnkBack;
         private System.Windows.Forms.LinkLabel lnkForward;
+        private System.Windows.Forms.CheckBox ckbBlockNewWindow;
     }
 }
 
