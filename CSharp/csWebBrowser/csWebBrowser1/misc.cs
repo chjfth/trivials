@@ -9,6 +9,7 @@ using System.Linq;
 using System.Management;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -119,6 +120,8 @@ namespace prjSkeleton
 
         void Detect_IESoftwareVersion_hardcore()
         {
+            lblIESoftVer.Text = "IE software: " + wb1.Version.ToString();
+
             log($"IE software version: {wb1.Version.Major} ({wb1.Version.ToString()})"); 
 
             string fp_xua_edge_html = Path.Combine(s_exedir, html_xua_edge_file);
@@ -138,6 +141,8 @@ namespace prjSkeleton
             wb1.Navigated += wbevt_Navigated;
 
             wb1.DocumentCompleted += wbevt_DocumentCompleted;
+
+            wb1.ProgressChanged += wbevt_ProgressChanged;
         }
 
         void wbevt_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -158,6 +163,17 @@ namespace prjSkeleton
             log($"[event] wb.DocumentCompleted\r\n" +
                 $"  URL: {e.Url.ToString()}\r\n" +
                 $"  htmldoc.Uri: {wb1.Document.Url.AbsoluteUri}");
+        }
+
+        void wbevt_ProgressChanged(Object sender, WebBrowserProgressChangedEventArgs e)
+        {
+            string pct = "N/A";
+            if (e.CurrentProgress == -1)
+                pct = "Completed";
+            else if (e.MaximumProgress > 0)
+                pct = $"(int)(100 * e.CurrentProgress / e.MaximumProgress)%";
+
+            log($"[event] wb.ProgressChanged {e.CurrentProgress}/{e.MaximumProgress} ({pct})");
         }
 
         void wb_Navigate(string url)

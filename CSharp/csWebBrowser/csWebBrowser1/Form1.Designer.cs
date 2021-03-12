@@ -40,7 +40,7 @@ namespace prjSkeleton
             this.lblURL = new System.Windows.Forms.Label();
             this.cbxURL = new System.Windows.Forms.ComboBox();
             this.panel2Left = new System.Windows.Forms.FlowLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblIESoftVer = new System.Windows.Forms.Label();
             this.btnStop = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
@@ -181,21 +181,21 @@ namespace prjSkeleton
             // 
             // panel2Left
             // 
-            this.panel2Left.Controls.Add(this.label1);
+            this.panel2Left.Controls.Add(this.lblIESoftVer);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
             this.panel2Left.Size = new System.Drawing.Size(140, 557);
             this.panel2Left.TabIndex = 0;
             // 
-            // label1
+            // lblIESoftVer
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(102, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "IE engine detection:";
+            this.lblIESoftVer.AutoSize = true;
+            this.lblIESoftVer.Location = new System.Drawing.Point(3, 0);
+            this.lblIESoftVer.Name = "lblIESoftVer";
+            this.lblIESoftVer.Size = new System.Drawing.Size(63, 13);
+            this.lblIESoftVer.TabIndex = 0;
+            this.lblIESoftVer.Text = "IE software:";
             // 
             // btnStop
             // 
@@ -245,7 +245,7 @@ namespace prjSkeleton
         private System.Windows.Forms.TextBox tboxStatus;
         private System.Windows.Forms.WebBrowser wb1;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblIESoftVer;
         private System.Windows.Forms.Button btnStop;
     }
 }
