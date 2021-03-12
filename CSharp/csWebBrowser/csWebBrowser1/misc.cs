@@ -136,13 +136,18 @@ namespace prjSkeleton
 
         void wb_PrepareCallbacks()
         {
+            wb1.Navigating -= wbevt_Navigating;
             wb1.Navigating += wbevt_Navigating;
 
+            wb1.Navigated -= wbevt_Navigated;
             wb1.Navigated += wbevt_Navigated;
 
+            wb1.DocumentCompleted -= wbevt_DocumentCompleted;
             wb1.DocumentCompleted += wbevt_DocumentCompleted;
 
-            wb1.ProgressChanged += wbevt_ProgressChanged;
+            wb1.ProgressChanged -= wbevt_ProgressChanged;
+            if(ckbProgressChanged.Checked)
+                wb1.ProgressChanged += wbevt_ProgressChanged;
         }
 
         void wbevt_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -171,7 +176,7 @@ namespace prjSkeleton
             if (e.CurrentProgress == -1)
                 pct = "Completed";
             else if (e.MaximumProgress > 0)
-                pct = $"(int)(100 * e.CurrentProgress / e.MaximumProgress)%";
+                pct = $"{(int)(100 * e.CurrentProgress / e.MaximumProgress)}%";
 
             log($"[event] wb.ProgressChanged {e.CurrentProgress}/{e.MaximumProgress} ({pct})");
         }

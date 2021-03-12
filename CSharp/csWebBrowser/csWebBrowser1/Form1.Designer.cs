@@ -42,6 +42,8 @@ namespace prjSkeleton
             this.panel2Left = new System.Windows.Forms.FlowLayoutPanel();
             this.lblIESoftVer = new System.Windows.Forms.Label();
             this.btnStop = new System.Windows.Forms.Button();
+            this.lblEvents = new System.Windows.Forms.Label();
+            this.ckbProgressChanged = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -182,6 +184,8 @@ namespace prjSkeleton
             // panel2Left
             // 
             this.panel2Left.Controls.Add(this.lblIESoftVer);
+            this.panel2Left.Controls.Add(this.lblEvents);
+            this.panel2Left.Controls.Add(this.ckbProgressChanged);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
@@ -193,9 +197,9 @@ namespace prjSkeleton
             this.lblIESoftVer.AutoSize = true;
             this.lblIESoftVer.Location = new System.Drawing.Point(3, 0);
             this.lblIESoftVer.Name = "lblIESoftVer";
-            this.lblIESoftVer.Size = new System.Drawing.Size(63, 13);
+            this.lblIESoftVer.Size = new System.Drawing.Size(100, 13);
             this.lblIESoftVer.TabIndex = 0;
-            this.lblIESoftVer.Text = "IE software:";
+            this.lblIESoftVer.Text = "IE software version:";
             // 
             // btnStop
             // 
@@ -207,6 +211,26 @@ namespace prjSkeleton
             this.btnStop.Text = "Sto&p";
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // lblEvents
+            // 
+            this.lblEvents.AutoSize = true;
+            this.lblEvents.Location = new System.Drawing.Point(3, 13);
+            this.lblEvents.Name = "lblEvents";
+            this.lblEvents.Size = new System.Drawing.Size(106, 13);
+            this.lblEvents.TabIndex = 1;
+            this.lblEvents.Text = "WebBrowser events:";
+            // 
+            // ckbProgressChanged
+            // 
+            this.ckbProgressChanged.AutoSize = true;
+            this.ckbProgressChanged.Location = new System.Drawing.Point(3, 29);
+            this.ckbProgressChanged.Name = "ckbProgressChanged";
+            this.ckbProgressChanged.Size = new System.Drawing.Size(110, 17);
+            this.ckbProgressChanged.TabIndex = 2;
+            this.ckbProgressChanged.Text = "ProgressChanged";
+            this.ckbProgressChanged.UseVisualStyleBackColor = true;
+            this.ckbProgressChanged.CheckedChanged += new System.EventHandler(this.ckbProgressChanged_CheckedChanged);
             // 
             // Form1
             // 
@@ -247,6 +271,8 @@ namespace prjSkeleton
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Label lblIESoftVer;
         private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Label lblEvents;
+        private System.Windows.Forms.CheckBox ckbProgressChanged;
     }
 }
 
