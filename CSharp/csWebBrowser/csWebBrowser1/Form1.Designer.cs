@@ -31,7 +31,7 @@ namespace prjSkeleton
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3Right = new System.Windows.Forms.Panel();
-            this.btn1 = new System.Windows.Forms.Button();
+            this.btnNavigate = new System.Windows.Forms.Button();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.wb1 = new System.Windows.Forms.WebBrowser();
             this.btnClear = new System.Windows.Forms.Button();
@@ -41,6 +41,7 @@ namespace prjSkeleton
             this.cbxURL = new System.Windows.Forms.ComboBox();
             this.panel2Left = new System.Windows.Forms.FlowLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
+            this.btnStop = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -62,7 +63,8 @@ namespace prjSkeleton
             // 
             // panel3Right
             // 
-            this.panel3Right.Controls.Add(this.btn1);
+            this.panel3Right.Controls.Add(this.btnStop);
+            this.panel3Right.Controls.Add(this.btnNavigate);
             this.panel3Right.Controls.Add(this.splitContainer1);
             this.panel3Right.Controls.Add(this.lblURL);
             this.panel3Right.Controls.Add(this.cbxURL);
@@ -72,16 +74,16 @@ namespace prjSkeleton
             this.panel3Right.Size = new System.Drawing.Size(765, 557);
             this.panel3Right.TabIndex = 1;
             // 
-            // btn1
+            // btnNavigate
             // 
-            this.btn1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn1.Location = new System.Drawing.Point(702, 0);
-            this.btn1.Name = "btn1";
-            this.btn1.Size = new System.Drawing.Size(63, 22);
-            this.btn1.TabIndex = 3;
-            this.btn1.Text = "&Navigate";
-            this.btn1.UseVisualStyleBackColor = true;
-            this.btn1.Click += new System.EventHandler(this.btnNavigate_Click);
+            this.btnNavigate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnNavigate.Location = new System.Drawing.Point(648, 0);
+            this.btnNavigate.Name = "btnNavigate";
+            this.btnNavigate.Size = new System.Drawing.Size(58, 22);
+            this.btnNavigate.TabIndex = 3;
+            this.btnNavigate.Text = "&Navigate";
+            this.btnNavigate.UseVisualStyleBackColor = true;
+            this.btnNavigate.Click += new System.EventHandler(this.btnNavigate_Click);
             // 
             // splitContainer1
             // 
@@ -171,7 +173,7 @@ namespace prjSkeleton
             this.cbxURL.FormattingEnabled = true;
             this.cbxURL.Location = new System.Drawing.Point(52, 0);
             this.cbxURL.Name = "cbxURL";
-            this.cbxURL.Size = new System.Drawing.Size(646, 22);
+            this.cbxURL.Size = new System.Drawing.Size(592, 22);
             this.cbxURL.TabIndex = 2;
             this.cbxURL.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbxURL_KeyDown);
             this.cbxURL.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbxURL_KeyPress);
@@ -194,6 +196,17 @@ namespace prjSkeleton
             this.label1.Size = new System.Drawing.Size(102, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "IE engine detection:";
+            // 
+            // btnStop
+            // 
+            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStop.Location = new System.Drawing.Point(707, 0);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(58, 22);
+            this.btnStop.TabIndex = 4;
+            this.btnStop.Text = "Sto&p";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
             // Form1
             // 
@@ -225,7 +238,7 @@ namespace prjSkeleton
         private System.Windows.Forms.Panel panel3Right;
         private System.Windows.Forms.TextBox tboxLog;
         private System.Windows.Forms.FlowLayoutPanel panel2Left;
-        private System.Windows.Forms.Button btn1;
+        private System.Windows.Forms.Button btnNavigate;
         private System.Windows.Forms.ComboBox cbxURL;
         private System.Windows.Forms.Label lblURL;
         private System.Windows.Forms.SplitContainer splitContainer1;
@@ -233,6 +246,7 @@ namespace prjSkeleton
         private System.Windows.Forms.WebBrowser wb1;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnStop;
     }
 }
 

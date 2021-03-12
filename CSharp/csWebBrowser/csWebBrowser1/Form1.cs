@@ -120,6 +120,12 @@ namespace prjSkeleton
             wb_Navigate(cbxURL.Text);
         }
 
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            log("wb.Stop()");
+            wb1.Stop();
+        }
+
         private void btnClear_Click(object sender, EventArgs e)
         {
             this.tboxLog.Text = "";
@@ -155,5 +161,6 @@ namespace prjSkeleton
                 //e.Handled = true; // must?
             }
         }
+
     }
 }

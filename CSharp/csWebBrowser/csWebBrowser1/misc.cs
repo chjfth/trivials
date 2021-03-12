@@ -119,11 +119,15 @@ namespace prjSkeleton
 
         void Detect_IESoftwareVersion_hardcore()
         {
+            log($"IE software version: {wb1.Version.Major} ({wb1.Version.ToString()})"); 
+
             string fp_xua_edge_html = Path.Combine(s_exedir, html_xua_edge_file);
 
             log("Detecting real IE software version via "+html_xua_edge_file);
 
             wb_Navigate(fp_xua_edge_html);
+
+            // PENDING... Async wait Navigating result
 
         }
 
