@@ -167,6 +167,11 @@ namespace prjSkeleton
             wb_PrepareCallbacks();
         }
 
+        private void ckbWBStatusTextChanged_CheckedChanged(object sender, EventArgs e)
+        {
+            wb_PrepareCallbacks();
+        }
+
         private void lnkRefresh_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             log("wb.Refresh()");

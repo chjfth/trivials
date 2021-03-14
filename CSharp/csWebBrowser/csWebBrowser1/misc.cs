@@ -153,6 +153,10 @@ namespace prjSkeleton
 
             wb1.NewWindow -= wbevt_NewWindow;
             wb1.NewWindow += wbevt_NewWindow;
+
+            wb1.StatusTextChanged -= wbevt_StatusTextChanged;
+            if(ckbWBStatusTextChanged.Checked)
+                wb1.StatusTextChanged += wbevt_StatusTextChanged;
         }
 
         void wbevt_Navigating(object sender, WebBrowserNavigatingEventArgs e)
@@ -210,6 +214,15 @@ namespace prjSkeleton
             {
                 log($"[event] wb.NewWindow");
             }
+        }
+
+        void wbevt_StatusTextChanged(object sender, EventArgs e)
+        {
+            WebBrowser wb = (WebBrowser) sender;
+            tboxStatus.Text = wb.StatusText;
+
+            log($"[event] wb.StatusTextChanged\r\n" +
+                $"  New-text: {wb.StatusText}");
         }
 
 

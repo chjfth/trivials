@@ -48,6 +48,7 @@ namespace prjSkeleton
             this.lnkForward = new System.Windows.Forms.LinkLabel();
             this.lblEvents = new System.Windows.Forms.Label();
             this.ckbProgressChanged = new System.Windows.Forms.CheckBox();
+            this.ckbWBStatusTextChanged = new System.Windows.Forms.CheckBox();
             this.ckbBlockNewWindow = new System.Windows.Forms.CheckBox();
             this.lblWbProperties = new System.Windows.Forms.Label();
             this.ckbScriptErrorsSuppressed = new System.Windows.Forms.CheckBox();
@@ -208,6 +209,7 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.lnkForward);
             this.panel2Left.Controls.Add(this.lblEvents);
             this.panel2Left.Controls.Add(this.ckbProgressChanged);
+            this.panel2Left.Controls.Add(this.ckbWBStatusTextChanged);
             this.panel2Left.Controls.Add(this.ckbBlockNewWindow);
             this.panel2Left.Controls.Add(this.lblWbProperties);
             this.panel2Left.Controls.Add(this.ckbScriptErrorsSuppressed);
@@ -288,10 +290,21 @@ namespace prjSkeleton
             this.ckbProgressChanged.UseVisualStyleBackColor = true;
             this.ckbProgressChanged.CheckedChanged += new System.EventHandler(this.ckbProgressChanged_CheckedChanged);
             // 
+            // ckbWBStatusTextChanged
+            // 
+            this.ckbWBStatusTextChanged.AutoSize = true;
+            this.ckbWBStatusTextChanged.Location = new System.Drawing.Point(3, 78);
+            this.ckbWBStatusTextChanged.Name = "ckbWBStatusTextChanged";
+            this.ckbWBStatusTextChanged.Size = new System.Drawing.Size(120, 17);
+            this.ckbWBStatusTextChanged.TabIndex = 10;
+            this.ckbWBStatusTextChanged.Text = "StatusTextChanged";
+            this.ckbWBStatusTextChanged.UseVisualStyleBackColor = true;
+            this.ckbWBStatusTextChanged.CheckedChanged += new System.EventHandler(this.ckbWBStatusTextChanged_CheckedChanged);
+            // 
             // ckbBlockNewWindow
             // 
             this.ckbBlockNewWindow.AutoSize = true;
-            this.ckbBlockNewWindow.Location = new System.Drawing.Point(3, 78);
+            this.ckbBlockNewWindow.Location = new System.Drawing.Point(3, 101);
             this.ckbBlockNewWindow.Name = "ckbBlockNewWindow";
             this.ckbBlockNewWindow.Size = new System.Drawing.Size(117, 17);
             this.ckbBlockNewWindow.TabIndex = 7;
@@ -301,7 +314,7 @@ namespace prjSkeleton
             // lblWbProperties
             // 
             this.lblWbProperties.AutoSize = true;
-            this.lblWbProperties.Location = new System.Drawing.Point(3, 98);
+            this.lblWbProperties.Location = new System.Drawing.Point(3, 121);
             this.lblWbProperties.Name = "lblWbProperties";
             this.lblWbProperties.Size = new System.Drawing.Size(120, 13);
             this.lblWbProperties.TabIndex = 8;
@@ -310,7 +323,7 @@ namespace prjSkeleton
             // ckbScriptErrorsSuppressed
             // 
             this.ckbScriptErrorsSuppressed.AutoSize = true;
-            this.ckbScriptErrorsSuppressed.Location = new System.Drawing.Point(3, 114);
+            this.ckbScriptErrorsSuppressed.Location = new System.Drawing.Point(3, 137);
             this.ckbScriptErrorsSuppressed.Name = "ckbScriptErrorsSuppressed";
             this.ckbScriptErrorsSuppressed.Size = new System.Drawing.Size(139, 17);
             this.ckbScriptErrorsSuppressed.TabIndex = 9;
@@ -366,6 +379,7 @@ namespace prjSkeleton
         private System.Windows.Forms.CheckBox ckbBlockNewWindow;
         private System.Windows.Forms.Label lblWbProperties;
         private System.Windows.Forms.CheckBox ckbScriptErrorsSuppressed;
+        private System.Windows.Forms.CheckBox ckbWBStatusTextChanged;
     }
 }
 
