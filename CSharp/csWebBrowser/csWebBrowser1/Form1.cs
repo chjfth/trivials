@@ -213,5 +213,10 @@ namespace prjSkeleton
             else
                 wb1.ScriptErrorsSuppressed = false;
         }
+
+        private void ckbPollReadyState_CheckedChanged(object sender, EventArgs e)
+        {
+            wb_PrepareCallbacks();
+        }
     }
 }

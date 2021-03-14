@@ -157,6 +157,39 @@ namespace prjSkeleton
             wb1.StatusTextChanged -= wbevt_StatusTextChanged;
             if(ckbWBStatusTextChanged.Checked)
                 wb1.StatusTextChanged += wbevt_StatusTextChanged;
+
+            tmrPollReadyState.Enabled = false;
+            if (ckbPollReadyState.Checked == true)
+            {
+                s_rsprev = wb1.ReadyState;
+
+                int pollms = 10;
+                int.TryParse(tboxPollReadyStateMs.Text, out pollms);
+                if (pollms <= 0)
+                    pollms = 10;
+
+                tboxPollReadyStateMs.Text = pollms.ToString();
+
+                log($"Will poll wb.ReadyState every {pollms} millisec. (now {s_rsprev.ToString()})");
+
+                tmrPollReadyState.Interval = pollms;
+                tmrPollReadyState.Tick += tmrevt_PollWBReadyState;
+                tmrPollReadyState.Enabled = true;
+                tmrPollReadyState.Start();
+            }
+        }
+
+        private static WebBrowserReadyState s_rsprev = WebBrowserReadyState.Uninitialized;
+
+        void tmrevt_PollWBReadyState(object obj, EventArgs e)
+        {
+            WebBrowserReadyState rsnow = wb1.ReadyState;
+            if (rsnow == s_rsprev)
+                return;
+
+            logtid($"[state] wb.ReadyState: {s_rsprev.ToString()} -> {rsnow.ToString()}");
+
+            s_rsprev = rsnow;
         }
 
         void wbevt_Navigating(object sender, WebBrowserNavigatingEventArgs e)

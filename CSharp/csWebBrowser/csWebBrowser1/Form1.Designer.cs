@@ -29,6 +29,7 @@ namespace prjSkeleton
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3Right = new System.Windows.Forms.Panel();
             this.btnStop = new System.Windows.Forms.Button();
@@ -52,6 +53,11 @@ namespace prjSkeleton
             this.ckbBlockNewWindow = new System.Windows.Forms.CheckBox();
             this.lblWbProperties = new System.Windows.Forms.Label();
             this.ckbScriptErrorsSuppressed = new System.Windows.Forms.CheckBox();
+            this.lblSeparator1 = new System.Windows.Forms.Label();
+            this.ckbPollReadyState = new System.Windows.Forms.CheckBox();
+            this.lblPollRSEveryMs = new System.Windows.Forms.Label();
+            this.tboxPollReadyStateMs = new System.Windows.Forms.TextBox();
+            this.tmrPollReadyState = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -213,6 +219,10 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.ckbBlockNewWindow);
             this.panel2Left.Controls.Add(this.lblWbProperties);
             this.panel2Left.Controls.Add(this.ckbScriptErrorsSuppressed);
+            this.panel2Left.Controls.Add(this.lblSeparator1);
+            this.panel2Left.Controls.Add(this.ckbPollReadyState);
+            this.panel2Left.Controls.Add(this.lblPollRSEveryMs);
+            this.panel2Left.Controls.Add(this.tboxPollReadyStateMs);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
@@ -331,6 +341,43 @@ namespace prjSkeleton
             this.ckbScriptErrorsSuppressed.UseVisualStyleBackColor = true;
             this.ckbScriptErrorsSuppressed.CheckedChanged += new System.EventHandler(this.ckbScriptErrorsSuppressed_CheckedChanged);
             // 
+            // lblSeparator1
+            // 
+            this.lblSeparator1.AutoSize = true;
+            this.panel2Left.SetFlowBreak(this.lblSeparator1, true);
+            this.lblSeparator1.Location = new System.Drawing.Point(3, 157);
+            this.lblSeparator1.Name = "lblSeparator1";
+            this.lblSeparator1.Size = new System.Drawing.Size(13, 13);
+            this.lblSeparator1.TabIndex = 11;
+            this.lblSeparator1.Text = "--";
+            // 
+            // ckbPollReadyState
+            // 
+            this.ckbPollReadyState.AutoSize = true;
+            this.ckbPollReadyState.Location = new System.Drawing.Point(3, 173);
+            this.ckbPollReadyState.Name = "ckbPollReadyState";
+            this.ckbPollReadyState.Size = new System.Drawing.Size(123, 17);
+            this.ckbPollReadyState.TabIndex = 12;
+            this.ckbPollReadyState.Text = "Poll WB ReadyState";
+            this.ckbPollReadyState.UseVisualStyleBackColor = true;
+            this.ckbPollReadyState.CheckedChanged += new System.EventHandler(this.ckbPollReadyState_CheckedChanged);
+            // 
+            // lblPollRSEveryMs
+            // 
+            this.lblPollRSEveryMs.AutoSize = true;
+            this.lblPollRSEveryMs.Location = new System.Drawing.Point(3, 193);
+            this.lblPollRSEveryMs.Name = "lblPollRSEveryMs";
+            this.lblPollRSEveryMs.Size = new System.Drawing.Size(58, 13);
+            this.lblPollRSEveryMs.TabIndex = 14;
+            this.lblPollRSEveryMs.Text = "every ? ms";
+            // 
+            // tboxPollReadyStateMs
+            // 
+            this.tboxPollReadyStateMs.Location = new System.Drawing.Point(67, 196);
+            this.tboxPollReadyStateMs.Name = "tboxPollReadyStateMs";
+            this.tboxPollReadyStateMs.Size = new System.Drawing.Size(44, 20);
+            this.tboxPollReadyStateMs.TabIndex = 13;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -380,6 +427,11 @@ namespace prjSkeleton
         private System.Windows.Forms.Label lblWbProperties;
         private System.Windows.Forms.CheckBox ckbScriptErrorsSuppressed;
         private System.Windows.Forms.CheckBox ckbWBStatusTextChanged;
+        private System.Windows.Forms.Label lblSeparator1;
+        private System.Windows.Forms.CheckBox ckbPollReadyState;
+        private System.Windows.Forms.Label lblPollRSEveryMs;
+        private System.Windows.Forms.TextBox tboxPollReadyStateMs;
+        private System.Windows.Forms.Timer tmrPollReadyState;
     }
 }
 
