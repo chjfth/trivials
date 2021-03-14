@@ -204,6 +204,27 @@ namespace prjSkeleton
             }
         }
 
+        private void lnkDocumentMode_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (wb1.Document == null)
+            {
+                log("No HtmlDocument is loaded, I cannot get documentMode.");
+                return;
+            }
+
+            // Inject a javascript function into webpage, then execute it and get return value.
+            // Hints: https://stackoverflow.com/a/7801574/151453
+
+            var jsCode = @"function inj_ReportDocumentMode()
+{ 
+    return document.documentMode; 
+}";
+            wb1.Document.InvokeScript("execScript", new Object[] { jsCode, "JavaScript" });
+            
+            var docmode_value = wb1.Document.InvokeScript("inj_ReportDocumentMode"); // return type: double
+            log($"documentMode = {docmode_value}");
+        }
+
         private void ckbScriptErrorsSuppressed_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox ckb = ((CheckBox)sender);
@@ -218,5 +239,6 @@ namespace prjSkeleton
         {
             wb_PrepareCallbacks();
         }
+
     }
 }

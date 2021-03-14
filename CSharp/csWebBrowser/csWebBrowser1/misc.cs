@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -87,6 +88,8 @@ namespace prjSkeleton
 
         void LoadUrlsToComboBox()
         {
+            // Load from urls.user.txt or urls.txt .
+
             string inipath_url1 = Path.Combine(s_exedir, fname_urls_user_txt);
             string inipath_url2 = Path.Combine(s_exedir, fname_urls_txt);
             string[] urls = null;
@@ -106,7 +109,7 @@ namespace prjSkeleton
                 }
                 catch (FileNotFoundException)
                 {
-                    log($"The ini file cannot be opened or is empty.");
+                    log($"The ini file cannot be opened or is empty. Skip it.");
                     continue;
                 }
             }
@@ -115,7 +118,15 @@ namespace prjSkeleton
                 urls = new string[] {"http://localhost:8000"};
 
             cbxURL.Items.AddRange(urls.Where(n => !String.IsNullOrWhiteSpace(n)).ToArray());
-            cbxURL.Text = urls[0];
+            //cbxURL.Text = urls[0];
+
+            // Load the stock wbstart.html (it's there only if you have the git repo).
+            //
+            string zzz = @"\csWebBrowser\";
+            string fp_wbstart_html = Regex.Replace(s_exedir,
+                @"\\csWebBrowser\\.+$",
+                @"\csWebBrowser\htmls\wbstart.html");
+            cbxURL.Items.Add(fp_wbstart_html);
         }
 
         void Detect_IESoftwareVersion_hardcore()
