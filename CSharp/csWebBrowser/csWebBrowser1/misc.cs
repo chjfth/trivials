@@ -198,7 +198,7 @@ namespace prjSkeleton
             if (rsnow == s_rsprev)
                 return;
 
-            logtid($"[state] wb.ReadyState: {s_rsprev.ToString()} -> {rsnow.ToString()}");
+            log($"[state] wb.ReadyState: {s_rsprev.ToString()} -> {rsnow.ToString()}");
 
             s_rsprev = rsnow;
         }

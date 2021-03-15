@@ -43,15 +43,16 @@ iframe {
 	</div>
 
 	<div>
-		<iframe src="http://if1.myhost.com:8000/htmls/if-story-s1.html">
+		<iframe src="http://if1.myhost.com:8000/htmls/if-story-s1.html" name="short1">
 			Sorry your browser does not support inline frames.
 		</iframe>
 		<iframe src="http://if2.myhost.com:8000/htmls/if-story-s2.html">
+			<!-- Note: We deliberately do not give if-story-s2.html a "name" attribute. -->
 			Sorry your browser does not support inline frames.
 		</iframe>
 	</div>
 	<div>
-		<iframe src="http://if3.myhost.com:8000/htmls/if-story-b1.html" width="640">
+		<iframe src="http://if3.myhost.com:8000/htmls/if-story-b1.html" name="long1" width="640">
 		</iframe>
 	</div>
 </body>
