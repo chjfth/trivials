@@ -39,14 +39,19 @@ iframe {
 <body>
 
 	<div class="infobanner">
-		<div>This html contains iframe-s.</div>
+		<div>This html contains iframe-s from bad domains.</div>
 	</div>
 
 	<div>
-		<iframe src="if-story-s1.html">Sorry your browser does not support inline frames.</iframe>
-		<iframe src="if-story-s2.html">Sorry your browser does not support inline frames.</iframe>
+		<iframe src="http://if1.myhost.com:8000/htmls/if-story-s1.html">
+			Sorry your browser does not support inline frames.
+		</iframe>
+		<iframe src="http://if2.myhost.com:8000/htmls/if-story-s2.html">
+			Sorry your browser does not support inline frames.
+		</iframe>
 	</div>
 	<div>
-		<iframe src="if-story-b1.html" width="640"></iframe>
+		<iframe src="http://if3.myhost.com:8000/htmls/if-story-b1.html" width="640">
+		</iframe>
 	</div>
 </body>
