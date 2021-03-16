@@ -218,8 +218,8 @@ namespace prjSkeleton
         bool IsRootDocEvent(Uri eventUri, ref DualUrl durl)
         {
             bool is_rootdoc;
-            string wbURL = eventUri.ToString();
-            string htURL = wb1.Document?.Url.AbsoluteUri.ToString();
+            string wbURL = wb1.Document?.Url.AbsoluteUri.ToString();
+            string htURL = eventUri.ToString();
             if (wbURL == htURL)
                 is_rootdoc = true;
             else
