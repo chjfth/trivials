@@ -122,7 +122,6 @@ namespace prjSkeleton
 
             // Load the stock wbstart.html (it's there only if you have the git repo).
             //
-            string zzz = @"\csWebBrowser\";
             string fp_wbstart_html = Regex.Replace(s_exedir,
                 @"\\csWebBrowser\\.+$",
                 @"\csWebBrowser\htmls\wbstart.html");
@@ -210,23 +209,38 @@ namespace prjSkeleton
                 $"  TargetFrameName: {e.TargetFrameName}");
         }
 
-        void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
+        struct DualUrl
         {
-            // [2021-03-16] Chj: We check whether this event is from the root-iframe or an sub-iframe.
-            // If root-iframe, we will update the address-bar.
+            public string wbURL; // WebBrowser's URL
+            public string htURL; // HtmlDocument's URL
+        }
 
+        bool IsRootDocEvent(Uri eventUri, ref DualUrl durl)
+        {
             bool is_rootdoc;
-            string wbURL = e.Url.ToString();
+            string wbURL = eventUri.ToString();
             string htURL = wb1.Document?.Url.AbsoluteUri.ToString();
             if (wbURL == htURL)
                 is_rootdoc = true;
             else
                 is_rootdoc = false;
 
+            durl = new DualUrl() { wbURL=wbURL, htURL=htURL };
+            return is_rootdoc;
+        }
+
+        void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
+        {
+            // [2021-03-16] Chj: We check whether this event is from the root-iframe or an sub-iframe.
+            // If root-iframe, we will update the address-bar.
+
+            DualUrl durl = new DualUrl();
+            bool is_rootdoc = IsRootDocEvent(e.Url, ref durl);
+
             string update_address_bar = is_rootdoc ? "(root-doc: updating address bar)" : "";
             log($"[event] wb.Navigated {update_address_bar}\r\n" +
-                $"       wb.URL: {wbURL}\r\n" +
-                $"  htmldoc.URL: {htURL}");
+                $"       wb.URL: {durl.wbURL}\r\n" +
+                $"  htmldoc.URL: {durl.htURL}");
 
             if(is_rootdoc)
                 cbxURL.Text = e.Url.ToString();
@@ -234,16 +248,20 @@ namespace prjSkeleton
 
         void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            if(wb1.Document!=null)
+            DualUrl durl = new DualUrl();
+            bool is_rootdoc = IsRootDocEvent(e.Url, ref durl);
+            string rootdoc = is_rootdoc ? "(root-doc)" : "";
+
+            if (wb1.Document!=null)
             {
-                log($"[event] wb.DocumentCompleted\r\n" +
-                    $"       wb.URL: {e.Url.ToString()}\r\n" +
-                    $"  htmldoc.URL: {wb1.Document.Url.AbsoluteUri}");
+                log($"[event] wb.DocumentCompleted {rootdoc}\r\n" +
+                    $"       wb.URL: {durl.wbURL}\r\n" +
+                    $"  htmldoc.URL: {durl.htURL}");
             }
             else
             {
                 // This can happen when we Navigate to a folder C:\Users\win7evn\AppData\Roaming
-                log($"[event] wb.DocumentCompleted\r\n" +
+                log($"[event] wb.DocumentCompleted {rootdoc}\r\n" +
                     $"  URL: {e.Url.ToString()}\r\n" +
                     $"  wb.Document==null");
             }
