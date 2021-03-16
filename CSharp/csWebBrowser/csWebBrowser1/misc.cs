@@ -212,10 +212,24 @@ namespace prjSkeleton
 
         void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
         {
-            log($"[event] wb.Navigated (updating address bar)\r\n" +
-                $"  URL: {e.Url.ToString()}");
+            // [2021-03-16] Chj: We check whether this event is from the root-iframe or an sub-iframe.
+            // If root-iframe, we will update the address-bar.
 
-            cbxURL.Text = e.Url.ToString();
+            bool is_rootdoc;
+            string wbURL = e.Url.ToString();
+            string htURL = wb1.Document?.Url.AbsoluteUri.ToString();
+            if (wbURL == htURL)
+                is_rootdoc = true;
+            else
+                is_rootdoc = false;
+
+            string update_address_bar = is_rootdoc ? "(root-doc: updating address bar)" : "";
+            log($"[event] wb.Navigated {update_address_bar}\r\n" +
+                $"       wb.URL: {wbURL}\r\n" +
+                $"  htmldoc.URL: {htURL}");
+
+            if(is_rootdoc)
+                cbxURL.Text = e.Url.ToString();
         }
 
         void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -223,8 +237,8 @@ namespace prjSkeleton
             if(wb1.Document!=null)
             {
                 log($"[event] wb.DocumentCompleted\r\n" +
-                    $"  URL: {e.Url.ToString()}\r\n" +
-                    $"  htmldoc.Uri: {wb1.Document.Url.AbsoluteUri}");
+                    $"       wb.URL: {e.Url.ToString()}\r\n" +
+                    $"  htmldoc.URL: {wb1.Document.Url.AbsoluteUri}");
             }
             else
             {
