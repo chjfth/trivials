@@ -58,9 +58,10 @@ namespace prjSkeleton
             this.ckbPollReadyState = new System.Windows.Forms.CheckBox();
             this.lblPollRSEveryMs = new System.Windows.Forms.Label();
             this.tboxPollReadyStateMs = new System.Windows.Forms.TextBox();
-            this.tmrPollReadyState = new System.Windows.Forms.Timer(this.components);
             this.lblHtmlDocument = new System.Windows.Forms.Label();
             this.lnkGetDocument = new System.Windows.Forms.LinkLabel();
+            this.tmrPollReadyState = new System.Windows.Forms.Timer(this.components);
+            this.lnkHtdocGetHashCodes = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -229,6 +230,7 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.tboxPollReadyStateMs);
             this.panel2Left.Controls.Add(this.lblHtmlDocument);
             this.panel2Left.Controls.Add(this.lnkGetDocument);
+            this.panel2Left.Controls.Add(this.lnkHtdocGetHashCodes);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
@@ -413,7 +415,18 @@ namespace prjSkeleton
             this.lnkGetDocument.TabIndex = 17;
             this.lnkGetDocument.TabStop = true;
             this.lnkGetDocument.Text = "Save wb.DocumentText";
-            this.lnkGetDocument.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGetDocument_LinkClicked);
+            this.lnkGetDocument.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkSaveDocument_LinkClicked);
+            // 
+            // lnkHtdocGetHashCodes
+            // 
+            this.lnkHtdocGetHashCodes.AutoSize = true;
+            this.lnkHtdocGetHashCodes.Location = new System.Drawing.Point(3, 258);
+            this.lnkHtdocGetHashCodes.Name = "lnkHtdocGetHashCodes";
+            this.lnkHtdocGetHashCodes.Size = new System.Drawing.Size(82, 13);
+            this.lnkHtdocGetHashCodes.TabIndex = 18;
+            this.lnkHtdocGetHashCodes.TabStop = true;
+            this.lnkHtdocGetHashCodes.Text = "GetHashCode-s";
+            this.lnkHtdocGetHashCodes.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkHtdocGetHashCodes_LinkClicked);
             // 
             // Form1
             // 
@@ -472,6 +485,7 @@ namespace prjSkeleton
         private System.Windows.Forms.LinkLabel lnkDocumentMode;
         private System.Windows.Forms.Label lblHtmlDocument;
         private System.Windows.Forms.LinkLabel lnkGetDocument;
+        private System.Windows.Forms.LinkLabel lnkHtdocGetHashCodes;
     }
 }
 

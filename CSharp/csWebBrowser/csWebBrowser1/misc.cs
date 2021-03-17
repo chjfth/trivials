@@ -229,12 +229,14 @@ namespace prjSkeleton
             return is_topdoc;
         }
 
+        private HtmlDocument _tmphdoc = null;
+
         void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
         {
-            // [2021-03-16] Chj: We check whether this event is from the root-iframe or an sub-iframe.
-            // If root-iframe, we will update the address-bar.
+            // [2021-03-16] Chj: We check whether this event is from the top-iframe or an child-iframe.
+            // If top-iframe, we will update the address-bar.
 
-            DualUrl durl ;// new DualUrl();
+            DualUrl durl;
             bool is_topdoc = IsTopdocEvent(e.Url, out durl);
 
             string update_address_bar = is_topdoc ? "(topdoc: updating address bar)" : "";
@@ -248,7 +250,7 @@ namespace prjSkeleton
 
         void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            DualUrl durl = new DualUrl();
+            DualUrl durl;
             bool is_topdoc = IsTopdocEvent(e.Url, out durl);
             string topdoc = is_topdoc ? "(topdoc)" : "";
 

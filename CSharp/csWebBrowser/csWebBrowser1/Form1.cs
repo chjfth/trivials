@@ -240,7 +240,7 @@ namespace prjSkeleton
             wb_PrepareCallbacks();
         }
 
-        private void lnkGetDocument_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void lnkSaveDocument_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if(wb1.Document==null)
                 log("wb.Document is null yet, nothing to write.");
@@ -255,6 +255,50 @@ namespace prjSkeleton
             File.WriteAllBytes(filepath, docbytes);
 
             log($"{doctext.Length}c/{docbytes.Length}b written to {filepath}");
+        }
+
+        public struct S_iframe_doc
+        {
+            public string depths;
+            public HtmlDocument htdoc;
+        }
+
+        static IEnumerable<S_iframe_doc> Enum_iframe_tree(string start_depths, HtmlDocument start_htdoc)
+        {
+            if(start_htdoc==null)
+                yield break;
+
+            yield return new S_iframe_doc()
+            {
+                depths = start_depths,
+                htdoc = start_htdoc
+            };
+
+            int idx = 0;
+            foreach (HtmlWindow iframe in start_htdoc.Window.Frames)
+            {
+                var ienum = Enum_iframe_tree(start_depths+$".{idx}", iframe.Document);
+                foreach (S_iframe_doc ifdoc in ienum)
+                {
+                    yield return ifdoc;
+                }
+                idx++;
+            }
+        }
+
+        private void lnkHtdocGetHashCodes_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if(wb1.Document==null)
+                log("wb.Document is null yet.");
+
+            string info = "HtmlDocument GetHashCode-s:\r\n";
+            foreach (S_iframe_doc ifdoc in Enum_iframe_tree("TOP", wb1.Document))
+            {
+                string s = $"  [{ifdoc.depths}] {ifdoc.htdoc.GetHashCode()}\r\n";
+                info += s;
+            }
+
+            log(info);
         }
     }
 }
