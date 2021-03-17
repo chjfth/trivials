@@ -240,5 +240,21 @@ namespace prjSkeleton
             wb_PrepareCallbacks();
         }
 
+        private void lnkGetDocument_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if(wb1.Document==null)
+                log("wb.Document is null yet, nothing to write.");
+
+            string filename = $"DocumentText-{Utils.NowTimeStr(true)}.txt";
+            string filepath = Path.Combine(s_exedir, filename);
+
+            string doctext = wb1.DocumentText;
+            byte[] docbytes = Encoding.UTF8.GetBytes(doctext);
+
+            //File.WriteAllText(filepath, doctext, Encoding.UTF8);
+            File.WriteAllBytes(filepath, docbytes);
+
+            log($"{doctext.Length}c/{docbytes.Length}b written to {filepath}");
+        }
     }
 }

@@ -59,6 +59,8 @@ namespace prjSkeleton
             this.lblPollRSEveryMs = new System.Windows.Forms.Label();
             this.tboxPollReadyStateMs = new System.Windows.Forms.TextBox();
             this.tmrPollReadyState = new System.Windows.Forms.Timer(this.components);
+            this.lblHtmlDocument = new System.Windows.Forms.Label();
+            this.lnkGetDocument = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -225,6 +227,8 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.ckbPollReadyState);
             this.panel2Left.Controls.Add(this.lblPollRSEveryMs);
             this.panel2Left.Controls.Add(this.tboxPollReadyStateMs);
+            this.panel2Left.Controls.Add(this.lblHtmlDocument);
+            this.panel2Left.Controls.Add(this.lnkGetDocument);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
@@ -391,6 +395,26 @@ namespace prjSkeleton
             this.tboxPollReadyStateMs.Size = new System.Drawing.Size(44, 20);
             this.tboxPollReadyStateMs.TabIndex = 13;
             // 
+            // lblHtmlDocument
+            // 
+            this.lblHtmlDocument.AutoSize = true;
+            this.lblHtmlDocument.Location = new System.Drawing.Point(3, 232);
+            this.lblHtmlDocument.Name = "lblHtmlDocument";
+            this.lblHtmlDocument.Size = new System.Drawing.Size(80, 13);
+            this.lblHtmlDocument.TabIndex = 16;
+            this.lblHtmlDocument.Text = "HtmlDocument:";
+            // 
+            // lnkGetDocument
+            // 
+            this.lnkGetDocument.AutoSize = true;
+            this.lnkGetDocument.Location = new System.Drawing.Point(3, 245);
+            this.lnkGetDocument.Name = "lnkGetDocument";
+            this.lnkGetDocument.Size = new System.Drawing.Size(122, 13);
+            this.lnkGetDocument.TabIndex = 17;
+            this.lnkGetDocument.TabStop = true;
+            this.lnkGetDocument.Text = "Save wb.DocumentText";
+            this.lnkGetDocument.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGetDocument_LinkClicked);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -446,6 +470,8 @@ namespace prjSkeleton
         private System.Windows.Forms.TextBox tboxPollReadyStateMs;
         private System.Windows.Forms.Timer tmrPollReadyState;
         private System.Windows.Forms.LinkLabel lnkDocumentMode;
+        private System.Windows.Forms.Label lblHtmlDocument;
+        private System.Windows.Forms.LinkLabel lnkGetDocument;
     }
 }
 

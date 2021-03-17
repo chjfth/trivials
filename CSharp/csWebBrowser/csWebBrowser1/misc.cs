@@ -332,6 +332,17 @@ namespace prjSkeleton
             return ret;
         }
 
+        public static string NowTimeStr(bool need_millisec = false)
+        {
+            DateTime nowdt = DateTime.Now;
+            string strdt = string.Format("{0:D4}{1:D2}{2:D2}.{3:D2}{4:D2}{5:D2}",
+                nowdt.Year, nowdt.Month, nowdt.Day, nowdt.Hour, nowdt.Minute, nowdt.Second);
+
+            if(need_millisec)
+                strdt += string.Format(".{0:D3}", nowdt.Millisecond);
+
+            return strdt;
+        }
     }
 
 }
