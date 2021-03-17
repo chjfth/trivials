@@ -215,18 +215,18 @@ namespace prjSkeleton
             public string htURL; // HtmlDocument's URL
         }
 
-        bool IsRootDocEvent(Uri eventUri, ref DualUrl durl)
+        bool IsTopdocEvent(Uri eventUri, out DualUrl durl)
         {
-            bool is_rootdoc;
+            bool is_topdoc;
             string wbURL = wb1.Document?.Url.AbsoluteUri.ToString();
             string htURL = eventUri.ToString();
             if (wbURL == htURL)
-                is_rootdoc = true;
+                is_topdoc = true;
             else
-                is_rootdoc = false;
+                is_topdoc = false;
 
             durl = new DualUrl() { wbURL=wbURL, htURL=htURL };
-            return is_rootdoc;
+            return is_topdoc;
         }
 
         void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
@@ -234,34 +234,34 @@ namespace prjSkeleton
             // [2021-03-16] Chj: We check whether this event is from the root-iframe or an sub-iframe.
             // If root-iframe, we will update the address-bar.
 
-            DualUrl durl = new DualUrl();
-            bool is_rootdoc = IsRootDocEvent(e.Url, ref durl);
+            DualUrl durl ;// new DualUrl();
+            bool is_topdoc = IsTopdocEvent(e.Url, out durl);
 
-            string update_address_bar = is_rootdoc ? "(root-doc: updating address bar)" : "";
+            string update_address_bar = is_topdoc ? "(topdoc: updating address bar)" : "";
             log($"[event] wb.Navigated {update_address_bar}\r\n" +
                 $"       wb.URL: {durl.wbURL}\r\n" +
                 $"  htmldoc.URL: {durl.htURL}");
 
-            if(is_rootdoc)
+            if(is_topdoc)
                 cbxURL.Text = e.Url.ToString();
         }
 
         void wbevt_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             DualUrl durl = new DualUrl();
-            bool is_rootdoc = IsRootDocEvent(e.Url, ref durl);
-            string rootdoc = is_rootdoc ? "(root-doc)" : "";
+            bool is_topdoc = IsTopdocEvent(e.Url, out durl);
+            string topdoc = is_topdoc ? "(topdoc)" : "";
 
             if (wb1.Document!=null)
             {
-                log($"[event] wb.DocumentCompleted {rootdoc}\r\n" +
+                log($"[event] wb.DocumentCompleted {topdoc}\r\n" +
                     $"       wb.URL: {durl.wbURL}\r\n" +
                     $"  htmldoc.URL: {durl.htURL}");
             }
             else
             {
                 // This can happen when we Navigate to a folder C:\Users\win7evn\AppData\Roaming
-                log($"[event] wb.DocumentCompleted {rootdoc}\r\n" +
+                log($"[event] wb.DocumentCompleted {topdoc}\r\n" +
                     $"  URL: {e.Url.ToString()}\r\n" +
                     $"  wb.Document==null");
             }
