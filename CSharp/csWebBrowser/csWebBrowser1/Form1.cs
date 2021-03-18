@@ -316,14 +316,16 @@ namespace prjSkeleton
             }
 
             // Align depth string for better printing
-            int dlenmax = ar_ifdocs.Max(s => s.depths.Length);
+            int dlen_max = ar_ifdocs.Max(s => s.depths.Length);
+            int hlen_max = ar_ifdocs.Max(s => s.htdoc.GetHashCode().ToString().Length);
 
             string info = "HtmlDocument GetHashCode-s:\r\n";
             foreach (S_iframe_doc ifdoc in ar_ifdocs)
             {
-                string prefix = $"[{ifdoc.depths}]".PadRight(dlenmax+2);
+                string field1 = $"[{ifdoc.depths}]".PadRight(dlen_max+2);
+                string field2 = $"{ifdoc.htdoc.GetHashCode()}".PadLeft(hlen_max);
 
-                string s = $"  {prefix} {ifdoc.htdoc.GetHashCode()} {ifdoc.htdoc.Url.ToString()}\r\n";
+                string s = $"  {field1} {field2} {ifdoc.htdoc.Url.ToString()}\r\n";
                 info += s;
             }
 
