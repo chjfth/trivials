@@ -360,12 +360,12 @@ namespace prjSkeleton
             if (wb.Document == null)
                 return null;
 
-            object window = wb.Document.Window.DomWindow;
-            Type wt = window.GetType();
-            object navigator = wt.InvokeMember("navigator", BindingFlags.GetProperty, null, window, new object[] { });
-            Type nt = navigator.GetType();
-            object userAgent = nt.InvokeMember("userAgent", BindingFlags.GetProperty, null, navigator, new object[] { });
-            return userAgent.ToString();
+            dynamic window = wb.Document.Window.DomWindow;
+
+            dynamic nv = window.navigator;
+            dynamic ua = nv.userAgent;
+
+            return ua.ToString();
         }
     }
 
