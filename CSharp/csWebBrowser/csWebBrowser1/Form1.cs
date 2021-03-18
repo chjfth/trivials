@@ -306,12 +306,18 @@ namespace prjSkeleton
             if(wb1.Document==null)
                 log("wb.Document is null yet.");
 
+            int count = 0;
+
             string info = "HtmlDocument GetHashCode-s:\r\n";
             foreach (S_iframe_doc ifdoc in Enum_iframe_tree("TOP", wb1.Document))
             {
                 string s = $"  [{ifdoc.depths}] {ifdoc.htdoc.GetHashCode()}\r\n";
                 info += s;
+
+                count++;
             }
+
+            info += $"  Total HtmlDocument count: {count}";
 
             log(info);
         }
