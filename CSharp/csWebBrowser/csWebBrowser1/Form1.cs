@@ -274,7 +274,7 @@ namespace prjSkeleton
 
         public struct S_iframe_doc
         {
-            public string depths;
+            public string depths;  // e.g. "TOP.0.1"
             public HtmlDocument htdoc;
         }
 
@@ -309,18 +309,25 @@ namespace prjSkeleton
             if(wb1.Document==null)
                 log("wb.Document is null yet.");
 
-            int count = 0;
-
-            string info = "HtmlDocument GetHashCode-s:\r\n";
+            var ar_ifdocs = new List<S_iframe_doc>();
             foreach (S_iframe_doc ifdoc in Enum_iframe_tree("TOP", wb1.Document))
             {
-                string s = $"  [{ifdoc.depths}] {ifdoc.htdoc.GetHashCode()}\r\n";
-                info += s;
-
-                count++;
+                ar_ifdocs.Add(ifdoc);
             }
 
-            info += $"  Total HtmlDocument count: {count}";
+            // Align depth string for better printing
+            int dlenmax = ar_ifdocs.Max(s => s.depths.Length);
+
+            string info = "HtmlDocument GetHashCode-s:\r\n";
+            foreach (S_iframe_doc ifdoc in ar_ifdocs)
+            {
+                string prefix = $"[{ifdoc.depths}]".PadRight(dlenmax+2);
+
+                string s = $"  {prefix} {ifdoc.htdoc.GetHashCode()} {ifdoc.htdoc.Url.ToString()}\r\n";
+                info += s;
+            }
+
+            info += $"  Total HtmlDocument count: {ar_ifdocs.Count}";
 
             log(info);
         }

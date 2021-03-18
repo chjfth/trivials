@@ -232,8 +232,6 @@ namespace prjSkeleton
             return is_topdoc;
         }
 
-        private HtmlDocument _tmphdoc = null;
-
         void wbevt_Navigated(object sender,  WebBrowserNavigatedEventArgs e)
         {
             // [2021-03-16] Chj: We check whether this event is from the top-iframe or an child-iframe.
