@@ -292,7 +292,9 @@ namespace prjSkeleton
             int idx = 0;
             foreach (HtmlWindow iframe in start_htdoc.Window.Frames)
             {
-                HtmlDocument hdoc = iframe.GetDocumentEx(); // can workaround cross-domain iframe situation
+                HtmlDocument hdoc = iframe.GetDocumentEx();
+                // -- can workaround cross-domain `iframe.Document` UnAuthorizedAccessException problem
+
                 var ienum = Enum_iframe_tree(start_depths+$".{idx}", hdoc);
                 foreach (S_iframe_doc ifdoc in ienum)
                 {
