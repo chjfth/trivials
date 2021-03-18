@@ -92,15 +92,15 @@ namespace prjSkeleton
             this.panel3Right.Controls.Add(this.lblURL);
             this.panel3Right.Controls.Add(this.cbxURL);
             this.panel3Right.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3Right.Location = new System.Drawing.Point(140, 0);
+            this.panel3Right.Location = new System.Drawing.Point(147, 0);
             this.panel3Right.Name = "panel3Right";
-            this.panel3Right.Size = new System.Drawing.Size(765, 557);
+            this.panel3Right.Size = new System.Drawing.Size(758, 557);
             this.panel3Right.TabIndex = 1;
             // 
             // btnStop
             // 
             this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStop.Location = new System.Drawing.Point(707, 0);
+            this.btnStop.Location = new System.Drawing.Point(700, 0);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(58, 22);
             this.btnStop.TabIndex = 4;
@@ -111,7 +111,7 @@ namespace prjSkeleton
             // btnNavigate
             // 
             this.btnNavigate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNavigate.Location = new System.Drawing.Point(648, 0);
+            this.btnNavigate.Location = new System.Drawing.Point(641, 0);
             this.btnNavigate.Name = "btnNavigate";
             this.btnNavigate.Size = new System.Drawing.Size(58, 22);
             this.btnNavigate.TabIndex = 3;
@@ -139,7 +139,7 @@ namespace prjSkeleton
             this.splitContainer1.Panel2.Controls.Add(this.btnClear);
             this.splitContainer1.Panel2.Controls.Add(this.tboxStatus);
             this.splitContainer1.Panel2.Controls.Add(this.tboxLog);
-            this.splitContainer1.Size = new System.Drawing.Size(762, 530);
+            this.splitContainer1.Size = new System.Drawing.Size(755, 530);
             this.splitContainer1.SplitterDistance = 406;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -149,7 +149,7 @@ namespace prjSkeleton
             this.wb1.Location = new System.Drawing.Point(0, 0);
             this.wb1.MinimumSize = new System.Drawing.Size(20, 20);
             this.wb1.Name = "wb1";
-            this.wb1.Size = new System.Drawing.Size(762, 406);
+            this.wb1.Size = new System.Drawing.Size(755, 406);
             this.wb1.TabIndex = 0;
             // 
             // btnClear
@@ -157,7 +157,7 @@ namespace prjSkeleton
             this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClear.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btnClear.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.btnClear.Location = new System.Drawing.Point(695, 100);
+            this.btnClear.Location = new System.Drawing.Point(688, 100);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(67, 20);
             this.btnClear.TabIndex = 2;
@@ -172,7 +172,7 @@ namespace prjSkeleton
             this.tboxStatus.Location = new System.Drawing.Point(0, 100);
             this.tboxStatus.Name = "tboxStatus";
             this.tboxStatus.ReadOnly = true;
-            this.tboxStatus.Size = new System.Drawing.Size(695, 20);
+            this.tboxStatus.Size = new System.Drawing.Size(688, 20);
             this.tboxStatus.TabIndex = 1;
             // 
             // tboxLog
@@ -187,7 +187,7 @@ namespace prjSkeleton
             this.tboxLog.Name = "tboxLog";
             this.tboxLog.ReadOnly = true;
             this.tboxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tboxLog.Size = new System.Drawing.Size(762, 100);
+            this.tboxLog.Size = new System.Drawing.Size(755, 100);
             this.tboxLog.TabIndex = 0;
             // 
             // lblURL
@@ -207,7 +207,7 @@ namespace prjSkeleton
             this.cbxURL.FormattingEnabled = true;
             this.cbxURL.Location = new System.Drawing.Point(52, 0);
             this.cbxURL.Name = "cbxURL";
-            this.cbxURL.Size = new System.Drawing.Size(592, 22);
+            this.cbxURL.Size = new System.Drawing.Size(585, 22);
             this.cbxURL.TabIndex = 2;
             this.cbxURL.KeyDown += new System.Windows.Forms.KeyEventHandler(this.cbxURL_KeyDown);
             this.cbxURL.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbxURL_KeyPress);
@@ -215,6 +215,7 @@ namespace prjSkeleton
             // 
             // panel2Left
             // 
+            this.panel2Left.AutoScroll = true;
             this.panel2Left.Controls.Add(this.lblIESoftVer);
             this.panel2Left.Controls.Add(this.lblWbCommands);
             this.panel2Left.Controls.Add(this.lnkRefresh);
@@ -240,7 +241,7 @@ namespace prjSkeleton
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2Left.Location = new System.Drawing.Point(0, 0);
             this.panel2Left.Name = "panel2Left";
-            this.panel2Left.Size = new System.Drawing.Size(140, 557);
+            this.panel2Left.Size = new System.Drawing.Size(147, 557);
             this.panel2Left.TabIndex = 0;
             // 
             // lblIESoftVer
