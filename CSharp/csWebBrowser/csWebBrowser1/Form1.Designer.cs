@@ -49,6 +49,9 @@ namespace prjSkeleton
             this.lnkForward = new System.Windows.Forms.LinkLabel();
             this.lnkDocumentMode = new System.Windows.Forms.LinkLabel();
             this.lblEvents = new System.Windows.Forms.Label();
+            this.ckbEvtNavigating = new System.Windows.Forms.CheckBox();
+            this.ckbEvtNavigated = new System.Windows.Forms.CheckBox();
+            this.ckbEvtDocumentCompleted = new System.Windows.Forms.CheckBox();
             this.ckbProgressChanged = new System.Windows.Forms.CheckBox();
             this.ckbWBStatusTextChanged = new System.Windows.Forms.CheckBox();
             this.ckbBlockNewWindow = new System.Windows.Forms.CheckBox();
@@ -60,8 +63,8 @@ namespace prjSkeleton
             this.tboxPollReadyStateMs = new System.Windows.Forms.TextBox();
             this.lblHtmlDocument = new System.Windows.Forms.Label();
             this.lnkGetDocument = new System.Windows.Forms.LinkLabel();
-            this.tmrPollReadyState = new System.Windows.Forms.Timer(this.components);
             this.lnkHtdocGetHashCodes = new System.Windows.Forms.LinkLabel();
+            this.tmrPollReadyState = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.panel3Right.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -219,6 +222,9 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.lnkForward);
             this.panel2Left.Controls.Add(this.lnkDocumentMode);
             this.panel2Left.Controls.Add(this.lblEvents);
+            this.panel2Left.Controls.Add(this.ckbEvtNavigating);
+            this.panel2Left.Controls.Add(this.ckbEvtNavigated);
+            this.panel2Left.Controls.Add(this.ckbEvtDocumentCompleted);
             this.panel2Left.Controls.Add(this.ckbProgressChanged);
             this.panel2Left.Controls.Add(this.ckbWBStatusTextChanged);
             this.panel2Left.Controls.Add(this.ckbBlockNewWindow);
@@ -308,10 +314,49 @@ namespace prjSkeleton
             this.lblEvents.TabIndex = 1;
             this.lblEvents.Text = "WebBrowser events:";
             // 
+            // ckbEvtNavigating
+            // 
+            this.ckbEvtNavigating.AutoSize = true;
+            this.ckbEvtNavigating.Checked = true;
+            this.ckbEvtNavigating.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckbEvtNavigating.Location = new System.Drawing.Point(3, 68);
+            this.ckbEvtNavigating.Name = "ckbEvtNavigating";
+            this.ckbEvtNavigating.Size = new System.Drawing.Size(77, 17);
+            this.ckbEvtNavigating.TabIndex = 19;
+            this.ckbEvtNavigating.Text = "Navigating";
+            this.ckbEvtNavigating.UseVisualStyleBackColor = true;
+            this.ckbEvtNavigating.CheckedChanged += new System.EventHandler(this.ckbEvtNavigating_CheckedChanged);
+            // 
+            // ckbEvtNavigated
+            // 
+            this.ckbEvtNavigated.AutoSize = true;
+            this.ckbEvtNavigated.Checked = true;
+            this.ckbEvtNavigated.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckbEvtNavigated.Location = new System.Drawing.Point(3, 91);
+            this.ckbEvtNavigated.Name = "ckbEvtNavigated";
+            this.ckbEvtNavigated.Size = new System.Drawing.Size(75, 17);
+            this.ckbEvtNavigated.TabIndex = 20;
+            this.ckbEvtNavigated.Text = "Navigated";
+            this.ckbEvtNavigated.UseVisualStyleBackColor = true;
+            this.ckbEvtNavigated.CheckedChanged += new System.EventHandler(this.ckbEvtNavigated_CheckedChanged);
+            // 
+            // ckbEvtDocumentCompleted
+            // 
+            this.ckbEvtDocumentCompleted.AutoSize = true;
+            this.ckbEvtDocumentCompleted.Checked = true;
+            this.ckbEvtDocumentCompleted.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckbEvtDocumentCompleted.Location = new System.Drawing.Point(3, 114);
+            this.ckbEvtDocumentCompleted.Name = "ckbEvtDocumentCompleted";
+            this.ckbEvtDocumentCompleted.Size = new System.Drawing.Size(125, 17);
+            this.ckbEvtDocumentCompleted.TabIndex = 21;
+            this.ckbEvtDocumentCompleted.Text = "DocumentCompleted";
+            this.ckbEvtDocumentCompleted.UseVisualStyleBackColor = true;
+            this.ckbEvtDocumentCompleted.CheckedChanged += new System.EventHandler(this.ckbEvtDocumentCompleted_CheckedChanged);
+            // 
             // ckbProgressChanged
             // 
             this.ckbProgressChanged.AutoSize = true;
-            this.ckbProgressChanged.Location = new System.Drawing.Point(3, 68);
+            this.ckbProgressChanged.Location = new System.Drawing.Point(3, 137);
             this.ckbProgressChanged.Name = "ckbProgressChanged";
             this.ckbProgressChanged.Size = new System.Drawing.Size(110, 17);
             this.ckbProgressChanged.TabIndex = 2;
@@ -322,7 +367,7 @@ namespace prjSkeleton
             // ckbWBStatusTextChanged
             // 
             this.ckbWBStatusTextChanged.AutoSize = true;
-            this.ckbWBStatusTextChanged.Location = new System.Drawing.Point(3, 91);
+            this.ckbWBStatusTextChanged.Location = new System.Drawing.Point(3, 160);
             this.ckbWBStatusTextChanged.Name = "ckbWBStatusTextChanged";
             this.ckbWBStatusTextChanged.Size = new System.Drawing.Size(120, 17);
             this.ckbWBStatusTextChanged.TabIndex = 10;
@@ -333,7 +378,7 @@ namespace prjSkeleton
             // ckbBlockNewWindow
             // 
             this.ckbBlockNewWindow.AutoSize = true;
-            this.ckbBlockNewWindow.Location = new System.Drawing.Point(3, 114);
+            this.ckbBlockNewWindow.Location = new System.Drawing.Point(3, 183);
             this.ckbBlockNewWindow.Name = "ckbBlockNewWindow";
             this.ckbBlockNewWindow.Size = new System.Drawing.Size(117, 17);
             this.ckbBlockNewWindow.TabIndex = 7;
@@ -343,7 +388,7 @@ namespace prjSkeleton
             // lblWbProperties
             // 
             this.lblWbProperties.AutoSize = true;
-            this.lblWbProperties.Location = new System.Drawing.Point(3, 134);
+            this.lblWbProperties.Location = new System.Drawing.Point(3, 203);
             this.lblWbProperties.Name = "lblWbProperties";
             this.lblWbProperties.Size = new System.Drawing.Size(120, 13);
             this.lblWbProperties.TabIndex = 8;
@@ -352,7 +397,7 @@ namespace prjSkeleton
             // ckbScriptErrorsSuppressed
             // 
             this.ckbScriptErrorsSuppressed.AutoSize = true;
-            this.ckbScriptErrorsSuppressed.Location = new System.Drawing.Point(3, 150);
+            this.ckbScriptErrorsSuppressed.Location = new System.Drawing.Point(3, 219);
             this.ckbScriptErrorsSuppressed.Name = "ckbScriptErrorsSuppressed";
             this.ckbScriptErrorsSuppressed.Size = new System.Drawing.Size(139, 17);
             this.ckbScriptErrorsSuppressed.TabIndex = 9;
@@ -364,7 +409,7 @@ namespace prjSkeleton
             // 
             this.lblSeparator1.AutoSize = true;
             this.panel2Left.SetFlowBreak(this.lblSeparator1, true);
-            this.lblSeparator1.Location = new System.Drawing.Point(3, 170);
+            this.lblSeparator1.Location = new System.Drawing.Point(3, 239);
             this.lblSeparator1.Name = "lblSeparator1";
             this.lblSeparator1.Size = new System.Drawing.Size(13, 13);
             this.lblSeparator1.TabIndex = 11;
@@ -373,7 +418,7 @@ namespace prjSkeleton
             // ckbPollReadyState
             // 
             this.ckbPollReadyState.AutoSize = true;
-            this.ckbPollReadyState.Location = new System.Drawing.Point(3, 186);
+            this.ckbPollReadyState.Location = new System.Drawing.Point(3, 255);
             this.ckbPollReadyState.Name = "ckbPollReadyState";
             this.ckbPollReadyState.Size = new System.Drawing.Size(123, 17);
             this.ckbPollReadyState.TabIndex = 12;
@@ -384,7 +429,7 @@ namespace prjSkeleton
             // lblPollRSEveryMs
             // 
             this.lblPollRSEveryMs.AutoSize = true;
-            this.lblPollRSEveryMs.Location = new System.Drawing.Point(3, 206);
+            this.lblPollRSEveryMs.Location = new System.Drawing.Point(3, 275);
             this.lblPollRSEveryMs.Name = "lblPollRSEveryMs";
             this.lblPollRSEveryMs.Size = new System.Drawing.Size(58, 13);
             this.lblPollRSEveryMs.TabIndex = 14;
@@ -392,7 +437,7 @@ namespace prjSkeleton
             // 
             // tboxPollReadyStateMs
             // 
-            this.tboxPollReadyStateMs.Location = new System.Drawing.Point(67, 209);
+            this.tboxPollReadyStateMs.Location = new System.Drawing.Point(67, 278);
             this.tboxPollReadyStateMs.Name = "tboxPollReadyStateMs";
             this.tboxPollReadyStateMs.Size = new System.Drawing.Size(44, 20);
             this.tboxPollReadyStateMs.TabIndex = 13;
@@ -400,7 +445,7 @@ namespace prjSkeleton
             // lblHtmlDocument
             // 
             this.lblHtmlDocument.AutoSize = true;
-            this.lblHtmlDocument.Location = new System.Drawing.Point(3, 232);
+            this.lblHtmlDocument.Location = new System.Drawing.Point(3, 301);
             this.lblHtmlDocument.Name = "lblHtmlDocument";
             this.lblHtmlDocument.Size = new System.Drawing.Size(80, 13);
             this.lblHtmlDocument.TabIndex = 16;
@@ -409,7 +454,7 @@ namespace prjSkeleton
             // lnkGetDocument
             // 
             this.lnkGetDocument.AutoSize = true;
-            this.lnkGetDocument.Location = new System.Drawing.Point(3, 245);
+            this.lnkGetDocument.Location = new System.Drawing.Point(3, 314);
             this.lnkGetDocument.Name = "lnkGetDocument";
             this.lnkGetDocument.Size = new System.Drawing.Size(122, 13);
             this.lnkGetDocument.TabIndex = 17;
@@ -420,7 +465,7 @@ namespace prjSkeleton
             // lnkHtdocGetHashCodes
             // 
             this.lnkHtdocGetHashCodes.AutoSize = true;
-            this.lnkHtdocGetHashCodes.Location = new System.Drawing.Point(3, 258);
+            this.lnkHtdocGetHashCodes.Location = new System.Drawing.Point(3, 327);
             this.lnkHtdocGetHashCodes.Name = "lnkHtdocGetHashCodes";
             this.lnkHtdocGetHashCodes.Size = new System.Drawing.Size(82, 13);
             this.lnkHtdocGetHashCodes.TabIndex = 18;
@@ -486,6 +531,9 @@ namespace prjSkeleton
         private System.Windows.Forms.Label lblHtmlDocument;
         private System.Windows.Forms.LinkLabel lnkGetDocument;
         private System.Windows.Forms.LinkLabel lnkHtdocGetHashCodes;
+        private System.Windows.Forms.CheckBox ckbEvtNavigating;
+        private System.Windows.Forms.CheckBox ckbEvtNavigated;
+        private System.Windows.Forms.CheckBox ckbEvtDocumentCompleted;
     }
 }
 

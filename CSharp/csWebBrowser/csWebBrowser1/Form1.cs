@@ -162,6 +162,21 @@ namespace prjSkeleton
             }
         }
 
+        private void ckbEvtNavigating_CheckedChanged(object sender, EventArgs e)
+        {
+            wb_PrepareCallbacks();
+        }
+
+        private void ckbEvtNavigated_CheckedChanged(object sender, EventArgs e)
+        {
+            wb_PrepareCallbacks();
+        }
+
+        private void ckbEvtDocumentCompleted_CheckedChanged(object sender, EventArgs e)
+        {
+            wb_PrepareCallbacks();
+        }
+
         private void ckbProgressChanged_CheckedChanged(object sender, EventArgs e)
         {
             wb_PrepareCallbacks();
@@ -300,5 +315,6 @@ namespace prjSkeleton
 
             log(info);
         }
+
     }
 }

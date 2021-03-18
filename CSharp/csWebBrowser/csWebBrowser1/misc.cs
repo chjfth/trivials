@@ -149,13 +149,16 @@ namespace prjSkeleton
         void wb_PrepareCallbacks()
         {
             wb1.Navigating -= wbevt_Navigating;
-            wb1.Navigating += wbevt_Navigating;
+            if(ckbEvtNavigating.Checked)
+                wb1.Navigating += wbevt_Navigating;
 
             wb1.Navigated -= wbevt_Navigated;
-            wb1.Navigated += wbevt_Navigated;
+            if(ckbEvtNavigated.Checked)
+                wb1.Navigated += wbevt_Navigated;
 
             wb1.DocumentCompleted -= wbevt_DocumentCompleted;
-            wb1.DocumentCompleted += wbevt_DocumentCompleted;
+            if(ckbEvtDocumentCompleted.Checked)
+                wb1.DocumentCompleted += wbevt_DocumentCompleted;
 
             wb1.ProgressChanged -= wbevt_ProgressChanged;
             if(ckbProgressChanged.Checked)
