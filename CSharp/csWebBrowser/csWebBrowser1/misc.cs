@@ -346,6 +346,27 @@ namespace prjSkeleton
 
             return strdt;
         }
+
+        public static string GetHttpUserAgent(this WebBrowser wb)
+        {
+            /*
+            if (wb.Url == null)
+            {
+                wb.Navigate("about:blank");
+                while (wb.IsBusy) Application.DoEvents();
+            }
+            */
+
+            if (wb.Document == null)
+                return null;
+
+            object window = wb.Document.Window.DomWindow;
+            Type wt = window.GetType();
+            object navigator = wt.InvokeMember("navigator", BindingFlags.GetProperty, null, window, new object[] { });
+            Type nt = navigator.GetType();
+            object userAgent = nt.InvokeMember("userAgent", BindingFlags.GetProperty, null, navigator, new object[] { });
+            return userAgent.ToString();
+        }
     }
 
 }

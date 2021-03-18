@@ -62,6 +62,7 @@ namespace prjSkeleton
             this.lblPollRSEveryMs = new System.Windows.Forms.Label();
             this.tboxPollReadyStateMs = new System.Windows.Forms.TextBox();
             this.lblHtmlDocument = new System.Windows.Forms.Label();
+            this.lnkGetUserAgent = new System.Windows.Forms.LinkLabel();
             this.lnkGetDocument = new System.Windows.Forms.LinkLabel();
             this.lnkHtdocGetHashCodes = new System.Windows.Forms.LinkLabel();
             this.tmrPollReadyState = new System.Windows.Forms.Timer(this.components);
@@ -236,6 +237,7 @@ namespace prjSkeleton
             this.panel2Left.Controls.Add(this.lblPollRSEveryMs);
             this.panel2Left.Controls.Add(this.tboxPollReadyStateMs);
             this.panel2Left.Controls.Add(this.lblHtmlDocument);
+            this.panel2Left.Controls.Add(this.lnkGetUserAgent);
             this.panel2Left.Controls.Add(this.lnkGetDocument);
             this.panel2Left.Controls.Add(this.lnkHtdocGetHashCodes);
             this.panel2Left.Dock = System.Windows.Forms.DockStyle.Left;
@@ -446,16 +448,28 @@ namespace prjSkeleton
             // lblHtmlDocument
             // 
             this.lblHtmlDocument.AutoSize = true;
+            this.panel2Left.SetFlowBreak(this.lblHtmlDocument, true);
             this.lblHtmlDocument.Location = new System.Drawing.Point(3, 301);
             this.lblHtmlDocument.Name = "lblHtmlDocument";
             this.lblHtmlDocument.Size = new System.Drawing.Size(80, 13);
             this.lblHtmlDocument.TabIndex = 16;
             this.lblHtmlDocument.Text = "HtmlDocument:";
             // 
+            // lnkGetUserAgent
+            // 
+            this.lnkGetUserAgent.AutoSize = true;
+            this.lnkGetUserAgent.Location = new System.Drawing.Point(3, 314);
+            this.lnkGetUserAgent.Name = "lnkGetUserAgent";
+            this.lnkGetUserAgent.Size = new System.Drawing.Size(75, 13);
+            this.lnkGetUserAgent.TabIndex = 22;
+            this.lnkGetUserAgent.TabStop = true;
+            this.lnkGetUserAgent.Text = "Get Uer-Agent";
+            this.lnkGetUserAgent.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGetUserAgent_LinkClicked);
+            // 
             // lnkGetDocument
             // 
             this.lnkGetDocument.AutoSize = true;
-            this.lnkGetDocument.Location = new System.Drawing.Point(3, 314);
+            this.lnkGetDocument.Location = new System.Drawing.Point(3, 327);
             this.lnkGetDocument.Name = "lnkGetDocument";
             this.lnkGetDocument.Size = new System.Drawing.Size(122, 13);
             this.lnkGetDocument.TabIndex = 17;
@@ -466,7 +480,7 @@ namespace prjSkeleton
             // lnkHtdocGetHashCodes
             // 
             this.lnkHtdocGetHashCodes.AutoSize = true;
-            this.lnkHtdocGetHashCodes.Location = new System.Drawing.Point(3, 327);
+            this.lnkHtdocGetHashCodes.Location = new System.Drawing.Point(3, 340);
             this.lnkHtdocGetHashCodes.Name = "lnkHtdocGetHashCodes";
             this.lnkHtdocGetHashCodes.Size = new System.Drawing.Size(82, 13);
             this.lnkHtdocGetHashCodes.TabIndex = 18;
@@ -535,6 +549,7 @@ namespace prjSkeleton
         private System.Windows.Forms.CheckBox ckbEvtNavigating;
         private System.Windows.Forms.CheckBox ckbEvtNavigated;
         private System.Windows.Forms.CheckBox ckbEvtDocumentCompleted;
+        private System.Windows.Forms.LinkLabel lnkGetUserAgent;
     }
 }
 

@@ -334,5 +334,17 @@ namespace prjSkeleton
             log(info);
         }
 
+        private void lnkGetUserAgent_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string userAgent = wb1.GetHttpUserAgent();
+
+            if (userAgent == null)
+            {
+                log("wb.Document not ready yet.");
+                return;
+            }
+
+            log("User-Agent: "+userAgent);
+        }
     }
 }
