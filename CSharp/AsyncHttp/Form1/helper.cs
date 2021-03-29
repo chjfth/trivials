@@ -129,6 +129,19 @@ namespace ZjbLib
             return tcs.Task;
         }
 
+        public static async Task CancelAndWait(this Task tsk, CancellationTokenSource cts)
+        {
+            try
+            {
+                cts.Cancel();
+                await tsk;
+            }
+            catch (TaskCanceledException)
+            {
+                // ignore this and return to caller
+                return;
+            }
+        }
     }
 
 
