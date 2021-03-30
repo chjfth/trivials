@@ -1,0 +1,33 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<title>Html samples</title>
+<link rel="stylesheet" type="text/css" href="share.css">
+<style>
+</style>
+<script language="javascript">
+	function StartHog() {
+		var ele = document.getElementById('cycles');
+		
+		var start_sec = get_uesec();
+		var hog_secs = parseInt(ele.value);
+		var end_sec = start_sec + hog_secs;
+		
+		while( get_uesec()<end_sec );
+		
+		alert(hog_secs + " seconds done.");
+	}
+	
+	function get_uesec(){ return (new Date()).getTime()/1000; }
+</script>
+</head>
+
+<body>
+
+	<form>
+		<label>Seconds to hog: </label><input type="text" name="cycles" id="cycles" value="3" /> 
+		<input type="button" value="Start" onclick="StartHog()">
+	</form>
+
+
+</body>
