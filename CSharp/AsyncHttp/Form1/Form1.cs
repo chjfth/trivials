@@ -204,10 +204,15 @@ namespace prjSkeleton
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            logtid($"Form1_Load. Main-thread-id={s_mainthread_tid}");
+	        logtid($"Form1_Load. Main-thread-id={s_mainthread_tid}");
         }
 
-        private Task<string> _tskHttp;
+		private void Form1_Shown(object sender, EventArgs e)
+        {
+	        logtid($"Form1_Shown. Main-thread-id={s_mainthread_tid}");
+        }
+
+		private Task<string> _tskHttp;
         private CancellationTokenSource _cts;
 
         async void StartHttp()
@@ -390,5 +395,6 @@ namespace prjSkeleton
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-    }
+
+	}
 }
