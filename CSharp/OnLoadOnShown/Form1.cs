@@ -14,36 +14,40 @@ namespace OnLoadOnShown
 			this.Load += delegate
 			{
 				string msg = "In .Load event.";
-				Debug.WriteLine(msg);
+				msgdbg(msg);
 				msgbox(msg);
 			};
 
 			this.Shown += delegate
 			{
 				string msg = "In .Shown event.";
-				Debug.WriteLine(msg);
+				msgdbg(msg);
 				msgbox(msg);
 			};
 		}
 
 		protected override void OnLoad(EventArgs e)
 		{
-			base.OnLoad(e);
-
 			string msg = "In override void OnLoad().";
-			Debug.WriteLine(msg);
+			msgdbg(msg); 
 //			msgbox(msg);
+
+			base.OnLoad(e);
 		}
 
 		protected override void OnShown(EventArgs evt)
 		{
-			base.OnShown(evt);
-
 			string msg = "In override void OnShown().";
-			Debug.WriteLine(msg);
+			msgdbg(msg);
 //			msgbox(msg);
+
+			base.OnShown(evt);
 		}
 
+		private static void msgdbg(string msg)
+		{
+			Debug.WriteLine("### " + msg);
+		}
 		private static void msgbox(string msg)
 		{
 			MessageBox.Show(msg, "Info", MessageBoxButtons.OK);
