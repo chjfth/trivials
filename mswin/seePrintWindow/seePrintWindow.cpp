@@ -104,6 +104,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	bool isClientArea = _tcscmp(szClientArea, _T("1"))==0 ? true : false;
 	
 	HWND hwnd = (HWND)_tcstoul(szhwnd, 0, 16);
+
+	if(hwnd==NULL)
+	{
+		prn(_T("The input HWND is 0, so use GetShellWindow() instead."));
+		hwnd = GetShellWindow(); 
+		
+		// Note: Not using GetDesktopWindow() bcz it always returns 0x10010, and 
+		// calling PrintWindows on it always return FALSE. 
+	}
+
 	if(IsWindow(hwnd))
 	{
 		prn(_T("Input HWND 0x%08X is valid."), (UINT)hwnd);
