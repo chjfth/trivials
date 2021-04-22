@@ -13,6 +13,7 @@ void prn(const TCHAR *fmt, ...)
 	va_end(args);
 }
 
+
 void DoPrintWindow(HWND hwnd)
 {
 	DWORD winerr = 0;
@@ -23,14 +24,32 @@ void DoPrintWindow(HWND hwnd)
 
 	HDC hdcSrc = GetDC(hwnd);
 	HBITMAP hbmpDst = CreateCompatibleBitmap(hdcSrc, width, height);
+	b = ReleaseDC(hwnd, hdcSrc);
 
-	HDC hdcDst = CreateCompatibleDC(hdcSrc);
+	HDC hdcDst = CreateCompatibleDC(NULL);
 	HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcDst, (HGDIOBJ)hbmpDst);
 
 	b = PrintWindow(hwnd, hdcDst, 0);
-	winerr = GetLastError();
+	if(!b)
+	{
+		winerr = GetLastError();
+		prn(_T("PrintWindow() fail with winerr=%d.\n"), winerr);
+	}
 
+/*	// WM_PRINT cannot work across processes. 
+	LRESULT lresult = SendMessage(hwnd, WM_PRINT, (WPARAM)hdcDst,
+		PRF_CHILDREN | PRF_CLIENT | PRF_ERASEBKGND | PRF_NONCLIENT | PRF_OWNED
+		);
+
+*/
+	SelectObject(hdcDst, hbmpOld);
 	b = DeleteDC(hdcDst);
+
+	b = OpenClipboard(hwnd);
+	b = EmptyClipboard();
+	HANDLE hclipdata = SetClipboardData(CF_BITMAP, hbmpDst);
+	b = CloseClipboard();
+
 	b = DeleteObject(hbmpDst);
 }
 
