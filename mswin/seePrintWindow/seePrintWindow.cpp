@@ -3,12 +3,19 @@
 
 #include "stdafx.h"
 
-void prn(const TCHAR *fmt, ...)
+void prn(const TCHAR *fmt=NULL, ...)
 {
+	if(fmt==NULL)
+	{
+		_tprintf(_T("\n"));
+		return;
+	}
+
 	va_list args;
 	va_start(args, fmt);
 
 	_vtprintf(fmt, args);
+	_tprintf(_T("\n"));
 
 	va_end(args);
 }
@@ -33,7 +40,7 @@ void DoPrintWindow(HWND hwnd)
 	if(!b)
 	{
 		winerr = GetLastError();
-		prn(_T("PrintWindow() fail with winerr=%d.\n"), winerr);
+		prn(_T("PrintWindow() fail with winerr=%d."), winerr);
 	}
 
 /*	// WM_PRINT cannot work across processes. 
@@ -57,18 +64,22 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	if(argc==1)
 	{
-		_tprintf(_T("Need a HWND value(hex) as parameter.\n"));
+		prn(_T("seePrintWindow <HWND> [is_client_area_only]"));
+		prn();
+		prn(_T("Example: "));
+		prn(_T("  seePrintWindow 005B14E2"));
+		prn(_T("  seePrintWindow 005B14E2 1"));
 		return 4;
 	}
 
 	HWND hwnd = (HWND)_tcstoul(argv[1], 0, 16);
 	if(IsWindow(hwnd))
 	{
-		_tprintf(_T("Input HWND 0x%08X is valid.\n"), (UINT)hwnd);
+		prn(_T("Input HWND 0x%08X is valid."), (UINT)hwnd);
 	}
 	else
 	{
-		_tprintf(_T("Input HWND 0x%08X is NOT valid.\n"), (UINT)hwnd);
+		prn(_T("Input HWND 0x%08X is NOT valid."), (UINT)hwnd);
 		return 4;
 	}
 
@@ -76,13 +87,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	BOOL b = GetWindowRect(hwnd, &r);
 	if(b)
 	{
-		_tprintf(_T("  Left, Top    : %d,%d\n"), r.left, r.top);
-		_tprintf(_T("  Right,Bottom : %d,%d\n"), r.right, r.bottom);
-		_tprintf(_T(" [Width,Height] [%d , %d]\n"), r.right-r.left, r.bottom-r.top);
+		prn(_T("  Left, Top    : %d,%d"), r.left, r.top);
+		prn(_T("  Right,Bottom : %d,%d"), r.right, r.bottom);
+		prn(_T(" [Width,Height] [%d , %d]"), r.right-r.left, r.bottom-r.top);
 	}
 	else
 	{
-		_tprintf(_T("GetWindowRect() error. WinErr=%d\n"), GetLastError());
+		prn(_T("GetWindowRect() error. WinErr=%d"), GetLastError());
 	}
 
 	DoPrintWindow(hwnd);	
