@@ -21,7 +21,7 @@ void prn(const TCHAR *fmt=NULL, ...)
 }
 
 
-void DoPrintWindow(HWND hwnd)
+void DoPrintWindow(HWND hwnd, bool isClientAreaOnly)
 {
 	DWORD winerr = 0;
 	RECT r = {};
@@ -36,7 +36,9 @@ void DoPrintWindow(HWND hwnd)
 	HDC hdcDst = CreateCompatibleDC(NULL);
 	HBITMAP hbmpOld = (HBITMAP)SelectObject(hdcDst, (HGDIOBJ)hbmpDst);
 
-	b = PrintWindow(hwnd, hdcDst, 0);
+	b = PrintWindow(hwnd, hdcDst, 
+		isClientAreaOnly ? PW_CLIENTONLY : 0
+		);
 	if(!b)
 	{
 		winerr = GetLastError();
@@ -71,8 +73,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		prn(_T("  seePrintWindow 005B14E2 1"));
 		return 4;
 	}
+	const TCHAR *szhwnd = argv[1];
 
-	HWND hwnd = (HWND)_tcstoul(argv[1], 0, 16);
+	const TCHAR *szClientArea = argc>2 ? argv[2] : _T("0");
+	bool isClientArea = _tcscmp(szClientArea, _T("1"))==0 ? true : false;
+	
+	HWND hwnd = (HWND)_tcstoul(szhwnd, 0, 16);
 	if(IsWindow(hwnd))
 	{
 		prn(_T("Input HWND 0x%08X is valid."), (UINT)hwnd);
@@ -96,7 +102,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		prn(_T("GetWindowRect() error. WinErr=%d"), GetLastError());
 	}
 
-	DoPrintWindow(hwnd);	
+	DoPrintWindow(hwnd, isClientArea);
 
 	return 0;
 }
