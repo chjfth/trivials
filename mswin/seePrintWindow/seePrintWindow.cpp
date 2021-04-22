@@ -25,9 +25,19 @@ void DoPrintWindow(HWND hwnd, bool isClientAreaOnly)
 {
 	DWORD winerr = 0;
 	RECT r = {};
-	BOOL b = GetWindowRect(hwnd, &r);
+	BOOL b = FALSE; 
+	if(!isClientAreaOnly)
+	{
+		GetWindowRect(hwnd, &r);
+	}
+	else
+	{
+		GetClientRect(hwnd, &r);
+	}
+
 	int width = r.right - r.left;
 	int height = r.bottom - r.top;
+
 
 	HDC hdcSrc = GetDC(hwnd);
 	HBITMAP hbmpDst = CreateCompatibleBitmap(hdcSrc, width, height);
@@ -43,6 +53,7 @@ void DoPrintWindow(HWND hwnd, bool isClientAreaOnly)
 	{
 		winerr = GetLastError();
 		prn(_T("PrintWindow() fail with winerr=%d."), winerr);
+		return;
 	}
 
 /*	// WM_PRINT cannot work across processes. 
@@ -55,8 +66,22 @@ void DoPrintWindow(HWND hwnd, bool isClientAreaOnly)
 	b = DeleteDC(hdcDst);
 
 	b = OpenClipboard(hwnd);
+	if(!b) {
+		winerr = GetLastError();
+		prn(_T("OpenClipboard() fail with winerr=%d"), winerr);
+		return;
+	}
+
 	b = EmptyClipboard();
 	HANDLE hclipdata = SetClipboardData(CF_BITMAP, hbmpDst);
+	if(!hclipdata) {
+		winerr = GetLastError();
+		prn(_T("SetClipboardData(CF_BITMAP, ...) fail with winerr=%d"), winerr);
+		return;
+	}
+
+	prn(_T("HWND image sent to clipboard. [%d , %d]"), width, height);
+
 	b = CloseClipboard();
 
 	b = DeleteObject(hbmpDst);
@@ -100,6 +125,18 @@ int _tmain(int argc, _TCHAR* argv[])
 	else
 	{
 		prn(_T("GetWindowRect() error. WinErr=%d"), GetLastError());
+		return 4;
+	}
+
+	b = GetClientRect(hwnd, &r);
+	if(b)
+	{
+		prn(_T(" Client Area :  [%d , %d]"), r.right-r.left, r.bottom-r.top);
+	}
+	else
+	{
+		prn(_T("GetClientRect() error. WinErr=%d"), GetLastError());
+		return 4;
 	}
 
 	DoPrintWindow(hwnd, isClientArea);
