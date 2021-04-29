@@ -234,7 +234,7 @@ namespace prjSkeleton
 
                             if (delay_ms == 0)
                             {
-                                await Task.Yield(); // can avoid freezing UI? No, still freeze UI
+//                                await Task.Yield(); // can avoid freezing UI? No, still freeze UI
                             }
                         }
 
