@@ -146,6 +146,7 @@ namespace prjSkeleton
                 _tsk = null;
 
                 btnStart.Text = "&Start";
+                btnStart.Enabled = true;
                 edtFilename.Enabled = true;
                 edtLinesToWrite.Enabled = true;
                 nudIotasks.Enabled = true;
@@ -159,6 +160,8 @@ namespace prjSkeleton
             using( StreamWriter swriter = new StreamWriter(filename, false))
             {
                 int ntasks = (int) nudIotasks.Value;
+                int delay_ms = int.Parse(edtDelayMs.Text);
+                bool isAsync = ckbWriteAsync.Checked;
 
                 // Prepare a bunch of ready-tasks.
 
@@ -188,9 +191,20 @@ namespace prjSkeleton
                         int local_idx_task = idx_done;
                         int local_next_line = next_line;
 
-await Task.Delay(10);
-                        await swriter.WriteAsync(
-                            $"Line#{local_next_line,9}"+"\r\n".PadLeft(86, '.'));
+                        if (delay_ms>0)
+                        {
+                            await Task.Delay(delay_ms);
+                        }
+
+                        string text = $"Line#{local_next_line,9}" + "\r\n".PadLeft(86, '.');
+                        if (isAsync)
+                        {
+                            await swriter.WriteAsync(text);
+                        }
+                        else
+                        {
+                            swriter.Write(text);
+                        }
 
                         nfinished++;
 
@@ -199,10 +213,13 @@ await Task.Delay(10);
 
                     lblQueued.Text = next_line.ToString();
                     lblFinished.Text = nfinished.ToString();
+                    lblPending.Text = (next_line - nfinished).ToString();
                 }
 
                 await Task.WhenAll(iotasks);
                 lblFinished.Text = nfinished.ToString();
+                Debug.Assert(next_line - nfinished==0);
+                lblPending.Text = "0";
 
                 log($"Task done: {Path.GetFullPath(filename)}");
 

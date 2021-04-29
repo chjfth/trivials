@@ -33,17 +33,22 @@ namespace prjSkeleton
             this.panel3 = new System.Windows.Forms.Panel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lblPending = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lblFinished = new System.Windows.Forms.Label();
+            this.lblQueued = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.edtLinesToWrite = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.nudIotasks = new System.Windows.Forms.NumericUpDown();
             this.edtFilename = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.edtLinesToWrite = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.lblQueued = new System.Windows.Forms.Label();
-            this.lblFinished = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.edtDelayMs = new System.Windows.Forms.TextBox();
+            this.ckbWriteAsync = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -84,6 +89,11 @@ namespace prjSkeleton
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.ckbWriteAsync);
+            this.panel2.Controls.Add(this.edtDelayMs);
+            this.panel2.Controls.Add(this.label7);
+            this.panel2.Controls.Add(this.lblPending);
+            this.panel2.Controls.Add(this.label6);
             this.panel2.Controls.Add(this.lblFinished);
             this.panel2.Controls.Add(this.lblQueued);
             this.panel2.Controls.Add(this.label5);
@@ -101,10 +111,81 @@ namespace prjSkeleton
             this.panel2.Size = new System.Drawing.Size(140, 488);
             this.panel2.TabIndex = 0;
             // 
+            // lblPending
+            // 
+            this.lblPending.AutoSize = true;
+            this.lblPending.Location = new System.Drawing.Point(58, 291);
+            this.lblPending.Name = "lblPending";
+            this.lblPending.Size = new System.Drawing.Size(14, 13);
+            this.lblPending.TabIndex = 12;
+            this.lblPending.Text = "~";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(4, 291);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(49, 13);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Pending:";
+            // 
+            // lblFinished
+            // 
+            this.lblFinished.AutoSize = true;
+            this.lblFinished.Location = new System.Drawing.Point(58, 269);
+            this.lblFinished.Name = "lblFinished";
+            this.lblFinished.Size = new System.Drawing.Size(14, 13);
+            this.lblFinished.TabIndex = 10;
+            this.lblFinished.Text = "~";
+            // 
+            // lblQueued
+            // 
+            this.lblQueued.AutoSize = true;
+            this.lblQueued.Location = new System.Drawing.Point(58, 247);
+            this.lblQueued.Name = "lblQueued";
+            this.lblQueued.Size = new System.Drawing.Size(14, 13);
+            this.lblQueued.TabIndex = 9;
+            this.lblQueued.Text = "~";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(4, 269);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 13);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Finished:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(4, 247);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(48, 13);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "Queued:";
+            // 
+            // edtLinesToWrite
+            // 
+            this.edtLinesToWrite.Location = new System.Drawing.Point(6, 127);
+            this.edtLinesToWrite.Name = "edtLinesToWrite";
+            this.edtLinesToWrite.Size = new System.Drawing.Size(72, 20);
+            this.edtLinesToWrite.TabIndex = 6;
+            this.edtLinesToWrite.Text = "1000";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 109);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(72, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Lines to write:";
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 135);
+            this.label2.Location = new System.Drawing.Point(6, 154);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 13);
             this.label2.TabIndex = 4;
@@ -112,7 +193,7 @@ namespace prjSkeleton
             // 
             // nudIotasks
             // 
-            this.nudIotasks.Location = new System.Drawing.Point(6, 151);
+            this.nudIotasks.Location = new System.Drawing.Point(6, 170);
             this.nudIotasks.Minimum = new decimal(new int[] {
             1,
             0,
@@ -154,58 +235,34 @@ namespace prjSkeleton
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
-            // label3
+            // label7
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 90);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(72, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Lines to write:";
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(5, 202);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(125, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Delay millisec each write:";
             // 
-            // edtLinesToWrite
+            // edtDelayMs
             // 
-            this.edtLinesToWrite.Location = new System.Drawing.Point(6, 108);
-            this.edtLinesToWrite.Name = "edtLinesToWrite";
-            this.edtLinesToWrite.Size = new System.Drawing.Size(72, 20);
-            this.edtLinesToWrite.TabIndex = 6;
-            this.edtLinesToWrite.Text = "1000";
+            this.edtDelayMs.Location = new System.Drawing.Point(6, 219);
+            this.edtDelayMs.Name = "edtDelayMs";
+            this.edtDelayMs.Size = new System.Drawing.Size(51, 20);
+            this.edtDelayMs.TabIndex = 14;
+            this.edtDelayMs.Text = "0";
             // 
-            // label4
+            // ckbWriteAsync
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(4, 202);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(48, 13);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "Queued:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(4, 219);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(49, 13);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "Finished:";
-            // 
-            // lblQueued
-            // 
-            this.lblQueued.AutoSize = true;
-            this.lblQueued.Location = new System.Drawing.Point(58, 202);
-            this.lblQueued.Name = "lblQueued";
-            this.lblQueued.Size = new System.Drawing.Size(14, 13);
-            this.lblQueued.TabIndex = 9;
-            this.lblQueued.Text = "~";
-            // 
-            // lblFinished
-            // 
-            this.lblFinished.AutoSize = true;
-            this.lblFinished.Location = new System.Drawing.Point(58, 219);
-            this.lblFinished.Name = "lblFinished";
-            this.lblFinished.Size = new System.Drawing.Size(14, 13);
-            this.lblFinished.TabIndex = 10;
-            this.lblFinished.Text = "~";
+            this.ckbWriteAsync.AutoSize = true;
+            this.ckbWriteAsync.Checked = true;
+            this.ckbWriteAsync.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ckbWriteAsync.Location = new System.Drawing.Point(9, 89);
+            this.ckbWriteAsync.Name = "ckbWriteAsync";
+            this.ckbWriteAsync.Size = new System.Drawing.Size(102, 17);
+            this.ckbWriteAsync.TabIndex = 15;
+            this.ckbWriteAsync.Text = "Use WriteAsync";
+            this.ckbWriteAsync.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -244,6 +301,11 @@ namespace prjSkeleton
         private System.Windows.Forms.Label lblQueued;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblPending;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.TextBox edtDelayMs;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox ckbWriteAsync;
     }
 }
 
