@@ -250,7 +250,7 @@ namespace prjSkeleton
             this.edtDelayMs.Name = "edtDelayMs";
             this.edtDelayMs.Size = new System.Drawing.Size(51, 20);
             this.edtDelayMs.TabIndex = 14;
-            this.edtDelayMs.Text = "0";
+            this.edtDelayMs.Text = "10";
             // 
             // ckbWriteAsync
             // 

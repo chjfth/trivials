@@ -86,6 +86,23 @@ namespace prjSkeleton
 
         #endregion
 
+        #region MessageBox
+
+        public static void ErrorMsg(string err)
+        {
+            MessageBox.Show(err, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        public static void WarnMsg(string msg)
+        {
+            MessageBox.Show(msg, "Warn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+        public static void InfoMsg(string err)
+        {
+            MessageBox.Show(err, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        #endregion
+
         public Form1()
         {
             InitializeComponent();
@@ -116,10 +133,14 @@ namespace prjSkeleton
         {
             if (_tsk != null)
             {
+                // no need to click again.
+                // This(btnStart.Enabled=false) should be placed before _cts.Cancel() to ensure it is 
+                // executed before finally{}'s btnStart.Enabled=true .
+                btnStart.Enabled = false; 
+
                 Debug.Assert(_cts!=null);
                 _cts.Cancel();
 
-                btnStart.Enabled = false; // no need to click again.
                 return;
             }
 
@@ -136,9 +157,15 @@ namespace prjSkeleton
                 _tsk = StartTest(_cts.Token);
                 await _tsk;
             }
+            catch (TaskCanceledException exception)
+            {
+                log(exception.ToString());
+                WarnMsg(exception.Message);
+            }
             catch (Exception exception)
             {
                 log(exception.ToString());
+                ErrorMsg(exception.Message);
             }
             finally
             {
@@ -193,10 +220,10 @@ namespace prjSkeleton
 
                         if (delay_ms>0)
                         {
-                            await Task.Delay(delay_ms);
+                            await Task.Delay(delay_ms, ct);
                         }
 
-                        string text = $"Line#{local_next_line,9}" + "\r\n".PadLeft(86, '.');
+                        string text = $"Line#{local_next_line,9}," + "\r\n".PadLeft(85, '.');
                         if (isAsync)
                         {
                             await swriter.WriteAsync(text);
@@ -204,6 +231,11 @@ namespace prjSkeleton
                         else
                         {
                             swriter.Write(text);
+
+                            if (delay_ms == 0)
+                            {
+                                await Task.Yield(); // can avoid freezing UI? No, still freeze UI
+                            }
                         }
 
                         nfinished++;
@@ -214,6 +246,9 @@ namespace prjSkeleton
                     lblQueued.Text = next_line.ToString();
                     lblFinished.Text = nfinished.ToString();
                     lblPending.Text = (next_line - nfinished).ToString();
+
+                    if(ct.IsCancellationRequested)
+                        throw new TaskCanceledException("Whoa, user has requested cancel.");
                 }
 
                 await Task.WhenAll(iotasks);
