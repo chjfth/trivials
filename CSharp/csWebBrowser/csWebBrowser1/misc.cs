@@ -14,6 +14,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SHDocVw;
+using WebBrowser = System.Windows.Forms.WebBrowser; // bcz there is also 'SHDocVw.WebBrowser'
 
 namespace prjSkeleton
 {
@@ -190,6 +192,28 @@ namespace prjSkeleton
                 tmrPollReadyState.Enabled = true;
                 tmrPollReadyState.Start();
             }
+
+            // Trying to capture NewWindow event from WebBrowser control. According to:
+            // https://www.codeproject.com/Articles/71592/How-to-easily-capture-the-NewWindow3-event-and-det
+            SHDocVw.WebBrowser axBrowser = (SHDocVw.WebBrowser)wb1.ActiveXInstance;
+            axBrowser.NewWindow3 += new DWebBrowserEvents2_NewWindow3EventHandler(Browser_NewWindow3);
+
+            axBrowser.NewWindow2 += new DWebBrowserEvents2_NewWindow2EventHandler(Browser_NewWindow2);
+        }
+
+        public void Browser_NewWindow3(ref object ppDisp, ref bool Cancel, uint dwFlags,
+            string bstrUrlContext, string bstrUrl)
+        {
+            // [2021-05-06] Why can't this be triggered.
+
+            log("SHDocVw Browser_NewWindow3 triggered.");
+        }
+
+        public void Browser_NewWindow2(ref object ppDisp, ref bool Cancel)
+        {
+            // [2021-05-06] This can be triggered on an IE11 machine.
+
+            log("SHDocVw Browser_NewWindow2 triggered.");
         }
 
         private static WebBrowserReadyState s_rsprev = WebBrowserReadyState.Uninitialized;

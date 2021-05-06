@@ -463,7 +463,7 @@ namespace prjSkeleton
             this.lnkGetUserAgent.Size = new System.Drawing.Size(75, 13);
             this.lnkGetUserAgent.TabIndex = 22;
             this.lnkGetUserAgent.TabStop = true;
-            this.lnkGetUserAgent.Text = "Get Uer-Agent";
+            this.lnkGetUserAgent.Text = "Get User-Agent";
             this.lnkGetUserAgent.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkGetUserAgent_LinkClicked);
             // 
             // lnkGetDocument
