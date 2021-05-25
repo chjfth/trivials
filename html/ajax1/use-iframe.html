@@ -1,0 +1,51 @@
+<!doctype html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta charset="utf-8">
+<title>Use iframe</title>
+<style>
+:root {
+    box-sizing: border-box;
+}
+
+*,
+::before,
+::after {
+    box-sizing: inherit;
+}
+body { margin: 0px; }
+
+.infobanner { 
+	margin: 1em;
+	font-size: 1.2em;
+	border: 1px solid brown;
+	color: brown;
+	padding: 5px;
+	text-align: center;
+}
+
+.para { 
+	margin: 1em 1em;
+}
+
+iframe {
+	border-color: #bbb;
+	border-width: 3px;
+}
+
+</style>
+</head>
+
+<body>
+
+	<div class="infobanner">
+		<div>This html contains iframe-s.</div>
+	</div>
+
+	<div>
+		<iframe src="http://chjtest.com:8080/ajax1/load-script.html" name="f1st" width="480"></iframe>
+	</div>
+	<div>
+		<iframe src="http://chj2nd.com:8080/ajax1/load-script.html"  name="f2nd" width="480"></iframe>
+	</div>
+</body>

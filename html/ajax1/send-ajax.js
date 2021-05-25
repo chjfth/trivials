@@ -8,13 +8,20 @@
 //
 // and browse http://chjtest.com:8080/ajax1/ to go.
 
-(function load1() {
+(function send_my_ajax() {
 	var xhr = new XMLHttpRequest();
 	
 	xhr.open("GET", "http://chjtest.com:8080/ajax1/data1.json");
 	
+	var origin = window.location.origin;
+	
 	xhr.onload = function() {
-		console.log("### Got json data: " + this.response);
+		// this.status==200 if success.
+		console.log("[" + origin  + "]### Got json data: " + this.response);
+	}
+
+	xhr.onerror = function() {
+		console.log("[" + origin  + "]!!! XHR Fail: status=" + this.status);
 	}
 	
 	xhr.send();
