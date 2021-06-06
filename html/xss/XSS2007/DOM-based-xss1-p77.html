@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<script src="../../jquery-1.6.4.js" type="text/javascript"></script>
+		<title>Awesome</title>
+	</head>
+	<body>
+		<div id="header">
+			<h2>Awesome: from Book [XSS2007] p77</h2>
+		</div>
+		<div id="content">
+			<div>
+				<p>Please, enter your nick and press
+					<strong>chat</strong>
+					!
+				</p>
+				<input name="name" type="text" size="50"/>
+				<br/>
+				<input name="chat" value="Chat" type="button"/>
+			</div>
+		</div>
+		<script>
+			$('[name="chat"]').click(function () { 
+				var name = $('[name="name"]').val(); 
+				$('#content > div').fadeOut(null, function () {
+					$(this).html('<p>Welcome ' 
+						+ name 
+						+'! You can type your message into the form below.</p><textarea class="pane">' 
+						+ name + ' &gt;</textarea>'); 
+					$(this).fadeIn(); 
+				}); 
+			});
+		</script>
+		<div id="footer">
+			<p>Awesome AJAX Application</p>
+			<p>Hint: To see XSS bug, type in <u>Bob&lt;script&gt;alert("Haha");&lt;/script&gt;</u></p>
+		</div>
+	</body>
+</html>

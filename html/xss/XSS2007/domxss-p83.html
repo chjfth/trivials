@@ -1,0 +1,43 @@
+<!doctype html>
+<!-- See usage at footer. -->
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<script src="../../jquery-1.6.4.js" type="text/javascript"></script>
+		<title>Awesome</title>
+	</head>
+	<body>
+		<div id="header">
+			<h2>Awesome: from Book [XSS2007] p83</h2>
+		</div>
+
+		<div id="content">
+		</div>
+		
+		<script>
+			var matches = new String(document.location).match(/[?&]name=([^&]*)/); 
+			if (matches) { 
+				var name = unescape(matches[1].replace(/\+/g, ' ')); 
+				document.cookie = 'name=' + escape(name) + '; expires=Mon, 01-Jan-2030 00:00:00 GMT'; 
+			} 
+			else { 
+				var matches = new String(document.cookie).match(/&?name=([^&]*)/); 
+				if (matches) 
+					var name = unescape(matches[1].replace(/\+/g, ' ')); 
+				else 
+					var name = 'guest'; 
+			} 
+			$('#content ').html(
+				'<p>Welcome ' 
+				+ '<b><u>' + name + '</u></b>'
+				+ '! You can type your message into the form below.</p><textarea class="pane">' 
+				+ name + '&gt;</textarea>');
+		</script>
+
+		<div id="footer">
+			<p>Awesome AJAX Application</p>
+			<p>Hint: Access this webpage by <u>http://.../domxss-p83.html?name=Bob</u>, then <u>http://.../domxss-p83.html</u>, and see cookie in action.
+			<p>To see XSS bug, <u>http://.../domxss-p83.html?name=Bob&lt;script&gt;alert("Haha");&lt;/script&gt;</u>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,144 @@
+<!doctype html>
+<!-- 
+ User Bob views this webpage with his webbrowser, and this webpage can tell whether Bob 
+ has logged-in to some famous websites, like mail.yahoo.com, mail.google.com etc.
+
+ Chj NOTE: For recent browsers like Chrome 80, grabbing xxx.html with a <script src=...>
+ will result in webbrowser error message:
+ 
+ Cross-Origin Read Blocking (CORB) blocked cross-origin response https://mail.google.com/mail/u/0/ with MIME type text/html. 
+ See https://www.chromestatus.com/feature/5629709824032768 for more details.
+ -->
+<html>
+	<head>
+	<title>JavaScript WebSite Login Checker</title>
+	<script>
+		/* Capture JavaScript console error messages and pass the err function for processing*/
+		window.onerror = err; // err implemented later
+		
+		/* These are the login/logout signatures for each specific website to be tested.
+		Each signature has a specific URL which returns different content depending on if
+		the user is logged-in or not. Each record will also include the error message and
+		line number expected for each scenario to make the decision. */
+		var sites = {
+			'http://mail.yahoo.com/' : {
+				'name' : 'Yahoo Mail (Beta)',
+				'login_msg' : 'missing } in XML expression',
+				'login_line' : '12',
+				'logout_msg' : 'syntax error',
+				'logout_line' : '7',
+			},
+			'http://mail.google.com/mail/' : {
+				'name' : 'Gmail',
+				'login_msg' : 'XML tag name mismatch',
+				'login_line' : '8',
+				'logout_msg' : 'invalid XML attribute value',
+				'logout_line' : '3',
+			},
+			'http://profileedit.myspace.com/index.cfm?fuseaction=profile.interests' : {
+				'name' : 'MySpace',
+				'login_msg' : 'missing } in XML expression',
+				'login_line' : '21',
+				'logout_msg' : 'syntax error',
+				'logout_line' : '82',
+			},
+			'http://beta.blogger.com/adsense-preview.g?blogID=13756280' : {
+				'name' : 'Blogger (Beta)',
+				'login_msg' : 'XML tag name mismatch',
+				'login_line' : '8',
+				'logout_msg' : 'syntax error',
+				'logout_line' : '1',
+			},
+			'http://www.flickr.com/account' : {
+				'name' : 'Flickr',
+				'login_msg' : 'syntax error',
+				'login_line' : '1',
+				'logout_msg' : 'syntax error',
+				'logout_line' : '7',
+			},
+			'http://www.hotmail.com/' : {
+				'name' : 'Hotmail',
+				'login_msg' : 'missing } in XML expression',
+				'login_line' : '1',
+				'logout_msg' : 'syntax error',
+				'logout_line' : '3',
+			},
+			'http://my.msn.com/' : {
+				'name' : 'My MSN',
+				'login_msg' : 'missing } in XML expression',
+				'login_line' : '1',
+				'logout_msg' : 'syntax error',
+				'logout_line' : '3',
+			},
+			'http://searchappsecurity.techtarget.com/login/' : {
+				'name' : 'SearchAppSecurity Techtarget',
+				'login_msg' : 'syntax error',
+				'login_line' : '16',
+				'logout_msg' : 'syntax error',
+				'logout_line' : '3',
+			},
+			'https://www.google.com/accounts/ManageAccount' : {
+				'name' : 'Google',
+				'login_msg' : 'XML tag name mismatch',
+				'login_line' : '91',
+				'logout_msg' : 'missing = in XML attribute',
+				'logout_line' : '35',
+			},
+		};
+		/* this method adds the results to the interface */
+		function addRow(loc) {
+			var table = document.getElementById('results');
+			var tr = document.createElement('tr');
+			table.appendChild(tr);
+			var td1 = document.createElement('td');
+			td1.innerHTML = sites[loc].name;
+			tr.appendChild(td1);
+			var td2 = document.createElement('td');
+			td2.width = 200;
+			td2.setAttribute('id', sites[loc].name);
+			td2.innerHTML = '&nbsp;';
+			tr.appendChild(td2);
+			var td3 = document.createElement('td');
+			tr.appendChild(td3);
+			var button = document.createElement('input');
+			button.type = "button";
+			button.value = "Check";
+			button.setAttribute("OnClick", 'check("' + loc + '");');
+			td3.appendChild(button);
+		}
+		
+		/* When executed, this function received a URL for testing and creates a script tag
+		src to that URL. JavaScript errors generated with be passed to the err function */
+		function check(loc) {
+			var script = document.createElement('script');
+			script.setAttribute('src', loc);
+			document.body.appendChild(script);
+		}
+
+		/* This function receives all JavaScript console error messages. These error
+		messages are used to signature match for login */
+		function err(msg, loc, line) {
+			/* results block */
+			var res = document.getElementById(sites[loc].name);
+			
+			/* check to see if the current test URL matches the signature error message
+			and line number */
+			if ((msg == sites[loc].login_msg) && (line == sites[loc].login_line)) {
+				res.innerHTML = "Logged-in";
+			} else if ((msg == sites[loc].logout_msg) && (line == sites[loc].logout_line)) {
+				res.innerHTML = "Not Logged-in";
+			} else {
+				res.innerHTML = "Not Logged-in";
+			}
+			window.stop();
+		} // end err subroutine
+	</script>
+	</head>
+	<body>
+		<div align="center">
+			<h2>JavaScript WebSite Login Checker</h2>
+			<table id="results" border="1" cellpadding="3" cellspacing="0"/>
+			<script>for (var i in sites) { addRow(i); }</script>
+		</div>
+	</body>
+</html>
