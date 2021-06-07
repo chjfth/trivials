@@ -43,6 +43,8 @@
 #define PROP_NONCLIENT_DPI_SCALING L"NCDPISCALING"
 #define PROP_DPIISOLATION          L"PROP_ISOLATION"
 
+#define WM_MY_REFRESH (WM_USER+1)
+
 // Globals
 HINSTANCE g_hInst;
 
@@ -573,7 +575,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_CREATE:
         {
-            return DoInitialWindowSetup(hWnd);
+            LRESULT result = DoInitialWindowSetup(hWnd);
+
+        	::PostMessageW(hWnd, WM_MY_REFRESH, 0, 0);
+        		// -- This PostMessage ensures that ShowMyWindowPos is called again right after
+        		// the window is *shown* on screen. Otherwise, the DWM Rect reported is not correct.
+        		
+			return result;
         }
 
         // On DPI change resize the window, scale the font, and update
@@ -605,6 +613,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
 
+		case WM_MY_REFRESH:
 		case WM_SIZE:
 		case WM_MOVE:
         {
