@@ -95,6 +95,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR,
     // Main message loop:
     while (GetMessage(&msg, nullptr, 0, 0))
     {
+		/*
+		if(msg.message==WM_KEYDOWN)
+		{
+			WCHAR info[100];
+			StringCchPrintf(info, 100, L"KEYDOWN: hwnd=%08X\r\n", msg.hwnd);
+			OutputDebugStringW(info);
+		}
+		*/
+    	
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
@@ -618,6 +627,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
 			int vk = wParam;
 			NudgeMyWindow(hWnd, vk);
+			return 0;
+        }
+
+		case WM_LBUTTONDOWN:
+        {
+			SetFocus(hWnd);
 			return 0;
         }
     	
