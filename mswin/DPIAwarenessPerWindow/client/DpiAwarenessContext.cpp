@@ -568,6 +568,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
 
+		case WM_SIZE:
 		case WM_MOVE:
         {
 			static bool s_is_hint_shown = false;
