@@ -105,6 +105,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR,
 			OutputDebugStringW(info);
 		}
 		*/
+
+		if (IsDialogMessageW(hHostDlg, &msg))
+		{
+			continue;
+		}
     	
         TranslateMessage(&msg);
         DispatchMessage(&msg);
