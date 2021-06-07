@@ -28,6 +28,7 @@
 #define DEFAULT_CHAR_BUFFER        800
 #define DEFAULT_BUTTON_HEIGHT96    25
 #define DEFAULT_BUTTON_WIDTH96     100
+#define SAMPLE_TEXT1LINE_HEIGHT96  16
 #define SAMPLE_STATIC_HEIGHT96     64
 #define EXTERNAL_CONTENT_WIDTH96   400
 #define EXTERNAL_CONTENT_HEIGHT96  400
@@ -172,8 +173,20 @@ void UpdateAndDpiScaleChildWindows(HWND hWnd, UINT uDpi)
     RECT rcClient = {};
     GetClientRect(hWnd, &rcClient);
 
+	// Reposition the DWM-text editbox
+	HWND hwndDwmText = FindWindowEx(hWnd, nullptr, CLASS_NAME_INFOTEXT, nullptr);
+	if (hwndDwmText == nullptr)
+		return;
+
+	UINT uWidth1 = (rcClient.right - rcClient.left) - 2 * uPadding;
+	UINT uHeight1 = MulDiv(SAMPLE_TEXT1LINE_HEIGHT96, uDpi, 96);
+	SetWindowPos(hwndDwmText, nullptr,
+		uPadding, uPadding, uWidth1, uHeight1, 
+		SWP_NOZORDER | SWP_NOACTIVATE);
+	GetParentRelativeWindowRect(hwndDwmText, &rcClient);
+	
     // Size and position the static control
-    HWND hWndStatic = FindWindowEx(hWnd, nullptr, CLASS_NAME_INFOTEXT, nullptr);
+    HWND hWndStatic = FindWindowEx(hWnd, hwndDwmText, CLASS_NAME_INFOTEXT, nullptr);
     if (hWndStatic == nullptr)
     {
         return;
@@ -184,7 +197,7 @@ void UpdateAndDpiScaleChildWindows(HWND hWnd, UINT uDpi)
         hWndStatic,
         nullptr,
         uPadding,
-        uPadding,
+        rcClient.bottom + uPadding,
         uWidth,
         uHeight,
         SWP_NOZORDER | SWP_NOACTIVATE);
@@ -293,6 +306,11 @@ LRESULT DoInitialWindowSetup(HWND hWnd)
 		rcWindow.right - rcWindow.left, rcWindow.bottom - rcWindow.top, 
 		SWP_NOZORDER | SWP_NOACTIVATE);
 
+	// [chj] Create a editbox to display DWM Rect info.
+	HWND hwndDwmText = CreateWindowExW(WS_EX_LEFT, CLASS_NAME_INFOTEXT, L"DWM-TEXT",
+		WS_CHILD | WS_VISIBLE | ES_LEFT | ES_READONLY,
+		0, 0, 0, 0, hWnd, nullptr, g_hInst, nullptr);
+	
     // Create a static control for use displaying DPI-related information.
     // Initially the static control will not be sized, but we will next DPI
     // scale it with a helper function.
@@ -406,21 +424,31 @@ void ShowMyWindowPos(HWND hWnd)
 	);
 	SetWindowText(hWnd, infoTopWnd);
 
+	WCHAR dwmtext[100] = L"DWM info unknown";
+	
 	RECT rcDwm = {};
 	HRESULT hr = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rcDwm, sizeof(rcDwm));
 	if(hr==S_OK)
 	{
-		WCHAR info[100] = {};
-		StringCchPrintf(info, ARRAYSIZE(info),
-			L"For HWND=0x%08X, DWM Rect LT(%d, %d), RB(%d, %d) Diff-to-Phys:LT(%d,%d),RB(%d,%d)\r\n",
-			(UINT)hWnd,
+		StringCchPrintf(dwmtext, ARRAYSIZE(dwmtext), 
+			L"DWM: LT(%d, %d), RB(%d, %d) Diff-to-Phys:lt(%d,%d),rb(%d,%d)",
 			rcDwm.left, rcDwm.top, rcDwm.right, rcDwm.bottom,
 			rcDwm.left-rcPhys.left, rcDwm.top-rcPhys.top, rcDwm.right-rcPhys.right, rcDwm.bottom-rcPhys.bottom
-		);
+			);
+		
+		WCHAR info[100] = {};
+		StringCchPrintf(info, ARRAYSIZE(info),
+			L"For HWND=0x%08X, %s\r\n", (UINT)hWnd, dwmtext	);
 
 		OutputDebugStringW(info);
 	}
 
+	// Update DWM-text editbox
+	HWND hwndDwmText = FindWindowEx(hWnd, nullptr, CLASS_NAME_INFOTEXT, nullptr);
+	if (hwndDwmText != nullptr)
+	{
+		SetWindowText(hwndDwmText, dwmtext);
+	}
 }
 
 void NudgeMyWindow(HWND hWnd, int vk)
