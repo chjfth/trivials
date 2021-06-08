@@ -72,7 +72,7 @@ void DoTest(HWND hwnd, DPI_AWARENESS_CONTEXT dpictx, const WCHAR *ctxname)
 const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
 {
 	DWORD winerr = 0;
-	HWND hwnd = FindWindow(L"Notepad", NULL);
+	HWND hwnd = FindWindowW(L"Notepad", NULL);
 	if(!hwnd)
 	{
 		return NOTEPAD_MISSING_TEXT;
