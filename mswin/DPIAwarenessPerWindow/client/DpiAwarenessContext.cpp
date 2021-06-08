@@ -46,6 +46,11 @@
 
 #define WM_MY_REFRESH (WM_USER+1)
 
+// Chj test:
+HWND g_hwnd_DpiUnaware = NULL;
+HWND g_hwnd_SystemAware = NULL;
+HWND g_hwnd_PermonAware = NULL;
+
 // Globals
 HINSTANCE g_hInst;
 
@@ -56,7 +61,7 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    HostDialogProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT             DoInitialWindowSetup(HWND hWnd);
 UINT                HandleDpiChange(HWND hWnd, WPARAM wParam, LPARAM lParam);
-void                CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnableNonClientDpiScaling, BOOL bChildWindowDpiIsolation);
+HWND                CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnableNonClientDpiScaling, BOOL bChildWindowDpiIsolation);
 void                DeleteWindowFont(HWND hWnd);
 void                ShowFileOpenDialog(HWND hWnd);
 void                UpdateAndDpiScaleChildWindows(HWND hWnd, UINT uDpi);
@@ -175,6 +180,54 @@ void UpdateDpiString(HWND hWndInfo, UINT uDpi, HWND hWndTop)
 		wcslen(szExtra)<=3 ? L"" : szExtra,
 		uDpi);
     SetWindowText(hWndInfo, result);
+}
+
+const WCHAR *DpiAwareness2str(DPI_AWARENESS daw)
+{
+	if (daw == DPI_AWARENESS_UNAWARE)
+		return L"DPI_AWARENESS_UNAWARE";
+	else if (daw == DPI_AWARENESS_SYSTEM_AWARE)
+		return L"DPI_AWARENESS_SYSTEM_AWARE";
+	else if (daw == DPI_AWARENESS_PER_MONITOR_AWARE)
+		return L"DPI_AWARENESS_PER_MONITOR_AWARE";
+	else
+		return L"DPI_AWARENESS_INVALID";
+}
+
+void test1_CheckHwndsVirtualCoord()
+{
+	RECT r1 = {}, r2 = {}, r3 = {};
+	UINT dpiw1 = 0, dpiw2 = 0, dpiw3 = 0;
+	if (g_hwnd_DpiUnaware)
+	{
+		dpiw1 = GetDpiForWindow(g_hwnd_DpiUnaware);
+		GetWindowRect(g_hwnd_DpiUnaware, &r1);
+	}
+
+	if (g_hwnd_SystemAware)
+	{
+		dpiw2 = GetDpiForWindow(g_hwnd_SystemAware);
+		GetWindowRect(g_hwnd_SystemAware, &r2);
+	}
+
+	if (g_hwnd_PermonAware)
+	{
+		dpiw3 = GetDpiForWindow(g_hwnd_PermonAware);
+		GetWindowRect(g_hwnd_PermonAware, &r3);
+	}
+
+	DPI_AWARENESS dpiAwareness = GetAwarenessFromDpiAwarenessContext(GetThreadDpiAwarenessContext());
+
+	WCHAR info[200];
+	StringCchPrintf(info, ARRAYSIZE(info),
+		L"test1: %s r1[%dx%d] r2[%dx%d] r3[%dx%d], dpiw1=%d dpiw2=%d dpiw3=%d\r\n",
+		DpiAwareness2str(dpiAwareness),
+		r1.right - r1.left, r1.bottom - r1.top,
+		r2.right - r2.left, r2.bottom - r2.top,
+		r3.right - r3.left, r3.bottom - r3.top,
+		dpiw1, dpiw2, dpiw3
+	);
+	OutputDebugStringW(info);
 }
 
 // Resize and reposition child controls for DPI
@@ -433,6 +486,8 @@ void ShowMyWindowPos(HWND hWnd)
 	RECT rcTopWnd = {};
 	GetWindowRect(hWnd, &rcTopWnd);
 
+	test1_CheckHwndsVirtualCoord(); // chj
+
 	RECT rcPhys = rcTopWnd;
 	LogicalToPhysicalPerMonitorDPI_Rect(hWnd, &rcPhys);
 	
@@ -499,7 +554,9 @@ void NudgeMyWindow(HWND hWnd, int vk)
 	}
 	else if(vk == '0')
 	{
-		// Keep rc coordinate (then call MoveWindow)
+		ShowMyWindowPos(hWnd);
+		// Keep rc coordinate (then call MoveWindow).
+		// Just a test, this MoveWindow() call will not trigger WM_MOVE.
 	}
 	else
 	{
@@ -512,7 +569,7 @@ void NudgeMyWindow(HWND hWnd, int vk)
 
 // Create the sample window and set its initial size, based off of the
 // DPI awareness mode that it's running under
-void CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnableNonClientDpiScaling, BOOL bChildWindowDpiIsolation)
+HWND CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnableNonClientDpiScaling, BOOL bChildWindowDpiIsolation)
 {
 	// Chj, informational purpose >>>
 	PROCESS_DPI_AWARENESS procdaw = PROCESS_DPI_UNAWARE;
@@ -560,6 +617,8 @@ void CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnabl
 	{
 		SetThreadDpiHostingBehavior(previousDpiHostingBehavior);
 	}
+
+	return hWnd; // chj: debugging purpose
 }
 
 // The window procedure for the sample windows
@@ -703,6 +762,8 @@ void ShowFileOpenDialog(HWND hWnd)
 // The dialog procedure for the sample host window
 INT_PTR CALLBACK HostDialogProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	HWND *pHwndOut = NULL;
+	
     switch (message)
     {
     case WM_CTLCOLORDLG:
@@ -738,12 +799,15 @@ INT_PTR CALLBACK HostDialogProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARA
             {
                 case IDC_BUTTON_UNAWARE:
                     context = DPI_AWARENESS_CONTEXT_UNAWARE;
+					pHwndOut = &g_hwnd_DpiUnaware;
                     break;
                 case IDC_BUTTON_SYSTEM:
                     context = DPI_AWARENESS_CONTEXT_SYSTEM_AWARE;
+					pHwndOut = &g_hwnd_SystemAware;
                     break;
                 case IDC_BUTTON_81:
                     context = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE;
+					pHwndOut = &g_hwnd_PermonAware;
                     break;
                 case IDC_BUTTON_1607:
                     context = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE;
@@ -763,7 +827,9 @@ INT_PTR CALLBACK HostDialogProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARA
 
             if (context != nullptr)
             {
-                CreateSampleWindow(hWndDlg, context, bNonClientScaling, bChildWindowDpiIsolation);
+                HWND hwnd = CreateSampleWindow(hWndDlg, context, bNonClientScaling, bChildWindowDpiIsolation);
+				if (pHwndOut)
+					*pHwndOut = hwnd;
             }
             return TRUE;
 
