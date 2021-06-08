@@ -4,10 +4,10 @@
 #include <windows.h>
 #include <windowsx.h>
 
-#define WINDOWCLASSNAME            L"WinRectByDpi"
+#define WINDOWCLASSNAME L"WinRectByDpi"
 
 const int WinWidth = 600;
-const int WinHeight = 400;
+const int WinHeight = 320;
 
 const int BtnHeight = 30;
 const int CMD_REFRESH = 1;
@@ -176,6 +176,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ int nCmdShow)
 {
+	//SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	
 	WNDCLASSEXW wcex = {};
 
 	wcex.cbSize = sizeof(wcex);
