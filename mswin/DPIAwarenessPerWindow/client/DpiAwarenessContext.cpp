@@ -16,6 +16,7 @@
 #include <WinUser.h>
 #include <windowsx.h>
 #include <dwmapi.h>
+#include <shellscalingapi.h>
 #include <Strsafe.h>
 #include <commdlg.h>
 #include <stdio.h>
@@ -499,6 +500,15 @@ void NudgeMyWindow(HWND hWnd, int vk)
 // DPI awareness mode that it's running under
 void CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnableNonClientDpiScaling, BOOL bChildWindowDpiIsolation)
 {
+	// Chj, informational purpose >>>
+	PROCESS_DPI_AWARENESS procdaw = PROCESS_DPI_UNAWARE;
+	HRESULT hr0 = GetProcessDpiAwareness(GetCurrentProcess(), &procdaw);
+	//
+	DPI_AWARENESS_CONTEXT dawctx = GetThreadDpiAwarenessContext();
+	//
+	DPI_AWARENESS daw = GetAwarenessFromDpiAwarenessContext(dawctx);
+	// Chj, informational purpose <<<
+
     // Store the current thread's DPI-awareness context
     DPI_AWARENESS_CONTEXT previousDpiContext = SetThreadDpiAwarenessContext(context);
 
