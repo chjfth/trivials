@@ -306,13 +306,17 @@ LRESULT DoInitialWindowSetup(HWND hWnd)
     {
         // Scale the window to the system DPI
         case DPI_AWARENESS_SYSTEM_AWARE:
-            uDpi = GetDpiForSystem();
+            uDpi = GetDpiForSystem(); // Win10.1607
             break;
 
         // Scale the window to the monitor DPI
         case DPI_AWARENESS_PER_MONITOR_AWARE:
-            uDpi = GetDpiForWindow(hWnd);
+            uDpi = GetDpiForWindow(hWnd); // Win10.1607
             break;
+
+		case DPI_AWARENESS_UNAWARE:
+			uDpi = 96;
+			break;
     }
 
     GetWindowRect(hWnd, &rcWindow);
@@ -470,6 +474,7 @@ void ShowMyWindowPos(HWND hWnd)
 
 void NudgeMyWindow(HWND hWnd, int vk)
 {
+	bool isCallMoveWindow = true;
 	SHORT keyCtrl = GetKeyState(VK_CONTROL); // "<0" means pressed
 	int offset = (keyCtrl < 0) ? 10 : 1;
 
@@ -492,8 +497,17 @@ void NudgeMyWindow(HWND hWnd, int vk)
 	{
 		rc.top += offset; rc.bottom += offset;
 	}
+	else if(vk == '0')
+	{
+		// Keep rc coordinate (then call MoveWindow)
+	}
+	else
+	{
+		isCallMoveWindow = false;
+	}
 
-	MoveWindow(hWnd, rc.left, rc.top, (rc.right-rc.left), (rc.bottom-rc.top), FALSE);
+	if(isCallMoveWindow)
+		MoveWindow(hWnd, rc.left, rc.top, (rc.right-rc.left), (rc.bottom-rc.top), FALSE);
 }
 
 // Create the sample window and set its initial size, based off of the
