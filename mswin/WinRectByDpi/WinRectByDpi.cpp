@@ -1,4 +1,5 @@
 #include <cwchar>
+#include <stdarg.h>
 #include <strsafe.h>
 #include <windows.h>
 #include <windowsx.h>
@@ -6,7 +7,7 @@
 #define WINDOWCLASSNAME            L"WinRectByDpi"
 
 const int WinWidth = 600;
-const int WinHeight = 320;
+const int WinHeight = 400;
 
 const int BtnHeight = 30;
 const int CMD_REFRESH = 1;
@@ -16,6 +17,18 @@ HINSTANCE g_hInst = NULL;
 static WCHAR g_szrcinfo[100];
 static WCHAR g_szedit[800];
 const int SIZEEDIT = ARRAYSIZE(g_szedit);
+
+void DbgPrint(const WCHAR *fmt, ...)
+{
+	WCHAR info[200] = {};
+	va_list args;
+	va_start(args, fmt);
+
+	vswprintf(info, ARRAYSIZE(info), fmt, args);
+	OutputDebugStringW(info);
+	
+	va_end(args);
+}
 
 const WCHAR *str_rcinfo(const RECT &rc)
 {
@@ -77,39 +90,41 @@ const WCHAR *get_result()
     return g_szedit;
 }
 
+void MyRefreshLayout(HWND htop, HWND hedit, HWND hbutton)
+{
+	RECT rc = {};
+	GetClientRect(htop, &rc);
+
+	MoveWindow(hedit, 0, 0, rc.right, rc.bottom - BtnHeight, TRUE);
+
+	MoveWindow(hbutton, 0, rc.bottom - BtnHeight, rc.right, BtnHeight, TRUE);
+}
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static HWND hedit = NULL;
-	HWND child = NULL;
-	RECT rc = {};
+	static HWND hedit = NULL, hbutton = NULL;
 	
 	switch (message)
 	{{
 	case WM_CREATE:
 	{
-		GetClientRect(hWnd, &rc);
-			
 		// Create text display area.
 		hedit = CreateWindowExW(WS_EX_LEFT, L"Edit",
 			L"Please open a Notepad window first, then click [Refresh].",
-			WS_CHILD | WS_VISIBLE | ES_LEFT | ES_READONLY | ES_MULTILINE,
-			0, 
-			0, 
-			rc.right, 
-			rc.bottom - BtnHeight, 
+			WS_CHILD | WS_VISIBLE | ES_LEFT | ES_READONLY | ES_MULTILINE | WS_VSCROLL | ES_AUTOVSCROLL,
+			0, 0, 0, 0,
 			hWnd, nullptr, g_hInst, nullptr);
 
 		// Create [Refresh] button.
-		child = CreateWindowExW(WS_EX_LEFT, L"Button",
+		hbutton = CreateWindowExW(WS_EX_LEFT, L"Button",
 			L"Refresh",
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			0,
-			rc.bottom - BtnHeight,
-			rc.right,
-			BtnHeight,
+			0, 0, 0, 0,
 			hWnd, 
 			(HMENU)CMD_REFRESH, 
 			g_hInst, nullptr);
+
+		MyRefreshLayout(hWnd, hedit, hbutton);
 			
 		::PostMessageW(hWnd, WM_COMMAND, CMD_REFRESH, 0);
 		break;
@@ -124,9 +139,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	// the DPI-info string
 	case WM_DPICHANGED:
 	{
+		UINT uDpi = HIWORD(wParam);
+		RECT *prcNewScale = reinterpret_cast<RECT*>(lParam);
+		DbgPrint(L"[WM_DPICHANGED] New DPI=%d\r\n", uDpi);
 		break;
 	}
 
+	case WM_SIZE:
+	{
+		MyRefreshLayout(hWnd, hedit, hbutton);
+		return 0;
+	}
+		
 	case WM_DESTROY:
 	{
 		PostQuitMessage(0);
