@@ -3,8 +3,10 @@
 #include <strsafe.h>
 #include <windows.h>
 #include <windowsx.h>
+#include <dwmapi.h>
 
 #define WINDOWCLASSNAME L"WinRectByDpi"
+#define REFRESH_BTN_TEXT L"Refresh (Ctrl+ to see true boundary)"
 
 const int WinWidth = 600;
 const int WinHeight = 320;
@@ -66,7 +68,7 @@ void DoTest(HWND hwnd, DPI_AWARENESS_CONTEXT dpictx, const WCHAR *ctxname)
 		str_rcinfo(rc));
 }
 
-const WCHAR *get_result()
+const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
 {
 	DWORD winerr = 0;
 	HWND hwnd = FindWindow(L"Notepad", NULL);
@@ -87,6 +89,17 @@ const WCHAR *get_result()
 
 	DoTest(hwnd, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2, L"DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2");
 
+	if(render==DWMNCRP_DISABLED || render== DWMNCRP_ENABLED)
+	{
+		// Disable/Enable non-client area rendering on the window.
+		// So that we can see Window-Rect's real boundary.
+		HRESULT hr = DwmSetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &render, sizeof(render));
+		if (hr != S_OK)
+		{
+			MessageBoxW(NULL, L"DwmSetWindowAttribute(DWMWA_NCRENDERING_POLICY) fails!", L"Error", MB_OK);
+		}
+	}
+	
     return g_szedit;
 }
 
@@ -117,7 +130,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		// Create [Refresh] button.
 		hbutton = CreateWindowExW(WS_EX_LEFT, L"Button",
-			L"Refresh",
+			REFRESH_BTN_TEXT,
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			0, 0, 0, 0,
 			hWnd, 
@@ -159,11 +172,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_COMMAND:
 	{
+		SHORT keyShift = GetKeyState(VK_SHIFT); // "keyShift<0" means pressed
+		SHORT keyCtrl = GetKeyState(VK_CONTROL);
+		DWMNCRENDERINGPOLICY render = DWMNCRP_USEWINDOWSTYLE; // 0
+		if(keyCtrl<0)
+		{
+			render = keyShift < 0 ? DWMNCRP_ENABLED : DWMNCRP_DISABLED;
+		}
+				
 		int wmId = LOWORD(wParam);
-		// Parse the menu selections:
 		if(wmId==CMD_REFRESH)
 		{
-			SetWindowTextW(hedit, get_result());
+			SetWindowTextW(hedit, get_result(render));
+			
 			return 0;
 		}
 		break;
