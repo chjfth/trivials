@@ -7,6 +7,7 @@
 
 #define WINDOWCLASSNAME L"WinRectByDpi"
 #define REFRESH_BTN_TEXT L"Refresh (Ctrl+ to see true boundary)"
+#define NOTEPAD_MISSING_TEXT L"Please open a Notepad window first, then click [Refresh]."
 
 const int WinWidth = 600;
 const int WinHeight = 320;
@@ -74,7 +75,7 @@ const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
 	HWND hwnd = FindWindow(L"Notepad", NULL);
 	if(!hwnd)
 	{
-		return L"Cannot find a Notepad window.";
+		return NOTEPAD_MISSING_TEXT;
 	}
 
 	g_szedit[0] = 0;
@@ -123,7 +124,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		// Create text display area.
 		hedit = CreateWindowExW(WS_EX_LEFT, L"Edit",
-			L"Please open a Notepad window first, then click [Refresh].",
+			NOTEPAD_MISSING_TEXT,
 			WS_CHILD | WS_VISIBLE | ES_LEFT | ES_READONLY | ES_MULTILINE | WS_VSCROLL | ES_AUTOVSCROLL,
 			0, 0, 0, 0,
 			hWnd, nullptr, g_hInst, nullptr);
