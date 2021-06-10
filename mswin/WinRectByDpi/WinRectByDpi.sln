@@ -12,6 +12,7 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FCAA23AB-188F-4AF1-A70D-245B22004BEE}.Release|x86.ActiveCfg = Release|Win32
 		{FCAA23AB-188F-4AF1-A70D-245B22004BEE}.Release|x86.Build.0 = Release|Win32
+		{FCAA23AB-188F-4AF1-A70D-245B22004BEE}.Release|x86.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

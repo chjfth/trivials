@@ -1,5 +1,6 @@
 #include <cwchar>
 #include <stdarg.h>
+#include <assert.h>
 #include <strsafe.h>
 #include <windows.h>
 #include <windowsx.h>
@@ -9,17 +10,24 @@
 #define REFRESH_BTN_TEXT L"Refresh (Ctrl+ to see true boundary)"
 #define NOTEPAD_MISSING_TEXT L"Please open a Notepad window first, then click [Refresh]."
 
-const int WinWidth = 600;
-const int WinHeight = 320;
+const int WinWidth = 720;
+const int WinHeight = 400;
 
 const int BtnHeight = 30;
-const int CMD_REFRESH = 1;
+enum {
+	CMD_REFRESH = 1,
+	CMD_PAINT_SLATE,
+};
 
 HINSTANCE g_hInst = NULL;
 
 static WCHAR g_szrcinfo[100];
+static WCHAR g_szedtprefix[80];
 static WCHAR g_szedit[800];
 const int SIZEEDIT = ARRAYSIZE(g_szedit);
+
+DPI_AWARENESS_CONTEXT g_thiswnd_dpictx = nullptr; // init to an invalid value
+UINT g_thiswnd_dpi = 0;
 
 void DbgPrint(const WCHAR *fmt, ...)
 {
@@ -42,7 +50,23 @@ const WCHAR *str_rcinfo(const RECT &rc)
 	return g_szrcinfo;
 }
 
-void DoTest(HWND hwnd, DPI_AWARENESS_CONTEXT dpictx, const WCHAR *ctxname)
+const WCHAR *DPIContextStr(DPI_AWARENESS_CONTEXT dpictx)
+{
+	if (AreDpiAwarenessContextsEqual(dpictx, DPI_AWARENESS_CONTEXT_UNAWARE))
+		return L"DPI_AWARENESS_CONTEXT_UNAWARE";
+	else if (AreDpiAwarenessContextsEqual(dpictx, DPI_AWARENESS_CONTEXT_SYSTEM_AWARE))
+		return L"DPI_AWARENESS_CONTEXT_SYSTEM_AWARE";
+	else if (AreDpiAwarenessContextsEqual(dpictx, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE))
+		return L"DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE";
+	else if (AreDpiAwarenessContextsEqual(dpictx, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
+		return L"DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2";
+	else if (AreDpiAwarenessContextsEqual(dpictx, DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED))
+		return L"DPI_AWARENESS_CONTEXT_UNAWARE_GDISCALED";
+	else
+		return nullptr; // means invalid input
+}
+
+void GrabNotepadHwndInfo(HWND hwnd, DPI_AWARENESS_CONTEXT dpictx)
 {
 	// Output info appended to g_szedit[] .
 	
@@ -50,6 +74,8 @@ void DoTest(HWND hwnd, DPI_AWARENESS_CONTEXT dpictx, const WCHAR *ctxname)
 
 	if(dpictx!=nullptr)
 	{
+		const WCHAR *ctxname = DPIContextStr(dpictx);
+		
 		StringCchPrintfW(g_szedit, SIZEEDIT, L"%sSet %s\r\n", g_szedit,
 			ctxname);
 		
@@ -67,6 +93,8 @@ void DoTest(HWND hwnd, DPI_AWARENESS_CONTEXT dpictx, const WCHAR *ctxname)
 
 	StringCchPrintfW(g_szedit, SIZEEDIT, L"%sNotepad GetWindowRect: %s\r\n\r\n", g_szedit,
 		str_rcinfo(rc));
+
+	SetThreadDpiAwarenessContext(oldctx);
 }
 
 const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
@@ -78,17 +106,21 @@ const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
 		return NOTEPAD_MISSING_TEXT;
 	}
 
-	g_szedit[0] = 0;
+	const WCHAR *ctxstr = DPIContextStr(g_thiswnd_dpictx);
+	StringCchPrintfW(g_szedit, ARRAYSIZE(g_szedit),
+		L"%sThis HWND-DPI-context: %s\r\n",
+		g_szedtprefix,
+		ctxstr ? ctxstr : L"(Unknown value)");
 	
-	DoTest(hwnd, nullptr, L"");
+	GrabNotepadHwndInfo(hwnd, nullptr);
 
-	DoTest(hwnd, DPI_AWARENESS_CONTEXT_UNAWARE, L"DPI_AWARENESS_CONTEXT_UNAWARE");
+	GrabNotepadHwndInfo(hwnd, DPI_AWARENESS_CONTEXT_UNAWARE);
 
-	DoTest(hwnd, DPI_AWARENESS_CONTEXT_SYSTEM_AWARE, L"DPI_AWARENESS_CONTEXT_SYSTEM_AWARE");
+	GrabNotepadHwndInfo(hwnd, DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
 
-	DoTest(hwnd, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE, L"DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE");
+	GrabNotepadHwndInfo(hwnd, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
 
-	DoTest(hwnd, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2, L"DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2");
+	GrabNotepadHwndInfo(hwnd, DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 
 	if(render==DWMNCRP_DISABLED || render== DWMNCRP_ENABLED)
 	{
@@ -104,19 +136,113 @@ const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
     return g_szedit;
 }
 
-void MyRefreshLayout(HWND htop, HWND hedit, HWND hbutton)
+void MyRefreshLayout(HWND htop, HWND hedit, HWND hbutton, HWND hstatic)
 {
 	RECT rc = {};
 	GetClientRect(htop, &rc);
 
+	// upper part
 	MoveWindow(hedit, 0, 0, rc.right, rc.bottom - BtnHeight, TRUE);
 
-	MoveWindow(hbutton, 0, rc.bottom - BtnHeight, rc.right, BtnHeight, TRUE);
+	// lower left
+	MoveWindow(hbutton, 0, rc.bottom - BtnHeight, rc.right - BtnHeight, BtnHeight, TRUE);
+
+	// lower right
+	MoveWindow(hstatic, rc.right-BtnHeight, rc.bottom-BtnHeight, BtnHeight, BtnHeight, TRUE);
+}
+
+void EraseMySlate(HWND hstatic)
+{
+	HDC hdc = GetDC(hstatic);
+
+	RECT rcpaint = {};
+	GetClientRect(hstatic, &rcpaint); // We do this after set Thread-DPI context.
+
+	FillRect(hdc, &rcpaint, GetStockBrush(WHITE_BRUSH));
+	
+	ReleaseDC(hstatic, hdc);
+}
+
+void PaintMySlate(HWND hstatic, bool keyCtrl, bool keyShift)
+{
+	EraseMySlate(hstatic);
+
+	DPI_AWARENESS_CONTEXT thread_ctx_old = nullptr;
+	DPI_AWARENESS_CONTEXT thread_ctx = DPI_AWARENESS_CONTEXT_UNAWARE;
+	const WCHAR *painting_ctx_str = L"DPI_AWARENESS_CONTEXT_UNAWARE";
+
+	if(keyCtrl)
+	{
+		thread_ctx = DPI_AWARENESS_CONTEXT_SYSTEM_AWARE;
+		painting_ctx_str = L"DPI_AWARENESS_CONTEXT_SYSTEM_AWARE";
+	}
+	else if(keyShift)
+	{
+		thread_ctx = DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE;
+		painting_ctx_str = L"DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE";
+	}
+
+	// Temporarily change Thread-DPI context before painting the slate.
+	thread_ctx_old = SetThreadDpiAwarenessContext(thread_ctx);
+
+	UINT dpi_childwnd = GetDpiForWindow(hstatic);
+
+	RECT rcpaint = {};
+	GetClientRect(hstatic, &rcpaint); // We do this after set Thread-DPI context.
+
+	HDC hdc = GetDC(hstatic);
+
+	// Draw interleaving 1-vpx white / 1-vpx black stripes, on the slate.
+	// User can observe whether this stripes are clear or blurry.
+
+	for(int x=0; x<rcpaint.right; x+=2)
+	{
+		MoveToEx(hdc, x, 0, nullptr);
+		LineTo(hdc, x, rcpaint.bottom);
+	}
+
+	WCHAR info[800];
+	StringCchPrintfW(info, ARRAYSIZE(info), 
+		L"This calling thread has temporarily changed its Thread-DPI-context to %s.\r\n\r\n"
+		L"During this change, on the bottom right corner slate, I have painted black stripes every other pixel.\r\n\r\n"
+		L"The painted width is %d vpx.\r\n\r\n"
+		L"If I predict it correctly...\r\n\r\n"
+		,
+		painting_ctx_str,
+		rcpaint.right - rcpaint.left
+		);
+
+	DPI_AWARENESS_CONTEXT hwnd_ctx = GetWindowDpiAwarenessContext(hstatic);
+	DPI_AWARENESS hwnd_daw = GetAwarenessFromDpiAwarenessContext(hwnd_ctx);
+	if (hwnd_daw == DPI_AWARENESS_PER_MONITOR_AWARE)
+	{
+		StringCchPrintfW(info, ARRAYSIZE(info),
+			L"%sThe stripes will be crispy (not blurry) on every monitor.",
+		info);
+	}
+	else
+	{
+		assert(g_thiswnd_dpi != 0);
+		StringCchPrintfW(info, ARRAYSIZE(info),
+			L"%sThe stripes will be blurry(bitmap-stretched, not crispy) unless they are displayed on the %u-DPI monitor "
+			L"(or say, the monitor with scale factor %d%%) .\r\n\r\n"
+			L"Hint: To paint with other Thread-DPI-context, click with Ctrl or Shift."
+			,
+			info,
+			g_thiswnd_dpi,
+			MulDiv(g_thiswnd_dpi, 100, 96) );
+	}
+	
+	MessageBox(hstatic, info, L"Info", MB_OK);
+	
+	ReleaseDC(hstatic, hdc);
+
+	SetThreadDpiAwarenessContext(thread_ctx_old);
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	static HWND hedit = NULL, hbutton = NULL;
+	static HWND hedit = NULL, hbutton = NULL, hstatic = NULL;
 	
 	switch (message)
 	{{
@@ -138,7 +264,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			(HMENU)CMD_REFRESH, 
 			g_hInst, nullptr);
 
-		MyRefreshLayout(hWnd, hedit, hbutton);
+		// Create bottom-right corner static slate
+		hstatic = CreateWindowExW(0, L"Static",
+			L"ABC", // empty text
+			WS_CHILD | WS_VISIBLE | SS_NOTIFY | SS_WHITEFRAME, // | SS_WHITERECT,
+			0, 0, 0, 0,
+			hWnd, 
+			(HMENU)CMD_PAINT_SLATE,
+			g_hInst, nullptr
+		);
+
+		MyRefreshLayout(hWnd, hedit, hbutton, hstatic);
 			
 		::PostMessageW(hWnd, WM_COMMAND, CMD_REFRESH, 0);
 		break;
@@ -161,7 +297,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_SIZE:
 	{
-		MyRefreshLayout(hWnd, hedit, hbutton);
+		MyRefreshLayout(hWnd, hedit, hbutton, hstatic);
 		return 0;
 	}
 		
@@ -173,19 +309,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_COMMAND:
 	{
-		SHORT keyShift = GetKeyState(VK_SHIFT); // "keyShift<0" means pressed
-		SHORT keyCtrl = GetKeyState(VK_CONTROL);
+		bool keyShift = GetKeyState(VK_SHIFT) < 0; // "<0" means pressed
+		bool keyCtrl = GetKeyState(VK_CONTROL) < 0;
 		DWMNCRENDERINGPOLICY render = DWMNCRP_USEWINDOWSTYLE; // 0
-		if(keyCtrl<0)
+		if(keyCtrl)
 		{
-			render = keyShift < 0 ? DWMNCRP_ENABLED : DWMNCRP_DISABLED;
+			render = keyShift ? DWMNCRP_ENABLED : DWMNCRP_DISABLED;
 		}
 				
 		int wmId = LOWORD(wParam);
+			
 		if(wmId==CMD_REFRESH)
 		{
 			SetWindowTextW(hedit, get_result(render));
-			
+			return 0;
+		}
+		else if(wmId==CMD_PAINT_SLATE)
+		{
+			PaintMySlate(hstatic, keyCtrl, keyShift);
 			return 0;
 		}
 		break;
@@ -196,9 +337,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR, _In_ int nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR cmdparams, _In_ int nCmdShow)
 {
-	//SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	// cmdparams tells initial Thread-DPI-context to use, -1, -2, -3, -4, or -5 .
+
+	DPI_AWARENESS_CONTEXT dpictx = (DPI_AWARENESS_CONTEXT)_wtoi(cmdparams);
+	const WCHAR *dpictx_str = DPIContextStr(dpictx);
+	if (dpictx_str != nullptr)
+	{
+		StringCchPrintfW(g_szedtprefix, ARRAYSIZE(g_szedtprefix),
+			L"Run with parameter(%d): %s\r\n", (int)dpictx, dpictx_str
+			);
+		SetThreadDpiAwarenessContext(dpictx);
+	}
+
+	// Query the DPI-context value, this tells us the actual result.
+	// And we will display it in our main UI later.
+	// Chj: The significance of this Thread-DPI-context is that it determines the HWND-DPI-context
+	// it(this thread) later creates. So I save it an a global var with "thiswnd" in its name.
+	g_thiswnd_dpictx = GetThreadDpiAwarenessContext();
+	if (GetAwarenessFromDpiAwarenessContext(g_thiswnd_dpictx) != DPI_AWARENESS_PER_MONITOR_AWARE)
+	{
+		// -- Chj: Yes, g_thiswnd_dpi is meaningful only when non Per-monitor-aware.
+		g_thiswnd_dpi = GetDpiForSystem();
+	}
 	
 	WNDCLASSEXW wcex = {};
 
