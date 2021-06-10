@@ -624,6 +624,7 @@ HWND CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnabl
 // The window procedure for the sample windows
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	WCHAR info[200];
     switch (message)
     {
         case WM_NCCREATE:
@@ -703,6 +704,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		case WM_MY_REFRESH:
 		case WM_SIZE:
+        {
+			StringCchPrintfW(info, ARRAYSIZE(info), 
+				L"For HWND=0x%08X, got WM_SIZE. New size: [%dx%d]\r\n",
+				hWnd,
+				HIWORD(lParam), LOWORD(lParam));
+			OutputDebugStringW(info);
+
+        	// Fall through to do the same as WM_MOVE
+        }
 		case WM_MOVE:
         {
 			static bool s_is_hint_shown = false;
