@@ -28,6 +28,7 @@ const int SIZEEDIT = ARRAYSIZE(g_szedit);
 
 DPI_AWARENESS_CONTEXT g_thiswnd_dpictx = nullptr; // init to an invalid value
 UINT g_thiswnd_dpi = 0;
+HWND g_targethwnd = nullptr;
 
 void DbgPrint(const WCHAR *fmt, ...)
 {
@@ -100,14 +101,29 @@ void GrabNotepadHwndInfo(HWND hwnd, DPI_AWARENESS_CONTEXT dpictx)
 const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
 {
 	DWORD winerr = 0;
-	HWND hwnd = FindWindowW(L"Notepad", NULL);
-	if(!hwnd)
+	HWND hwnd = nullptr;
+	
+	if(!g_targethwnd)
 	{
-		StringCchPrintfW(g_szedit, ARRAYSIZE(g_szedit), L"%s%s", 
-			g_szedtprefix, NOTEPAD_MISSING_TEXT);
-		return g_szedit;
+		hwnd = FindWindowW(L"Notepad", NULL);
+		if(!hwnd)
+		{
+			StringCchPrintfW(g_szedit, ARRAYSIZE(g_szedit), L"%s%s", 
+                g_szedtprefix, NOTEPAD_MISSING_TEXT);
+			return g_szedit;
+		}
 	}
-
+	else
+	{
+		hwnd = g_targethwnd;
+		if( !IsWindow(hwnd) )
+		{
+			StringCchPrintfW(g_szedit, ARRAYSIZE(g_szedit), L"%sCannot find target HWND 0x%08X",
+				g_szedtprefix, (UINT)hwnd);
+			return g_szedit;
+		}
+	}
+	
 	const WCHAR *ctxstr = DPIContextStr(g_thiswnd_dpictx);
 	StringCchPrintfW(g_szedit, ARRAYSIZE(g_szedit),
 		L"%sThis HWND-DPI-context: %s\r\n",
@@ -341,16 +357,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR cmdparams, _In_ int nCmdShow)
 {
-	// cmdparams tells initial Thread-DPI-context to use, -1, -2, -3, -4, or -5 .
+	// cmdparams can contain one or two params:
+	// (1) With a leading minus char, telling initial Thread-DPI-context to use: -1, -2, -3, -4, or -5 .
+	// (2) Not with a leading minus char, it is the hex-form window handle(inputHwnd), so we will
+	//     investigate inputHwnd instead of a Notepad window.
+	//  Example:
+	//  WinRectByDpi -2
+	//  WinRectByDpi 40b42
+	//  WinRectByDpi -3 40b42
+	//  WinRectByDpi -3 0x40b42
 
-	DPI_AWARENESS_CONTEXT dpictx = (DPI_AWARENESS_CONTEXT)_wtoi(cmdparams);
-	const WCHAR *dpictx_str = DPIContextStr(dpictx);
-	if (dpictx_str != nullptr)
+	int numargs = 0;
+	LPWSTR *args = CommandLineToArgvW(GetCommandLineW(), &numargs);
+	WCHAR szTitle[100] = WINDOWCLASSNAME;
+
+	if (numargs>1)
 	{
 		StringCchPrintfW(g_szedtprefix, ARRAYSIZE(g_szedtprefix),
-			L"Run with parameter(%d): %s\r\n", (int)dpictx, dpictx_str
-			);
-		SetThreadDpiAwarenessContext(dpictx);
+			L"Run with parameter: %s\r\n", cmdparams
+			); // cmdparams does not contain args[0]
+
+		LPWSTR *args_adv = args+1;
+
+		if(args_adv[0][0]==L'-')
+		{
+			DPI_AWARENESS_CONTEXT dpictx = (DPI_AWARENESS_CONTEXT)_wtoi(args_adv[0]);
+			const WCHAR *dpictx_str = DPIContextStr(dpictx);
+
+			SetThreadDpiAwarenessContext(dpictx);
+
+			args_adv++;
+		}
+		
+		if(args_adv-args < numargs)
+		{
+			g_targethwnd = (HWND) wcstoul(args_adv[0], NULL, 16);
+
+			StringCchPrintfW(szTitle, ARRAYSIZE(szTitle), L"%s (#%08X)", 
+				WINDOWCLASSNAME, (UINT)g_targethwnd);
+		}
 	}
 
 	// Query the DPI-context value, this tells us the actual result.
@@ -381,7 +426,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE, _In_ LPWSTR 
 	HWND hWnd = CreateWindowExW(
 		0,
 		WINDOWCLASSNAME, 
-		WINDOWCLASSNAME,
+		szTitle,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, WinWidth, WinHeight, NULL, NULL,
 		g_hInst, NULL);
