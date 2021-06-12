@@ -103,7 +103,9 @@ const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
 	HWND hwnd = FindWindowW(L"Notepad", NULL);
 	if(!hwnd)
 	{
-		return NOTEPAD_MISSING_TEXT;
+		StringCchPrintfW(g_szedit, ARRAYSIZE(g_szedit), L"%s%s", 
+			g_szedtprefix, NOTEPAD_MISSING_TEXT);
+		return g_szedit;
 	}
 
 	const WCHAR *ctxstr = DPIContextStr(g_thiswnd_dpictx);
