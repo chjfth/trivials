@@ -36,7 +36,7 @@
 #define WINDOWCLASSNAME            L"SetThreadDpiAwarenessContextSample"
 #define HWND_NAME_RADIO            L"RADIO"
 #define HWND_NAME_CHECKBOX         L"CHECKBOX"
-#define HWND_NAME_DIALOG           L"Open a System Dialog"
+#define HWND_NAME_DIALOG           L"Open a System Dialog ◈"
 
 #define CLASS_NAME_INFOTEXT        L"Edit"
 #define HWND_NAME_INFOTEXT         L"InfoText"
@@ -64,6 +64,7 @@ UINT                HandleDpiChange(HWND hWnd, WPARAM wParam, LPARAM lParam);
 HWND                CreateSampleWindow(HWND hWndDlg, DPI_AWARENESS_CONTEXT context, BOOL bEnableNonClientDpiScaling, BOOL bChildWindowDpiIsolation);
 void                DeleteWindowFont(HWND hWnd);
 void                ShowFileOpenDialog(HWND hWnd);
+void Show_ChooseFont_Dialog(HWND hwndOwner);
 void                UpdateAndDpiScaleChildWindows(HWND hWnd, UINT uDpi);
 void                UpdateDpiString(HWND hWnd, UINT uDpi);
 
@@ -399,7 +400,8 @@ LRESULT DoInitialWindowSetup(HWND hWnd)
     // Create some buttons
     HWND hWndCheckbox = CreateWindow(L"BUTTON", HWND_NAME_CHECKBOX, WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON | BS_CHECKBOX, 0, 0, 0, 0, hWnd, nullptr, g_hInst, nullptr);
     HWND hWndRadio = CreateWindow(L"BUTTON", HWND_NAME_RADIO, BS_PUSHBUTTON | BS_TEXT | BS_DEFPUSHBUTTON | BS_USERBUTTON | BS_AUTORADIOBUTTON | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, 0, 0, 0, 0, hWnd, nullptr, g_hInst, nullptr);
-    HWND hWndDialog = CreateWindow(L"BUTTON", HWND_NAME_DIALOG, WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, hWnd, (HMENU)IDM_SHOWDIALOG, g_hInst, nullptr);
+
+	HWND hWndOpenDialog = CreateWindow(L"BUTTON", HWND_NAME_DIALOG, WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, 0, 0, 0, 0, hWnd, (HMENU)IDM_SHOWDIALOG, g_hInst, nullptr);
 
     // Load an HWND from an external source (a DLL in this example)
     //
@@ -688,17 +690,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         case WM_COMMAND:
         {
+			bool keyCtrl = GetKeyState(VK_CONTROL) < 0;
+
             int wmId = LOWORD(wParam);
             // Parse the menu selections:
             switch (wmId)
             {
-                case IDM_SHOWDIALOG:
-                    ShowFileOpenDialog(hWnd);
-                    return 0;
-                    break;
+            case IDM_SHOWDIALOG:
+	            {
+				if (!keyCtrl)
+					ShowFileOpenDialog(hWnd);
+				else
+					Show_ChooseFont_Dialog(hWnd);
+	            }
+            	return 0;
 
-                default:
-                    return DefWindowProc(hWnd, message, wParam, lParam);
+            default:
+                return DefWindowProc(hWnd, message, wParam, lParam);
             }
         }
 
@@ -767,6 +775,35 @@ void ShowFileOpenDialog(HWND hWnd)
 
     // Display the Open dialog box.
     GetOpenFileName(&ofn);
+}
+
+void Show_ChooseFont_Dialog(HWND hwndOwner)
+{
+	WCHAR info[200] = {};
+	CHOOSEFONT cf = { sizeof(CHOOSEFONT) };
+	LOGFONT lf = {};        // logical font structure
+	HFONT hfont, hfontPrev;
+	DWORD rgbPrev;
+
+	cf.hwndOwner = hwndOwner;
+	cf.lpLogFont = &lf;
+	cf.Flags = CF_FIXEDPITCHONLY | CF_EFFECTS;
+	if (ChooseFont(&cf) == TRUE)
+	{
+		StringCchPrintfW(info, ARRAYSIZE(info),
+			L"ChooseFont returned .iPointSize=%d , .lpLogFont.lfHeight=%d", 
+			cf.iPointSize,
+			cf.lpLogFont->lfHeight);
+		MessageBox(hwndOwner, info, L"Info", MB_OK);
+	}
+	else
+	{
+		DWORD winerr = CommDlgExtendedError(); // If cancel dialog, winerr==0.
+		if (winerr)
+		{
+			MessageBox(hwndOwner, L"ChooseFont() fail!", L"Error", MB_OK);
+		}
+	}
 }
 
 // The dialog procedure for the sample host window
