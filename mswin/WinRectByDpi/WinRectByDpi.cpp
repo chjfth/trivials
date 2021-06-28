@@ -149,6 +149,16 @@ const WCHAR *get_result(DWMNCRENDERINGPOLICY render)
 		{
 			MessageBoxW(NULL, L"DwmSetWindowAttribute(DWMWA_NCRENDERING_POLICY) fails!", L"Error", MB_OK);
 		}
+
+		// test code >>>
+		DWMNCRENDERINGPOLICY opolicy = DWMNCRP_USEWINDOWSTYLE;
+		HRESULT hrt = DwmGetWindowAttribute(hwnd, DWMWA_NCRENDERING_POLICY, &opolicy, sizeof(opolicy));
+		// this always fail with E_INVALIDARG(0X80070057), probably DWMWA_NCRENDERING_POLICY can only be Set, but not Get.
+
+		BOOL enabled = 0;
+		hrt = DwmGetWindowAttribute(hwnd, DWMWA_NCRENDERING_ENABLED, &enabled, sizeof(BOOL));
+		// -- this is ok
+		// test code <<<
 	}
 	
     return g_szedit;
