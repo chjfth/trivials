@@ -45,6 +45,7 @@ TCHAR eoutput[MAX_PATH];
 
 enum BufSmallRet_et // Ret trait when buffer small
 {
+	BSR_Neg1 = -1,
 	BSR_Zero = 0,
 	BSR_Usersize,
 	BSR_UsersizeLess1,
@@ -84,6 +85,9 @@ struct ApiTrait_et
 BufSmallRet_et BufSmallRet_conclude(int user_size, int eret_size, const TCHAR *soutput)
 {
 	int total_size = _tcslen(soutput);
+
+	if(eret_size==-1)
+		return BSR_Neg1;
 
 	if(eret_size==total_size)
 		return BSR_Total;
@@ -174,6 +178,8 @@ void ReportTraits(const TCHAR *apiname,
 	t.bs_ret = BufSmallRet_conclude(user_size, eret_size, soutput);
 	switch(t.bs_ret)
 	{
+	case BSR_Neg1: 
+		Prn(_T("-1")); break;
 	case BSR_Zero: 
 		Prn(_T("Zero")); break;
 	case BSR_Usersize: 
@@ -233,6 +239,17 @@ void ReportTraits(const TCHAR *apiname,
 } while(0)
 
 #define REPORT_API_TRAITS(apiname) REPORT_API_TRAITS_s(_T(#apiname))
+
+void see_snprintf()
+{
+	RESET_OUTPUT;
+	errno = 0; // Refer to `errno`, bcz _snprintf is CRT
+	const TCHAR *input = _T("0123456789");
+	sret = _sntprintf_s(soutput, MAX_PATH,       _T("%s"), input);
+	eret = _sntprintf_s(eoutput, SMALL_Usersize, _T("%s"), input);
+	winerr = errno;
+	REPORT_API_TRAITS(_snprintf_s);
+}
 
 void see_GetKeyNameText()
 {
@@ -422,6 +439,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	Prn(_T("WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet\n"));
 
+	see_snprintf();
+
 	see_GetKeyNameText();
 	see_GetClassName();
 
@@ -449,4 +468,3 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	return 0;
 }
-
