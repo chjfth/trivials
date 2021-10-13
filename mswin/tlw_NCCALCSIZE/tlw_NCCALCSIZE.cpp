@@ -2,11 +2,12 @@
    HELLOWIN.C -- Displays "Hello, Windows 98!" in client area
 				 (c) Charles Petzold, 1998
 				 
-   HelloWin.cpp -- A bit modification for easier debugging.
-				-- by Jimm Chen
+   tlw_NCCALCSIZE.cpp 
+   		-- A bit modification for easier debugging.
+		-- by Jimm Chen
    Compile it with command line in Visual C++ 2010+:
    
-cl HelloWin.cpp /Od /MT /Zi /D_DEBUG /D_UNICODE /DUNICODE /link /debug kernel32.lib user32.lib gdi32.lib 
+cl tlw_NCCALCSIZE.cpp /Od /MT /Zi /D_DEBUG /D_UNICODE /DUNICODE /link /debug kernel32.lib user32.lib gdi32.lib 
 
    Then we can load it into Visual C++ debugger.
   ------------------------------------------------------------*/
@@ -112,7 +113,36 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		EndPaint (hwnd, &ps) ;
 		return 0 ;
-	}  
+	}
+	
+	case WM_NCCALCSIZE:
+	{
+		LRESULT lr = 0;
+		NCCALCSIZE_PARAMS *pNccs = (NCCALCSIZE_PARAMS*)lParam;
+
+		if(wParam==0) // first WM_NCCALCSIZE callback
+		{
+			RECT ircClient = *(RECT*)lParam;
+			RECT &orcClient = *(RECT*)lParam;
+
+			LRESULT lr = DefWindowProc(hwnd, message, wParam, lParam);
+			return lr;
+		}
+		else // second and later WM_NCCALCSIZE callback
+		{
+			//  Give names to these things
+			RECT ircWndPosNow = pNccs->rgrc[0]; // input naming, rela-to hWnd's parent
+			RECT ircWndPosWas = pNccs->rgrc[1]; // input naming, rela-to hWnd's parent
+			RECT ircClientAreasWas = pNccs->rgrc[2]; // input naming, rela-to hWnd's parent
+			//
+			RECT &orcClientNew = pNccs->rgrc[0]; // output naming, rela-to hWnd's parent
+			RECT &orcValidDst  = pNccs->rgrc[1]; // output naming, rela-to hWnd's parent
+			RECT &orcValidSrc  = pNccs->rgrc[2]; // output naming, rela-to hWnd's parent
+
+			lr = DefWindowProc(hwnd, message, wParam, lParam);
+			return lr;
+		}
+	}
 	
 	case WM_DESTROY:
 	{
