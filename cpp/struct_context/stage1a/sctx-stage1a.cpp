@@ -1,3 +1,6 @@
+/*
+	Note: This code snippet is not compilable.
+*/
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,23 +20,14 @@ struct SBcontext2 {
 	int userb2;
 };
 
-DEFINE_CONTEXT_SETTER(SAcontext_set, SA, SAcontext)
-DEFINE_CONTEXT_GETTER(SAcontext_get, SA, SAcontext)
-
-DEFINE_CONTEXT_SETTER(SBcontext1_set, SB, SBcontext1)
-DEFINE_CONTEXT_GETTER(SBcontext1_get, SB, SBcontext1)
-
-DEFINE_CONTEXT_SETTER(SBcontext2_set, SB, SBcontext2)
-DEFINE_CONTEXT_GETTER(SBcontext2_get, SB, SBcontext2)
-
 int main(int argc, char* argv[])
 {
 	SA aobj = {1};
 	SAcontext actx = {100};
 	
-	SAcontext_set(&aobj, &actx);
+	ContextSet(&aobj, &actx);
 
-	SAcontext *pactx = SAcontext_get(&aobj);
+	SAcontext *pactx = ContextGet(&aobj); // compile error, my wrong idea
 	assert(pactx==&actx);
 
 	//// 

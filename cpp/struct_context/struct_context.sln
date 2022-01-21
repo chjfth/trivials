@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sctx-stage1", "stage1\sctx-stage1.vcxproj", "{20220121-0000-0000-0000-082038000001}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sctx-stage2", "stage2\sctx-stage2.vcxproj", "{20220121-0000-0000-0000-082038000002}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sctx-stage1a", "stage1a\sctx-stage1a.vcxproj", "{20220121-0000-0000-0000-08203800001A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +23,22 @@ Global
 		{20220121-0000-0000-0000-082038000001}.Release|Win32.Build.0 = Release|Win32
 		{20220121-0000-0000-0000-082038000001}.Release|x64.ActiveCfg = Release|x64
 		{20220121-0000-0000-0000-082038000001}.Release|x64.Build.0 = Release|x64
+		{20220121-0000-0000-0000-082038000002}.Debug|Win32.ActiveCfg = Debug|Win32
+		{20220121-0000-0000-0000-082038000002}.Debug|Win32.Build.0 = Debug|Win32
+		{20220121-0000-0000-0000-082038000002}.Debug|x64.ActiveCfg = Debug|x64
+		{20220121-0000-0000-0000-082038000002}.Debug|x64.Build.0 = Debug|x64
+		{20220121-0000-0000-0000-082038000002}.Release|Win32.ActiveCfg = Release|Win32
+		{20220121-0000-0000-0000-082038000002}.Release|Win32.Build.0 = Release|Win32
+		{20220121-0000-0000-0000-082038000002}.Release|x64.ActiveCfg = Release|x64
+		{20220121-0000-0000-0000-082038000002}.Release|x64.Build.0 = Release|x64
+		{20220121-0000-0000-0000-08203800001A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{20220121-0000-0000-0000-08203800001A}.Debug|Win32.Build.0 = Debug|Win32
+		{20220121-0000-0000-0000-08203800001A}.Debug|x64.ActiveCfg = Debug|x64
+		{20220121-0000-0000-0000-08203800001A}.Debug|x64.Build.0 = Debug|x64
+		{20220121-0000-0000-0000-08203800001A}.Release|Win32.ActiveCfg = Release|Win32
+		{20220121-0000-0000-0000-08203800001A}.Release|Win32.Build.0 = Release|Win32
+		{20220121-0000-0000-0000-08203800001A}.Release|x64.ActiveCfg = Release|x64
+		{20220121-0000-0000-0000-08203800001A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
