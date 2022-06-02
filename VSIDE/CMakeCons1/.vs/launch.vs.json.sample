@@ -1,0 +1,72 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+    "configurations": [
+        {
+            "type": "cppgdb",
+            "name": "GDB with params",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeCons1",
+            "comment": "Learn how to configure remote debugging. For more info, see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdb",
+            "args": [ "param1", "param two" ],
+            "env": { "MYVAL": "via GDBserver" }
+        },
+        {
+            "type": "cppgdb",
+            "name": "GDBserver with params",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeCons1",
+            "comment": "Learn how to configure remote debugging. For more info, see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdbserver",
+            "args": [ "param1", "param two" ],
+            "env": { "MYVAL": "via GDBserver" }
+        },
+
+        {
+            "type": "cppgdb",
+            "name": "GDB on 10.22.3.45",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeCons1",
+            "comment": "Learn how to configure remote debugging. For more info, see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdb",
+            "remoteMachineName": "445329743;10.22.3.45 (username=chj2, port=22, authentication=Password)",
+            "args": [ "congrats", "cross debugging" ],
+            "env": { "MYVAL": "GDB .3.45" }
+        },
+        {
+            "type": "cppgdb",
+            "name": "GDBserver on 10.22.3.45",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeCons1",
+            "comment": "Learn how to configure remote debugging. For more info, see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdbserver",
+            "remoteMachineName": "445329743;10.22.3.45 (username=chj2, port=22, authentication=Password)",
+            "args": [ "congrats", "cross debugging" ],
+            "env": { "MYVAL": "GDBserver .3.45" }
+        },
+
+        {
+            "type": "cppgdb",
+            "name": "GDB on RPI4",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeCons1",
+            "comment": "Learn how to configure remote debugging. For more info, see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdb",
+            "remoteMachineName": "1409985463;RPI4 (username=chj2, port=22, authentication=Password)",
+            "args": [ "congrats", "ARM64 cross debugging" ],
+            "env": { "MYVAL": "GDB of RPI4" }
+        },
+        {
+            "type": "cppgdb",
+            "name": "GDBserver on RPI4",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeCons1",
+            "comment": "Learn how to configure remote debugging. For more info, see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdbserver",
+            "remoteMachineName": "1409985463;RPI4 (username=chj2, port=22, authentication=Password)",
+            "args": [ "congrats", "ARM64 cross debugging" ],
+            "env": { "MYVAL": "GDBserver of RPI4" }
+        }
+    ]
+}
