@@ -29,7 +29,7 @@
             "name": "Use GDBserver on Ub22cppdev",
             "project": "CMakeLists.txt",
             "projectTarget": "CMakeConse",
-            "comment": "Learn ... see http://aka.ms/vslinuxdebug",
+            "comment": "Learn how to configure remote debugging. For more info, see http://aka.ms/vslinuxdebug",
             "remoteMachineName": "1983765773;Ub22cppdev (username=, port=22, authentication=Password)",
             "debuggerConfiguration": "gdbserver",
             "args": [ "Param1", "Param two" ],
