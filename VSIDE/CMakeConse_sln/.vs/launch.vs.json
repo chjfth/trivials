@@ -3,6 +3,14 @@
   "defaults": {},
     "configurations": [
 
+	    {
+	      "type": "native",
+	      "name": "Run win exe with two args",
+	      "project": "CMakeLists.txt",
+	      "projectTarget": "",
+	      "args": [ "winarg1", "Win Arg2" ]
+	    },
+
         {
             "type": "cppgdb",
             "name": "Use GDB on Debuggee machine",
