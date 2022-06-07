@@ -1,0 +1,40 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+    "configurations": [
+
+        {
+            "type": "cppgdb",
+            "name": "Use GDB on Debuggee machine",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeConse",
+            "comment": "Learn ... see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdb",
+            "args": [ "Pm1", "Pm two" ],
+            "env": {}
+        },
+        {
+            "type": "cppgdb",
+            "name": "Use GDBserver on Debuggee machine",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeConse",
+            "comment": "Learn ... see http://aka.ms/vslinuxdebug",
+            "debuggerConfiguration": "gdbserver",
+            "args": [ "param1", "param two" ],
+            "env": {}
+        },
+
+        {
+            "type": "cppgdb",
+            "name": "Use GDBserver on Ub22cppdev",
+            "project": "CMakeLists.txt",
+            "projectTarget": "CMakeConse",
+            "comment": "Learn ... see http://aka.ms/vslinuxdebug",
+            "remoteMachineName": "1983765773;Ub22cppdev (username=, port=22, authentication=Password)",
+            "debuggerConfiguration": "gdbserver",
+            "args": [ "Param1", "Param two" ],
+            "env": {}
+        }
+
+    ]
+}
