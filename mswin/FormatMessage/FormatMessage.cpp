@@ -93,9 +93,9 @@ void tests_flag_FROM_STRING()
 		);  //                            %-*.*s
 
 	test_flag_FROM_STRING(
-		_T("Shrink to 5 chars [12345]"),
-		_T("Shrink to 5 chars [%1!*.*s!]"), 5, 5, _T("123456")
-		); //                  %*.*s
+		_T("Shrink+Extend [  123][22334455]"),
+		_T("Shrink+Extend [%1!*.*s!][%3!x!]"), 5,3, _T("1234"), 0x22334455
+		); //              %*.*s
 
 	test_flag_FROM_STRING(
 		_T("Format from numbers 510==0x01FE"),
@@ -125,11 +125,21 @@ void test_flag_ARGUMENT_ARRAY(
 
 void tests_flag_ARGUMENT_ARRAY()
 {
-	DWORD_PTR pargs[] = {-123, (DWORD_PTR)_T("ABC")};
+	DWORD_PTR pargs1[] = {-123, (DWORD_PTR)_T("ABC")};
 	test_flag_ARGUMENT_ARRAY(
 		_T("A 32-bit number -123 and a string ABC"),
-		_T("A 32-bit number %1!d! and a string %2"), pargs
+		_T("A 32-bit number %1!d! and a string %2"), pargs1
 		);
+
+	// Now the example from MSDN:
+	DWORD_PTR pArgs2[] = { 
+		4, 2, (DWORD_PTR)L"Bill",  // %1!*.*s! refers back to the first insertion string in pMessage
+		(DWORD_PTR)L"Bob",         // %4 refers back to the second insertion string in pMessage
+		6, (DWORD_PTR)L"Bill" };   // %5!*s! refers back to the third insertion string in pMessage
+	test_flag_ARGUMENT_ARRAY( 
+		_T("  Bi Bob   Bill"),
+		_T("%1!*.*s! %4 %5!*s!"), pArgs2
+		);		
 }
 
 void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
