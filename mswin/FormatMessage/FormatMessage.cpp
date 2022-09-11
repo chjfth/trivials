@@ -151,8 +151,15 @@ void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
 
 	va_end(args);
 
-	_tprintf(_T("hmodule=0x%X, msgid=%d, langid=0x%04X :\n"),
-		hmodule, msgid, langid);
+	TCHAR szLang[40]=_T("?");
+	
+	if(langid!=0)
+	{
+		GetLocaleInfo(langid, LOCALE_SLOCALIZEDDISPLAYNAME, szLang, ARRAYSIZE(szLang));
+	}
+
+	_tprintf(_T("hmodule=0x%X, msgid=%d, langid=0x%04X [%s]:\n"),
+		hmodule, msgid, langid, szLang);
 	if(retchars>0)
 	{
 		_tprintf(_T("%s\n"), textbuf);
@@ -167,8 +174,10 @@ void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
 
 void tests_MessageFromModule()
 {
-	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0);
-	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0419); // Russian
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0409); // English.
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0804); // Chinese simplified.
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0419); // Russian, this will fail
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0); // auto-select
 }
 
 int _tmain(int argc, TCHAR* argv[])

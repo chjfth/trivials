@@ -151,10 +151,11 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="0409.rc" />
+    <ResourceCompile Include="0804.rc" />
   </ItemGroup>
 
   <ItemGroup>
-    <CustomBuild Include="mc-UTF16-noBOM\0409.mc">
+    <CustomBuild Include="mc-UTF16-noBOM\0409.mc;mc-UTF16-noBOM\0804.mc">
       <FileType>Document</FileType>
       <now_stemname>$([System.IO.Path]::GetFileNameWithoutExtension( %(Identity) ))</now_stemname>
       <Command>@REM .bat content below:
