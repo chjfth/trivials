@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <!-- Win32(x86) -->
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug ANSI|Win32">
+      <Configuration>Debug ANSI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release ANSI|Win32">
+      <Configuration>Release ANSI</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <!-- x64 -->
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug ANSI|x64">
+      <Configuration>Debug ANSI</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release ANSI|x64">
+      <Configuration>Release ANSI</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <!-- User project properties -->
+  <PropertyGroup Label="Configuration">
+    <ProjectGuid>{CCCCCCCC-0000-0000-0000-202209220001}</ProjectGuid>
+    <ProjectName>0404</ProjectName>
+    <TargetName>0404</TargetName>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+  </PropertyGroup>
+  <!-- Debug or Release -->
+  <PropertyGroup Condition=" $(Configuration.StartsWith('Debug'))" Label="Configuration">
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="!$(Configuration.StartsWith('Debug'))" Label="Configuration">
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <!-- note: WholeProgramOptimization=true causes `dumpbin /linkermember:1 xxx.lib` to output nothing. -->
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+  </PropertyGroup>
+  <!-- Unicode or ANSI(MBCS) -->
+  <PropertyGroup Condition="!$(Configuration.Contains('ANSI'))" Label="Configuration">
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(Configuration.Contains('ANSI'))" Label="Configuration">
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <!---->
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <!-- Better .obj/.exe/.pdb output folder structure -->
+  <PropertyGroup>
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(ProjectDir)obj-$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin-$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <!-- 
+  	Compiler/Linker Behavior Settings : shared 
+  -->
+  <ItemDefinitionGroup>
+    <Link>
+      <NoEntryPoint>true</NoEntryPoint>
+    </Link>
+    <!-- Better build.log file naming -->
+    <BuildLog>
+      <Path>$(IntDir)__$(MSBuildProjectName).build.log</Path>
+    </BuildLog>
+  </ItemDefinitionGroup>
+  <!-- 
+  	Compiler Behavior Settings : Debug 
+  -->
+  <ItemDefinitionGroup Condition=" $(Configuration.StartsWith('Debug'))">
+    <Link>
+    </Link>
+  </ItemDefinitionGroup>
+  <!-- 
+  	Compiler Behavior Settings : Release 
+  -->
+  <ItemDefinitionGroup Condition="!$(Configuration.StartsWith('Debug'))">
+    <Link>
+    </Link>
+  </ItemDefinitionGroup>
+  <!-- 
+    Source file list:
+   -->
+  <ItemGroup>
+    <ResourceCompile Include="0404.rc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <CustomBuild Include="mc-UTF16-noBOM\0404.mc">
+      <FileType>Document</FileType>
+      <now_stemname>$([System.IO.Path]::GetFileNameWithoutExtension( %(Identity) ))</now_stemname>
+      <Command>@REM .bat content below:
+set execmd=mc.exe -u %(Identity)
+echo %execmd%
+%execmd%
+if errorlevel 1 exit /b 4
+      </Command>
+      <Outputs>$(ProjectDir)%(now_stemname).rc</Outputs>
+      <Message>Message-compiling "%(Identity)" to "$(ProjectDir)%(now_stemname).rc" ...</Message>
+    </CustomBuild>
+  </ItemGroup>
+
+  <!-- MSBuild system stock Cpp.targets -->
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  
+  <!-- import VSPG start -->
+  <PropertyGroup>
+    <VSPG_BootsDir_NoTBS>..\_VSPG\boots</VSPG_BootsDir_NoTBS>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" />
+  </ImportGroup>
+  <!-- import VSPG end -->
+</Project>

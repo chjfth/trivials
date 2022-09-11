@@ -175,9 +175,19 @@ void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
 void tests_MessageFromModule()
 {
 	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0409); // English.
-	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0804); // Chinese simplified.
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0804); // Simplified-Chinese.
 	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0419); // Russian, this will fail
 	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0); // auto-select
+
+	HMODULE hDll = LoadLibrary(_T("0404.dll")); // the Traditional-Chinese resource dll
+	if(!hDll){
+		_tprintf(_T("LoadLibrary(\"0404.dll\") fail!"));
+		return;
+	}
+
+	test_MessageFromModule(hDll, MSG_DengGuanQueLou, 0x0404);
+
+	FreeLibrary(hDll);
 }
 
 int _tmain(int argc, TCHAR* argv[])
