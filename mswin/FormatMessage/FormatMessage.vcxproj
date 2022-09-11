@@ -153,6 +153,21 @@
     <ResourceCompile Include="0409.rc" />
   </ItemGroup>
 
+  <ItemGroup>
+    <CustomBuild Include="mc-UTF16-noBOM\0409.mc">
+      <FileType>Document</FileType>
+      <now_stemname>$([System.IO.Path]::GetFileNameWithoutExtension( %(Identity) ))</now_stemname>
+      <Command>@REM .bat content below:
+set execmd=mc.exe -u %(Identity)
+echo %execmd%
+%execmd%
+if errorlevel 1 exit /b 4
+      </Command>
+      <Outputs>$(ProjectDir)%(now_stemname).rc</Outputs>
+      <Message>Message-compiling "%(Identity)" to "$(ProjectDir)%(now_stemname).rc" ...</Message>
+    </CustomBuild>
+  </ItemGroup>
+
   <!-- MSBuild system stock Cpp.targets -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
