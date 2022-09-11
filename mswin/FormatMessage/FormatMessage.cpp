@@ -177,7 +177,7 @@ void tests_MessageFromModule()
 	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0409); // English.
 	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0804); // Simplified-Chinese.
 	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0419); // Russian, this will fail
-	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0); // auto-select
+	test_MessageFromModule(NULL, MSG_ChunXiao, 0); // auto-select
 
 	HMODULE hDll = LoadLibrary(_T("0404.dll")); // the Traditional-Chinese resource dll
 	if(!hDll){
@@ -188,6 +188,54 @@ void tests_MessageFromModule()
 	test_MessageFromModule(hDll, MSG_DengGuanQueLou, 0x0404);
 
 	FreeLibrary(hDll);
+}
+
+void test_flag_IGNORE_INSERTS(HMODULE hmodule, DWORD msgid, DWORD langid)
+{
+	TCHAR textbuf[200] = {};
+
+	int retchars = FormatMessage(
+		FORMAT_MESSAGE_FROM_HMODULE|FORMAT_MESSAGE_IGNORE_INSERTS,
+		hmodule, // lpSource£¬ NULL means from current EXE
+		msgid, // dwMessageId
+		langid,  // dwLanguageId
+		textbuf, ARRAYSIZE(textbuf),
+		NULL);
+
+	assert(retchars>0);
+	_tprintf(_T("FORMAT_MESSAGE_IGNORE_INSERTS got:\n  %s\n"), textbuf);
+
+	assert_equal(_T("LocalDate is %1!04d!-%2!02d!-%2!02d!\r\n"), textbuf);
+}
+
+void test_expand_DATE(HMODULE hmodule, DWORD msgid, DWORD langid, 
+	int year, int month , int day)
+{
+	(void)year, (void)month, (void)day; // they will be presented in va_list.
+	TCHAR textbuf[200] = {};
+
+	va_list args;
+	va_start(args, langid);
+
+	int retchars = FormatMessage(FORMAT_MESSAGE_FROM_HMODULE, 
+		hmodule, msgid, langid, 
+		textbuf, ARRAYSIZE(textbuf), &args);
+
+	assert(retchars>0);
+	_tprintf(_T("test_expand_INSERTS() got:\n  %s\n"), textbuf);
+
+	va_end(args);
+}
+
+void tests_flag_IGNORE_INSERTS()
+{
+	test_flag_IGNORE_INSERTS(NULL, MSG_LocalDate, 0);
+
+	SYSTEMTIME st = {};
+	GetLocalTime(&st);
+	test_expand_DATE(NULL, MSG_LocalDate, 0, 
+		st.wYear, st.wMonth, st.wDay);
+
 }
 
 int _tmain(int argc, TCHAR* argv[])
@@ -206,6 +254,7 @@ int _tmain(int argc, TCHAR* argv[])
 	tests_MessageFromModule();
 	_tprintf(_T("\n"));
 
+	tests_flag_IGNORE_INSERTS();
+
 	return 0;
 }
-
