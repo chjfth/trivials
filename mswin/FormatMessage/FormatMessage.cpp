@@ -7,6 +7,8 @@
 #include <tchar.h>
 #include <locale.h>
 
+#include "0409.h"
+
 void assert_equal(const TCHAR *s1correct, const TCHAR *s2tocheck)
 {
 	static int s_count = 0;
@@ -22,6 +24,26 @@ void assert_equal(const TCHAR *s1correct, const TCHAR *s2tocheck)
 	assert( _tcscmp(s1correct, s2tocheck)==0 );
 }
 
+const TCHAR *get_winerr_string(DWORD winerr)
+{
+	static TCHAR s_errstr[400];
+	s_errstr[0] = 0;
+
+	DWORD retchars = FormatMessage(
+		FORMAT_MESSAGE_FROM_SYSTEM, 
+		NULL,   // lpSource
+		winerr, // dwMessageId
+		0,		// dwLanguageId
+		s_errstr, ARRAYSIZE(s_errstr),
+		NULL); // A trailing \r\n has been filled.
+
+	if(retchars==0) // error
+	{
+		_sntprintf_s(s_errstr, _TRUNCATE, _T("Unknown Windows error code: %u"), winerr);
+	}
+
+	return s_errstr;
+}
 
 void test_flag_FROM_STRING(
 	const TCHAR *sz_verify_result,
@@ -110,16 +132,59 @@ void tests_flag_ARGUMENT_ARRAY()
 		);
 }
 
+void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
+{
+	// ERROR_RESOURCE_TYPE_NOT_FOUND    1813L
+
+	TCHAR textbuf[200];
+	va_list args;
+	va_start(args, langid);
+
+	int retchars = FormatMessage(
+		FORMAT_MESSAGE_FROM_HMODULE, 
+		hmodule, // lpSource: the HMODULE of an EXE or DLL
+		msgid,   // dwMessageId
+		langid,  // dwLanguageId, 0 to auto-select
+		textbuf, 
+		ARRAYSIZE(textbuf),
+		(va_list*)&args);
+
+	va_end(args);
+
+	_tprintf(_T("hmodule=0x%X, msgid=%d, langid=0x%04X :\n"),
+		hmodule, msgid, langid);
+	if(retchars>0)
+	{
+		_tprintf(_T("%s\n"), textbuf);
+	}
+	else
+	{
+		DWORD winerr = GetLastError();
+		_tprintf(_T("FormateMessage() fail. WinErr=%d, %s\n"), 
+			winerr, get_winerr_string(winerr));
+	}
+}
+
+void tests_MessageFromModule()
+{
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0);
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0419); // Russian
+}
+
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
 	
-	_tprintf(_T("Test flag: FORMAT_MESSAGE_FROM_STRING\n"));
+	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_FROM_STRING\n"));
 	tests_flag_FROM_STRING();
 	_tprintf(_T("\n"));
 
-	_tprintf(_T("Test flag: FORMAT_MESSAGE_ARGUMENT_ARRAY\n"));
+	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_ARGUMENT_ARRAY\n"));
 	tests_flag_ARGUMENT_ARRAY();
+	_tprintf(_T("\n"));
+
+	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_FROM_HMODULE\n"));
+	tests_MessageFromModule();
 	_tprintf(_T("\n"));
 
 	return 0;

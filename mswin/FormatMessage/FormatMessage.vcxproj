@@ -149,6 +149,9 @@
   <ItemGroup>
     <ClCompile Include="FormatMessage.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="0409.rc" />
+  </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
@@ -156,13 +159,11 @@
   </ImportGroup>
 
   <!-- import VSPG start -->
-                                        <!-- 
   <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>$(SolutionDir)_VSPG\boots</VSPG_BootsDir_NoTBS>
+    <VSPG_BootsDir_NoTBS>..\_VSPG\boots</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" />
   </ImportGroup>
-                                        -->
   <!-- import VSPG end -->
 </Project>
