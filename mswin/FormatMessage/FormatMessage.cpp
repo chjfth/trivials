@@ -205,7 +205,7 @@ void test_flag_IGNORE_INSERTS(HMODULE hmodule, DWORD msgid, DWORD langid)
 	assert(retchars>0);
 	_tprintf(_T("FORMAT_MESSAGE_IGNORE_INSERTS got:\n  %s\n"), textbuf);
 
-	assert_equal(_T("LocalDate is %1!04d!-%2!02d!-%2!02d!\r\n"), textbuf);
+	assert_equal(_T("LocalDate is %1!04d!-%2!02d!-%3!02d!\r\n"), textbuf);
 }
 
 void test_expand_DATE(HMODULE hmodule, DWORD msgid, DWORD langid, 
