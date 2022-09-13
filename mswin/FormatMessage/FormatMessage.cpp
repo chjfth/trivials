@@ -1,5 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <shlwapi.h>
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +10,8 @@
 
 #include "0409.h"
 #include "0411.h"
+
+#define VERSION _T("1.2")
 
 // For the following 3, please/must keep them in accordance with those in .mc files.
 #ifndef MSG_en_US_only
@@ -47,7 +50,7 @@ const TCHAR *get_winerr_string(DWORD winerr)
 	s_errstr[0] = 0;
 
 	DWORD retchars = FormatMessage(
-		FORMAT_MESSAGE_FROM_SYSTEM, 
+		FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS, 
 		NULL,   // lpSource
 		winerr, // dwMessageId
 		0,		// dwLanguageId
@@ -57,6 +60,10 @@ const TCHAR *get_winerr_string(DWORD winerr)
 	if(retchars==0) // error
 	{
 		_sntprintf_s(s_errstr, _TRUNCATE, _T("Unknown Windows error code: %u"), winerr);
+	}
+	else
+	{
+		StrTrim(s_errstr, _T("\r\n"));
 	}
 
 	return s_errstr;
@@ -295,7 +302,7 @@ void test_LangID_auto_select()
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
-	_tprintf(_T("WinAPI FormatMessage demo, v1.1\n"));
+	_tprintf(_T("WinAPI FormatMessage demo, v%s\n"), VERSION);
 	
 	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_FROM_STRING\n"));
 	tests_flag_FROM_STRING();
