@@ -11,7 +11,9 @@
 #include "0409.h"
 #include "0411.h"
 
-#define VERSION _T("1.2")
+#ifndef VERSION
+#define VERSION _T("1.3")
+#endif
 
 // For the following 3, please/must keep them in accordance with those in .mc files.
 #ifndef MSG_en_US_only
@@ -22,7 +24,7 @@
 
 ////////
 
-#define LANGID_AutoSelect 0
+#define LANGID_Neutral 0
 #define LANGID_en_US 0x0409
 #define LANGID_zh_CN 0x0804
 #define LANGID_zh_TW 0x0404
@@ -178,14 +180,14 @@ void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
 		FORMAT_MESSAGE_FROM_HMODULE, 
 		hmodule, // lpSource: the HMODULE of an EXE or DLL
 		msgid,   // dwMessageId
-		langid,  // dwLanguageId, 0 to auto-select
+		langid,  // dwLanguageId, 0=Neutral
 		textbuf, 
 		ARRAYSIZE(textbuf),
 		(va_list*)&args);
 
 	va_end(args);
 
-	TCHAR szLang[40]=_T("0=Auto-select");
+	TCHAR szLang[40]=_T("0=Neutral");
 	
 	if(langid!=0)
 	{
@@ -277,26 +279,26 @@ void tests_flag_IGNORE_INSERTS()
 
 }
 
-void test_LangID_auto_select()
+void test_LangID_neutral()
 {
 	const int total = 4;
 
 	const DWORD msgid_all_have = 1002;
 	_tprintf(_T("[1/%d] Request MessageID=%u available in all of en-US,zh-CN,zh-TW\n"), 
 		total, msgid_all_have);
-	test_MessageFromModule(NULL, msgid_all_have, LANGID_AutoSelect);
+	test_MessageFromModule(NULL, msgid_all_have, LANGID_Neutral);
 
 	_tprintf(_T("[2/%d] Request MessageID=%u available in en-US only.\n"),
 		total, MSG_en_US_only);
-	test_MessageFromModule(NULL, MSG_en_US_only, LANGID_AutoSelect);
+	test_MessageFromModule(NULL, MSG_en_US_only, LANGID_Neutral);
 
 	_tprintf(_T("[3/%d] Request MessageID=%u available in zh-CN only.\n"),
 		total, MSG_zh_CN_only); 
-	test_MessageFromModule(NULL, MSG_zh_CN_only, LANGID_AutoSelect);
+	test_MessageFromModule(NULL, MSG_zh_CN_only, LANGID_Neutral);
 
 	_tprintf(_T("[4/%d] Request MessageID=%u available in zh-TW only.\n"),
 		total, MSG_zh_TW_only); 
-	test_MessageFromModule(NULL, MSG_zh_TW_only, LANGID_AutoSelect);
+	test_MessageFromModule(NULL, MSG_zh_TW_only, LANGID_Neutral);
 }
 
 int _tmain(int argc, TCHAR* argv[])
@@ -316,8 +318,8 @@ int _tmain(int argc, TCHAR* argv[])
 	tests_MessageFromModule();
 	_tprintf(_T("\n"));
 
-	_tprintf(_T("==== Test LangID auto-select.\n"));
-	test_LangID_auto_select();
+	_tprintf(_T("==== Test LangID Neutral(auto-select).\n"));
+	test_LangID_neutral();
 	_tprintf(_T("\n"));
 
 	tests_flag_IGNORE_INSERTS();
