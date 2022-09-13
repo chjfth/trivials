@@ -11,12 +11,15 @@
 #include "0411.h"
 
 // For the following 3, please/must keep them in accordance with those in .mc files.
+#ifndef MSG_en_US_only
 #define MSG_en_US_only 2000 
+#endif
 #define MSG_zh_CN_only 2001
 #define MSG_zh_TW_only 2002
 
 ////////
 
+#define LANGID_AutoSelect 0
 #define LANGID_en_US 0x0409
 #define LANGID_zh_CN 0x0804
 #define LANGID_zh_TW 0x0404
@@ -193,6 +196,7 @@ void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
 		DWORD winerr = GetLastError();
 		_tprintf(_T("FormatMessage() fail. WinErr=%d, %s\n"), 
 			winerr, get_winerr_string(winerr));
+		_tprintf(_T("\n"));
 	}
 }
 
@@ -216,8 +220,6 @@ void tests_MessageFromModule()
 	test_MessageFromModule(NULL, MSG_DengGuanQueLou, LANGID_ru_RU); // 0x0419 Russian, this will fail
 
 	test_MessageFromDll();
-
-	test_MessageFromModule(NULL, MSG_ChunXiao, 0); // LANGID=0: auto-select language
 }
 
 void test_flag_IGNORE_INSERTS(HMODULE hmodule, DWORD msgid, DWORD langid)
@@ -268,6 +270,28 @@ void tests_flag_IGNORE_INSERTS()
 
 }
 
+void test_LangID_auto_select()
+{
+	const int total = 4;
+
+	const DWORD msgid_all_have = 1002;
+	_tprintf(_T("[1/%d] Request MessageID=%u available in all of en-US,zh-CN,zh-TW\n"), 
+		total, msgid_all_have);
+	test_MessageFromModule(NULL, msgid_all_have, LANGID_AutoSelect);
+
+	_tprintf(_T("[2/%d] Request MessageID=%u available in en-US only.\n"),
+		total, MSG_en_US_only);
+	test_MessageFromModule(NULL, MSG_en_US_only, LANGID_AutoSelect);
+
+	_tprintf(_T("[3/%d] Request MessageID=%u available in zh-CN only.\n"),
+		total, MSG_zh_CN_only); 
+	test_MessageFromModule(NULL, MSG_zh_CN_only, LANGID_AutoSelect);
+
+	_tprintf(_T("[4/%d] Request MessageID=%u available in zh-TW only.\n"),
+		total, MSG_zh_TW_only); 
+	test_MessageFromModule(NULL, MSG_zh_TW_only, LANGID_AutoSelect);
+}
+
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
@@ -283,6 +307,10 @@ int _tmain(int argc, TCHAR* argv[])
 
 	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_FROM_HMODULE\n"));
 	tests_MessageFromModule();
+	_tprintf(_T("\n"));
+
+	_tprintf(_T("==== Test LangID auto-select.\n"));
+	test_LangID_auto_select();
 	_tprintf(_T("\n"));
 
 	tests_flag_IGNORE_INSERTS();
