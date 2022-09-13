@@ -29,7 +29,7 @@
 
 ////////
 
-#define LANGID_Neutral 0
+#define LANGID_Neutral 0 // 0 = MAKELCID(MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL)
 #define LANGID_en_US 0x0409
 #define LANGID_zh_CN 0x0804
 #define LANGID_zh_TW 0x0404
