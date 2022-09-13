@@ -11,8 +11,12 @@
 #include "0409.h"
 #include "0411.h"
 
-#ifndef VERSION
 #define VERSION _T("1.3")
+
+#ifdef MY_USE_NEUTRAL
+#define VERSION_SUFFIX _T("n")
+#else
+#define VERSION_SUFFIX _T("")
 #endif
 
 // For the following 3, please/must keep them in accordance with those in .mc files.
@@ -21,6 +25,7 @@
 #endif
 #define MSG_zh_CN_only 2001
 #define MSG_zh_TW_only 2002
+#define MSG_neutral_only 2009
 
 ////////
 
@@ -281,7 +286,10 @@ void tests_flag_IGNORE_INSERTS()
 
 void test_LangID_neutral()
 {
-	const int total = 4;
+	int total = 4;
+#ifdef MY_USE_NEUTRAL
+	total += 1;
+#endif
 
 	const DWORD msgid_all_have = 1002;
 	_tprintf(_T("[1/%d] Request MessageID=%u available in all of en-US,zh-CN,zh-TW\n"), 
@@ -299,12 +307,18 @@ void test_LangID_neutral()
 	_tprintf(_T("[4/%d] Request MessageID=%u available in zh-TW only.\n"),
 		total, MSG_zh_TW_only); 
 	test_MessageFromModule(NULL, MSG_zh_TW_only, LANGID_Neutral);
+
+#ifdef MY_USE_NEUTRAL
+	_tprintf(_T("[5/%d] Request MessageID=%u available in NEUTRAL only.\n"),
+		total, MSG_neutral_only); 
+	test_MessageFromModule(NULL, MSG_neutral_only, LANGID_Neutral);
+#endif
 }
 
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
-	_tprintf(_T("WinAPI FormatMessage demo, v%s\n"), VERSION);
+	_tprintf(_T("WinAPI FormatMessage demo, v%s%s\n"), VERSION, VERSION_SUFFIX);
 	
 	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_FROM_STRING\n"));
 	tests_flag_FROM_STRING();
