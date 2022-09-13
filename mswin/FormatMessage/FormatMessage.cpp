@@ -8,6 +8,20 @@
 #include <locale.h>
 
 #include "0409.h"
+#include "0411.h"
+
+// For the following 3, please/must keep them in accordance with those in .mc files.
+#define MSG_en_US_only 2000 
+#define MSG_zh_CN_only 2001
+#define MSG_zh_TW_only 2002
+
+////////
+
+#define LANGID_en_US 0x0409
+#define LANGID_zh_CN 0x0804
+#define LANGID_zh_TW 0x0404
+#define LANGID_ja_JP 0x0411
+#define LANGID_ru_RU 0x0419
 
 void assert_equal(const TCHAR *s1correct, const TCHAR *s2tocheck)
 {
@@ -161,7 +175,7 @@ void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
 
 	va_end(args);
 
-	TCHAR szLang[40]=_T("?");
+	TCHAR szLang[40]=_T("0=Auto-select");
 	
 	if(langid!=0)
 	{
@@ -177,27 +191,33 @@ void test_MessageFromModule(HMODULE hmodule, DWORD msgid, DWORD langid, ...)
 	else
 	{
 		DWORD winerr = GetLastError();
-		_tprintf(_T("FormateMessage() fail. WinErr=%d, %s\n"), 
+		_tprintf(_T("FormatMessage() fail. WinErr=%d, %s\n"), 
 			winerr, get_winerr_string(winerr));
 	}
 }
 
-void tests_MessageFromModule()
+void test_MessageFromDll()
 {
-	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0409); // English.
-	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0804); // Simplified-Chinese.
-	test_MessageFromModule(NULL, MSG_DengGuanQueLou, 0x0419); // Russian, this will fail
-	test_MessageFromModule(NULL, MSG_ChunXiao, 0); // auto-select
-
-	HMODULE hDll = LoadLibrary(_T("0404.dll")); // the Traditional-Chinese resource dll
+	HMODULE hDll = LoadLibrary(_T("0411.dll")); // Japanese resource dll
 	if(!hDll){
-		_tprintf(_T("LoadLibrary(\"0404.dll\") fail!"));
+		_tprintf(_T("LoadLibrary(\"0411.dll\") fail!"));
 		return;
 	}
 
-	test_MessageFromModule(hDll, MSG_DengGuanQueLou, 0x0404);
+	test_MessageFromModule(hDll, MSG_JingYeSi, LANGID_ja_JP); // 0x0411
 
 	FreeLibrary(hDll);
+}
+
+void tests_MessageFromModule()
+{
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, LANGID_en_US); // 0x0409 English 
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, LANGID_zh_CN); // 0x0804 Simplified-Chinese.
+	test_MessageFromModule(NULL, MSG_DengGuanQueLou, LANGID_ru_RU); // 0x0419 Russian, this will fail
+
+	test_MessageFromDll();
+
+	test_MessageFromModule(NULL, MSG_ChunXiao, 0); // LANGID=0: auto-select language
 }
 
 void test_flag_IGNORE_INSERTS(HMODULE hmodule, DWORD msgid, DWORD langid)
@@ -239,11 +259,11 @@ void test_expand_DATE(HMODULE hmodule, DWORD msgid, DWORD langid,
 
 void tests_flag_IGNORE_INSERTS()
 {
-	test_flag_IGNORE_INSERTS(NULL, MSG_LocalDate, 0);
+	test_flag_IGNORE_INSERTS(NULL, MSG_LocalDate, LANGID_en_US);
 
 	SYSTEMTIME st = {};
 	GetLocalTime(&st);
-	test_expand_DATE(NULL, MSG_LocalDate, 0, 
+	test_expand_DATE(NULL, MSG_LocalDate, LANGID_en_US, 
 		st.wYear, st.wMonth, st.wDay);
 
 }
@@ -251,6 +271,7 @@ void tests_flag_IGNORE_INSERTS()
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
+	_tprintf(_T("WinAPI FormatMessage demo, v1.1\n"));
 	
 	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_FROM_STRING\n"));
 	tests_flag_FROM_STRING();

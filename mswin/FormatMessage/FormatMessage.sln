@@ -6,7 +6,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FormatMessage", "FormatMess
 		{CCCCCCCC-0000-0000-0000-202209220001} = {CCCCCCCC-0000-0000-0000-202209220001}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0404", "0404.vcxproj", "{CCCCCCCC-0000-0000-0000-202209220001}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0411", "0411.vcxproj", "{CCCCCCCC-0000-0000-0000-202209220001}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

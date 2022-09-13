@@ -40,8 +40,8 @@
   <!-- User project properties -->
   <PropertyGroup Label="Configuration">
     <ProjectGuid>{CCCCCCCC-0000-0000-0000-202209220001}</ProjectGuid>
-    <ProjectName>0404</ProjectName>
-    <TargetName>0404</TargetName>
+    <ProjectName>0411</ProjectName>
+    <TargetName>0411</TargetName>
     <ConfigurationType>DynamicLibrary</ConfigurationType>
   </PropertyGroup>
   <!-- Debug or Release -->
@@ -104,11 +104,11 @@
     Source file list:
    -->
   <ItemGroup>
-    <ResourceCompile Include="0404.rc" />
+    <ResourceCompile Include="0411.rc" />
   </ItemGroup>
 
   <ItemGroup>
-    <CustomBuild Include="mc-UTF16-noBOM\0404.mc">
+    <CustomBuild Include="mc-UTF16-noBOM\0411.mc">
       <FileType>Document</FileType>
       <now_stemname>$([System.IO.Path]::GetFileNameWithoutExtension( %(Identity) ))</now_stemname>
       <Command>@REM .bat content below:
