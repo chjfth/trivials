@@ -1,5 +1,5 @@
 /*------------------------------------------
-About2-threadlocale.cpp -- About Box Demo Program No. 2
+About2-muires.cpp -- About Box Demo Program No. 2
 ------------------------------------------*/
 
 #include <windows.h>
@@ -17,7 +17,7 @@ iCurrentFigure = IDC_RECT;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR szCmdLine, int iCmdShow)
 {
-	static TCHAR szAppName[] = TEXT("About2-threadlocale");
+	static TCHAR szAppName[] = TEXT("About2-muires");
 	MSG          msg;
 	HWND         hwnd;
 	WNDCLASS     wndclass;

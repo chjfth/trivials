@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
-// Used by About2-threadlocale.rc
+// Used by About2-muires.rc
 //
 #define IDC_BLACK                       1000
 #define IDC_BLUE                        1001

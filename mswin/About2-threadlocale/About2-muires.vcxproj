@@ -41,8 +41,8 @@
   
   <PropertyGroup Label="Configuration">
     <ProjectGuid>{20220914-0000-0000-0000-090839000001}</ProjectGuid>
-    <ProjectName>About2-threadlocale</ProjectName>
-     <TargetName>About2-threadlocale</TargetName>
+    <ProjectName>About2-muires</ProjectName>
+     <TargetName>About2-muires</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   
@@ -147,7 +147,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="About2-threadlocale.cpp" />
+    <ClCompile Include="About2-muires.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="0409.rc" />
@@ -155,7 +155,7 @@
     <ResourceCompile Include="0404.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="About2-threadlocale.ico" />
+    <None Include="About2-muires.ico" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
