@@ -1,0 +1,148 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+ABOUTBOX DIALOGEX 32, 32, 200, 234
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
+FONT 9, "Arial", 0, 0, 0x0
+BEGIN
+    ICON            "About2-threadlocale",IDC_STATIC,7,7,20,20
+    CTEXT           "About2-threadlocale",IDC_STATIC,57,12,86,8
+    CTEXT           "About Box 演示程序 (简体中文 rc 资源)",IDC_STATIC,7,40,186,8
+    LTEXT           "",IDC_PAINT,114,67,72,72
+    GROUPBOX        "颜色(&C)",IDC_STATIC,7,60,84,143
+    
+    RADIOBUTTON     "黑色(&B)",IDC_BLACK,16,76,64,8
+    RADIOBUTTON     "蓝色(&L)",IDC_BLUE,16,92,64,8
+    RADIOBUTTON     "绿色(&G)",IDC_GREEN,16,108,64,8
+    RADIOBUTTON     "青色(&n)",IDC_CYAN,16,124,64,8
+    RADIOBUTTON     "&红色(&R)",IDC_RED,16,140,64,8
+    RADIOBUTTON     "紫红色(&M)",IDC_MAGENTA,16,156,64,8
+    RADIOBUTTON     "黄色(&Y)",IDC_YELLOW,16,172,64,8
+    RADIOBUTTON     "白色(&W)",IDC_WHITE,16,188,64,8
+    
+	GROUPBOX        "形状(&F)",IDC_STATIC,109,156,84,46
+    RADIOBUTTON     "矩形(&t)",IDC_RECT,116,172,65,8
+    RADIOBUTTON     "椭圆形(&E)",IDC_ELLIPSE,116,188,64,8
+    
+	DEFPUSHBUTTON   "确定",IDOK,35,212,50,14,WS_GROUP
+    PUSHBUTTON      "取消",IDCANCEL,113,212,50,14,WS_GROUP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+About2-threadlocale               ICON                    "About2-threadlocale.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+About2-threadlocale MENU
+BEGIN
+    POPUP "帮助(&H)"
+    BEGIN
+        MENUITEM "关于(&A)",                      IDM_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    "ABOUTBOX", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 227
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+ABOUTBOX AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -16,6 +16,8 @@ iCurrentFigure = IDC_RECT;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR szCmdLine, int iCmdShow)
 {
+	LCID lcid = GetThreadLocale();
+
 	static TCHAR szAppName[] = TEXT("About2-threadlocale");
 	MSG          msg;
 	HWND         hwnd;

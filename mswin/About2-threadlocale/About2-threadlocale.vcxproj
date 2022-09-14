@@ -150,7 +150,9 @@
     <ClCompile Include="About2-threadlocale.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="About2-threadlocale.rc" />
+    <ResourceCompile Include="0409.rc" />
+    <ResourceCompile Include="0804.rc" />
+    <ResourceCompile Include="0404.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="About2-threadlocale.ico" />
