@@ -1,10 +1,11 @@
 /*------------------------------------------
-Original: About2-threadlocale.C -- About Box Demo Program No. 2
-           (c) Charles Petzold, 1998
+About2-threadlocale.cpp -- About Box Demo Program No. 2
 ------------------------------------------*/
 
 #include <windows.h>
 #include <windowsx.h>
+#include <tchar.h>
+#include <stdio.h>
 #include "resource.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -16,8 +17,6 @@ iCurrentFigure = IDC_RECT;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR szCmdLine, int iCmdShow)
 {
-	LCID lcid = GetThreadLocale();
-
 	static TCHAR szAppName[] = TEXT("About2-threadlocale");
 	MSG          msg;
 	HWND         hwnd;
@@ -41,7 +40,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-	hwnd = CreateWindow(szAppName, TEXT("About2-threadlocale"),
+	LCID lcid = GetThreadLocale();
+	TCHAR szThreadLocale[100]={};
+	_sntprintf_s(szThreadLocale, _TRUNCATE, _T("About2 - GetThreadLocale()=0x%04X"), lcid);
+
+	hwnd = CreateWindow(szAppName, szThreadLocale,
 		WS_OVERLAPPEDWINDOW,
 		400, 200, // CW_USEDEFAULT, CW_USEDEFAULT,
 		400, 200, // CW_USEDEFAULT, CW_USEDEFAULT,
