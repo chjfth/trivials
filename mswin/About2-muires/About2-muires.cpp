@@ -40,11 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 0;
 	}
 
-	LCID lcid = GetThreadLocale();
-	TCHAR szThreadLocale[100]={};
-	_sntprintf_s(szThreadLocale, _TRUNCATE, _T("About2 - GetThreadLocale()=0x%04X"), lcid);
-
-	hwnd = CreateWindow(szAppName, szThreadLocale,
+	hwnd = CreateWindow(szAppName, TEXT("About2 - with MUI .rc resource"),
 		WS_OVERLAPPEDWINDOW,
 		400, 200, // CW_USEDEFAULT, CW_USEDEFAULT,
 		400, 200, // CW_USEDEFAULT, CW_USEDEFAULT,
@@ -140,9 +136,9 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	static int  iColor, iFigure;
 
 	switch (message)
-	{
+	{{
 	case WM_INITDIALOG:
-		iColor = iCurrentColor;
+	{	iColor = iCurrentColor;
 		iFigure = iCurrentFigure;
 
 		CheckRadioButton(hDlg, IDC_BLACK, IDC_WHITE, iColor);
@@ -150,9 +146,17 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 
 		hCtrlBlock = GetDlgItem(hDlg, IDC_PAINT);
 
+		LCID lcid_thread = GetThreadLocale();
+		LCID lcid_ui = GetUserDefaultUILanguage();
+		TCHAR szThreadLocale[100]={};
+		_sntprintf_s(szThreadLocale, _TRUNCATE, 
+			_T("GetThreadLocale() = 0x%04X \nGetUserDefaultUILanguage() = 0x%04X"), 
+			lcid_thread, lcid_ui);
+		SetDlgItemText(hDlg, IDC_STATIC_LOCALE, szThreadLocale);
+
 		SetFocus(GetDlgItem(hDlg, iColor));
 		return FALSE;
-
+	}
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
@@ -191,6 +195,6 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	case WM_PAINT:
 		PaintTheBlock(hCtrlBlock, iColor, iFigure);
 		break;
-	}
+	}}
 	return FALSE;
 }

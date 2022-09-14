@@ -55,8 +55,8 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
 FONT 9, "Arial", 0, 0, 0x0
 BEGIN
     ICON            "About2-muires",IDC_STATIC,7,7,20,20
-    CTEXT           "About2-muires",IDC_STATIC,57,12,86,8
-    CTEXT           "About Box 範例程序 (繁體中文 rc 資源)",IDC_STATIC,7,40,186,8
+    LTEXT           "About2-muires",IDC_STATIC_LOCALE,40,12,140,18
+    CTEXT           "About Box 範例程序 (繁體中文 .rc 資源)",IDC_STATIC,7,40,186,8
     LTEXT           "",IDC_PAINT,114,67,72,72
     GROUPBOX        "顏色(&C)",IDC_STATIC,7,60,84,143
     
