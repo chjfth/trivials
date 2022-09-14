@@ -55,11 +55,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
     ICON            "About2-muires",IDC_STATIC,7,7,20,20
-    LTEXT           "About2-muires",IDC_STATIC_LOCALE,40,12,140,18
+    LTEXT           "Locale filled by code",IDC_STATIC_LOCALE,40,12,140,18
     CTEXT           "About Box Demo Program",IDC_STATIC,7,40,186,8
     LTEXT           "",IDC_PAINT,114,67,72,72
     GROUPBOX        "&Color",IDC_STATIC,7,60,84,143
-    
     RADIOBUTTON     "&Black",IDC_BLACK,16,76,64,8
     RADIOBUTTON     "B&lue",IDC_BLUE,16,92,64,8
     RADIOBUTTON     "&Green",IDC_GREEN,16,108,64,8
@@ -68,12 +67,10 @@ BEGIN
     RADIOBUTTON     "&Magenta",IDC_MAGENTA,16,156,64,8
     RADIOBUTTON     "&Yellow",IDC_YELLOW,16,172,64,8
     RADIOBUTTON     "&White",IDC_WHITE,16,188,64,8
-    
-	GROUPBOX        "&Figure",IDC_STATIC,109,156,84,46
+    GROUPBOX        "&Figure",IDC_STATIC,109,156,84,46
     RADIOBUTTON     "Rec&tangle",IDC_RECT,116,172,65,8
     RADIOBUTTON     "&Ellipse",IDC_ELLIPSE,116,188,64,8
-    
-	DEFPUSHBUTTON   "OK",IDOK,35,212,50,14,WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,35,212,50,14,WS_GROUP
     PUSHBUTTON      "Cancel",IDCANCEL,113,212,50,14,WS_GROUP
 END
 
@@ -85,15 +82,14 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-About2-muires               ICON                    "About2-muires.ico"
-
+ABOUT2-MUIRES           ICON                    "About2-muires.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Menu
 //
 
-About2-muires MENU
+ABOUT2-MUIRES MENU
 BEGIN
     POPUP "&Help"
     BEGIN
@@ -126,9 +122,9 @@ END
 // AFX_DIALOG_LAYOUT
 //
 
-ABOUTBOX AFX_DIALOG_LAYOUT
+ABOUTBOX AFX_DIALOG_LAYOUT 
 BEGIN
-    0
+    0x0000
 END
 
 #endif    // English (United States) resources

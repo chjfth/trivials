@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by About2-muires.rc
+// Microsoft Visual C++ generated include file.
+// Used by 0404.rc
 //
 #define IDC_STATIC_LOCALE               999
 #define IDC_BLACK                       1000
