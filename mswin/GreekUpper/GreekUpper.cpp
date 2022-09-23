@@ -135,19 +135,8 @@ void test_toupper_cp737_greek(bool use_mbsupr)
 }
 
 
-
-void test_MultibyteToWideChar()
-{
-	WCHAR wbuf[10] = {};
-	int ret = MultiByteToWideChar(1253, MB_ERR_INVALID_CHARS,
-		"\x98\xE4\xFF\xE4", 5,
-		wbuf, 10);
-}
-
 int _tmain(int argc, TCHAR* argv[])
 {
-	//	test_MultibyteToWideChar();
-
 	//	setlocale(LC_ALL, "");
 
 	test_toupper_cp737_greek(false);
