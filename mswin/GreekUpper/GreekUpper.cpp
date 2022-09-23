@@ -158,4 +158,5 @@ int _tmain(int argc, TCHAR* argv[])
 	printf("\n");
 	test_toupper_cp737_greek(true);
 
+	return 0;
 }
