@@ -71,6 +71,15 @@ void print_chars_glyph_by_codepage(int codepage,
 	_setmode(_fileno(stdout), _O_TEXT);
 }
 
+// Define this struct to reflect first few members of VC2019 CRT __crt_multibyte_data.
+// Lucky to see this definition here is compatible with VC2010.
+struct _digged_mbcinfo 
+{
+	long refcount;
+	int mb_codepage;  // the so-called multibyte-codepage in a locale struct
+	int ismbcdoepage; // 1=DBCS codepage(GBK, Big5 etc), 0=SBCS codepage
+};
+
 void test_toupper_cp737_greek(bool use_mbsupr)
 {
 	char *setlocret = setlocale(LC_CTYPE, ".1253");
@@ -83,7 +92,13 @@ void test_toupper_cp737_greek(bool use_mbsupr)
 	printf("setlocale() returns: %s\n", setlocret);
 	
 	printf("Called _setmbcp(737), returns %s.\n", setret == 0 ? "success" : "fail");
-	printf("_getmbcp() = %d (If 0, it tells nothing.)\n", now_mbcp);
+	printf("_getmbcp() = %d (If 0, it tells nothing. Then we probe .mb_codepage)\n", now_mbcp);
+	if(now_mbcp==0)
+	{
+		_locale_t lcnow = _get_current_locale();
+		const _digged_mbcinfo *p_mbcinfo = (_digged_mbcinfo*)(lcnow->mbcinfo);
+		printf("[probed] locale .mb_codepage = %d\n", p_mbcinfo->mb_codepage);
+	}
 
 	int i;
 	unsigned char greeks1253[27] = {};
@@ -137,7 +152,7 @@ void test_toupper_cp737_greek(bool use_mbsupr)
 
 int _tmain(int argc, TCHAR* argv[])
 {
-	//	setlocale(LC_ALL, "");
+//	setlocale(LC_ALL, ""); // will set later
 
 	test_toupper_cp737_greek(false);
 	printf("\n");
