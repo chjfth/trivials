@@ -75,7 +75,9 @@ void test_toupper_cp737_greek(bool use_mbsupr)
 {
 	char *setlocret = setlocale(LC_CTYPE, ".1253");
 	int setret = _setmbcp(737);
-	int now_mbcp = _getmbcp(); // why 0?
+
+	int now_mbcp = _getmbcp();
+	// -- will return 0 for SBCS(e.g. cp737), bad design from Microsoft.
 
 	printf("Called setlocale(LC_CTYPE,\".1253\"); \n");
 	printf("setlocale() returns: %s\n", setlocret);
@@ -126,7 +128,7 @@ void test_toupper_cp737_greek(bool use_mbsupr)
 	else
 		_strupr_s((char*)greeks737, sizeof(greeks737));
 
-	printf("%20s: ", use_mbsupr ? "mbsupr()" : "strupr()");
+	printf("%20s: ", use_mbsupr ? "_mbsupr()" : "_strupr()");
 	printhex(greeks737, 24);
 	printf("%20s: ", printchar_as);
 	print_chars_glyph_by_codepage(printchar_codepage, greeks737);
