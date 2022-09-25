@@ -148,11 +148,18 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 
 		LCID lcid_thread = GetThreadLocale();
 		LCID lcid_ui = GetUserDefaultUILanguage();
-		TCHAR szThreadLocale[100]={};
-		_sntprintf_s(szThreadLocale, _TRUNCATE, 
-			_T("GetThreadLocale() = 0x%04X \nGetUserDefaultUILanguage() = 0x%04X"), 
-			lcid_thread, lcid_ui);
-		SetDlgItemText(hDlg, IDC_STATIC_LOCALE, szThreadLocale);
+		TCHAR lcname_thread[20] = {};
+		TCHAR lcname_ui[20] = {};
+		LCIDToLocaleName(lcid_thread, lcname_thread, ARRAYSIZE(lcname_thread), 0);
+		LCIDToLocaleName(lcid_ui, lcname_ui, ARRAYSIZE(lcname_ui), 0);
+			
+		TCHAR szText[200]={};
+		_sntprintf_s(szText, _TRUNCATE, 
+			_T("GetThreadLocale() = 0x%04X, %s\n")
+			_T("GetUserDefaultUILanguage() = 0x%04X, %s"), 
+			lcid_thread, lcname_thread,
+			lcid_ui, lcname_ui);
+		SetDlgItemText(hDlg, IDC_STATIC_LOCALE, szText);
 
 		SetFocus(GetDlgItem(hDlg, iColor));
 		return FALSE;
