@@ -104,9 +104,10 @@ int _tmain(int argc, TCHAR* argv[])
 	WCHAR sysloc[20]={}, usrloc[20]={};
 	GetSystemDefaultLocaleName(sysloc, 20); // Vista+
 	GetUserDefaultLocaleName(usrloc, 20); // Vista+
-	
+
 	wprintf(L"GetSystemDefaultLocaleName() = %s\n", sysloc);
 	wprintf(L"GetUserDefaultLocaleName()   = %s\n", usrloc);
+	printf("GetConsoleOutputCP() = %d\n", GetConsoleOutputCP());
 
 	printf("\n");
 
