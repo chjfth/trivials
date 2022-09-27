@@ -47,19 +47,24 @@ char *HexdumpA(const char *pbytes, int count, char *hexbuf, int bufchars)
 
 void print_sample()
 {
-	const char pansi[] = "\xB5\xE7"; // '电' in GBK, '萇' in Big5
-	printf("printf: %s\n", pansi);
-
 	errno_t err = 0;
 	char szerr[80];
 	size_t retlen = 0; // will be TCHARs in output buffer
-	WCHAR wcbuf[20] = {}, hexbufw[60] = {};
+	char hexbufa[60];
+	WCHAR hexbufw[60];
+
+	const char pansi[] = "\xB5\xE7"; // '电' in GBK, '萇' in Big5
+
+	printf("Input bytes: %s\n", HexdumpA(pansi, -1, hexbufa, ARRAYSIZE(hexbufa)));
+	
+	printf("printf: %s\n", pansi);
+
+	WCHAR wcbuf[20] = {};
 	err = mbstowcs_s(&retlen, wcbuf, pansi, sizeof(pansi));
 	if(!err)
 	{
-		printf("  mbstowcs_s() result:\n");
-		wprintf(L"  # %s\n", HexdumpW(wcbuf, -1, hexbufw, ARRAYSIZE(hexbufw)));
-		wprintf(L"  > %s\n", wcbuf);
+		wprintf(L"  mbstowcs_s() : %s\n", HexdumpW(wcbuf, -1, hexbufw, ARRAYSIZE(hexbufw)));
+		wprintf(L"  wprintf()    : %s\n", wcbuf);
 	}
 	else
 	{
@@ -70,20 +75,22 @@ void print_sample()
 	printf("\n");
 
 	const WCHAR ustr[] = L"\x99AC"; // '馬'
+
+	wprintf(L"Input WCHARs: %s\n", HexdumpW(ustr, -1, hexbufw, ARRAYSIZE(hexbufw)));
+	
 	wprintf(L"wprintf: %s\n", ustr);
 
-	char ansibuf[20] = {}, hexbufa[60];
+	char ansibuf[20] = {};
 	err = wcstombs_s(&retlen, ansibuf, ustr, ARRAYSIZE(ustr));
 	if(!err)
 	{
-		printf("  wcstombs_s() result:\n");
-		printf("  # %s\n", HexdumpA(ansibuf, -1, hexbufa, ARRAYSIZE(hexbufa)));
-		printf("  > %s\n", ansibuf);
+		printf("  wcstombs_s() : %s\n", HexdumpA(ansibuf, -1, hexbufa, ARRAYSIZE(hexbufa)));
+		printf("  printf()     : %s\n", ansibuf);
 	}
 	else
 	{
 		strerror_s(szerr, err);
-		printf("  wcstombs_s() error! errno=%d, %s\n", err, szerr);
+		printf("  wcstombs_s() error! (%d)%s\n", err, szerr);
 		// -- probably EILSEQ(42)
 	}
 
@@ -94,12 +101,25 @@ int _tmain(int argc, TCHAR* argv[])
 {
 	setvbuf(stdout, NULL, _IONBF, 0);
 
+	WCHAR sysloc[20]={}, usrloc[20]={};
+	GetSystemDefaultLocaleName(sysloc, 20); // Vista+
+	GetUserDefaultLocaleName(usrloc, 20); // Vista+
+	
+	wprintf(L"GetSystemDefaultLocaleName() = %s\n", sysloc);
+	wprintf(L"GetUserDefaultLocaleName()   = %s\n", usrloc);
+
+	printf("\n");
+
+	printf("=============================\n");
 	printf("Before setlocale(LC_ALL, \"\");\n");
+	printf("=============================\n");
 	print_sample();
 
 	setlocale(LC_ALL, "");
 
+	printf("=============================\n");
 	printf("After setlocale(LC_ALL, \"\");\n");
+	printf("=============================\n");
 	print_sample();
 	
 	return 0;
