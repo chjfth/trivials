@@ -97,8 +97,16 @@ void print_sample()
 	printf("\n");
 }
 
-int _tmain(int argc, TCHAR* argv[])
+int main(int argc, char* argv[])
 {
+	printf("setlocale01 version 1.0, compiled with _MSC_VER=%d\n", _MSC_VER);
+
+	const char *lcstr = "";
+	if(argc>1)
+	{
+		lcstr = argv[1];
+	}
+	
 	setvbuf(stdout, NULL, _IONBF, 0);
 
 	WCHAR sysloc[20]={}, usrloc[20]={};
@@ -112,14 +120,14 @@ int _tmain(int argc, TCHAR* argv[])
 	printf("\n");
 
 	printf("=============================\n");
-	printf("Before setlocale(LC_ALL, \"\");\n");
+	printf("Before setlocale(LC_ALL, \"%s\");\n", lcstr);
 	printf("=============================\n");
 	print_sample();
 
-	setlocale(LC_ALL, "");
+	setlocale(LC_ALL, lcstr);
 
 	printf("=============================\n");
-	printf("After setlocale(LC_ALL, \"\");\n");
+	printf("After setlocale(LC_ALL, \"%s\");\n", lcstr);
 	printf("=============================\n");
 	print_sample();
 	
