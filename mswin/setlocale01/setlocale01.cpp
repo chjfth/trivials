@@ -124,10 +124,11 @@ int main(int argc, char* argv[])
 	printf("=============================\n");
 	print_sample();
 
-	setlocale(LC_ALL, lcstr);
+	const char *lcret = setlocale(LC_ALL, lcstr);
 
 	printf("=============================\n");
 	printf("After setlocale(LC_ALL, \"%s\");\n", lcstr);
+	printf("> %s\n", lcret);
 	printf("=============================\n");
 	print_sample();
 	
