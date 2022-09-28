@@ -43,7 +43,7 @@
     <ProjectGuid>{20220927-0000-0000-0000-134646000001}</ProjectGuid>
     <ProjectName>setlocale01</ProjectName>
      <TargetNameBase>setlocale01</TargetNameBase>
-     <TargetName>$(TargetNameBase)-vc2010</TargetName>
+     <TargetName>$(TargetNameBase)-vs2010</TargetName>
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
