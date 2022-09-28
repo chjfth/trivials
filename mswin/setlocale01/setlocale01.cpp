@@ -11,7 +11,7 @@
 WCHAR *HexdumpW(const WCHAR *pszw, int count, WCHAR *hexbuf, int bufchars)
 {
 	if (count < 0)
-		count = wcslen(pszw);
+		count = (int)wcslen(pszw);
 
 	for (int i = 0; i < count; i++)
 	{
@@ -29,7 +29,7 @@ WCHAR *HexdumpW(const WCHAR *pszw, int count, WCHAR *hexbuf, int bufchars)
 char *HexdumpA(const char *pbytes, int count, char *hexbuf, int bufchars)
 {
 	if (count < 0)
-		count = strlen(pbytes);
+		count = (int)strlen(pbytes);
 
 	for (int i = 0; i < count; i++)
 	{
