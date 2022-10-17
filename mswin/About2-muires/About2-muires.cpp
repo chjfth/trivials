@@ -14,10 +14,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 int iCurrentColor = IDC_BLACK,
 iCurrentFigure = IDC_RECT;
 
+static TCHAR szAppName[] = TEXT("About2-muires");
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR szCmdLine, int iCmdShow)
 {
-	static TCHAR szAppName[] = TEXT("About2-muires");
 
 	DialogBox(hInstance, TEXT("AboutBox"), NULL, AboutDlgProc);
 
@@ -68,7 +69,10 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	switch (message)
 	{{
 	case WM_INITDIALOG:
-	{	iColor = iCurrentColor;
+	{
+		SetWindowText(hDlg, szAppName);
+			
+		iColor = iCurrentColor;
 		iFigure = iCurrentFigure;
 
 		CheckRadioButton(hDlg, IDC_BLACK, IDC_WHITE, iColor);
