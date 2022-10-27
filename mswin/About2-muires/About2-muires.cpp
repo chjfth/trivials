@@ -18,32 +18,59 @@ static TCHAR szAppName[] = TEXT("About2-muires");
 
 TCHAR g_szUilang[100] = {};
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-	PSTR szCmdLine, int iCmdShow)
+typedef int WINAPI FUNCTYPE_LCIDToLocaleName(LCID Locale, LPTSTR lpName, int cchName, DWORD dwFlags);
+FUNCTYPE_LCIDToLocaleName *dlptr_LCIDToLocaleName = 
+	(FUNCTYPE_LCIDToLocaleName*)GetProcAddress(
+		LoadLibrary(_T("KERNEL32.DLL")), "LCIDToLocaleName");
+
+typedef LANGID WINAPI FUNCTYPE_GetThreadUILanguage();
+FUNCTYPE_GetThreadUILanguage *dlptr_GetThreadUILanguage = 
+	(FUNCTYPE_GetThreadUILanguage*)GetProcAddress(
+		LoadLibrary(_T("KERNEL32.DLL")), "GetThreadUILanguage"); // WinXP does NOT have this
+
+typedef LANGID WINAPI FUNCTYPE_SetThreadUILanguage(LANGID);
+FUNCTYPE_SetThreadUILanguage *dlptr_SetThreadUILanguage = 
+	(FUNCTYPE_SetThreadUILanguage*)GetProcAddress(
+		LoadLibrary(_T("KERNEL32.DLL")), "SetThreadUILanguage"); // actually, WinXP has this
+
+
+void MyChangeThreadUILang(PSTR szCmdLine)
 {
-	// If run with parameter "0x0404", it will be passed to SetThreadUILanguage()
-	// so that RC-resource(s) [with a different .rc-defined 'LANGUAGE'] will be loaded.
-	
 	LANGID uilang_from_param = (LANGID)strtoul(szCmdLine, NULL, 0);
 
 	if(uilang_from_param==0)
 	{
-		LANGID truelangid = GetThreadUILanguage();
-		_sntprintf_s(g_szUilang, _TRUNCATE, _T("GetThreadUILanguage() = 0x%04X"), truelangid);
+		if(dlptr_GetThreadUILanguage)
+		{	
+			LANGID truelangid = dlptr_GetThreadUILanguage();
+			_sntprintf_s(g_szUilang, _TRUNCATE, _T("GetThreadUILanguage() = 0x%04X"), truelangid);
+		}
 	}
 	else
 	{
-		LANGID truelangid = SetThreadUILanguage(uilang_from_param);
+		LANGID truelangid = dlptr_SetThreadUILanguage(uilang_from_param);
 		if(truelangid==uilang_from_param)
 		{
-			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X) success."), truelangid);
+			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X) success."), uilang_from_param);
 		}
 		else
 		{
 			DWORD winerr = GetLastError();
-			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X) fail! WinErr=%d."), 
-				truelangid, winerr);
+			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X)=0x%04X. WinErr=%d."), 
+				uilang_from_param, truelangid, winerr);
 		}
+	}	
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	PSTR szCmdLine, int iCmdShow)
+{
+	if(dlptr_SetThreadUILanguage)
+	{
+		// If run with parameter "0x0404", it will be passed to SetThreadUILanguage()
+		// so that RC-resource(s) [with a different .rc-defined 'LANGUAGE'] will be loaded.
+		//
+		MyChangeThreadUILang(szCmdLine);
 	}
 	
 	DialogBox(hInstance, TEXT("AboutBox"), NULL, AboutDlgProc);
@@ -110,9 +137,11 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 		LCID lcid_ui = GetUserDefaultUILanguage();
 		TCHAR lcname_thread[20] = {};
 		TCHAR lcname_ui[20] = {};
-		LCIDToLocaleName(lcid_thread, lcname_thread, ARRAYSIZE(lcname_thread), 0);
-		LCIDToLocaleName(lcid_ui, lcname_ui, ARRAYSIZE(lcname_ui), 0);
-
+		if(dlptr_LCIDToLocaleName)
+		{	// Vista+ has LCIDToLocaleName()
+			dlptr_LCIDToLocaleName(lcid_thread, lcname_thread, ARRAYSIZE(lcname_thread), 0);
+			dlptr_LCIDToLocaleName(lcid_ui, lcname_ui, ARRAYSIZE(lcname_ui), 0);
+		}
 		TCHAR szText[400]={};
 		_sntprintf_s(szText, _TRUNCATE,
 			_T("%s\n")
