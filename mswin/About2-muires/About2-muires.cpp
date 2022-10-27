@@ -16,10 +16,36 @@ iCurrentFigure = IDC_RECT;
 
 static TCHAR szAppName[] = TEXT("About2-muires");
 
+TCHAR g_szUilang[100] = {};
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	PSTR szCmdLine, int iCmdShow)
 {
+	// If run with parameter "0x0404", it will be passed to SetThreadUILanguage()
+	// so that RC-resource(s) [with a different .rc-defined 'LANGUAGE'] will be loaded.
+	
+	LANGID uilang_from_param = (LANGID)strtoul(szCmdLine, NULL, 0);
 
+	if(uilang_from_param==0)
+	{
+		LANGID truelangid = GetThreadUILanguage();
+		_sntprintf_s(g_szUilang, _TRUNCATE, _T("GetThreadUILanguage() = 0x%04X"), truelangid);
+	}
+	else
+	{
+		LANGID truelangid = SetThreadUILanguage(uilang_from_param);
+		if(truelangid==uilang_from_param)
+		{
+			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X) success."), truelangid);
+		}
+		else
+		{
+			DWORD winerr = GetLastError();
+			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X) fail! WinErr=%d."), 
+				truelangid, winerr);
+		}
+	}
+	
 	DialogBox(hInstance, TEXT("AboutBox"), NULL, AboutDlgProc);
 
 	return 0;
@@ -86,11 +112,14 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 		TCHAR lcname_ui[20] = {};
 		LCIDToLocaleName(lcid_thread, lcname_thread, ARRAYSIZE(lcname_thread), 0);
 		LCIDToLocaleName(lcid_ui, lcname_ui, ARRAYSIZE(lcname_ui), 0);
-			
-		TCHAR szText[200]={};
-		_sntprintf_s(szText, _TRUNCATE, 
+
+		TCHAR szText[400]={};
+		_sntprintf_s(szText, _TRUNCATE,
+			_T("%s\n")
 			_T("GetThreadLocale() = 0x%04X, %s\n")
-			_T("GetUserDefaultUILanguage() = 0x%04X, %s"), 
+			_T("GetUserDefaultUILanguage() = 0x%04X, %s")
+			,
+			g_szUilang,
 			lcid_thread, lcname_thread,
 			lcid_ui, lcname_ui);
 		SetDlgItemText(hDlg, IDC_STATIC_LOCALE, szText);
