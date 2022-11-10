@@ -247,7 +247,7 @@ Cleanup:
 //   elevation is only available on Windows Vista and newer operating 
 //   systems, thus IsProcessElevated throws a C++ exception if it is called 
 //   on systems prior to Windows Vista. It is not appropriate to use this 
-//   function to determine whether a process is run as administartor.
+//   function to determine whether a process is run as administrator.
 //
 //   RETURN VALUE: Returns TRUE if the process is elevated. Returns FALSE if 
 //   it is not.
@@ -479,6 +479,15 @@ void ReportError(LPCWSTR pszFunction, DWORD dwError = GetLastError())
 	}
 }
 
+// Sets the dialog box icons
+inline void chSETDLGICONS(HWND hwnd, int idi) {
+	SendMessage(hwnd, WM_SETICON, TRUE,  (LPARAM)
+		LoadIcon((HINSTANCE) GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
+		MAKEINTRESOURCE(idi)));
+	SendMessage(hwnd, WM_SETICON, FALSE, (LPARAM)
+		LoadIcon((HINSTANCE) GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
+		MAKEINTRESOURCE(idi)));
+}
 
 // 
 //   FUNCTION: OnInitDialog(HWND, HWND, LPARAM)
@@ -489,6 +498,8 @@ void ReportError(LPCWSTR pszFunction, DWORD dwError = GetLastError())
 //
 BOOL OnInitDialog(HWND hWnd, HWND hwndFocus, LPARAM lParam)
 {
+	chSETDLGICONS(hWnd, IDI_ICON1);
+
 	// Get and display whether the primary access token of the process 
 	// belongs to user account that is a member of the local Administrators 
 	// group even if it currently is not elevated (IsUserInAdminGroup).
@@ -693,5 +704,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 	LPWSTR    lpCmdLine,
 	int       nCmdShow)
 {
-	return DialogBox(hInstance, MAKEINTRESOURCE(IDD_MAINDIALOG), NULL, DialogProc);
+	INT_PTR dret = DialogBox(hInstance, MAKEINTRESOURCE(IDD_MAINDIALOG), NULL, DialogProc);
+	return (int)dret;
 }
