@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <tchar.h>
 #include <locale.h>
+#include <assert.h>
+#include <Shlwapi.h>
 
-const TCHAR *g_szversion = _T("1.0");
+const TCHAR *g_szversion = _T("1.1");
 
 const TCHAR *app_GetWindowsVersionStr3()
 {
@@ -125,6 +127,17 @@ int _tmain(int argc, TCHAR* argv[])
 		_tprintf(_T("Cmd-params  after argv0: %s\n"), whole_cmdparams);
 	else
 		_tprintf(_T("No cmd-params.\n"));
+
+	const TCHAR *pArgStart = PathGetArgs(cmdline);
+	if( (whole_cmdparams==nullptr && pArgStart[0]=='\0')
+		||  _tcscmp(pArgStart, whole_cmdparams)==0 )
+	{
+		_tprintf(_T("OK. Same result from PathGetArgs().\n"));
+	}
+	else 
+	{
+		_tprintf(_T("PANIC!!! PathGetArgs() returns: %s\n"), pArgStart);
+	}
 
 	return 0;
 }
