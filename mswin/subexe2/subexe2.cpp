@@ -120,18 +120,22 @@ int _tmain(int argc, TCHAR* argv[])
 	// Will use the whole string after argv[0] as CreateProcess's second param(lpCommandLine).
 	// If empty content after argv[0], NULL is used as CreateProcess's second param.
 	//
-	// If you want to pass pns to lpCommandLine with pns[0]='\0', you should write:
+	// If you want to pass pns to lpCommandLine with pns[0]='\0', please write:
 	//
-	//	  subexe2 ""
+	//	  subexe2 -
 
 	const TCHAR *subexe_cmdline = wincmdline_strip_argv0(GetCommandLine(), argv[0]);
 	TCHAR szCmdLine[MAX_PATH] = {};
 
 	if(subexe_cmdline)
 	{
-		_tprintf(_T("Will call CreateProcess() with second param: (%d chars)\n"), _tcslen(subexe_cmdline));
-		_tprintf(_T("    %s\n"), subexe_cmdline);
-		_tcscpy_s(szCmdLine, subexe_cmdline);
+		if(_tcscmp(subexe_cmdline, _T("-"))==0)
+			szCmdLine[0] = '\0';
+		else
+			_tcscpy_s(szCmdLine, subexe_cmdline);
+
+		_tprintf(_T("Will call CreateProcess() with second param: (%d chars)\n"), _tcslen(szCmdLine));
+		_tprintf(_T("    %s\n"), szCmdLine);
 	}
 	else
 	{
