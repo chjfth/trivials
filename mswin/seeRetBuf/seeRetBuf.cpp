@@ -60,7 +60,9 @@ enum BufEnoughRet_et // Ret trait when buffer enough
 	                  // "Total"(T) does not count trailing NUL. 
 	ReturnTplus1 = 1, // Return T+1
 
-	ReturnBug = 2,
+	ReturnTplus2ormore = 2, // Return T+2, and userbuf[T+1] is fill with NUL as well, redundant
+
+	ReturnBug = 4,
 };
 
 struct ApiTrait_et
@@ -128,6 +130,16 @@ BufSmallFill_et BufSmallFill_conclude(
 	return BSF_BUG;
 }
 
+bool IsAllNUL(const TCHAR *p, int n)
+{
+	for(int i=0; i<n; i++)
+	{
+		if(p[i]!=NULCHAR)
+			return false;
+	}
+	return true;
+}
+
 BufEnoughRet_et BufEnoughRet_conclude(
 	int sret_size, // returned buffer size on success
 	const TCHAR *soutput // output buffer of success case
@@ -140,6 +152,10 @@ BufEnoughRet_et BufEnoughRet_conclude(
 
 	if(sret_size==total_size+1)
 		return ReturnTplus1;
+
+	if(sret_size>total_size+1 
+		&& IsAllNUL(soutput+total_size+1, sret_size-total_size-1))
+		return ReturnTplus2ormore;
 
 	return ReturnBug;
 }
@@ -244,6 +260,8 @@ void ReportTraits(const TCHAR *apiname,
 		vacat(tbuf, _T("T")); break;
 	case ReturnTplus1:
 		vacat(tbuf, _T("T+1")); break;
+	case ReturnTplus2ormore:
+		vacat(tbuf, _T("T+2!")); break;
 	default:
 		vacat(tbuf, _T("[BUG]"));
 	}

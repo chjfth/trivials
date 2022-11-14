@@ -224,6 +224,17 @@ void see_StringFromGUID2()
 	REPORT_API_TRAITS(StringFromGUID2);
 }
 
+void see_QueryDosDevice()
+{
+	RESET_OUTPUT;
+
+	sret = QueryDosDevice(_T("C:"), soutput, MAX_PATH);
+	// -- \Device\HarddiskVolume2
+
+	eret = QueryDosDevice(_T("C:"), eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+	REPORT_API_TRAITS(QueryDosDevice);
+}
 
 
 void check_apis()
@@ -254,4 +265,6 @@ void check_apis()
 	see_FormatMessage();
 
 	see_StringFromGUID2();
+
+	see_QueryDosDevice();
 }
