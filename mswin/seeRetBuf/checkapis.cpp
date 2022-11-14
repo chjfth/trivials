@@ -45,6 +45,17 @@ void see_snprintf()
 	REPORT_API_TRAITS(_snprintf_s);
 }
 
+void see_snprintf_s_TRUNCATE()
+{
+	RESET_OUTPUT;
+	errno = 0; // Refer to `errno`, bcz _snprintf is CRT
+	const TCHAR *input = _T("0123456789");
+	sret = _sntprintf_s(soutput, MAX_PATH,       _TRUNCATE, _T("%s"), input);
+	eret = _sntprintf_s(eoutput, SMALL_Usersize, _TRUNCATE, _T("%s"), input);
+	winerr = errno;
+	REPORT_API_TRAITS_s(_T("_snprintf_s(_TRUNCATE)"));
+}
+
 void see_GetKeyNameText()
 {
 	RESET_OUTPUT;
@@ -310,6 +321,7 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 void check_apis()
 {
 	see_snprintf();
+	see_snprintf_s_TRUNCATE();
 
 	see_GetKeyNameText();
 	see_GetClassName();
