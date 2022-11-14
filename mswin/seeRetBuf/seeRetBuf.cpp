@@ -6,7 +6,7 @@
 //
 // Compile the program with:
 //
-//    cl /DUNICODE /D_UNICODE seeRetBuf.cpp checkapis.cpp /link user32.lib psapi.lib userenv.lib gdi32.lib ole32.lib
+//    cl /DUNICODE /D_UNICODE seeRetBuf.cpp checkapis.cpp /link user32.lib psapi.lib userenv.lib gdi32.lib ole32.lib SetupAPI.lib
 
 #include <stdio.h>
 #include <Userenv.h>

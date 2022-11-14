@@ -1,6 +1,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <Psapi.h>
+#include <setupapi.h>
+#include <Cfgmgr32.h>
 
 #include <stdio.h>
 #include <Userenv.h>
@@ -120,6 +122,16 @@ void see_GetSystemDirectory()
 	REPORT_API_TRAITS(GetSystemDirectory);
 }
 
+void see_GetWindowsDirectory()
+{
+	RESET_OUTPUT;
+	sret = GetWindowsDirectory(soutput, MAX_PATH);
+	// -- C:\Windows
+	eret = GetWindowsDirectory(eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+	REPORT_API_TRAITS(GetWindowsDirectory);
+}
+
 void see_GetCurrentDirectory()
 {
 	RESET_OUTPUT;
@@ -236,6 +248,64 @@ void see_QueryDosDevice()
 	REPORT_API_TRAITS(QueryDosDevice);
 }
 
+void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
+{
+	// Try to enumerate all devices, but fetch only the 10th one.
+	// I don't fetch the 0-th device, bcz, the 0th device on on VirtualBox 6.1 Win7 VM 
+	// happens to be "ROOT\LEGACY_TSSECSRV\0000", that is T+1==26, which is the same value 
+	// as CR_BUFFER_SMALL(26).
+
+	const int idxDevice = 10;
+
+	BOOL succ = 0;
+	HDEVINFO dis = SetupDiGetClassDevs(NULL, NULL, NULL, DIGCF_ALLCLASSES|DIGCF_PRESENT);
+	if(dis==INVALID_HANDLE_VALUE)
+	{
+		Prn(_T("Unexpect! Error in checking see_SetupDiGetDeviceInstanceId()\n"));
+		exit(4);
+	}
+
+	SP_DEVINFO_DATA did = {sizeof(did)};
+	succ = SetupDiEnumDeviceInfo(dis, idxDevice, &did); 
+	if(!succ)
+	{
+		Prn(_T("Unexpect! Error in checking see_SetupDiGetDeviceInstanceId()\n"));
+		exit(4);
+	}
+
+	// Check SetupDiGetDeviceInstanceId()
+	RESET_OUTPUT;
+
+	DWORD reqsize = 0;
+	succ = SetupDiGetDeviceInstanceId(dis, &did, soutput, MAX_PATH, &reqsize);
+	assert(succ);
+	sret = reqsize;
+	// -- PCIIDE\IDECHANNEL\4&2617AEAE&0&2
+	reqsize = 0;
+	succ = SetupDiGetDeviceInstanceId(dis, &did, eoutput, SMALL_Usersize, &reqsize);
+	assert(!succ);
+	sret = reqsize;
+	winerr = GetLastError();
+
+	REPORT_API_TRAITS(SetupDiGetDeviceInstanceId);
+
+	// Check CM_Get_Device_ID_Ex()
+	RESET_OUTPUT;
+
+	CONFIGRET cmret = CM_Get_Device_ID(did.DevInst, soutput, MAX_PATH, 0);
+	// -- PCIIDE\IDECHANNEL\4&2617AEAE&0&2
+	cmret = CM_Get_Device_ID(did.DevInst, eoutput, SMALL_Usersize, 0);
+	// -- MSDN: the function supplies as much of the identifier string as will fit into
+	// the buffer, and then returns CR_BUFFER_SMALL(26). NOT saying whether fill NUL.
+	
+	winerr = cmret; 
+	// -- CM_xxx does NOT report error code via GetLastError(), so we use cmret instead.
+
+	REPORT_API_TRAITS(CM_Get_Device_ID);
+
+	SetupDiDestroyDeviceInfoList(dis);
+}
+
 
 void check_apis()
 {
@@ -252,6 +322,7 @@ void check_apis()
 	see_GetProcessImageFileName();
 
 	see_GetSystemDirectory();
+	see_GetWindowsDirectory();
 	see_GetCurrentDirectory();
 
 	see_GetTempPath();
@@ -267,4 +338,6 @@ void check_apis()
 	see_StringFromGUID2();
 
 	see_QueryDosDevice();
+
+	see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID();
 }

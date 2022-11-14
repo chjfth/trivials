@@ -16,3 +16,4 @@ void ReportTraits(const TCHAR *apiname,
 
 void check_apis();
 
+void Prn(const TCHAR *fmt, ...);
