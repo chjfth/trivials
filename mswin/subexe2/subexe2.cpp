@@ -114,7 +114,7 @@ int _tmain(int argc, TCHAR* argv[])
 	}
 	else
 	{
-		_tprintf(_T("No env-var SUBEXE found. Will call CreateProcess() with first param=NULL.\n"));
+		_tprintf(_T("Will call CreateProcess() with first param=NULL. (no env-var SUBEXE)\n"));
 	}
 
 	// Will use the whole string after argv[0] as CreateProcess's second param(lpCommandLine).

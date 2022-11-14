@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    seeSelfName_VMAJOR, seeSelfName_VMINOR, seeSelfName_VPATCH, seeSelfName_VTAIL
+ProductVersion seeSelfName_VMAJOR, seeSelfName_VMINOR, seeSelfName_VPATCH, seeSelfName_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     seeSelfName_NAME
+            VALUE "FileDescription", seeSelfName_NAME
+            VALUE "FileVersion",    seeSelfName_VMAJORs "." seeSelfName_VMINORs "." seeSelfName_VPATCHs
+            VALUE "ProductVersion",    seeSelfName_VMAJORs "." seeSelfName_VMINORs "." seeSelfName_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , seeSelfName_NAME ".exe"
+            VALUE "InternalName", seeSelfName_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
