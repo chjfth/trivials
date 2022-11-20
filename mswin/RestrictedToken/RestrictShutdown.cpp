@@ -84,7 +84,7 @@ void do_test()
 
 	assert(succ);
 
-	_tprintf(_T("OK. a new Explorer.exe process has been created.\n"));
+	_tprintf(_T("OK. A new Explorer.exe process has been created.\n"));
 
 	succ = CloseHandle(hTokenOrigProcess);
 	succ = CloseHandle(hTokenRestricted);
