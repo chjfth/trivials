@@ -20,12 +20,12 @@ void do_test()
 		&hTokenOrigProcess);
 	assert(succ);
 
-	// Will put `Administrators` to disabled-SID list
+	// Will put `Administrators` (S-1-5-32-544) to disabled-SID list
 	//
-	SID *pSIDAdms = nullptr;
-	SID_IDENTIFIER_AUTHORITY authnt = SECURITY_NT_AUTHORITY;
-	succ = AllocateAndInitializeSid(&authnt, 2, 
-		32, 544, 0,0,0,0,0,0, (PSID*)&pSIDAdms);
+	unsigned char SIDbuf[sizeof(SID)+sizeof(DWORD)] = {};
+	SID *pSIDAdms = (SID*)&SIDbuf;
+	DWORD sidbytes = sizeof(SIDbuf);
+	succ = CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, pSIDAdms, &sidbytes);
 	assert(succ);
 	SID_AND_ATTRIBUTES sidsToDisable[] =
 	{
@@ -86,8 +86,6 @@ void do_test()
 
 	_tprintf(_T("OK. a new Explorer.exe process has been created.\n"));
 
-	void *errptr = FreeSid(pSIDAdms);
-	assert(!errptr);
 	succ = CloseHandle(hTokenOrigProcess);
 	succ = CloseHandle(hTokenRestricted);
 
@@ -106,5 +104,4 @@ int _tmain(int argc, TCHAR* argv[])
 
 	return 0;
 }
-
 
