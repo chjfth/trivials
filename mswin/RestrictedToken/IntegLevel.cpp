@@ -74,8 +74,12 @@ void show_IntegrityLevel(const TCHAR *szfn)
 		SID* psid = reinterpret_cast<SID*>(&ace->SidStart);
 
 		integrityLevel = psid->SubAuthority[0];
+		bool isInherited = (ace->Header.AceFlags & INHERITED_ACE) ? true : false;
 
-		_tprintf(_T("Integrity Level: %s\n"), IL2Str(integrityLevel));
+		_tprintf(_T("Integrity Level: %s (%s)\n"), 
+			IL2Str(integrityLevel),
+			isInherited ? _T("inherited from parent") : _T("defined on itself, not inherited")
+			);
 	}
 	else
 	{
