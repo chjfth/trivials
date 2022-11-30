@@ -76,6 +76,7 @@ void client_print_help()
 {
 	const TCHAR *pipename = _T("\\\\.\\pipe\\MyPipeSpace");
 
+	_tprintf(_T("PipeClient1 version %s:\n"), app_version);
 	_tprintf(_T("Usage:\n"));
 	_tprintf(_T("  PipeClient1 <pipe-name> [wait=msec] [wthru] [dwDesiredAccess]\n"));
 	_tprintf(_T("\n"));
