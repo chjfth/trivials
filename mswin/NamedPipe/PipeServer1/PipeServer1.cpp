@@ -17,6 +17,8 @@ void print_version()
 
 void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD usemode)
 {
+	g_whichside = ServerSide;
+
 	openmode |= FILE_FLAG_OVERLAPPED;
 
 	TCHAR tbuf[100] = {};
@@ -70,7 +72,7 @@ void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD u
 
 	PrnTs(_T("ConnectNamedPipe() success."));
 
-	check_NamedPipeInfo(hPipe, ServerSide); // again, after ConnectNamedPipe() success
+	check_NamedPipeInfo(hPipe); // again, after ConnectNamedPipe() success
 
 	do_interactive(hPipe);
 

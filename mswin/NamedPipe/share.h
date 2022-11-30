@@ -3,7 +3,7 @@
 
 #include <tchar.h>
 
-static const TCHAR *app_version = _T("1.0");
+static const TCHAR *app_version = _T("1.1");
 
 extern int g_read_timeout_msec;
 extern int g_write_timeout_msec;
@@ -20,9 +20,12 @@ enum WhichSide_et
 {
 	ServerSide = 0,
 	ClientSide = 1,
+	Unset = 444,
 };
 
-void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side);
+extern WhichSide_et g_whichside;
+
+void check_NamedPipeInfo(HANDLE hPipe);
 
 //const TCHAR *Winerr2Str(DWORD winerr);
 

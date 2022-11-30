@@ -9,6 +9,8 @@
 
 #include "share.h"
 
+WhichSide_et g_whichside = Unset;
+
 int g_read_timeout_msec = 5000;
 int g_write_timeout_msec = 5000;
 
@@ -41,10 +43,18 @@ void PrnTs(const TCHAR *fmt, ...)
 		_tprintf(_T(".\n"));
 	}
 
+	TCHAR c_whichside = ' ';
+	if(g_whichside==ServerSide)
+		c_whichside = 'S';
+	else if(g_whichside==ClientSide)
+		c_whichside = 'C';
+
 	TCHAR timebuf[40] = {};
 	now_timestr(timebuf, ARRAYSIZE(timebuf));
 
-	_sntprintf_s(buf, _TRUNCATE, _T("%s (+%3u.%03us) "), timebuf, 
+	_sntprintf_s(buf, _TRUNCATE, _T("%c%s (+%3u.%03us) "), 
+		c_whichside,
+		timebuf, 
 		delta_msec/1000, delta_msec%1000);
 
 	int prefixlen = (int)_tcslen(buf);
@@ -227,6 +237,10 @@ bool do_pipe_action(HANDLE hPipe, int key)
 		else
 			PrnTs(_T("FlushFileBuffers() fail, %s"), WinerrStr());
 	}
+	else if(key=='\r')
+	{
+		_tprintf(_T("\n"));
+	}
 	else
 	{
 		_tprintf(_T("Invalid action.\n"));
@@ -261,7 +275,7 @@ GETCH:
 }
 
 
-void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side)
+void check_NamedPipeInfo(HANDLE hPipe)
 {
 	DWORD winerr = 0;
 	BOOL succ = 0;
@@ -270,7 +284,7 @@ void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side)
 	DWORD pi_obufsize = 0, pi_ibufsize = 0, pi_maxinstance;
 	succ = GetNamedPipeInfo(hPipe, &piflags, 
 		&pi_obufsize, &pi_ibufsize, &pi_maxinstance);
-	assert(succ && IsSameBool(piflags&PIPE_SERVER_END, side==ServerSide));
+	assert(succ && IsSameBool(piflags&PIPE_SERVER_END, g_whichside==ServerSide));
 
 	const TCHAR *server_pers = (piflags&PIPE_SERVER_END) ? _T("") : _T("(server-side perspective)");
 
@@ -307,7 +321,7 @@ void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side)
 	_tprintf(_T("  pipestate       = 0x%X (%s)\n"), pipestate, szpipestate);
 	_tprintf(_T("  nCurInstances   = %d\n"), nCurInstances);
 
-	if(side==ServerSide)
+	if(g_whichside==ServerSide)
 	{
 		succ = GetNamedPipeHandleState(hPipe, NULL, NULL,
 			NULL, NULL,
@@ -327,7 +341,7 @@ void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side)
 	}
 	else
 	{
-		assert(side==ClientSide);
+		assert(g_whichside==ClientSide);
 
 		succ = GetNamedPipeHandleState(hPipe, NULL, NULL,
 			&nWrbufThreshold, &nWrbufStaymsec, 

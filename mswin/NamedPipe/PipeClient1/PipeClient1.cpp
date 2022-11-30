@@ -17,6 +17,8 @@ void print_version()
 
 void do_client(const TCHAR *pipename)
 {
+	g_whichside = ClientSide;
+
 	DWORD winerr = 0;
 	BOOL succ = 0;
 
@@ -68,7 +70,7 @@ void do_client(const TCHAR *pipename)
 	else
 		PrnTs(_T("CreateFile() success. Connected to pipe server."));
 
-	check_NamedPipeInfo(hPipe, ClientSide);
+	check_NamedPipeInfo(hPipe);
 
 	do_interactive(hPipe);
 
