@@ -86,6 +86,7 @@ void server_print_help()
 {
 	const TCHAR *pipename = _T("\\\\.\\pipe\\MyPipeSpace");
 
+	_tprintf(_T("PipeServer1 version %s:\n"), app_version);
 	_tprintf(_T("Usage:\n"));
 	_tprintf(_T("  PipeServer1 <pipe-name> <max-instances> [openmode-hex] [pipemode-hex]\n"));
 	_tprintf(_T("\n"));
