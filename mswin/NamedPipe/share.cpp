@@ -222,7 +222,10 @@ bool do_pipe_action(HANDLE hPipe, int key)
 	{
 		PrnTs(_T("Calling FlushFileBuffers() , blocking API..."));
 		succ = FlushFileBuffers(hPipe);
-		PrnTs(_T("Done    FlushFileBuffers() ."));
+		if(succ)
+			PrnTs(_T("Done    FlushFileBuffers() ."));
+		else
+			PrnTs(_T("FlushFileBuffers() fail, %s"), WinerrStr());
 	}
 	else
 	{
@@ -235,19 +238,15 @@ bool do_pipe_action(HANDLE hPipe, int key)
 
 void do_interactive(HANDLE hPipe)
 {
-	BOOL succ = 0;
+//	BOOL succ = 0;
 	int key = 0;
-	_tprintf(_T("Select: (w)write, (r)read, W(bytes-to-write), R(bytes-to-read), f(Flush), 0(quit) "));
+	_tprintf(_T("Select: (w)write (r)read W(bytes-to-write) R(bytes-to-read) f(Flush) 0(quit) "));
 	goto GETCH;
 
 	for(; ;)
 	{
 		if(key=='0')
 		{
-			PrnTs(_T("Calling CloseHandle()..."));
-			succ = FlushFileBuffers(hPipe);
-			PrnTs(_T("Done    CloseHandle() ."));
-			assert(succ);
 			break;
 		}
 
@@ -268,8 +267,18 @@ void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side)
 	BOOL succ = 0;
 
 	DWORD piflags = 0;
-	succ = GetNamedPipeInfo(hPipe, &piflags, NULL, NULL, NULL);
+	DWORD pi_obufsize = 0, pi_ibufsize = 0, pi_maxinstance;
+	succ = GetNamedPipeInfo(hPipe, &piflags, 
+		&pi_obufsize, &pi_ibufsize, &pi_maxinstance);
 	assert(succ && IsSameBool(piflags&PIPE_SERVER_END, side==ServerSide));
+
+	const TCHAR *server_pers = (piflags&PIPE_SERVER_END) ? _T("") : _T("(server-side perspective)");
+
+	_tprintf(_T("GetNamedPipeInfo() returns:\n"));
+	_tprintf(_T("  Pipe type     : %s\n"), piflags&PIPE_TYPE_MESSAGE ? _T("Message pipe") : _T("Stream pipe"));
+	_tprintf(_T("  OutBufferSize : %-8d %s\n"), pi_obufsize, server_pers);
+	_tprintf(_T("   InBufferSize : %-8d %s\n"), pi_ibufsize, server_pers);
+	_tprintf(_T("  Max instances : %d\n"), pi_maxinstance);
 
 	DWORD pipestate = 0;
 	DWORD nCurInstances = 0;

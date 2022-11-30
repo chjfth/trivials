@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
@@ -9,6 +10,10 @@ int g_obufsize = 4000;
 int g_ibufsize = 4000;
 int g_defaulttimeout_msec = 1000;
 
+void print_version()
+{
+	_tprintf(_T("PipeServer1 version %s:\n"), app_version);
+}
 
 void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD usemode)
 {
@@ -40,7 +45,7 @@ void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD u
 		exit(3);
 	}
 
-	check_NamedPipeInfo(hPipe, ServerSide);
+//	check_NamedPipeInfo(hPipe, ServerSide);
 
 	OVERLAPPED ovlp = {};
 	ovlp.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
@@ -69,7 +74,11 @@ void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD u
 
 	do_interactive(hPipe);
 
-	CloseHandle(hPipe);
+	PrnTs(_T("Calling CloseHandle()..."));
+	succ = CloseHandle(hPipe);
+	PrnTs(_T("Done    CloseHandle() ."));
+	assert(succ);
+
 	CloseHandle(ovlp.hEvent);
 }
 
@@ -99,6 +108,7 @@ void server_print_help()
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
+	print_version();
 	
 	if(argc<3)
 	{

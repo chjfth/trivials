@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
@@ -9,6 +10,10 @@ int g_startwait_msec = 0;
 bool g_is_writethrough = false;
 DWORD g_dwDesiredAccess = GENERIC_READ|GENERIC_WRITE;
 
+void print_version()
+{
+	_tprintf(_T("PipeClient1 version %s:\n"), app_version);
+}
 
 void do_client(const TCHAR *pipename)
 {
@@ -30,7 +35,8 @@ void do_client(const TCHAR *pipename)
 			return;
 	}
 
-	DWORD dwFlagsAndAttributes = g_is_writethrough ? FILE_FLAG_WRITE_THROUGH : 0;
+	DWORD dwFlagsAndAttributes = FILE_FLAG_OVERLAPPED;
+	dwFlagsAndAttributes |= g_is_writethrough ? FILE_FLAG_WRITE_THROUGH : 0;
 
 	PrnTs(_T("Calling CreateFile()... \n")
 		_T("  Pipename             = %s\n")
@@ -67,8 +73,9 @@ void do_client(const TCHAR *pipename)
 	do_interactive(hPipe);
 
 	PrnTs(_T("CloseHandle()..."));
-	CloseHandle(hPipe);
+	succ = CloseHandle(hPipe);
 	PrnTs(_T("CloseHandle() done."));
+	assert(succ);
 }
 
 
@@ -105,6 +112,7 @@ bool ishexdigit(TCHAR c)
 int _tmain(int argc, const TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
+	print_version();
 
 	if(argc==1)
 	{

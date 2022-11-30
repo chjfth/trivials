@@ -3,6 +3,8 @@
 
 #include <tchar.h>
 
+static const TCHAR *app_version = _T("1.0");
+
 extern int g_read_timeout_msec;
 extern int g_write_timeout_msec;
 
