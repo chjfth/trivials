@@ -22,5 +22,8 @@ enum WhichSide_et
 
 void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side);
 
+//const TCHAR *Winerr2Str(DWORD winerr);
+
+const TCHAR *WinerrStr(DWORD winerr=-1);
 
 #endif

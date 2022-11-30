@@ -9,30 +9,8 @@ int g_obufsize = 4000;
 int g_ibufsize = 4000;
 int g_defaulttimeout_msec = 1000;
 
-void server_print_help()
-{
-	const TCHAR *pipename = _T("\\\\.\\pipe\\MyTestPipe");
 
-	_tprintf(_T("Usage:\n"));
-	_tprintf(_T("  PipeServer1 <pipe-name> <max-instances> [openmode-hex] [pipemode-hex]\n"));
-	_tprintf(_T("\n"));
-	_tprintf(_T("Examples:\n"));
-	_tprintf(_T("  PipeServer1 %s 1\n"), pipename);
-	_tprintf(_T("    -- Create a pipe-namespace & the only one pipe-instance.\n"));
-	_tprintf(_T("  PipeServer1 %s 2 80003\n"), pipename);
-	_tprintf(_T("    -- Create/Use a pipe-namespace and create one pipe-instance in that namespace.\n"));
-	_tprintf(_T("       Max pipe-instances allow in that namespace is 2.\n"));
-	_tprintf(_T("       dwOpenMode is 0x80003 (FILE_FLAG_FIRST_PIPE_INSTANCE | PIPE_ACCESS_DUPLEX)\n"));	
-	_tprintf(_T("\n"));
-	_tprintf(_T("If [openmode-hex] is not given, I'll use PIPE_ACCESS_DUPLEX|FILE_FLAG_OVERLAPPED.\n"));
-	_tprintf(_T("If [pipemode-hex] is not given, I'll use 0.\n"));
-	_tprintf(_T("Configurable by env-var:\n"));
-	_tprintf(_T("  nOutBufferSize : Used by CreateNamedPipe()\n"));
-	_tprintf(_T("   nInBufferSize : Used by CreateNamedPipe()\n"));
-	_tprintf(_T("\n"));
-}
-
-void do_work(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD usemode)
+void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD usemode)
 {
 	openmode |= FILE_FLAG_OVERLAPPED;
 
@@ -58,8 +36,7 @@ void do_work(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD use
 
 	if(hPipe==INVALID_HANDLE_VALUE)
 	{
-		winerr = GetLastError();
-		_tprintf(_T("CreateNamedPipe() fail, winerr=%d.\n"), winerr);
+		_tprintf(_T("CreateNamedPipe() fail, %s.\n"), WinerrStr());
 		exit(3);
 	}
 
@@ -73,21 +50,20 @@ void do_work(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD use
 	winerr = GetLastError();
 	if(!succ && winerr==ERROR_IO_PENDING)
 	{
-		PrnTs(_T("  Async wait..."));
+		PrnTs(_T("  Async wait...  (Ctrl+c to break)"));
 
 		//DWORD waitre = WaitForSingleObject(hPipe, INFINITE);
 		DWORD nbret = 0;
 		succ = GetOverlappedResult(hPipe, &ovlp, &nbret, TRUE);
 	}
 
-	winerr = GetLastError();
 	if(!succ && winerr!=ERROR_PIPE_CONNECTED)
 	{
-		PrnTs(_T("ConnectNamedPipe() finally fails, winerr=%d"), winerr);
+		PrnTs(_T("ConnectNamedPipe() finally fails, %s"), WinerrStr());
 		exit(3);
 	}
 
-	PrnTs(_T("ConnectNamedPipe() success."), winerr);
+	PrnTs(_T("ConnectNamedPipe() success."));
 
 	check_NamedPipeInfo(hPipe, ServerSide); // again, after ConnectNamedPipe() success
 
@@ -95,6 +71,29 @@ void do_work(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD use
 
 	CloseHandle(hPipe);
 	CloseHandle(ovlp.hEvent);
+}
+
+void server_print_help()
+{
+	const TCHAR *pipename = _T("\\\\.\\pipe\\MyPipeSpace");
+
+	_tprintf(_T("Usage:\n"));
+	_tprintf(_T("  PipeServer1 <pipe-name> <max-instances> [openmode-hex] [pipemode-hex]\n"));
+	_tprintf(_T("\n"));
+	_tprintf(_T("Examples:\n"));
+	_tprintf(_T("  PipeServer1 %s 1\n"), pipename);
+	_tprintf(_T("    -- Create a pipe-namespace & the only one pipe-instance.\n"));
+	_tprintf(_T("  PipeServer1 %s 2 80003\n"), pipename);
+	_tprintf(_T("    -- Create/Use a pipe-namespace and create one pipe-instance in that namespace.\n"));
+	_tprintf(_T("       Max pipe-instances allow in that namespace is 2.\n"));
+	_tprintf(_T("       dwOpenMode is 0x80003 (FILE_FLAG_FIRST_PIPE_INSTANCE | PIPE_ACCESS_DUPLEX)\n"));	
+	_tprintf(_T("\n"));
+	_tprintf(_T("If [openmode-hex] is not given, I'll use PIPE_ACCESS_DUPLEX|FILE_FLAG_OVERLAPPED.\n"));
+	_tprintf(_T("If [pipemode-hex] is not given, I'll use 0.\n"));
+	_tprintf(_T("Configurable by env-var:\n"));
+	_tprintf(_T("  nOutBufferSize : Used by CreateNamedPipe()\n"));
+	_tprintf(_T("   nInBufferSize : Used by CreateNamedPipe()\n"));
+	_tprintf(_T("\n"));
 }
 
 int _tmain(int argc, TCHAR* argv[])
@@ -128,7 +127,7 @@ int _tmain(int argc, TCHAR* argv[])
 		usemode = _tcstoul(argv[4], NULL, 16);
 	}
 
-	do_work(pipename, nmax, openmode, usemode);
+	do_server(pipename, nmax, openmode, usemode);
 
 	return 0;
 }

@@ -117,8 +117,7 @@ void do_pipeWrite(HANDLE hPipe, int bytes_towr)
 	}
 	else
 	{
-		winerr = GetLastError();
-		PrnTs(_T("WriteFile() fail, winerr=%d"), winerr);
+		PrnTs(_T("WriteFile() fail, %s"), WinerrStr());
 	}
 
 	CloseHandle(ovlp.hEvent);
@@ -168,8 +167,7 @@ void do_pipeRead(HANDLE hPipe, int bytes_tord)
 	}
 	else
 	{
-		winerr = GetLastError();
-		PrnTs(_T("ReadFile() fail, winerr=%d"), winerr);
+		PrnTs(_T("ReadFile() fail, %s"), WinerrStr());
 	}
 
 	CloseHandle(ovlp.hEvent);
@@ -183,7 +181,7 @@ bool do_pipe_action(HANDLE hPipe, int key)
 
 	BOOL succ = 0;
 	DWORD winerr = 0;
-	char ibuf[20] = {};
+	char keysbuf[20] = {};
 
 
 	if(key=='w')
@@ -196,11 +194,11 @@ bool do_pipe_action(HANDLE hPipe, int key)
 	}
 	else if(key=='W')
 	{
-		_tprintf(_T("How many bytes to write once? "));
+		_tprintf(_T("How many bytes to write once? (%d) "), s_bytes_towr);
 
-		ibuf[0] = '\0';
-		fgets(ibuf, sizeof(ibuf), stdin);
-		int num = atoi(ibuf);
+		keysbuf[0] = '\0';
+		fgets(keysbuf, sizeof(keysbuf)-1, stdin);
+		int num = atoi(keysbuf);
 		if(num>0)
 		{
 			_tprintf(_T("Bytes-to-write once set to %d.\n"), num);
@@ -209,7 +207,22 @@ bool do_pipe_action(HANDLE hPipe, int key)
 	}
 	else if(key=='R')
 	{
+		_tprintf(_T("How many bytes to request on each read? (%d)"), s_bytes_tord);
 
+		keysbuf[0] = '\0';
+		fgets(keysbuf, sizeof(keysbuf)-1, stdin);
+		int num = atoi(keysbuf);
+		if(num>0)
+		{
+			_tprintf(_T("Bytes-to-read once set to %d.\n"), num);
+			s_bytes_tord = num;
+		}
+	}
+	else if(key=='f')
+	{
+		PrnTs(_T("Calling FlushFileBuffers() , blocking API..."));
+		succ = FlushFileBuffers(hPipe);
+		PrnTs(_T("Done    FlushFileBuffers() ."));
 	}
 	else
 	{
@@ -222,17 +235,26 @@ bool do_pipe_action(HANDLE hPipe, int key)
 
 void do_interactive(HANDLE hPipe)
 {
-	_tprintf(_T("Select: (w)write, (r)read, W(bytes-to-write), R(bytes-to-read), 0(quit)\n"));
-	int key = _getch();
+	BOOL succ = 0;
+	int key = 0;
+	_tprintf(_T("Select: (w)write, (r)read, W(bytes-to-write), R(bytes-to-read), f(Flush), 0(quit) "));
+	goto GETCH;
 
 	for(; ;)
 	{
 		if(key=='0')
+		{
+			PrnTs(_T("Calling CloseHandle()..."));
+			succ = FlushFileBuffers(hPipe);
+			PrnTs(_T("Done    CloseHandle() ."));
+			assert(succ);
 			break;
+		}
 
 		do_pipe_action(hPipe, key);
 
 		_tprintf(_T("Select: "));
+GETCH:
 		key = _getch();
 		if(key!='\r')
 			_tprintf(_T("%c\n"), key);
@@ -260,7 +282,7 @@ void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side)
 
 	if(!succ)
 	{
-		_tprintf(_T("GetNamedPipeHandleState() fail, winerr=%d\n"), GetLastError());
+		_tprintf(_T("GetNamedPipeHandleState() fail, %s\n"), WinerrStr());
 		return;
 	}
 
@@ -320,3 +342,76 @@ void check_NamedPipeInfo(HANDLE hPipe, WhichSide_et side)
 	// not using GetNamedPipeInfo
 }
 
+
+
+//////////////////////////////////////////////////////////////////////////
+
+struct Const2Str_st
+{
+	int Const;
+	const TCHAR *Str;
+};
+
+#define ITEM_Const2Str(macroname) { macroname, _T( #macroname ) }
+
+template<size_t arsize>
+const TCHAR *Const2Str(
+	const Const2Str_st (&armap)[arsize], int Const, bool ret_known=false)
+{
+	for(int i=0; i<arsize; i++)
+	{
+		if(armap[i].Const==Const)
+			return armap[i].Str;
+	}
+
+	return ret_known ? _T("Unknown") : NULL;
+}
+
+////
+
+#include "winerrs.partial.cpp"
+
+const TCHAR * Winerr2Str(DWORD winerr)
+{
+	return Const2Str(gar_Winerr2Str, winerr, true);
+}
+
+const TCHAR *WinerrStr(DWORD winerr)
+{
+	static TCHAR s_retbuf[80] = {};
+	s_retbuf[0] = 0;
+
+	if (winerr == (DWORD)-1)
+		winerr = GetLastError();
+
+	const TCHAR *errstr = Const2Str(gar_Winerr2Str, winerr, false);
+
+	if(errstr)
+	{
+		_sntprintf_s(s_retbuf, _TRUNCATE, _T("WinErr=%d (%s)"), winerr, errstr);
+	}
+	else
+	{
+		TCHAR szErrDesc[200] = {};
+		DWORD retchars = FormatMessage(
+			FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, 
+			winerr,
+			MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US), // LANGID
+			szErrDesc, ARRAYSIZE(szErrDesc)-1,
+			NULL); 
+
+		if(retchars>0)
+		{
+			_sntprintf_s(s_retbuf, _TRUNCATE, _T("WinErr=%d, %s"), winerr, szErrDesc);
+		}
+		else
+		{
+			_sntprintf_s(s_retbuf, _TRUNCATE, 
+				_T("WinErr=%d (FormatMessage does not known this error-code)"), 
+				winerr);
+		}
+	}
+
+	return s_retbuf;
+}
