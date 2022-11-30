@@ -12,7 +12,7 @@ int g_defaulttimeout_msec = 1000;
 
 void print_version()
 {
-	_tprintf(_T("PipeServer1 version %s:\n"), app_version);
+	_tprintf(_T("PipeServer1 version: %s\n"), app_version);
 }
 
 void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD usemode)
@@ -86,14 +86,13 @@ void server_print_help()
 {
 	const TCHAR *pipename = _T("\\\\.\\pipe\\MyPipeSpace");
 
-	_tprintf(_T("PipeServer1 version %s:\n"), app_version);
 	_tprintf(_T("Usage:\n"));
 	_tprintf(_T("  PipeServer1 <pipe-name> <max-instances> [openmode-hex] [pipemode-hex]\n"));
 	_tprintf(_T("\n"));
 	_tprintf(_T("Examples:\n"));
 	_tprintf(_T("  PipeServer1 %s 1\n"), pipename);
 	_tprintf(_T("    -- Create a pipe-namespace & the only one pipe-instance.\n"));
-	_tprintf(_T("  PipeServer1 %s 2 80003\n"), pipename);
+	_tprintf(_T("  PipeServer1 %s 2 0x80003\n"), pipename);
 	_tprintf(_T("    -- Create/Use a pipe-namespace and create one pipe-instance in that namespace.\n"));
 	_tprintf(_T("       Max pipe-instances allow in that namespace is 2.\n"));
 	_tprintf(_T("       dwOpenMode is 0x80003 (FILE_FLAG_FIRST_PIPE_INSTANCE | PIPE_ACCESS_DUPLEX)\n"));	

@@ -12,7 +12,7 @@ DWORD g_dwDesiredAccess = GENERIC_READ|GENERIC_WRITE;
 
 void print_version()
 {
-	_tprintf(_T("PipeClient1 version %s:\n"), app_version);
+	_tprintf(_T("PipeClient1 version: %s\n"), app_version);
 }
 
 void do_client(const TCHAR *pipename)
@@ -83,21 +83,20 @@ void client_print_help()
 {
 	const TCHAR *pipename = _T("\\\\.\\pipe\\MyPipeSpace");
 
-	_tprintf(_T("PipeClient1 version %s:\n"), app_version);
 	_tprintf(_T("Usage:\n"));
 	_tprintf(_T("  PipeClient1 <pipe-name> [wait=msec] [wthru] [dwDesiredAccess]\n"));
 	_tprintf(_T("\n"));
-	_tprintf(_T("wait             Call WaitNamedPipe() before actually connect.\n"));
-	_tprintf(_T("wthru            CreateFile() with FILE_FLAG_WRITE_THROUGH.\n"));
-	_tprintf(_T("dwDesiredAccess  Pass this specific value(in hex) to CreateFile()\n"));
-	_tprintf(_T("                 default: GENERIC_READ|GENERIC_WRITE\n"));
+	_tprintf(_T("  wait=msec        Call WaitNamedPipe() before actually connect.\n"));
+	_tprintf(_T("  wthru            CreateFile() with FILE_FLAG_WRITE_THROUGH.\n"));
+	_tprintf(_T("  dwDesiredAccess  Pass this specific value(in hex) to CreateFile()\n"));
+	_tprintf(_T("                   default: GENERIC_READ|GENERIC_WRITE\n"));
 	_tprintf(_T("\n"));
 	_tprintf(_T("Examples:\n"));
 	_tprintf(_T("  PipeClient1 %s\n"), pipename);
 	_tprintf(_T("    -- Connect to a desired pipe-namespace.\n"));
 	_tprintf(_T("  PipeClient1 %s wait=5000 wthru 0xC0040000\n"), pipename);
 	_tprintf(_T("    -- Will first wait 5000 millisec in WaitNamedPipe().\n"));
-	_tprintf(_T("       After WaitNamedPipe(), call CreateFile() with FILE_FLAG_WRITE_THROUGH,\n"));
+	_tprintf(_T("       After WaitNamedPipe() success, CreateFile() w/ FILE_FLAG_WRITE_THROUGH,\n"));
 	_tprintf(_T("       and dwDesiredAccess=GENERIC_READ|GENERIC_WRITE|WRITE_DAC .\n"));
 	_tprintf(_T("\n"));
 }
