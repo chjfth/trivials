@@ -157,6 +157,10 @@ void do_pipeWrite(HANDLE hPipe, int bytes_towr)
 	else
 	{
 		PrnTs(_T("WriteFile() fail, %s"), WinerrStr());
+
+		if(nWrDone!=0) {
+			PrnTs(_T("[PANIC!] WriteFile() fail, but nWrDone is not zero! (got %d)"), nWrDone);
+		}
 	}
 
 	CloseHandle(ovlp.hEvent);
@@ -207,6 +211,10 @@ void do_pipeRead(HANDLE hPipe, int bytes_tord)
 	else
 	{
 		PrnTs(_T("ReadFile() fail, %s"), WinerrStr());
+
+		if(nRdDone!=0) {
+			PrnTs(_T("[PANIC!] ReadFile() fail, but nRdDone is not zero! (got %d)"), nRdDone);
+		}
 	}
 
 	CloseHandle(ovlp.hEvent);
@@ -281,7 +289,6 @@ bool do_pipe_action(HANDLE hPipe, int key)
 
 void do_interactive(HANDLE hPipe)
 {
-//	BOOL succ = 0;
 	int key = 0;
 	_tprintf(_T("Select: (w)write (r)read W(bytes-to-write) R(bytes-to-read) f(Flush) 0(quit) "));
 	goto GETCH;
