@@ -6,38 +6,9 @@
 #include <locale.h>
 #include "..\share.h"
 
-int g_obufsize = 4000;
-int g_ibufsize = 4000;
-int g_timeout_client_prewait = 1000; // millisec
-int g_delaymsec_bfr_accept = 0;
-int g_is_skip_ConnectNamedPipe = false;
-
 void print_version()
 {
 	_tprintf(_T("PipeServer1 version: %s\n"), app_version);
-}
-
-void load_envvars()
-{
-	TCHAR tbuf[100] = {};
-
-	if(GetEnvironmentVariable(_T("nOutBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_obufsize = max(0, _ttoi(tbuf));
-
-	if(GetEnvironmentVariable(_T("nInBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_ibufsize = max(0, _ttoi(tbuf));
-
-	if(GetEnvironmentVariable(_T("WriteFileTimeout"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_WriteFile_timeout = max(0, _ttoi(tbuf));
-
-	if(GetEnvironmentVariable(_T("ReadFileTimeout"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_ReadFile_timeout = max(0, _ttoi(tbuf));
-
-	if(GetEnvironmentVariable(_T("DelayAcceptMsec"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_delaymsec_bfr_accept = max(0, _ttoi(tbuf));
-
-	if(GetEnvironmentVariable(_T("SkipConnectNamedPipe"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_is_skip_ConnectNamedPipe = max(0, _ttoi(tbuf));
 }
 
 void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD usemode)

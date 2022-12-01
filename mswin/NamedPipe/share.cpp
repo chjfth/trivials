@@ -11,8 +11,37 @@
 
 WhichSide_et g_whichside = Unset;
 
+int g_obufsize = 4000;
+int g_ibufsize = 4000;
+int g_timeout_client_prewait = 1000; // millisec
+int g_delaymsec_bfr_accept = 0;
+int g_is_skip_ConnectNamedPipe = false;
+
 int g_ReadFile_timeout = 5000;
 int g_WriteFile_timeout = 5000;
+
+void load_envvars()
+{
+	TCHAR tbuf[100] = {};
+
+	if(GetEnvironmentVariable(_T("nOutBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_obufsize = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("nInBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_ibufsize = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("WriteFileTimeout"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_WriteFile_timeout = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("ReadFileTimeout"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_ReadFile_timeout = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("DelayAcceptMsec"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_delaymsec_bfr_accept = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("SkipConnectNamedPipe"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_is_skip_ConnectNamedPipe = max(0, _ttoi(tbuf));
+}
 
 
 template<typename T1, typename T2>
@@ -25,7 +54,6 @@ bool IsSameBool(T1 a, T2 b)
 	else
 		return false;
 }
-
 
 void PrnTs(const TCHAR *fmt, ...)
 {
@@ -84,6 +112,7 @@ TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd)
 		st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
 	return buf;
 }
+
 
 void do_pipeWrite(HANDLE hPipe, int bytes_towr)
 {
@@ -217,7 +246,7 @@ bool do_pipe_action(HANDLE hPipe, int key)
 	}
 	else if(key=='R')
 	{
-		_tprintf(_T("How many bytes to request on each read? (%d)"), s_bytes_tord);
+		_tprintf(_T("How many bytes to request on each read? (%d) "), s_bytes_tord);
 
 		keysbuf[0] = '\0';
 		fgets(keysbuf, sizeof(keysbuf)-1, stdin);
@@ -438,3 +467,4 @@ const TCHAR *WinerrStr(DWORD winerr)
 
 	return s_retbuf;
 }
+

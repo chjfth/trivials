@@ -18,6 +18,7 @@ Const2Str_st gar_Winerr2Str[] =
 	ITEM_Const2Str(ERROR_PIPE_LISTENING), // 536, server
 	ITEM_Const2Str(ERROR_OPERATION_ABORTED), // 995
 	ITEM_Const2Str(ERROR_IO_PENDING), // 997
+	ITEM_Const2Str(ERROR_NOACCESS), // 998
 	ITEM_Const2Str(ERROR_LOGON_FAILURE), // 1326, unknown user name or bad password
 	ITEM_Const2Str(ERROR_CANNOT_IMPERSONATE), // 1368
 

@@ -19,6 +19,8 @@ void do_client(const TCHAR *pipename)
 {
 	g_whichside = ClientSide;
 
+	load_envvars();
+
 	DWORD winerr = 0;
 	BOOL succ = 0;
 
@@ -100,6 +102,10 @@ void client_print_help()
 	_tprintf(_T("    -- Will first wait 5000 millisec in WaitNamedPipe().\n"));
 	_tprintf(_T("       After WaitNamedPipe() success, CreateFile() w/ FILE_FLAG_WRITE_THROUGH,\n"));
 	_tprintf(_T("       and dwDesiredAccess=GENERIC_READ|GENERIC_WRITE|WRITE_DAC .\n"));
+	_tprintf(_T("\n"));
+	_tprintf(_T("Configurable by env-var:\n"));
+	_tprintf(_T("  WriteFileTimeout : Async-WriteFile() timeout millisec.\n"));
+	_tprintf(_T("   ReadFileTimeout : Async- ReadFile() timeout millisec.\n"));
 	_tprintf(_T("\n"));
 }
 
