@@ -14,6 +14,7 @@ Const2Str_st gar_Winerr2Str[] =
 //	ITEM_Const2Str(),
 	ITEM_Const2Str(ERROR_PIPE_BUSY), // 231, server
 	ITEM_Const2Str(ERROR_NO_DATA), // 232, WriteFile() to broken pipe
+	ITEM_Const2Str(ERROR_PIPE_CONNECTED), // 535, server, actually ConnectNamedPipe() success
 	ITEM_Const2Str(ERROR_PIPE_LISTENING), // 536, server
 	ITEM_Const2Str(ERROR_OPERATION_ABORTED), // 995
 	ITEM_Const2Str(ERROR_IO_PENDING), // 997

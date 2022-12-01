@@ -11,8 +11,8 @@
 
 WhichSide_et g_whichside = Unset;
 
-int g_read_timeout_msec = 5000;
-int g_write_timeout_msec = 5000;
+int g_ReadFile_timeout = 5000;
+int g_WriteFile_timeout = 5000;
 
 
 template<typename T1, typename T2>
@@ -100,9 +100,9 @@ void do_pipeWrite(HANDLE hPipe, int bytes_towr)
 	DWORD winerr = GetLastError();
 	if(!succ && winerr==ERROR_IO_PENDING)
 	{
-		PrnTs(_T("  Async wait (%d millsec)..."), g_write_timeout_msec);
+		PrnTs(_T("  Async wait (%d millsec)..."), g_WriteFile_timeout);
 		
-		DWORD waitre = WaitForSingleObject(ovlp.hEvent, g_write_timeout_msec);
+		DWORD waitre = WaitForSingleObject(ovlp.hEvent, g_WriteFile_timeout);
 		if(waitre==WAIT_TIMEOUT)
 		{
 			PrnTs(_T("  Wait timeout. Now calling CancelIoEx()..."));
@@ -149,9 +149,9 @@ void do_pipeRead(HANDLE hPipe, int bytes_tord)
 	DWORD winerr = GetLastError();
 	if(!succ && winerr==ERROR_IO_PENDING)
 	{
-		PrnTs(_T("  Async wait (%d millisec)..."), g_read_timeout_msec);
+		PrnTs(_T("  Async wait (%d millisec)..."), g_ReadFile_timeout);
 		
-		DWORD waitre = WaitForSingleObject(ovlp.hEvent, g_read_timeout_msec);
+		DWORD waitre = WaitForSingleObject(ovlp.hEvent, g_ReadFile_timeout);
 		if(waitre==WAIT_TIMEOUT)
 		{
 			PrnTs(_T("  Wait timeout. Now calling CancelIoEx()..."));

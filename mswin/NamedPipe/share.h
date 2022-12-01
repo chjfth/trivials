@@ -3,10 +3,10 @@
 
 #include <tchar.h>
 
-static const TCHAR *app_version = _T("1.1");
+static const TCHAR *app_version = _T("1.2");
 
-extern int g_read_timeout_msec;
-extern int g_write_timeout_msec;
+extern int g_ReadFile_timeout;
+extern int g_WriteFile_timeout;
 
 void PrnTs(const TCHAR *fmt, ...);
 

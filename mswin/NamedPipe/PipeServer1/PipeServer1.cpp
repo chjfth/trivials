@@ -8,24 +8,45 @@
 
 int g_obufsize = 4000;
 int g_ibufsize = 4000;
-int g_defaulttimeout_msec = 1000;
+int g_timeout_client_prewait = 1000; // millisec
+int g_delaymsec_bfr_accept = 0;
+int g_is_skip_ConnectNamedPipe = false;
 
 void print_version()
 {
 	_tprintf(_T("PipeServer1 version: %s\n"), app_version);
 }
 
+void load_envvars()
+{
+	TCHAR tbuf[100] = {};
+
+	if(GetEnvironmentVariable(_T("nOutBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_obufsize = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("nInBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_ibufsize = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("WriteFileTimeout"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_WriteFile_timeout = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("ReadFileTimeout"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_ReadFile_timeout = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("DelayAcceptMsec"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_delaymsec_bfr_accept = max(0, _ttoi(tbuf));
+
+	if(GetEnvironmentVariable(_T("SkipConnectNamedPipe"), tbuf, ARRAYSIZE(tbuf)) > 0)
+		g_is_skip_ConnectNamedPipe = max(0, _ttoi(tbuf));
+}
+
 void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD usemode)
 {
 	g_whichside = ServerSide;
 
-	openmode |= FILE_FLAG_OVERLAPPED;
+	load_envvars();
 
-	TCHAR tbuf[100] = {};
-	if(GetEnvironmentVariable(_T("nOutBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_obufsize = _ttoi(tbuf);
-	if(GetEnvironmentVariable(_T("nInBufferSize"), tbuf, ARRAYSIZE(tbuf)) > 0)
-		g_ibufsize = _ttoi(tbuf);
+	openmode |= FILE_FLAG_OVERLAPPED;
 
 	PrnTs(_T("Call CreateNamePipe()"));
 	_tprintf(_T("  pipename       = \"%s\"\n"), pipename);
@@ -39,7 +60,7 @@ void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD u
 	DWORD winerr = 0;
 
 	HANDLE hPipe = CreateNamedPipe(pipename, openmode, usemode, nmaxinstances, 
-		g_obufsize, g_ibufsize, g_defaulttimeout_msec, NULL);
+		g_obufsize, g_ibufsize, g_timeout_client_prewait, NULL);
 
 	if(hPipe==INVALID_HANDLE_VALUE)
 	{
@@ -49,30 +70,50 @@ void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD u
 
 //	check_NamedPipeInfo(hPipe, ServerSide);
 
+	if(g_delaymsec_bfr_accept>0)
+	{
+		PrnTs(_T("Delay %d millisec before accepting client..."), g_delaymsec_bfr_accept);
+		Sleep(g_delaymsec_bfr_accept);
+	}
+
+
 	OVERLAPPED ovlp = {};
 	ovlp.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 
-	PrnTs(_T("Calling ConnectNamedPipe()..."));
-	succ = ConnectNamedPipe(hPipe, &ovlp);
-	winerr = GetLastError();
-	if(!succ && winerr==ERROR_IO_PENDING)
+	if(g_is_skip_ConnectNamedPipe==1)
 	{
-		PrnTs(_T("  Async wait...  (Ctrl+c to break)"));
+		PrnTs(_T("==== SKIP ConnectNamedPipe(). ===="));
+	}
+	else
+	{
+		PrnTs(_T("Calling ConnectNamedPipe()..."));
 
-		//DWORD waitre = WaitForSingleObject(hPipe, INFINITE);
-		DWORD nbret = 0;
-		succ = GetOverlappedResult(hPipe, &ovlp, &nbret, TRUE);
+		succ = ConnectNamedPipe(hPipe, &ovlp);
+		
+		winerr = GetLastError();
+		if(!succ && winerr==ERROR_IO_PENDING)
+		{
+			PrnTs(_T("  Async wait...  (Ctrl+c to break)"));
+
+			//DWORD waitre = WaitForSingleObject(hPipe, INFINITE);
+			DWORD nbret = 0;
+			succ = GetOverlappedResult(hPipe, &ovlp, &nbret, TRUE);
+		}
+
+		if(!succ && winerr!=ERROR_PIPE_CONNECTED)
+		{
+			PrnTs(_T("ConnectNamedPipe() finally fails, %s"), WinerrStr());
+			exit(3);
+		}
+
+		// Report two "different" success case:
+		if(winerr==ERROR_PIPE_CONNECTED)
+			PrnTs(_T("ConnectNamedPipe() success with ERROR_PIPE_CONNECTED(535)."));
+		else
+			PrnTs(_T("ConnectNamedPipe() success."));
 	}
 
-	if(!succ && winerr!=ERROR_PIPE_CONNECTED)
-	{
-		PrnTs(_T("ConnectNamedPipe() finally fails, %s"), WinerrStr());
-		exit(3);
-	}
-
-	PrnTs(_T("ConnectNamedPipe() success."));
-
-	check_NamedPipeInfo(hPipe); // again, after ConnectNamedPipe() success
+	check_NamedPipeInfo(hPipe);
 
 	do_interactive(hPipe);
 
@@ -102,8 +143,12 @@ void server_print_help()
 	_tprintf(_T("If [openmode-hex] is not given, I'll use PIPE_ACCESS_DUPLEX|FILE_FLAG_OVERLAPPED.\n"));
 	_tprintf(_T("If [pipemode-hex] is not given, I'll use 0.\n"));
 	_tprintf(_T("Configurable by env-var:\n"));
-	_tprintf(_T("  nOutBufferSize : Used by CreateNamedPipe()\n"));
-	_tprintf(_T("   nInBufferSize : Used by CreateNamedPipe()\n"));
+	_tprintf(_T("  nOutBufferSize   : Used by CreateNamedPipe()\n"));
+	_tprintf(_T("   nInBufferSize   : Used by CreateNamedPipe()\n"));
+	_tprintf(_T("  WriteFileTimeout : Async-WriteFile() timeout millisec.\n"));
+	_tprintf(_T("   ReadFileTimeout : Async- ReadFile() timeout millisec.\n"));
+	_tprintf(_T("  DelayAcceptMsec  : Delay millisec between CreateNamedPipe and ConnectNamedPipe.\n"));
+	_tprintf(_T("  SkipConnectNamedPipe=1 : Skip the unimportant ConnectNamedPipe().\n"));
 	_tprintf(_T("\n"));
 }
 
