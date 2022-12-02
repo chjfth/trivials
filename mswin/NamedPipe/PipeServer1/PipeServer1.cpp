@@ -57,34 +57,10 @@ void do_server(const TCHAR *pipename, int nmaxinstances, DWORD openmode, DWORD u
 	}
 	else
 	{
-		PrnTs(_T("Calling ConnectNamedPipe()..."));
-
-		succ = ConnectNamedPipe(hPipe, &ovlp);
-		
-		winerr = GetLastError();
-		if(!succ && winerr==ERROR_IO_PENDING)
-		{
-			PrnTs(_T("  Async wait...  (Ctrl+c to break)"));
-
-			//DWORD waitre = WaitForSingleObject(hPipe, INFINITE);
-			DWORD nbret = 0;
-			succ = GetOverlappedResult(hPipe, &ovlp, &nbret, TRUE);
-		}
-
-		if(!succ && winerr!=ERROR_PIPE_CONNECTED)
-		{
-			PrnTs(_T("ConnectNamedPipe() finally fails, %s"), WinerrStr());
-			exit(3);
-		}
-
-		// Report two "different" success case:
-		if(winerr==ERROR_PIPE_CONNECTED)
-			PrnTs(_T("ConnectNamedPipe() success with ERROR_PIPE_CONNECTED(535)."));
-		else
-			PrnTs(_T("ConnectNamedPipe() success."));
+		succ = do_ConnectNamedPipe(hPipe, ovlp);
 	}
 
-	check_NamedPipeInfo(hPipe);
+	show_NamedPipeInfo(hPipe);
 
 	do_interactive(hPipe);
 

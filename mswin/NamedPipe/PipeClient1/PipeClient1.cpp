@@ -72,7 +72,7 @@ void do_client(const TCHAR *pipename)
 	else
 		PrnTs(_T("CreateFile() success. Connected to pipe server."));
 
-	check_NamedPipeInfo(hPipe);
+	show_NamedPipeInfo(hPipe);
 
 	do_interactive(hPipe);
 

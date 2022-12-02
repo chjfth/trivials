@@ -221,6 +221,49 @@ void do_pipeRead(HANDLE hPipe, int bytes_tord)
 	delete rdbuf;
 }
 
+BOOL do_ConnectNamedPipe(HANDLE hPipe, OVERLAPPED &ovlp)
+{
+	PrnTs(_T("Calling ConnectNamedPipe()..."));
+
+	BOOL succ = ConnectNamedPipe(hPipe, &ovlp);
+
+	DWORD winerr = GetLastError();
+	if(!succ && winerr==ERROR_IO_PENDING)
+	{
+		PrnTs(_T("  Async wait...  (Ctrl+c to break)"));
+
+		//DWORD waitre = WaitForSingleObject(hPipe, INFINITE);
+		DWORD nbret = 0;
+		succ = GetOverlappedResult(hPipe, &ovlp, &nbret, TRUE);
+	}
+
+	if(!succ && winerr!=ERROR_PIPE_CONNECTED)
+	{
+		PrnTs(_T("ConnectNamedPipe() finally fails, %s"), WinerrStr());
+		exit(3);
+	}
+
+	// Report two "different" success case:
+	if(winerr==ERROR_PIPE_CONNECTED)
+		PrnTs(_T("ConnectNamedPipe() success with ERROR_PIPE_CONNECTED(535)."));
+	else
+		PrnTs(_T("ConnectNamedPipe() success."));
+
+	return true;
+}
+
+void print_more_key_actions()
+{
+	_tprintf(_T("f : Call FlushFileBuffers() on pipe-handle.\n"));
+
+	if(g_whichside==ServerSide)
+	{
+		_tprintf(_T("D : Call DisconnectNamedPipe().\n"));
+		_tprintf(_T("C : Call ConnectNamedPipe() again, with same pipe handle.\n"));
+	}
+	//	_tprintf(_T("\n"));
+}
+
 bool do_pipe_action(HANDLE hPipe, int key)
 {
 	static int s_bytes_towr = 10;
@@ -270,9 +313,33 @@ bool do_pipe_action(HANDLE hPipe, int key)
 		PrnTs(_T("Calling FlushFileBuffers() , blocking API..."));
 		succ = FlushFileBuffers(hPipe);
 		if(succ)
-			PrnTs(_T("Done    FlushFileBuffers() ."));
+			PrnTs(_T("Success FlushFileBuffers() ."));
 		else
 			PrnTs(_T("FlushFileBuffers() fail, %s"), WinerrStr());
+	}
+	else if(key=='D' && g_whichside==ServerSide)
+	{
+		PrnTs(_T("Calling DisconnectNamedPipe()..."));
+		succ = DisconnectNamedPipe(hPipe);
+		if(succ)
+			PrnTs(_T("Success DisconnectNamedPipe()."));
+		else
+			PrnTs(_T("DisconnectNamedPipe() failed, %s"), WinerrStr());
+	}
+	else if(key=='C' && g_whichside==ServerSide)
+	{
+		OVERLAPPED ovlp = {};
+		ovlp.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+		
+		do_ConnectNamedPipe(hPipe, ovlp);
+
+		show_NamedPipeInfo(hPipe);
+
+		CloseHandle(ovlp.hEvent);
+	}
+	else if(key=='?')
+	{
+		print_more_key_actions();
 	}
 	else if(key=='\r')
 	{
@@ -290,7 +357,7 @@ bool do_pipe_action(HANDLE hPipe, int key)
 void do_interactive(HANDLE hPipe)
 {
 	int key = 0;
-	_tprintf(_T("Select: (w)write (r)read W(bytes-to-write) R(bytes-to-read) f(Flush) 0(quit) "));
+	_tprintf(_T("Select: (w)write (r)read W(bytes-to-write) R(bytes-to-read) 0(quit) ?(more) "));
 	goto GETCH;
 
 	for(; ;)
@@ -311,7 +378,7 @@ GETCH:
 }
 
 
-void check_NamedPipeInfo(HANDLE hPipe)
+void show_NamedPipeInfo(HANDLE hPipe)
 {
 	DWORD winerr = 0;
 	BOOL succ = 0;
@@ -440,7 +507,7 @@ const TCHAR *WinerrStr(DWORD winerr)
 	static TCHAR s_retbuf[80] = {};
 	s_retbuf[0] = 0;
 
-	if (winerr == (DWORD)-1)
+	if (winerr == 0)
 		winerr = GetLastError();
 
 	const TCHAR *errstr = Const2Str(gar_Winerr2Str, winerr, false);

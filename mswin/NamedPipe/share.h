@@ -3,7 +3,7 @@
 
 #include <tchar.h>
 
-static const TCHAR *app_version = _T("1.2");
+static const TCHAR *app_version = _T("1.3");
 
 extern int g_obufsize;
 extern int g_ibufsize;
@@ -33,10 +33,12 @@ enum WhichSide_et
 
 extern WhichSide_et g_whichside;
 
-void check_NamedPipeInfo(HANDLE hPipe);
+void show_NamedPipeInfo(HANDLE hPipe);
+
+BOOL do_ConnectNamedPipe(HANDLE hPipe, OVERLAPPED &ovlp);
 
 //const TCHAR *Winerr2Str(DWORD winerr);
 
-const TCHAR *WinerrStr(DWORD winerr=-1);
+const TCHAR *WinerrStr(DWORD winerr=0);
 
 #endif
