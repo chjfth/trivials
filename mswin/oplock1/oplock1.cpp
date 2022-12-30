@@ -190,7 +190,8 @@ int _tmain(int argc, TCHAR* argv[])
 
 	if(argc==1)
 	{
-		printf("Need a existing filename as parameter.\n");
+		printf("OpLock1 version 1.0, demo of how opportunistic-lock works.\n");
+		printf("Need an existing filename as parameter.\n");
 		exit(4);
 	}
 
