@@ -6,6 +6,7 @@
 #include <conio.h>
 #include <process.h>
 #include <windows.h>
+#include "share.h"
 
 // Sample code according to: 
 // https://devblogs.microsoft.com/oldnewthing/20130415-00/?p=4663
@@ -17,59 +18,6 @@
 // This notification is achieved by our putting an oplock on the file handle
 // and "wait" for the oplock to be broken. When some other client tries to
 // open the same file, Windows system proactively breaks the oplock and notify us.
-
-TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd=false)
-{
-	SYSTEMTIME st = {0};
-	GetLocalTime(&st);
-	buf[0]=_T('['); buf[1]=_T('\0'); buf[bufchars-1] = _T('\0');
-	if(ymd) {
-		_sntprintf_s(buf, bufchars-1, _TRUNCATE, _T("%s%04d-%02d-%02d "), buf, 
-			st.wYear, st.wMonth, st.wDay);
-	}
-	_sntprintf_s(buf, bufchars-1, _TRUNCATE, _T("%s%02d:%02d:%02d.%03d]"), buf,
-		st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-	return buf;
-}
-
-void PrnTs(const TCHAR *fmt, ...)
-{
-	static int count = 0;
-	static DWORD s_prev_msec = GetTickCount();
-
-	DWORD now_msec = GetTickCount();
-
-	TCHAR buf[1000] = {0};
-
-	// Print timestamp to show that time has elapsed for more than one second.
-	DWORD delta_msec = now_msec - s_prev_msec;
-	if(delta_msec>=1000)
-	{
-		_tprintf(_T(".\n"));
-	}
-
-	TCHAR timebuf[40] = {};
-	now_timestr(timebuf, ARRAYSIZE(timebuf));
-
-	_sntprintf_s(buf, _TRUNCATE, _T("%s (+%3u.%03us) "), 
-		timebuf, 
-		delta_msec/1000, delta_msec%1000);
-
-	int prefixlen = (int)_tcslen(buf);
-
-	va_list args;
-	va_start(args, fmt);
-
-	_vsntprintf_s(buf+prefixlen, ARRAYSIZE(buf)-3-prefixlen, _TRUNCATE, fmt, args);
-
-	va_end(args);
-
-	_tprintf(_T("%s\n"), buf);
-
-	s_prev_msec = now_msec;
-}
-
-//////////////////////////////////////////////////////////////////////////
 
 void _thread_waitkey(void *)
 {
@@ -107,10 +55,10 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 		exit(4);
 	}
 
-	PrnTs(_T("OK. We have placed an oplock on the file handle, ")
-		_T("and now waiting for the lock to be broken.\n")
-		_T("Use another program to access the same file to see the oplock broken,\n")
-		_T("or, press Enter to cancel waiting.\n")
+	PrnTs(_T("OK. We have placed an oplock on the file handle.\n")
+		_T("    Now waiting for the lock to be broken.\n")
+		_T("    Please Use another program to access the same file to see the oplock broken,\n")
+		_T("    or, press Enter to cancel waiting.\n")
 		);
 
 	HANDLE hThread = (HANDLE)_beginthread(_thread_waitkey, 0, NULL);	
@@ -189,17 +137,18 @@ int _tmain(int argc, TCHAR* argv[])
 		FILE_SHARE_READ|FILE_SHARE_WRITE, // shareMode
 		NULL, // no security attribute
 		OPEN_EXISTING, // dwCreationDisposition
-		FILE_ATTRIBUTE_NORMAL|FILE_FLAG_OVERLAPPED,
+		FILE_FLAG_OVERLAPPED,
 		NULL);
 	if(hfile==INVALID_HANDLE_VALUE) {
-		_tprintf(_T("File open error. WinErr=%d\n"), GetLastError());
+		_tprintf(_T("File open error. WinErr=%d.\n"), GetLastError());
 		exit(4);
 	}
 	
 	place_oplock_and_wait_broken(hfile, 3);
 
+	PrnTs(_T("Calling Closehandle()..."));
 	CloseHandle(hfile);
+	PrnTs(_T("Done    Closehandle()."));
 
 	return 0;
 }
-

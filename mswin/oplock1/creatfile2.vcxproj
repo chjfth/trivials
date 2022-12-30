@@ -40,9 +40,9 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{20221229-0000-0000-0000-222530000001}</ProjectGuid>
-    <ProjectName>oplock1</ProjectName>
-     <TargetName>oplock1</TargetName>
+    <ProjectGuid>{20221230-0000-0000-0000-102842000001}</ProjectGuid>
+    <ProjectName>creatfile2</ProjectName>
+     <TargetName>creatfile2</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   
@@ -147,7 +147,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="oplock1.cpp" />
+    <ClCompile Include="creatfile2.cpp" />
     <ClCompile Include="share.cpp" />
   </ItemGroup>
 
