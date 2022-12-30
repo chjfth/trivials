@@ -24,6 +24,69 @@ void _thread_waitkey(void *)
 	while(_getch()!='\r');
 }
 
+const TCHAR *strOpLockLevel(DWORD level)
+{
+	static TCHAR sbuf[100] = {};
+	sbuf[0] = '\0';
+	_tcscat_s(sbuf, level&OPLOCK_LEVEL_CACHE_READ   ? _T("OPLOCK_LEVEL_CACHE_READ|") : _T(""));
+	_tcscat_s(sbuf, level&OPLOCK_LEVEL_CACHE_HANDLE ? _T("OPLOCK_LEVEL_CACHE_HANDLE|") : _T(""));
+	_tcscat_s(sbuf, level&OPLOCK_LEVEL_CACHE_WRITE  ? _T("OPLOCK_LEVEL_CACHE_WRITE|") : _T(""));
+
+	int slen = (int)_tcslen(sbuf);
+	if(slen>0)
+		sbuf[slen-1] = '\0'; // delete trailing '|'
+
+	return sbuf;
+}
+
+const TCHAR *strObFlags(DWORD flags)
+{
+	static TCHAR sbuf[100] = {};
+	sbuf[0] = '\0';
+	_tcscat_s(sbuf, flags&REQUEST_OPLOCK_OUTPUT_FLAG_ACK_REQUIRED ? _T("REQUEST_OPLOCK_OUTPUT_FLAG_ACK_REQUIRED|") : _T(""));
+	_tcscat_s(sbuf, flags&REQUEST_OPLOCK_OUTPUT_FLAG_MODES_PROVIDED ? _T("REQUEST_OPLOCK_OUTPUT_FLAG_MODES_PROVIDED|") : _T(""));
+
+	int slen = (int)_tcslen(sbuf);
+	if(slen>0)
+		sbuf[slen-1] = '\0'; // delete trailing '|'
+
+	return sbuf;
+}
+
+void InterpretROPLOutput(const REQUEST_OPLOCK_OUTPUT_BUFFER &ob)
+{
+	TCHAR szOrigOplockLevel[100] = {};
+	_sntprintf_s(szOrigOplockLevel, _TRUNCATE, _T(".OrigOplockLevel = %d (%s)"),
+		ob.OriginalOplockLevel, strOpLockLevel(ob.OriginalOplockLevel));
+
+	TCHAR szNewOplockLevel[100] = {};
+	_sntprintf_s(szNewOplockLevel, _TRUNCATE, _T(".NewOplockLevel = %d (%s)"),
+		ob.NewOplockLevel, strOpLockLevel(ob.NewOplockLevel));
+
+	TCHAR szFlags[100] = {};
+	_sntprintf_s(szFlags, _TRUNCATE, _T(".Flags = %d (%s)"), ob.Flags, strObFlags(ob.Flags));
+
+	TCHAR szBreakerInfo[100] = {};
+	if(ob.Flags & REQUEST_OPLOCK_OUTPUT_FLAG_MODES_PROVIDED)
+	{
+		_sntprintf_s(szBreakerInfo, _TRUNCATE, _T("Breaker wants: AccessMode=0x%08X , ShareMode=%d"),
+			ob.AccessMode, ob.ShareMode);
+	}
+
+	PrnTs(
+		_T("REQUEST_OPLOCK_OUTPUT_BUFFER carries info:\n")
+		_T("    %s\n")
+		_T("    %s\n")
+		_T("    %s\n")
+		_T("    %s")
+		,
+		szOrigOplockLevel,
+		szNewOplockLevel,
+		szFlags,
+		szBreakerInfo
+		);
+}
+
 void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 {
 	OVERLAPPED ovlp = {};
@@ -68,9 +131,8 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 	DWORD waitret = WaitForMultipleObjects(2, arhs, FALSE, INFINITE);
 	if(waitret==WAIT_OBJECT_0)
 	{
-		// todo: see outp values
-		
-		PrnTs(_T("System asserts Oplock broken.")); // ts
+		PrnTs(_T("System asserts Oplock broken."));
+		InterpretROPLOutput(outp);
 	}
 	else if(waitret==WAIT_OBJECT_0+1)
 	{
@@ -104,14 +166,18 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 
 	if(is_got_broken_notify)
 	{
-		// We need to respond to system by explicitly acknowledging lock-broken. // No, always got WinErr=301
+#if 0
+		// Need to respond to system by explicitly acknowledging lock-broken. 
+		// Seems no, would always got WinErr=301 .
 		//
 		ResetEvent(ovlp.hEvent);
-		succ = DeviceIoControl(hfile, FSCTL_OPBATCH_ACK_CLOSE_PENDING,
+		succ = DeviceIoControl(hfile, 
+			FSCTL_OPBATCH_ACK_CLOSE_PENDING, // or FSCTL_OPLOCK_BREAK_ACKNOWLEDGE, or FSCTL_OPLOCK_BREAK_ACK_NO_2
 			NULL, 0,
 			NULL, 0, 
 			&retbytes, &ovlp);
 		winerr = GetLastError();
+#endif
 	}
 
 	CloseHandle(ovlp.hEvent);
