@@ -19,6 +19,8 @@
 // and "wait" for the oplock to be broken. When some other client tries to
 // open the same file, Windows system proactively breaks the oplock and notify us.
 
+const TCHAR *g_version = _T("1.1");
+
 void _thread_waitkey(void *)
 {
 	while(_getch()!='\r');
@@ -131,8 +133,7 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 	DWORD waitret = WaitForMultipleObjects(2, arhs, FALSE, INFINITE);
 	if(waitret==WAIT_OBJECT_0)
 	{
-		PrnTs(_T("System asserts Oplock broken."));
-		InterpretROPLOutput(outp);
+		PrnTs(_T("FSCTL_REQUEST_OPLOCK ovlp-operation completed."));
 	}
 	else if(waitret==WAIT_OBJECT_0+1)
 	{
@@ -150,21 +151,30 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 	else
 		assert(0);
 
-	BOOL is_got_broken_notify = GetOverlappedResult(hfile, &ovlp, &retbytes, TRUE);
-	if(is_got_broken_notify) {
-		PrnTs(_T("FSCTL_REQUEST_OPLOCK ovlp-result: Success."));
+	BOOL is_got_broken_request = GetOverlappedResult(hfile, &ovlp, &retbytes, TRUE);
+	if(is_got_broken_request) {
+		PrnTs(_T("FSCTL_REQUEST_OPLOCK completion-result: Success. (=Some other process wants to break the lock.)"));
+		InterpretROPLOutput(outp);
 	}
 	else {
-		PrnTs(_T("FSCTL_REQUEST_OPLOCK ovlp-result: Error. WinErr=%d\n"), GetLastError());
+		PrnTs(_T("FSCTL_REQUEST_OPLOCK completion-result: Fail. WinErr=%d\n"), GetLastError());
 	}
 
 	if(!isquit)
 	{
-		PrnTs(_T("Press Enter to acknowledge lock-breaking."));
+		if(is_got_broken_request)
+		{
+			PrnTs(_T("Press Enter to acknowledge(=agree) lock-breaking."));
+		}
+		else
+		{
+			PrnTs(_T("Press Enter to end this program."));
+		}
+		
 		waitret = WaitForSingleObject(hThread, INFINITE);
 	}
 
-	if(is_got_broken_notify)
+	if(is_got_broken_request)
 	{
 #if 0
 		// Need to respond to system by explicitly acknowledging lock-broken. 
@@ -188,10 +198,11 @@ int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
 
+	_tprintf(_T("OpLock1 version %s, demo of how opportunistic-lock works.\n"), g_version);
+	
 	if(argc==1)
 	{
-		printf("OpLock1 version 1.0, demo of how opportunistic-lock works.\n");
-		printf("Need an existing filename as parameter.\n");
+		_tprintf(_T("Need an existing filename as parameter.\n"));
 		exit(4);
 	}
 
