@@ -72,9 +72,7 @@ int _tmain(int argc, TCHAR* argv[])
 	fgets(tbuf, sizeof(tbuf), stdin);
 	
 	PrnTs(_T("Calling Closehandle()."));
-
 	CloseHandle(hfile);
-
 	PrnTs(_T("Done    Closehandle()."));
 
 	return 0;
