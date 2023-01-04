@@ -19,7 +19,7 @@
 // and "wait" for the oplock to be broken. When some other client tries to
 // open the same file, Windows system proactively breaks the oplock and notify us.
 
-const TCHAR *g_version = _T("1.1");
+const TCHAR *g_version = _T("1.2");
 
 void _thread_waitkey(void *)
 {
@@ -89,31 +89,52 @@ void InterpretROPLOutput(const REQUEST_OPLOCK_OUTPUT_BUFFER &ob)
 		);
 }
 
-void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
+typedef DWORD WinErr_t;
+
+WinErr_t 
+ioctl_FSCTL_REQUEST_OPLOCK(HANDLE hfile, DWORD req_oplock_level, DWORD flags,
+	REQUEST_OPLOCK_OUTPUT_BUFFER *outpp, OVERLAPPED *povlp)
 {
-	OVERLAPPED ovlp = {};
-	ovlp.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	// flags: REQUEST_OPLOCK_INPUT_FLAG_REQUEST or REQUEST_OPLOCK_INPUT_FLAG_ACK
 
 	REQUEST_OPLOCK_INPUT_BUFFER inp =
 	{
 		REQUEST_OPLOCK_CURRENT_VERSION, // 1
 		sizeof(inp),
-		oplock_level,
-		REQUEST_OPLOCK_INPUT_FLAG_REQUEST
+		req_oplock_level,
+		flags
 	};
 
-	REQUEST_OPLOCK_OUTPUT_BUFFER outp = 
-		{ REQUEST_OPLOCK_CURRENT_VERSION, sizeof(outp) };
+	//REQUEST_OPLOCK_OUTPUT_BUFFER outp = { REQUEST_OPLOCK_CURRENT_VERSION, sizeof(outp) };
+	memset(outpp, 0, sizeof(*outpp));
+	outpp->StructureVersion = REQUEST_OPLOCK_CURRENT_VERSION;
+	outpp->StructureLength = sizeof(*outpp);
 
-	PrnTs(_T("Issuing FSCTL_REQUEST_OPLOCK on the file handle(0x%08X)."), hfile);
-
+	SetLastError(0);
 	DWORD retbytes = 0;
 	BOOL succ = DeviceIoControl(hfile, FSCTL_REQUEST_OPLOCK,
 		&inp, sizeof(inp),
-		&outp, sizeof(outp), 
-		&retbytes, &ovlp);
-	DWORD winerr = GetLastError();
-	assert(!succ);
+		outpp, sizeof(*outpp), 
+		&retbytes, povlp);
+	if(succ)
+		return NOERROR;
+	else
+		return GetLastError();
+}
+
+void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
+{
+	DWORD succ = 0;
+	OVERLAPPED ovlp = {};
+	ovlp.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+	PrnTs(_T("Issuing FSCTL_REQUEST_OPLOCK on the file handle(0x%08X)."), hfile);
+
+	REQUEST_OPLOCK_OUTPUT_BUFFER outp = {};
+	DWORD retbytes = 0;
+	DWORD winerr = ioctl_FSCTL_REQUEST_OPLOCK(hfile, 
+		oplock_level, REQUEST_OPLOCK_INPUT_FLAG_REQUEST,
+		&outp, &ovlp);
 	if(winerr!=ERROR_IO_PENDING)
 	{
 		PrnTs(_T("[UNEXPECT!] Got WinErr=%d, should be ERROR_IO_PENDING."), winerr);
@@ -128,7 +149,7 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 
 	HANDLE hThread = (HANDLE)_beginthread(_thread_waitkey, 0, NULL);	
 
-	bool isquit = false;
+	bool is_active_quit = false;
 	HANDLE arhs[2] = { ovlp.hEvent, hThread };
 	DWORD waitret = WaitForMultipleObjects(2, arhs, FALSE, INFINITE);
 	if(waitret==WAIT_OBJECT_0)
@@ -146,7 +167,7 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 			PrnTs(_T("[Unexpect!] CancelIoEx() fail, winerr=%d."), winerr);
 		}
 
-		isquit = true;
+		is_active_quit = true;
 	}
 	else
 		assert(0);
@@ -160,9 +181,12 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 		PrnTs(_T("FSCTL_REQUEST_OPLOCK completion-result: Fail. WinErr=%d\n"), GetLastError());
 	}
 
-	if(!isquit)
+	bool need_ack = (is_got_broken_request 
+		&& (outp.Flags & REQUEST_OPLOCK_OUTPUT_FLAG_ACK_REQUIRED));
+
+	if(!is_active_quit)
 	{
-		if(is_got_broken_request)
+		if(need_ack)
 		{
 			PrnTs(_T("Press Enter to acknowledge(=agree) lock-breaking."));
 		}
@@ -174,20 +198,24 @@ void place_oplock_and_wait_broken(HANDLE hfile, DWORD oplock_level)
 		waitret = WaitForSingleObject(hThread, INFINITE);
 	}
 
-	if(is_got_broken_request)
+	if(need_ack)
 	{
-#if 0
-		// Need to respond to system by explicitly acknowledging lock-broken. 
-		// Seems no, would always got WinErr=301 .
-		//
+		PrnTs(_T("Now issue ioctl: REQUEST_OPLOCK_INPUT_FLAG_ACK ..."));
+		
 		ResetEvent(ovlp.hEvent);
-		succ = DeviceIoControl(hfile, 
-			FSCTL_OPBATCH_ACK_CLOSE_PENDING, // or FSCTL_OPLOCK_BREAK_ACKNOWLEDGE, or FSCTL_OPLOCK_BREAK_ACK_NO_2
-			NULL, 0,
-			NULL, 0, 
-			&retbytes, &ovlp);
-		winerr = GetLastError();
-#endif
+		winerr = ioctl_FSCTL_REQUEST_OPLOCK(hfile, 
+			oplock_level, REQUEST_OPLOCK_INPUT_FLAG_ACK,
+			&outp, &ovlp);
+		if(winerr==ERROR_IO_PENDING)
+		{
+			succ = GetOverlappedResult(hfile, &ovlp, &retbytes, TRUE);
+			winerr = GetLastError();
+		}
+	
+		if(succ)
+			PrnTs(_T("REQUEST_OPLOCK_INPUT_FLAG_ACK success."));
+		else
+			PrnTs(_T("REQUEST_OPLOCK_INPUT_FLAG_ACK fail, WinErr=%d."), winerr);
 	}
 
 	CloseHandle(ovlp.hEvent);
