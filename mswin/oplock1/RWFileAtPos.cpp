@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "share.h"
 
-const TCHAR *g_version = _T("1.1");
+const TCHAR *g_version = _T("1.2");
 
 void wait_enter()
 {
@@ -130,20 +130,36 @@ int _tmain(int argc, TCHAR* argv[])
 	{
 		_tprintf(_T("RWFileAtPos version %s.\n"), g_version);
 		_tprintf(_T("Usage:\n"));
-		_tprintf(_T("    RWFileAtPos <file> [Wpos1,size1] [Wpos2,size2] [Rpos3,size3] ...\n"));
+		_tprintf(_T("    RWFileAtPos <file> [S?] [Wpos1,size1] [Wpos2,size2] [Rpos3,size3] ...\n"));
+		_tprintf(_T("S? can be:\n"));
+		_tprintf(_T("    S1: FILE_SHARE_READ , S2: FILE_SHARE_WRITE , S3: both(default)\n"));
 		_tprintf(_T("Example:\n"));
-		_tprintf(_T("    RWFileAtPos input.txt W4096,100,ab W8000,200,cd\n"));
-		_tprintf(_T("    RWFileAtPos input.txt W4096,100,xx W8000,200,yy R4096,40\n"));
+		_tprintf(_T("    RWFileAtPos input.txt    W4096,100,ab  W8000,200,cd\n"));
+		_tprintf(_T("    RWFileAtPos input.txt    W4096,100,xx  W8000,200,yy  R4096,40\n"));
+		_tprintf(_T("    RWFileAtPos input.txt S2 R4096,10\n"));
 
 		exit(4);
 	}
 
 	const TCHAR *szfn = argv[1];
+	DWORD ShareMode = FILE_SHARE_READ|FILE_SHARE_WRITE;
+	int idxRW = 2;
 
-	// Scan through all params, to see whether we use read-only, write-only or read-write.
+	if(argc>2 && (argv[2][0]=='S' || argv[2][0]=='s'))
+	{
+		TCHAR schar = argv[2][1];
+		if(schar=='1')
+			ShareMode = FILE_SHARE_READ;
+		else if(schar=='2')
+			ShareMode = FILE_SHARE_WRITE;
+
+		idxRW = 3;
+	}
+
+	// Scan through remaining params, to see whether we use read-only, write-only or read-write.
 	DWORD DesiredAccess = 0;
 	int i;
-	for(i=2; argv[i]!=nullptr; i++)
+	for(i=idxRW; argv[i]!=nullptr; i++)
 	{
 		TCHAR c = argv[i][0];
 		if(c=='W' || c=='w')
@@ -151,8 +167,6 @@ int _tmain(int argc, TCHAR* argv[])
 		if(c=='R' || c=='r')
 			DesiredAccess |= GENERIC_READ;
 	}
-
-	DWORD ShareMode = FILE_SHARE_READ|FILE_SHARE_WRITE;
 
 	PrnTs(_T("Calling CreateFile()...\n")
 		_T("    szfn = %s\n")
@@ -178,7 +192,7 @@ int _tmain(int argc, TCHAR* argv[])
 
 	PrnTs(_T("CreateFile() success, hfile=0x%p."), hfile);
 
-	RWFile_steps(hfile, argv+2);
+	RWFile_steps(hfile, argv+idxRW);
 
 	PrnTs(_T("Calling Closehandle()."));
 	DWORD succ = CloseHandle(hfile);
