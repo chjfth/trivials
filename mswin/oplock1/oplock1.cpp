@@ -225,8 +225,11 @@ int _tmain(int argc, TCHAR* argv[])
 	place_oplock_and_wait_broken(hfile, 3);
 
 	PrnTs(_T("Calling Closehandle()..."));
-	CloseHandle(hfile);
-	PrnTs(_T("Done    Closehandle()."));
+	DWORD succ = CloseHandle(hfile);
+	if(succ)
+		PrnTs(_T("Success Closehandle()."));
+	else
+		PrnTs(_T("CloseHandle() fail, WinErr=%d"), GetLastError());
 
 	return 0;
 }

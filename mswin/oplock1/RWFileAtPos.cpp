@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "share.h"
 
-const TCHAR *g_version = _T("1.0");
+const TCHAR *g_version = _T("1.1");
 
 void wait_enter()
 {
@@ -181,8 +181,11 @@ int _tmain(int argc, TCHAR* argv[])
 	RWFile_steps(hfile, argv+2);
 
 	PrnTs(_T("Calling Closehandle()."));
-	CloseHandle(hfile);
-	PrnTs(_T("Done    Closehandle()."));
+	DWORD succ = CloseHandle(hfile);
+	if(succ)
+		PrnTs(_T("Success Closehandle()."));
+	else
+		PrnTs(_T("CloseHandle() fail, WinErr=%d"), GetLastError());
 
 	return 0;
 }
