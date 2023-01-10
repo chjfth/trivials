@@ -1,3 +1,5 @@
+#define OEMRESOURCE
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
@@ -19,6 +21,62 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+void Using_LoadIcon(HWND hdlg)
+{
+	HMODULE hDll = LoadLibrary(_T("shell32.dll"));
+	HICON hIco = LoadIcon(hDll, MAKEINTRESOURCE(243));
+
+	HWND hBtn = GetDlgItem(hdlg, IDC_BUTTON1);
+	HANDLE hPrevImg = (HANDLE)SendMessage(hBtn, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIco);
+}
+
+void Using_LoadImage_1(HWND hdlg)
+{
+	HMODULE hDll = LoadLibrary(_T("shell32.dll"));
+	
+	HICON hIco = (HICON) LoadImage(hDll, MAKEINTRESOURCE(243), IMAGE_ICON,
+		0, 0, // cxDesired, cyDesired
+		LR_DEFAULTCOLOR |LR_SHARED
+		);
+
+	HWND hBtn = GetDlgItem(hdlg, IDC_BUTTON1);
+	HANDLE hPrevImg = (HANDLE)SendMessage(hBtn, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIco);
+}
+
+void Using_LoadImage(HWND hdlg)
+{
+	HICON hIco = (HICON) LoadImage(NULL, _T("c64-128-32.ico"), IMAGE_ICON,
+		96, 96, // cxDesired, cyDesired
+		LR_SHARED |LR_LOADFROMFILE |LR_LOADTRANSPARENT
+		);
+
+	HWND hBtn = GetDlgItem(hdlg, IDC_BUTTON1);
+	HANDLE hPrevImg = (HANDLE)SendMessage(hBtn, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIco);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+inline bool IsCtrlKeyDown()
+{
+	SHORT keyCtrl = GetKeyState(VK_CONTROL); // "<0" means key pressed
+	return keyCtrl<0 ? true : false;
+}
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
@@ -32,6 +90,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		++(prdata->clicks);
 		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
 		SetDlgItemText(hdlg, IDC_EDIT1, textbuf);
+
+		if(IsCtrlKeyDown())
+			Using_LoadIcon(hdlg);
+		else
+			Using_LoadImage(hdlg);
 
 		break;
 	}
@@ -61,7 +124,11 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
-//	SetDlgItemText(hdlg, IDC_EDIT1, prdata->mystr);
+	SetDlgItemText(hdlg, IDC_EDIT1, 
+		_T("Click the button to set button image.\r\n")
+		_T("Simple click to use LoadImage().\r\n")
+		_T("Ctrl+click to use LoadIcon().\r\n")
+		);
 
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
@@ -69,7 +136,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	jul->AnchorControl(80,0, 100,50, IDC_BUTTON1);
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
-	
+
 	return 0; // Let Dlg-manager respect SetFocus().
 }
 
