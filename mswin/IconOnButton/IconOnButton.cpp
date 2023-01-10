@@ -30,7 +30,7 @@ void Using_LoadIcon(HWND hdlg)
 	HANDLE hPrevImg = (HANDLE)SendMessage(hBtn, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIco);
 }
 
-void Using_LoadImage_1(HWND hdlg)
+void Using_LoadImage_from_dll(HWND hdlg)
 {
 	HMODULE hDll = LoadLibrary(_T("shell32.dll"));
 	
@@ -43,33 +43,16 @@ void Using_LoadImage_1(HWND hdlg)
 	HANDLE hPrevImg = (HANDLE)SendMessage(hBtn, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIco);
 }
 
-void Using_LoadImage(HWND hdlg)
+void Using_LoadImage_from_icofile(HWND hdlg)
 {
-	HICON hIco = (HICON) LoadImage(NULL, _T("c64-128-32.ico"), IMAGE_ICON,
-		96, 96, // cxDesired, cyDesired
-		LR_SHARED |LR_LOADFROMFILE |LR_LOADTRANSPARENT
+	HICON hIco = (HICON) LoadImage(NULL, _T("c64-128-32p.ico"), IMAGE_ICON,
+		0, 0, // cxDesired, cyDesired
+		LR_SHARED |LR_LOADFROMFILE
 		);
 
 	HWND hBtn = GetDlgItem(hdlg, IDC_BUTTON1);
 	HANDLE hPrevImg = (HANDLE)SendMessage(hBtn, BM_SETIMAGE, IMAGE_ICON, (LPARAM)hIco);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 inline bool IsCtrlKeyDown()
@@ -92,9 +75,13 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		SetDlgItemText(hdlg, IDC_EDIT1, textbuf);
 
 		if(IsCtrlKeyDown())
+		{
 			Using_LoadIcon(hdlg);
+		}
 		else
-			Using_LoadImage(hdlg);
+		{
+			Using_LoadImage_from_icofile(hdlg);
+		}
 
 		break;
 	}
