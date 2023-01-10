@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    IconOnButton_VMAJOR, IconOnButton_VMINOR, IconOnButton_VPATCH, IconOnButton_VTAIL
+ProductVersion IconOnButton_VMAJOR, IconOnButton_VMINOR, IconOnButton_VPATCH, IconOnButton_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     IconOnButton_NAME
+            VALUE "FileDescription", IconOnButton_NAME
+            VALUE "FileVersion",    IconOnButton_VMAJORs "." IconOnButton_VMINORs "." IconOnButton_VPATCHs
+            VALUE "ProductVersion",    IconOnButton_VMAJORs "." IconOnButton_VMINORs "." IconOnButton_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , IconOnButton_NAME ".exe"
+            VALUE "InternalName", IconOnButton_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
