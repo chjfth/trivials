@@ -41,7 +41,7 @@ void MyChangeThreadUILang(PSTR szCmdLine)
 
 	SetLastError(0);
 
-	if(uilang_from_param>=0 && szCmdLine[0]!='*')
+	if(uilang_from_param>=0 && (szCmdLine[0]!='\0' && szCmdLine[0]!='*'))
 	{
 		LANGID truelangid = dlptr_SetThreadUILanguage(uilang_from_param);
 		if(truelangid==uilang_from_param)
