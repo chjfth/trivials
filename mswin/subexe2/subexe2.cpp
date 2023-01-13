@@ -8,7 +8,8 @@ typedef DWORD WinErr_t;
 
 WinErr_t myCreateProcess(
 	const TCHAR *pszExepath,
-	TCHAR *szCommandLine, bool isShowWindow, bool isWait)
+	TCHAR *szCommandLine, bool isShowWindow, bool isWait, 
+	DWORD *p_subproc_exitcode)
 {
 	STARTUPINFO sti = {sizeof(STARTUPINFO)};
 	sti.dwFlags = STARTF_USESHOWWINDOW;
@@ -30,24 +31,26 @@ WinErr_t myCreateProcess(
 	if(!succ)
 		return GetLastError();
 
-	WinErr_t ret = ERROR_SUCCESS;
-
 	if(isWait)
 	{
 		BOOL waitre = WaitForSingleObject(procinfo.hProcess, INFINITE);
 		if(waitre==WAIT_OBJECT_0)
 		{
-			if(GetExitCodeProcess(procinfo.hProcess, &ret)==FALSE)
-				ret = GetLastError();
+			if(GetExitCodeProcess(procinfo.hProcess, p_subproc_exitcode)==FALSE)
+			{
+				_tprintf(_T("[PANIC!] GetExitCodeProcess() got WinErr=%d.\n"), GetLastError());
+			}
 		}
 		else
-			ret = GetLastError();
+		{
+			_tprintf(_T("[PANIC!] WaitForSingleObjct() got WinErr=%d.\n"), GetLastError());
+		}		
 	}
 
 	CloseHandle(procinfo.hThread);
 	CloseHandle(procinfo.hProcess);
 
-	return ret;
+	return ERROR_SUCCESS;
 }
 
 const TCHAR *wincmdline_strip_argv0(
@@ -142,17 +145,20 @@ int _tmain(int argc, TCHAR* argv[])
 		_tprintf(_T("Will call CreateProcess() with second param=NULL.\n"));
 	}
 
+	DWORD subproc_exitcode = 444;
+
 	WinErr_t winerr = myCreateProcess(
 		exepath[0] ? exepath : NULL,
 		szCmdLine, 
 		true, 
-		true // is wait
-		); // MSDN says: szCmdLine[] may be modified inside; he adds NUL after argv[0].
+		true, // is wait
+		&subproc_exitcode
+		); // MSDN: szCmdLine[] may be modified inside; he adds temporal NUL after argv[0].
 
 	if(winerr==0)
-		_tprintf(_T("CreateProcess() sucess.\n"), winerr);
+		_tprintf(_T("CreateProcess() sucess. Sub-process exitcode=%u.\n"), subproc_exitcode);
 	else
-		_tprintf(_T("CreateProcess() fail. WinErr=%d\n"), winerr);
+		_tprintf(_T("CreateProcess() fail, WinErr=%d.\n"), winerr);
 
 	if(winerr==0)
 	{
