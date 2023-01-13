@@ -17,7 +17,7 @@ iCurrentFigure = IDC_RECT;
 
 static TCHAR szAppName[] = TEXT("About2-muires");
 
-TCHAR g_szUilang[100] = {};
+TCHAR g_szThreadUilang[100] = {};
 
 typedef int WINAPI FUNCTYPE_LCIDToLocaleName(LCID Locale, LPTSTR lpName, int cchName, DWORD dwFlags);
 FUNCTYPE_LCIDToLocaleName *dlptr_LCIDToLocaleName = 
@@ -44,7 +44,7 @@ void MyChangeThreadUILang(PSTR szCmdLine)
 		if(dlptr_GetThreadUILanguage)
 		{	
 			LANGID truelangid = dlptr_GetThreadUILanguage();
-			_sntprintf_s(g_szUilang, _TRUNCATE, _T("GetThreadUILanguage() = 0x%04X"), truelangid);
+			_sntprintf_s(g_szThreadUilang, _TRUNCATE, _T("GetThreadUILanguage() = 0x%04X"), truelangid);
 		}
 	}
 	else
@@ -52,12 +52,12 @@ void MyChangeThreadUILang(PSTR szCmdLine)
 		LANGID truelangid = dlptr_SetThreadUILanguage(uilang_from_param);
 		if(truelangid==uilang_from_param)
 		{
-			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X) success."), uilang_from_param);
+			_sntprintf_s(g_szThreadUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X) success."), uilang_from_param);
 		}
 		else
 		{
 			DWORD winerr = GetLastError();
-			_sntprintf_s(g_szUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X)=0x%04X. WinErr=%d."), 
+			_sntprintf_s(g_szThreadUilang, _TRUNCATE, _T("SetThreadUILanguage(0x%04X)=0x%04X. WinErr=%d."), 
 				uilang_from_param, truelangid, winerr);
 		}
 	}	
@@ -134,24 +134,27 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 
 		hCtrlBlock = GetDlgItem(hDlg, IDC_PAINT);
 
-		LCID lcid_thread = GetThreadLocale();
-		LCID lcid_ui = GetUserDefaultUILanguage();
-		TCHAR lcname_thread[20] = {};
-		TCHAR lcname_ui[20] = {};
+		LCID lcid_cplUILang = GetUserDefaultUILanguage();
+		TCHAR lcname_cplUILang[20] = {}; // cpl: the setting from control-panel
+		LCID lcid_threadloc = GetThreadLocale();
+		TCHAR lcname_threadloc[20] = {};
+
 		if(dlptr_LCIDToLocaleName)
-		{	// Vista+ has LCIDToLocaleName()
-			dlptr_LCIDToLocaleName(lcid_thread, lcname_thread, ARRAYSIZE(lcname_thread), 0);
-			dlptr_LCIDToLocaleName(lcid_ui, lcname_ui, ARRAYSIZE(lcname_ui), 0);
+		{
+			// Vista+ has LCIDToLocaleName()
+			dlptr_LCIDToLocaleName(lcid_cplUILang, lcname_cplUILang, ARRAYSIZE(lcname_cplUILang), 0);
+			dlptr_LCIDToLocaleName(lcid_threadloc, lcname_threadloc, ARRAYSIZE(lcname_threadloc), 0);
 		}
+			
 		TCHAR szText[400]={};
 		_sntprintf_s(szText, _TRUNCATE,
 			_T("%s\n")
-			_T("GetThreadLocale() = 0x%04X, %s\n")
-			_T("GetUserDefaultUILanguage() = 0x%04X, %s")
+			_T("GetUserDefaultUILanguage() = 0x%04X, %s\n")
+			_T("GetThreadLocale() = 0x%04X, %s")
 			,
-			g_szUilang,
-			lcid_thread, lcname_thread,
-			lcid_ui, lcname_ui);
+			g_szThreadUilang,
+			lcid_cplUILang, lcname_cplUILang,
+			lcid_threadloc, lcname_threadloc);
 		SetDlgItemText(hDlg, IDC_STATIC_LOCALE, szText);
 
 		SetFocus(GetDlgItem(hDlg, iColor));
