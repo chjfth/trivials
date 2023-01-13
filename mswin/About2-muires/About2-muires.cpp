@@ -39,15 +39,9 @@ void MyChangeThreadUILang(PSTR szCmdLine)
 {
 	LANGID uilang_from_param = (LANGID)strtoul(szCmdLine, NULL, 0);
 
-	if(uilang_from_param==0)
-	{
-		if(dlptr_GetThreadUILanguage)
-		{	
-			LANGID truelangid = dlptr_GetThreadUILanguage();
-			_sntprintf_s(g_szThreadUilang, _TRUNCATE, _T("GetThreadUILanguage() = 0x%04X"), truelangid);
-		}
-	}
-	else
+	SetLastError(0);
+
+	if(uilang_from_param>=0 && szCmdLine[0]!='*')
 	{
 		LANGID truelangid = dlptr_SetThreadUILanguage(uilang_from_param);
 		if(truelangid==uilang_from_param)
@@ -61,6 +55,16 @@ void MyChangeThreadUILang(PSTR szCmdLine)
 				uilang_from_param, truelangid, winerr);
 		}
 	}	
+	else 
+	{
+		// Pass param "*" to read current thread-ui-lang
+
+		if(dlptr_GetThreadUILanguage)
+		{	
+			LANGID truelangid = dlptr_GetThreadUILanguage();
+			_sntprintf_s(g_szThreadUilang, _TRUNCATE, _T("GetThreadUILanguage() = 0x%04X"), truelangid);
+		}
+	}
 }
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
