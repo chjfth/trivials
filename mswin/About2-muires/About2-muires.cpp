@@ -1,5 +1,6 @@
 /*------------------------------------------
-About2-muires.cpp -- About Box Demo Program No. 2
+About2-muires.cpp
+-- based on About Box Demo Program No.2 from [PRWIN5]
 ------------------------------------------*/
 
 #include <windows.h>
