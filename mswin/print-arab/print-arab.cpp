@@ -3,9 +3,12 @@
 #include <tchar.h>
 #include <locale.h>
 #include <io.h>
+#include <conio.h>
 #include <fcntl.h>
 #include <windows.h>
 #include <winnls.h>
+
+const TCHAR* g_appver = _T("1.1");
 
 void my_tprintf(const TCHAR* szfmt, ...)
 {
@@ -104,12 +107,45 @@ void concat_strings(TCHAR *obuf, int obufsize, ...)
 	}
 }
 
+bool IsWaitkey(const TCHAR *sepstr)
+{
+	return (sepstr && sepstr[0]=='@' && sepstr[1]=='\0') ? true : false;
+}
+
+void wait_a_key()
+{
+	_getch();
+}
+
 void print_one_case(const TCHAR *prefix, const TCHAR *lang, 
-	const TCHAR *spestr, const TCHAR *country, const TCHAR* tailstr=nullptr)
+	const TCHAR *sepstr, const TCHAR *country, const TCHAR* tailstr=nullptr)
 {
 	TCHAR szFinal[200] = {};
-	concat_strings(szFinal, 200, prefix, lang, spestr, country, tailstr, nullptr);
-	my_tprintf(_T("%s\n"), szFinal);
+	concat_strings(szFinal, 200, prefix, lang, sepstr, country, tailstr, nullptr);
+
+	if (sepstr && sepstr[0] == '@')
+	{
+		bool is_waitkey = IsWaitkey(sepstr);
+		
+		// slow print, char-by-char
+		const TCHAR* pc = szFinal;
+		while(*pc)
+		{
+			my_tprintf(_T("%c"), *pc);
+			pc++;
+
+			if (is_waitkey)
+				wait_a_key();
+			else
+				Sleep(200);
+		}
+		my_tprintf(_T("\n"));
+	}
+	else
+	{
+		my_tprintf(_T("%s\n"), szFinal);
+	}
+
 	print_hexdump(szFinal);
 	my_tprintf(_T("\n\n"));
 }
@@ -127,23 +163,58 @@ void print_arab(LANGID langid, const TCHAR *sepstr, const TCHAR* tailstr)
 		print_one_case(_T("CASE1: "), szLang, _T(" spkin "), szCountry); // spoken in
 		print_one_case(_T("CASE2: "), szLang, _T(" @ "), szCountry);
 
-		my_tprintf(_T("Hint: Run `print-arab 0x0401 at` to customize params.\n"));
+		my_tprintf(_T("Hint: Run `print-arab ?` to customize parameters.\n"));
 	}
 	else
 	{
-		print_one_case(_T("CUST:"), szLang, sepstr, szCountry, tailstr);
+		if(IsWaitkey(sepstr))
+		{
+			my_tprintf(_T("==== Press a key to print one more char. ====\n\n"));
+		}
+		
+		print_one_case(_T("CUST: "), szLang, sepstr, szCountry, tailstr);
 		print_one_case(_T(""), szLang, sepstr, szCountry, tailstr);
 	}
 }
 
+void print_helptext()
+{
+	app_print_version(g_appver);
+
+	printf("%s",
+"Usage:\n"
+"    print-arab [langid] [sepstr]\n"
+"\n"
+"Default: Using langid=0x0C01, print two cases with sepstr \" spkin \" and \" @ \".\n"
+"\n"
+"Examples:\n"
+"print-arab 0x0401 _at_\n"
+"    langid=0x0401 (Arabic @ Saudi Arabia), insert \"_at_\" between two Arabic words.\n"
+"\n"
+"print-arab 0x0C01 @\n"
+"    If sepstr is a single '@', this program will wprintf Arabic text char-by-char,\n"
+"    so that you can see how the whole Arabic string grow from right to left.\n"
+"\n"
+"print-arab 0x0C01 @@\n"
+"    If sepstr starts with '@' and has more chars, this program will wprintf\n"
+"    Arabic text char-by-char, with a small delay between each.\n"
+	);
+}
+
 int _tmain(int argc, TCHAR* argv[])
 {
-	setlocale(LC_ALL, "");
-	_setmode(_fileno(stdout), _O_U8TEXT); // let CRT preserve wide char
+	if(argc>1 && (argv[1][0]=='?' || argv[1][1]=='?'))
+	{
+		print_helptext();
+		exit(0);
+	}
 
 	LANGID langid = 0x0C01; // Arabic @ Egypt
 	const TCHAR* sepstr = nullptr;
 	const TCHAR* tailstr = nullptr;
+
+	setlocale(LC_ALL, "");
+	_setmode(_fileno(stdout), _O_U8TEXT); // let CRT preserve wide char
 
 	if(argc>1)
 		langid = (LANGID)_tcstoul(argv[1], nullptr, 0);
@@ -151,7 +222,7 @@ int _tmain(int argc, TCHAR* argv[])
 	if(argc>2)
 		sepstr = argv[2];
 
-	if (argc > 3)
+	if(argc>3)
 		tailstr = argv[3];
 
 	TCHAR szLangidDesc[100] = {};
