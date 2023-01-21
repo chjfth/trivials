@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    DefaultCharset_VMAJOR, DefaultCharset_VMINOR, DefaultCharset_VPATCH, DefaultCharset_VTAIL
+ProductVersion DefaultCharset_VMAJOR, DefaultCharset_VMINOR, DefaultCharset_VPATCH, DefaultCharset_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     DefaultCharset_NAME
+            VALUE "FileDescription", DefaultCharset_NAME
+            VALUE "FileVersion",    DefaultCharset_VMAJORs "." DefaultCharset_VMINORs "." DefaultCharset_VPATCHs
+            VALUE "ProductVersion",    DefaultCharset_VMAJORs "." DefaultCharset_VMINORs "." DefaultCharset_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , DefaultCharset_NAME ".exe"
+            VALUE "InternalName", DefaultCharset_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
