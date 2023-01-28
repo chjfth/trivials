@@ -36,16 +36,20 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+
   <!-- User project properties -->
+  
   <PropertyGroup Label="Globals">
     <ProjectGuid>{80898C58-3696-422B-A940-2798EE53E8F7}</ProjectGuid>
     <ProjectName>FormatMessage-use-neutral</ProjectName>
-    <TargetName>FormatMessage-use-neutral</TargetName>
+     <TargetName>FormatMessage-use-neutral</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
+  
   <!-- Microsoft.Cpp.Default.props 
   	For Linux .vcxproj, this should be after above "global" Properties. -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
   <!-- Debug or Release -->
   <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -53,6 +57,7 @@
   <PropertyGroup Condition="$(Configuration.StartsWith('Release'))" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
+
   <!-- Unicode or ANSI(MBCS) -->
   <PropertyGroup Condition="!$(Configuration.Contains('ANSI'))" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
@@ -60,6 +65,7 @@
   <PropertyGroup Condition=" $(Configuration.Contains('ANSI'))" Label="Configuration">
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -67,12 +73,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+
   <!-- Better .obj/.exe/.pdb output folder structure -->
   <PropertyGroup>
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(ProjectDir)obj-$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+     <IntDir>$(ProjectDir)obj-$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)bin-$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
+
   <!-- 
   	Compiler/Linker Behavior Settings : shared 
   -->
@@ -80,12 +88,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+
       <!-- Note: $(TargetPath) cannot receive a value in <PropertyGroup>, so it has to be in ItemDefinitionGroup. -->
+
       <!-- LIB's .pdb is final-pdb at compile stage, we want to see whole original xxx.lib name in PDB filename. -->
       <ProgramDataBaseFileName Condition="'$(TargetExt)'=='.lib' ">$(TargetPath).pdb</ProgramDataBaseFileName>
       <!-- EXE/DLL's .pdb is truly intermediate, so we put it in $(IntDir), with some fancy file-naming -->
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
+
       <PreprocessorDefinitions>;;MY_USE_NEUTRAL;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+
       <AdditionalIncludeDirectories>.;;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
@@ -96,7 +108,7 @@
       <GenerateMapFile>true</GenerateMapFile>
       <AdditionalLibraryDirectories>;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'"  >;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>shlwapi.lib;SetupAPI.lib;;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <!-- Better build.log file naming -->
@@ -130,6 +142,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
+
   <!-- 
     Source file list:
    -->
@@ -142,6 +155,7 @@
     <ResourceCompile Include="0404.rc" />
     <ResourceCompile Include="neutral.rc" />
   </ItemGroup>
+
   <ItemGroup>
     <CustomBuild Include="mc-UTF16-noBOM\0409.mc;mc-UTF16-noBOM\0804.mc;mc-UTF16-noBOM\0404.mc;mc-UTF16-noBOM\neutral.mc">
       <FileType>Document</FileType>
@@ -156,10 +170,12 @@ if errorlevel 1 exit /b 4
       <Message>Message-compiling "%(Identity)" to "$(ProjectDir)%(now_stemname).rc" ...</Message>
     </CustomBuild>
   </ItemGroup>
+
   <!-- MSBuild system stock Cpp.targets -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+
   <!-- import VSPG start -->
   <PropertyGroup>
     <VSPG_BootsDir_NoTBS>..\..\VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
