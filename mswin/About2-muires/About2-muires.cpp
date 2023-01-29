@@ -122,6 +122,43 @@ void PaintTheBlock(HWND hCtrl, int iColor, int iFigure)
 	PaintWindow(hCtrl, iColor, iFigure);
 }
 
+void myLoadString1(HWND hdlg, UINT idstring, UINT idlabel, const TCHAR *eprefix)
+{
+	TCHAR textbuf[100] = {};
+	HINSTANCE hInstExe = GetModuleHandle(NULL);
+	
+	int nchars = LoadString(hInstExe, idstring, textbuf, ARRAYSIZE(textbuf)-1);
+	if(nchars>0)
+	{
+		SetDlgItemText(hdlg, idlabel, textbuf);
+	}
+	else
+	{
+		DWORD winerr = GetLastError();
+
+		if(winerr!=0)
+		{
+			_sntprintf_s(textbuf, ARRAYSIZE(textbuf), _TRUNCATE,
+				TEXT("%s WinErr=%d"), eprefix, winerr);
+		}
+		else
+		{
+			_sntprintf_s(textbuf, ARRAYSIZE(textbuf), _TRUNCATE,
+				TEXT("%s empty, winerr=0"), eprefix);
+		}
+
+		SetDlgItemText(hdlg, idlabel, textbuf);
+	}
+}
+
+void myLoadStrings(HWND hdlg)
+{
+	myLoadString1(hdlg, IDS_NEUTRAL_ONLY, IDL_NEUTRAL_ONLY, TEXT("Neutral:"));
+	myLoadString1(hdlg, IDS_EN_US_ONLY,   IDL_EN_US_ONLY, TEXT("en-US:"));
+	myLoadString1(hdlg, IDS_ZH_CN_ONLY,   IDL_ZH_CN_ONLY, TEXT("zh-CN:"));
+	myLoadString1(hdlg, IDS_ZH_TW_ONLY,   IDL_ZH_TW_ONLY, TEXT("zh-TW:"));
+}
+
 INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	WPARAM wParam, LPARAM lParam)
 {
@@ -165,6 +202,8 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 			lcid_threadloc, lcname_threadloc);
 		SetDlgItemText(hDlg, IDC_STATIC_LOCALE, szText);
 
+		myLoadStrings(hDlg);
+			
 		SetFocus(GetDlgItem(hDlg, iColor));
 		return FALSE;
 	}
