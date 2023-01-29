@@ -4,13 +4,12 @@ About2-muires.cpp
 ------------------------------------------*/
 
 #include <windows.h>
-#include <windowsx.h>
 #include <tchar.h>
 #include <stdio.h>
 #include "resource.h"
 
 #define APPNAME "About2-muires"
-#define VERSION "1.1"
+#define VERSION "1.2"
 
 static TCHAR szAppName[] = TEXT(APPNAME);
 
