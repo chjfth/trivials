@@ -9,13 +9,17 @@ About2-muires.cpp
 #include <stdio.h>
 #include "resource.h"
 
+#define APPNAME "About2-muires"
+#define VERSION "1.1"
+
+static TCHAR szAppName[] = TEXT(APPNAME);
+
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK AboutDlgProc(HWND, UINT, WPARAM, LPARAM);
 
 int iCurrentColor = IDC_BLACK,
 iCurrentFigure = IDC_RECT;
-
-static TCHAR szAppName[] = TEXT("About2-muires");
 
 TCHAR g_szThreadUilang[100] = {};
 
@@ -128,7 +132,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	{{
 	case WM_INITDIALOG:
 	{
-		SetWindowText(hDlg, szAppName);
+		SetWindowText(hDlg, TEXT(APPNAME) TEXT(" v") TEXT(VERSION));
 			
 		iColor = iCurrentColor;
 		iFigure = iCurrentFigure;
