@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FormatMessage", "FormatMessage.vcxproj", "{20220907-0000-0000-0000-014726000001}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FormatMessage1", "FormatMessage1.vcxproj", "{20220907-0000-0000-0000-014726000001}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CCCCCCCC-0000-0000-0000-202209220001} = {CCCCCCCC-0000-0000-0000-202209220001}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0411", "0411.vcxproj", "{CCCCCCCC-0000-0000-0000-202209220001}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FormatMessage-use-neutral", "FormatMessage-use-neutral.vcxproj", "{80898C58-3696-422B-A940-2798EE53E8F7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FormatMessage1-NeutralRc", "FormatMessage1-NeutralRc.vcxproj", "{20220907-0000-0000-0000-014726000002}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CCCCCCCC-0000-0000-0000-202209220001} = {CCCCCCCC-0000-0000-0000-202209220001}
 	EndProjectSection

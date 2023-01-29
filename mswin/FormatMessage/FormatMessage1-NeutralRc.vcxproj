@@ -40,9 +40,9 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{80898C58-3696-422B-A940-2798EE53E8F7}</ProjectGuid>
-    <ProjectName>FormatMessage-use-neutral</ProjectName>
-     <TargetName>FormatMessage-use-neutral</TargetName>
+    <ProjectGuid>{20220907-0000-0000-0000-014726000002}</ProjectGuid>
+    <ProjectName>FormatMessage1-NeutralRc</ProjectName>
+     <TargetName>FormatMessage1-NeutralRc</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   
