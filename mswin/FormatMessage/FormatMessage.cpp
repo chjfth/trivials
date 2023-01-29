@@ -15,7 +15,7 @@
 
 #define VERSION _T("1.4")
 
-#ifdef MY_USE_NEUTRAL
+#ifdef HAVING_NEUTRAL_RC
 #define VERSION_SUFFIX _T("n")
 #else
 #define VERSION_SUFFIX _T("")
@@ -289,7 +289,7 @@ void tests_flag_IGNORE_INSERTS()
 void test_LangID_neutral()
 {
 	int total = 4;
-#ifdef MY_USE_NEUTRAL
+#ifdef HAVING_NEUTRAL_RC
 	total += 1;
 #endif
 
@@ -310,7 +310,7 @@ void test_LangID_neutral()
 		total, MSG_zh_TW_only); 
 	test_MessageFromModule(NULL, MSG_zh_TW_only, LANGID_Neutral);
 
-#ifdef MY_USE_NEUTRAL
+#ifdef HAVING_NEUTRAL_RC
 	_tprintf(_T("[5/%d] Request MessageID=%u available in NEUTRAL only.\n"),
 		total, MSG_neutral_only); 
 	test_MessageFromModule(NULL, MSG_neutral_only, LANGID_Neutral);
