@@ -147,7 +147,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="FormatMessage.cpp" />
+    <ClCompile Include="FormatMessage1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="0409.rc" />
