@@ -41,8 +41,8 @@
   
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20220907-0000-0000-0000-014726000001}</ProjectGuid>
-    <ProjectName>FormatMessage</ProjectName>
-     <TargetName>FormatMessage</TargetName>
+    <ProjectName>FormatMessage1</ProjectName>
+     <TargetName>FormatMessage1</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   
