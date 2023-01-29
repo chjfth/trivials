@@ -7,11 +7,13 @@
 #include <stdarg.h>
 #include <tchar.h>
 #include <locale.h>
+#include <io.h>
+#include <fcntl.h>
 
 #include "0409.h"
 #include "0411.h"
 
-#define VERSION _T("1.3")
+#define VERSION _T("1.4")
 
 #ifdef MY_USE_NEUTRAL
 #define VERSION_SUFFIX _T("n")
@@ -318,6 +320,33 @@ void test_LangID_neutral()
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
+
+	_setmode(_fileno(stdout), _O_U8TEXT);
+	// -- This ensure wprintf WCHARs goes to WinAPI.
+
+	LANGID uilang = GetUserDefaultUILanguage(); // or GetThreadUILanguage()
+	
+	if(argc==1)
+	{
+		_tprintf(_T("GetUserDefaultUILanguage() = 0x%04X\n"), uilang);
+		_tprintf(_T("( Hint: You can pass a parameter to override this uilang value, e.g, \"0x0804\" )\n"));
+		_tprintf(_T("\n"));
+	}
+	else if(argc>1)
+	{
+		uilang = (LANGID)_tcstoul(argv[1], NULL, 0);
+		LANGID uilang_ret = SetThreadUILanguage(uilang);
+		if (uilang == 0 || uilang_ret == uilang)
+		{
+			_tprintf(_T("SetThreadUILanguage(0x%04X) returns 0x%04X. Success.\n"), uilang, uilang_ret);
+		}
+		else
+		{
+			_tprintf(_T("[ERROR] SetThreadUILanguage(0x%04X) returns 0x%04X. WinErr=%d\n"),
+				uilang, uilang_ret, GetLastError());
+		}		
+	}
+	
 	_tprintf(_T("WinAPI FormatMessage demo, v%s%s\n"), VERSION, VERSION_SUFFIX);
 	
 	_tprintf(_T("==== Test flag: FORMAT_MESSAGE_FROM_STRING\n"));
