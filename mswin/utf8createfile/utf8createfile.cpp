@@ -2,22 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
-#include <locale.h>
+#include <io.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
-int _tmain(int argc, TCHAR* argv[])
+void use_CreateFile(const char * filenam)
 {
-	const char *ansi_filenam = "AB\xE7\x94\xB5\xE8\x84\x91.txt"; // UTF8: AB电脑
+    printf("Now CreateFile() creating filename: %s\n", filenam);
 
-	UINT acp = GetACP();
-	if(acp!=65001)
-	{
-		printf("To run this program, you need to enable UTF8ACP in system-locale.\n");
-		exit(1);
-	}
-	
-	printf("Now CreateFile() creating filename: %s\n", ansi_filenam);
-
-    HANDLE hfile = CreateFile(ansi_filenam,
+    HANDLE hfile = CreateFile(filenam,
         GENERIC_READ | GENERIC_WRITE, // to compare with GENERIC_ALL
         FILE_SHARE_READ | FILE_SHARE_WRITE, // shareMode
         NULL, // no security attribute
@@ -42,8 +36,50 @@ int _tmain(int argc, TCHAR* argv[])
     }
     else
     {
-        printf("Create success.\n");
+        printf("CreateFile() success.\n");
     }
+}
+
+void use_unix_open(const char* filenam)
+{
+    printf("Now _open() creating filename: %s\n", filenam);
+
+    int hfile = -1;
+    errno_t unixerr = _sopen_s(&hfile, filenam, 
+        _O_CREAT|_O_RDWR, 
+        _SH_DENYNO, // sharing flag
+        _S_IWRITE|_S_IREAD);
+
+    if (hfile<0)
+    {
+        const int bufsize = 400;
+        char szerr[bufsize] = "(unknown error)";
+
+        strerror_s(szerr, bufsize, unixerr);
+		printf("errno=%u: %s\r\n", unixerr, szerr);
+    }
+    else
+    {
+        printf("_open() success.\n");
+    }
+}
+
+
+int _tmain(int argc, TCHAR* argv[])
+{
+	const char *ansi_filenam1 = "AB\xE7\x94\xB5\xE8\x84\x91" "1.txt"; // UTF8: AB电脑1.txt
+    const char* ansi_filenam2 = "AB\xE7\x94\xB5\xE8\x84\x91" "2.txt"; // UTF8: AB电脑2.txt
+
+	UINT acp = GetACP();
+	if(acp!=65001)
+	{
+		printf("To run this program, you need to enable UTF8ACP in system-locale.\n");
+		exit(1);
+	}
+
+    use_CreateFile(ansi_filenam1);
+
+    use_unix_open(ansi_filenam2);
 
 	return 0;
 }
