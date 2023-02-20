@@ -10,12 +10,12 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug ANSI|Win32">
-      <Configuration>Debug ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Debug|Win32">
+      <Configuration>vs2019 Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release ANSI|Win32">
-      <Configuration>Release ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Release|Win32">
+      <Configuration>vs2019 Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <!-- x64 -->
@@ -27,12 +27,12 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug ANSI|x64">
-      <Configuration>Debug ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Debug|x64">
+      <Configuration>vs2019 Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release ANSI|x64">
-      <Configuration>Release ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Release|x64">
+      <Configuration>vs2019 Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -40,10 +40,11 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{20220907-0000-0000-0000-014726000001}</ProjectGuid>
-    <ProjectName>FormatMessage1</ProjectName>
-     <TargetName>FormatMessage1</TargetName>
+    <ProjectGuid>{20230130-0000-0000-0000-234912000001}</ProjectGuid>
+    <ProjectName>utf8createfile</ProjectName>
+     <TargetName>utf8createfile</TargetName>
     <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   
   <!-- Microsoft.Cpp.Default.props 
@@ -51,19 +52,16 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
   <!-- Debug or Release -->
-  <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))" Label="Configuration">
+  <PropertyGroup Condition="$(Configuration.Contains('Debug'))" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.StartsWith('Release'))" Label="Configuration">
+  <PropertyGroup Condition="$(Configuration.Contains('Release'))" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
 
-  <!-- Unicode or ANSI(MBCS) -->
-  <PropertyGroup Condition="!$(Configuration.Contains('ANSI'))" Label="Configuration">
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" $(Configuration.Contains('ANSI'))" Label="Configuration">
-    <CharacterSet>MultiByte</CharacterSet>
+  <!-- VC2010 or VC2019 -->
+  <PropertyGroup Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -96,7 +94,7 @@
       <!-- EXE/DLL's .pdb is truly intermediate, so we put it in $(IntDir), with some fancy file-naming -->
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
 
-      <PreprocessorDefinitions>WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>;;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
       <AdditionalIncludeDirectories>.;;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -109,7 +107,7 @@
       <AdditionalLibraryDirectories>;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'"  >;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;SetupAPI.lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SetupAPI.lib;;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <!-- Better build.log file naming -->
     <BuildLog>
@@ -119,7 +117,7 @@
   <!-- 
   	Compiler Behavior Settings : Debug 
   -->
-  <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Debug'))">
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('Debug'))">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;DBG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -131,7 +129,7 @@
   <!-- 
   	Compiler Behavior Settings : Release 
   -->
-  <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Release'))">
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('Release'))">
     <ClCompile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -147,27 +145,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="FormatMessage1.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="0409.rc" />
-    <ResourceCompile Include="0804.rc" />
-    <ResourceCompile Include="0404.rc" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <CustomBuild Include="mc-UTF16-noBOM\0409.mc;mc-UTF16-noBOM\0804.mc;mc-UTF16-noBOM\0404.mc">
-      <FileType>Document</FileType>
-      <now_stemname>$([System.IO.Path]::GetFileNameWithoutExtension( %(Identity) ))</now_stemname>
-      <Command>@REM .bat content below:
-set execmd=mc.exe -u %(Identity)
-echo %execmd%
-%execmd%
-if errorlevel 1 exit /b 4
-      </Command>
-      <Outputs>$(ProjectDir)%(now_stemname).rc</Outputs>
-      <Message>Message-compiling "%(Identity)" to "$(ProjectDir)%(now_stemname).rc" ...</Message>
-    </CustomBuild>
+    <ClCompile Include="utf8createfile.cpp" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
@@ -180,7 +158,7 @@ if errorlevel 1 exit /b 4
     <VSPG_BootsDir_NoTBS>..\..\VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" />
+    <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
   </ImportGroup>
   <!-- import VSPG end -->
 </Project>

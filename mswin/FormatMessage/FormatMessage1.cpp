@@ -13,7 +13,7 @@
 #include "0409.h"
 #include "0411.h"
 
-#define VERSION _T("1.4")
+#define VERSION _T("1.5")
 
 #ifdef HAVING_NEUTRAL_RC
 #define VERSION_SUFFIX _T("n")
@@ -220,7 +220,7 @@ void test_MessageFromDll()
 {
 	HMODULE hDll = LoadLibrary(_T("0411.dll")); // Japanese resource dll
 	if(!hDll){
-		_tprintf(_T("LoadLibrary(\"0411.dll\") fail!"));
+		_tprintf(_T("LoadLibrary(\"0411.dll\") fail!\n"));
 		return;
 	}
 
@@ -293,22 +293,24 @@ void test_LangID_neutral()
 	total += 1;
 #endif
 
+	LANGID langid = LANGID_Neutral; // use a variable for easier debugging tweak
+
 	const DWORD msgid_all_have = 1002;
 	_tprintf(_T("[1/%d] Request MessageID=%u available in all of en-US,zh-CN,zh-TW\n"), 
 		total, msgid_all_have);
-	test_MessageFromModule(NULL, msgid_all_have, LANGID_Neutral);
+	test_MessageFromModule(NULL, msgid_all_have, langid);
 
 	_tprintf(_T("[2/%d] Request MessageID=%u available in en-US only.\n"),
 		total, MSG_en_US_only);
-	test_MessageFromModule(NULL, MSG_en_US_only, LANGID_Neutral);
+	test_MessageFromModule(NULL, MSG_en_US_only, langid);
 
 	_tprintf(_T("[3/%d] Request MessageID=%u available in zh-CN only.\n"),
 		total, MSG_zh_CN_only); 
-	test_MessageFromModule(NULL, MSG_zh_CN_only, LANGID_Neutral);
+	test_MessageFromModule(NULL, MSG_zh_CN_only, langid);
 
 	_tprintf(_T("[4/%d] Request MessageID=%u available in zh-TW only.\n"),
 		total, MSG_zh_TW_only); 
-	test_MessageFromModule(NULL, MSG_zh_TW_only, LANGID_Neutral);
+	test_MessageFromModule(NULL, MSG_zh_TW_only, langid);
 
 #ifdef HAVING_NEUTRAL_RC
 	_tprintf(_T("[5/%d] Request MessageID=%u available in NEUTRAL only.\n"),
@@ -361,7 +363,7 @@ int _tmain(int argc, TCHAR* argv[])
 	tests_MessageFromModule();
 	_tprintf(_T("\n"));
 
-	_tprintf(_T("==== Test LangID Neutral(auto-select).\n"));
+	_tprintf(_T("==== Test LangID Neutral.\n"));
 	test_LangID_neutral();
 	_tprintf(_T("\n"));
 

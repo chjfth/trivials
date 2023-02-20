@@ -11,6 +11,12 @@ About2-muires.cpp
 #define APPNAME "About2-muires"
 #define VERSION "1.2"
 
+#ifdef HAS_NEUTRAL_RC
+#define APPSUFFIX "(NeutralRC)"
+#else
+#define APPSUFFIX ""
+#endif
+
 static TCHAR szAppName[] = TEXT(APPNAME);
 
 
@@ -168,7 +174,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	{{
 	case WM_INITDIALOG:
 	{
-		SetWindowText(hDlg, TEXT(APPNAME) TEXT(" v") TEXT(VERSION));
+		SetWindowText(hDlg, TEXT(APPNAME)TEXT(APPSUFFIX) TEXT(" v") TEXT(VERSION));
 			
 		iColor = iCurrentColor;
 		iFigure = iCurrentFigure;

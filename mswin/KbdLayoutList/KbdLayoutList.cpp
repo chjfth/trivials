@@ -177,7 +177,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			vaMsgBox(hdlg, MB_OK|MB_ICONHAND, 
 				_T("Something wrong"),
 				_T("ActivateKeyboardLayout(0x%X) fail, winerr=%d"),
-				(UINT)newhkl, GetLastError());
+				(UINT)(UINT_PTR)newhkl, GetLastError());
 		}
 
 		break;
