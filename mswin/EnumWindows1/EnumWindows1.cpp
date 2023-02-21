@@ -59,6 +59,25 @@ TCHAR * vaStrCat(TCHAR buf[], int bufsize, const TCHAR *fmt, ...)
 	return buf;
 }
 
+void myPrnWndInfo(int prnlv, HWND hwnd, const TCHAR *wndclass)
+{
+	UINT wStyle = GetWindowStyle(hwnd);
+	UINT wexStyle = GetWindowExStyle(hwnd);
+
+//	TCHAR szStyle[200];
+//	TCHAR szExStyle[200];
+
+	if(! (wStyle & WS_CHILD) )
+	{
+		PrnLv(prnlv, _T("Style: %s"), ITCSv(wStyle, itc::WS_xxx_toplevel));
+		PrnLv(prnlv, _T("ExSty: %s"), ITCSv(wexStyle, itc::WS_EX_xxx));
+	}
+	else if( _tcsicmp(wndclass, _T("static"))==0 )
+	{
+		PrnLv(prnlv, _T("Style: %s"), ITCSv(wStyle, itc::WS_xxx_static));
+	}
+}
+
 BOOL CALLBACK PROC_GotWindow(HWND hwnd,	LPARAM cbextra)
 {
 	WinEnumCallback_st &cbe = *(WinEnumCallback_st*)cbextra;
@@ -79,6 +98,9 @@ BOOL CALLBACK PROC_GotWindow(HWND hwnd,	LPARAM cbextra)
 	TCHAR szwndtext[200] = {};
 	GetWindowText(hwnd, szwndtext, ARRAYSIZE(szwndtext));
 
+	TCHAR wndclass[100] = {};
+	GetClassName(hwnd, wndclass, ARRAYSIZE(wndclass));
+
 	TCHAR szSeq[100] = {};
 	_sntprintf_s(szSeq, _TRUNCATE, 
 		cbe.NestLevel==0 ? _T("%s%d") : _T("%s.%d")
@@ -86,10 +108,11 @@ BOOL CALLBACK PROC_GotWindow(HWND hwnd,	LPARAM cbextra)
 		cbe.NestLevel==0 ? _T("") : cbe.pParentSeqs,
 		cbe.idxChildHwnd+1);
 
-	PrnLv(cbe.NestLevel, _T("[%s] HWND=0x%08X \"%s\""), 
-		szSeq, hwnd, szwndtext);
+	PrnLv(cbe.NestLevel, _T("[%s] HWND=0x%08X <%s> \"%s\""), 
+		szSeq, hwnd, wndclass, szwndtext);
 
-	UINT wStyle = GetWindowStyle(hwnd);
+	// Print window "class" and style info
+	myPrnWndInfo(cbe.NestLevel+1, hwnd, wndclass);
 
 	// Recurse into child windows
 
@@ -120,6 +143,8 @@ void do_work()
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
+
+	auto s = itc::WS_xxx_static.Interpret(0x50000103, itc::DF_NameAndValue);
 
 	do_work();
 
