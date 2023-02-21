@@ -8,6 +8,7 @@
 #include <locale.h>
 
 #include <mswin/winuser.itc.h>
+#include <mswin/commctrl.itc.h>
 
 struct WinEnumCallback_st
 {
@@ -70,19 +71,40 @@ void myPrnWndInfo(int prnlv, HWND hwnd, const TCHAR *wndclass)
 	if(! (wStyle & WS_CHILD) )
 	{
 		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_toplevel));
-		PrnLv(prnlv, _T("ExStyle: %s"), ITCSv(wexStyle, itc::WS_EX_xxx));
+//		PrnLv(prnlv, _T("ExStyle: %s"), ITCSv(wexStyle, itc::WS_EX_xxx));
 	}
 	else if( _tcsicmp(wndclass, _T("static"))==0 )
 	{
-		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_static));
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_Static));
 	}
 	else if( _tcsicmp(wndclass, _T("edit"))==0 )
 	{
-		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_edit));
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_Edit));
+	}
+	else if( _tcsicmp(wndclass, _T("button"))==0 )
+	{
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_Button));
+	}
+	else if( _tcsicmp(wndclass, _T("listbox"))==0 )
+	{
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_ListBox));
+	}
+	else if( _tcsicmp(wndclass, _T("combobox"))==0 )
+	{
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_ComboBox));
+	}
+	else if( _tcsicmp(wndclass, _T("SysListView32"))==0 )
+	{
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_SysListView32));
 	}
 	else
 	{	// other child-window class
 		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_childwnd));
+	}
+
+	if(wexStyle)
+	{
+		PrnLv(prnlv, _T("ExStyle: %s"), ITCSv(wexStyle, itc::WS_EX_xxx));
 	}
 }
 
@@ -152,7 +174,7 @@ int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
 
-	auto s = itc::WS_xxx_static.Interpret(0x50000103, itc::DF_NameAndValue);
+	auto s = itc::WS_xxx_Button.Interpret(0x50000000, itc::DF_NameAndValue);
 
 	do_work();
 

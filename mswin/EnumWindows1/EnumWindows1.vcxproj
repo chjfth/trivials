@@ -135,11 +135,13 @@
    -->
   <ItemGroup>
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\commctrl.itc.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp" />
     <ClCompile Include="EnumWindows1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\__WinConst\itc\InterpretConst.h" />
+    <ClInclude Include="..\..\__WinConst\mswin\commctrl.itc.h" />
     <ClInclude Include="..\..\__WinConst\mswin\winuser.itc.h" />
   </ItemGroup>
   <!-- MSBuild system stock Cpp.targets -->
