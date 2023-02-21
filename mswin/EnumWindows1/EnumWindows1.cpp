@@ -69,12 +69,20 @@ void myPrnWndInfo(int prnlv, HWND hwnd, const TCHAR *wndclass)
 
 	if(! (wStyle & WS_CHILD) )
 	{
-		PrnLv(prnlv, _T("Style: %s"), ITCSv(wStyle, itc::WS_xxx_toplevel));
-		PrnLv(prnlv, _T("ExSty: %s"), ITCSv(wexStyle, itc::WS_EX_xxx));
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_toplevel));
+		PrnLv(prnlv, _T("ExStyle: %s"), ITCSv(wexStyle, itc::WS_EX_xxx));
 	}
 	else if( _tcsicmp(wndclass, _T("static"))==0 )
 	{
-		PrnLv(prnlv, _T("Style: %s"), ITCSv(wStyle, itc::WS_xxx_static));
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_static));
+	}
+	else if( _tcsicmp(wndclass, _T("edit"))==0 )
+	{
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_edit));
+	}
+	else
+	{	// other child-window class
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_childwnd));
 	}
 }
 
