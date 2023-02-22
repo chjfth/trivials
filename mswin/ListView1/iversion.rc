@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    ListView1_VMAJOR, ListView1_VMINOR, ListView1_VPATCH, ListView1_VTAIL
+ProductVersion ListView1_VMAJOR, ListView1_VMINOR, ListView1_VPATCH, ListView1_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     ListView1_NAME
+            VALUE "FileDescription", ListView1_NAME
+            VALUE "FileVersion",    ListView1_VMAJORs "." ListView1_VMINORs "." ListView1_VPATCHs
+            VALUE "ProductVersion",    ListView1_VMAJORs "." ListView1_VMINORs "." ListView1_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , ListView1_NAME ".exe"
+            VALUE "InternalName", ListView1_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
