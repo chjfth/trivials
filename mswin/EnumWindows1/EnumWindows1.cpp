@@ -76,13 +76,13 @@ void myPrnWndInfo(int prnlv, HWND hwnd, const TCHAR *wndclass)
 	UINT wStyle = GetWindowStyle(hwnd);
 	UINT wexStyle = GetWindowExStyle(hwnd);
 
-//	TCHAR szStyle[200];
-//	TCHAR szExStyle[200];
-
 	if(! (wStyle & WS_CHILD) )
 	{
-		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_toplevel));
-//		PrnLv(prnlv, _T("ExStyle: %s"), ITCSv(wexStyle, itc::WS_EX_xxx));
+		// If a toplevel window:
+		if( _tcsicmp(wndclass, _T("tooltips_class32"))==0 )
+			PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_tooltips_class32_toplevel));
+		else
+			PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_toplevel));
 	}
 	else if( _tcsicmp(wndclass, _T("static"))==0 )
 	{
@@ -115,6 +115,10 @@ void myPrnWndInfo(int prnlv, HWND hwnd, const TCHAR *wndclass)
 		UINT eexstyle = TreeView_GetExtendedStyle(hwnd);
 		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_SysTreeView32));
 		PrnLv(prnlv, _T("TVS_EX_: %s"), ITCSv(eexstyle, itc::TVS_EX_xxx));
+	}
+	else if( _tcsicmp(wndclass, _T("tooltips_class32"))==0 )
+	{
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_tooltips_class32_childwnd));
 	}
 	else
 	{	// other child-window class
