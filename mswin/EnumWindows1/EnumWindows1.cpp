@@ -21,6 +21,16 @@ struct WinEnumCallback_st
 	const TCHAR *pParentSeqs;
 };
 
+void replace_crlf(TCHAR *s)
+{
+	while(*s)
+	{
+		if(*s=='\r' || *s=='\n')
+			*s = '/';
+		s++;
+	}
+}
+
 void PrnLv(int lv, const TCHAR *fmt, ...)
 {
 	// Print with indent level.
@@ -134,8 +144,10 @@ BOOL CALLBACK PROC_GotWindow(HWND hwnd,	LPARAM cbextra)
 		}
 	}
 
-	TCHAR szwndtext[200] = {};
-	GetWindowText(hwnd, szwndtext, ARRAYSIZE(szwndtext));
+	TCHAR szwndtext[200] = _T("(unknown window text)");
+	szwndtext[ARRAYSIZE(szwndtext)-1] = '\0';
+	GetWindowText(hwnd, szwndtext, ARRAYSIZE(szwndtext)-1);
+	replace_crlf(szwndtext);
 
 	TCHAR wndclass[100] = {};
 	GetClassName(hwnd, wndclass, ARRAYSIZE(wndclass));
