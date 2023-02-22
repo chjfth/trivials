@@ -141,18 +141,23 @@ void Dlg_OnNotify(HWND hdlg, int idctrl, NMHDR *pnmhdr)
 	if(LVN_GETDISPINFO==pnmhdr->code)
 	{
 		NMLVDISPINFO* plvdi = (NMLVDISPINFO*)pnmhdr;
-		switch (plvdi->item.iSubItem)
+		int iItem = plvdi->item.iItem;
+		int iSubItem = plvdi->item.iSubItem;
+
+		vaDbgTs(_T("LVN_GETDISPINFO: iItem=%d, iSubItem=%d"), iItem, iSubItem);
+
+		switch (iSubItem)
 		{
 		case 0:
-			plvdi->item.pszText = rgPetInfo[plvdi->item.iItem].szKind;
+			plvdi->item.pszText = rgPetInfo[iItem].szKind;
 			break;
 
 		case 1:
-			plvdi->item.pszText = rgPetInfo[plvdi->item.iItem].szBreed;
+			plvdi->item.pszText = rgPetInfo[iItem].szBreed;
 			break;
 
 		case 2:
-			plvdi->item.pszText = rgPetInfo[plvdi->item.iItem].szPrice;
+			plvdi->item.pszText = rgPetInfo[iItem].szPrice;
 			break;
 
 		default:

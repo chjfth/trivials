@@ -35,7 +35,7 @@ void vaDbgTs(const TCHAR *fmt, ...)
 	DWORD delta_msec = now_msec - s_prev_msec;
 	if(delta_msec>=1000)
 	{
-		_tprintf(_T(".\n"));
+		OutputDebugString(_T(".\n"));
 	}
 
 	TCHAR timebuf[40] = {};
