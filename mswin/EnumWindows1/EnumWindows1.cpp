@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <CommCtrl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <tchar.h>
@@ -51,7 +52,7 @@ TCHAR * vaStrCat(TCHAR buf[], int bufsize, const TCHAR *fmt, ...)
 	va_list args;
 	va_start(args, fmt);
 
-	int prefixlen = _tcslen(buf);
+	int prefixlen = (int)_tcslen(buf);
 	
 	_vsntprintf_s(buf+prefixlen, bufsize-prefixlen, _TRUNCATE, fmt, args);
 
@@ -95,7 +96,15 @@ void myPrnWndInfo(int prnlv, HWND hwnd, const TCHAR *wndclass)
 	}
 	else if( _tcsicmp(wndclass, _T("SysListView32"))==0 )
 	{
+		UINT eexstyle = ListView_GetExtendedListViewStyle(hwnd);
 		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_SysListView32));
+		PrnLv(prnlv, _T("LVS_EX_: %s"), ITCSv(eexstyle, itc::LVS_EX_xxx));
+	}
+	else if( _tcsicmp(wndclass, _T("SysTreeView32"))==0 )
+	{
+		UINT eexstyle = TreeView_GetExtendedStyle(hwnd);
+		PrnLv(prnlv, _T("Style  : %s"), ITCSv(wStyle, itc::WS_xxx_SysTreeView32));
+		PrnLv(prnlv, _T("TVS_EX_: %s"), ITCSv(eexstyle, itc::TVS_EX_xxx));
 	}
 	else
 	{	// other child-window class
