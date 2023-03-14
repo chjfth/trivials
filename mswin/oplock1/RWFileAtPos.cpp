@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "share.h"
 
-const TCHAR *g_version = _T("1.2");
+const TCHAR *g_version = _T("1.3");
 
 void wait_enter()
 {
@@ -93,27 +93,37 @@ void RWFile_steps(HANDLE hfile, TCHAR *argv[])
 		TCHAR *wrsize = _tcstok_s(nullptr, _T(","), &ctx);
 		TCHAR *wpattern = _tcstok_s(nullptr, _T(","), &ctx);
 
-		if(wrpos[0]=='W' || wrpos[0]=='w')
-		{
-			printf("==== #%d write \n", i+1);
+		bool cmdok = false; // assume false
 
-			int pos = _tcstoul(wrpos+1, nullptr, 0);
-			int size = _tcstoul(wrsize, nullptr, 0);
-			
-			do_writefile(hfile, pos, size, wpattern);
-		}
-		else if(wrpos[0]=='R' || wrpos[0]=='r')
+		if(wrpos && wrsize)
 		{
-			printf("==== #%d read \n", i+1);
+			if(wrpos[0]=='R' || wrpos[0]=='r')
+			{
+				printf("==== #%d read \n", i+1);
 
-			int pos = _tcstoul(wrpos+1, nullptr, 0);
-			int size = _tcstoul(wrsize, nullptr, 0);
-			
-			do_readfile(hfile, pos, size);
+				int pos = _tcstoul(wrpos+1, nullptr, 0);
+				int size = _tcstoul(wrsize, nullptr, 0);
+
+				do_readfile(hfile, pos, size);
+
+				cmdok = true;
+			}
+			else if((wrpos[0]=='W' || wrpos[0]=='w') && wpattern)
+			{
+				printf("==== #%d write \n", i+1);
+
+				int pos = _tcstoul(wrpos+1, nullptr, 0);
+				int size = _tcstoul(wrsize, nullptr, 0);
+
+				do_writefile(hfile, pos, size, wpattern);
+
+				cmdok = true;
+			}
 		}
-		else
+
+		if(!cmdok)
 		{
-			PrnTs(_T("Wrong command token: %s"), onecmd);
+			PrnTs(_T("[ERROR] Wrong command token: %s"), onecmd);
 			continue;
 		}
 
