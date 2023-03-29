@@ -31,6 +31,8 @@ WinErr_t myCreateProcess(
 	if(!succ)
 		return GetLastError();
 
+	_tprintf(_T("Subprocess PID = %u\n"), procinfo.dwProcessId);
+
 	if(isWait)
 	{
 		BOOL waitre = WaitForSingleObject(procinfo.hProcess, INFINITE);
@@ -156,7 +158,7 @@ int _tmain(int argc, TCHAR* argv[])
 		); // MSDN: szCmdLine[] may be modified inside; he adds temporal NUL after argv[0].
 
 	if(winerr==0)
-		_tprintf(_T("CreateProcess() sucess. Sub-process exitcode=%u.\n"), subproc_exitcode);
+		_tprintf(_T("CreateProcess() success. Sub-process exitcode=%u.\n"), subproc_exitcode);
 	else
 		_tprintf(_T("CreateProcess() fail, WinErr=%d.\n"), winerr);
 
