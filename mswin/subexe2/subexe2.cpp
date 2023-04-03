@@ -155,19 +155,24 @@ int _tmain(int argc, TCHAR* argv[])
 		true, 
 		true, // is wait
 		&subproc_exitcode
-		); // MSDN: szCmdLine[] may be modified inside; he adds temporal NUL after argv[0].
+		); 
+	// -- MSDN: szCmdLine[] may be modified inside; he injects temporal NUL after argv[0],
+	//    then before CreateProcess() return, that user TCHAR is restored.
+	//    So, MSDN requires the szCmdLine to be (non-const) TCHAR*. 
 
 	if(winerr==0)
 		_tprintf(_T("CreateProcess() success. Sub-process exitcode=%u.\n"), subproc_exitcode);
 	else
 		_tprintf(_T("CreateProcess() fail, WinErr=%d.\n"), winerr);
 
+#if 0
+	// This verifies that szCmdLine[] is "finally" unmodified after CreateProcess returns.
 	if(winerr==0)
 	{
 		_tprintf(_T("Check post-CreateProcess() command-line string: (%d chars)\n"),
 			_tcslen(szCmdLine));
 		_tprintf(_T("    %s\n"), szCmdLine);
 	}
-
+#endif
 	return 0;
 }
