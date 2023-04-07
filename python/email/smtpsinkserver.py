@@ -16,13 +16,14 @@ listen_port = int(sys.argv[1]) if len(sys.argv)>1 else 25000
 class CustomSMTPServer(smtpd.SMTPServer):
 	
 	def process_message(self, peer, mailfrom, rcpttos, data, **kwargs):
+		print('')
 		print('Receiving message from: %s'%(str(peer)))
 		print('Message addressed from: %s'%mailfrom)
 		print('Message addressed to  : %s'%(rcpttos))
 		print('Message length        : %d bytes'%len(data))
 		
 		dtnow = datetime.now() # localtime
-		filename = '%s-%s'%(dtnow.strftime('%Y%m%d.%H%M%S'), mailfrom)
+		filename = '%s-%s.eml'%(dtnow.strftime('%Y%m%d.%H%M%S'), mailfrom)
 		print('Saving to: %s'%(filename))
 		with open(filename, 'wb') as fh:
 			fh.write(data)
