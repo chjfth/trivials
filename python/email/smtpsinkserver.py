@@ -30,6 +30,6 @@ class CustomSMTPServer(smtpd.SMTPServer):
 
 print('Email server listening on port %d ...'%(listen_port))
 
-server = CustomSMTPServer(('0.0.0.0', 25000), None, enable_SMTPUTF8=True)
+server = CustomSMTPServer(('0.0.0.0', listen_port), None, enable_SMTPUTF8=True)
 
 asyncore.loop()
