@@ -11,6 +11,7 @@ int ptr_diff(void* p1, void* p2)
 
 void test1()
 {
+	int ar[1] = {};
 	string* pNico2 = new string("nico2");
 	string* pJutta2 = new string("jutta2");
 
@@ -56,7 +57,37 @@ void test1()
 		pp2[0], pp2[1], ptr_diff(pp2[0], pp2[1]));
 }
 
+void my_delete_string(string *s)
+{
+	delete s;
+}
+
+void test3()
+{
+	string* pNico3 = new string("nico3");
+	shared_ptr<string> spNico3{ pNico3, my_delete_string };
+}
+
+
+class CMyDeleteString
+{
+public:
+	void operator()(string *s)
+	{
+		delete s;
+	}
+};
+
+void test4()
+{
+	string* pNico4 = new string("nico4");
+	shared_ptr<string> spNico4{ pNico4, CMyDeleteString() };
+}
+
+
 int main(int argc, char *argv[])
 {
 	test1();
+	test3();
+	test4();
 }
