@@ -1,3 +1,4 @@
+#include <cassert>
 #include <stdio.h>
 #include <string>
 #include <memory>
@@ -57,6 +58,25 @@ void test1()
 		pp2[0], pp2[1], ptr_diff(pp2[0], pp2[1]));
 }
 
+void test_strong_weak()
+{
+	string* pNicoX = new string("nicox");
+	shared_ptr<string> spNicoX1{ pNicoX };
+
+	shared_ptr<string> spNicoX2(spNicoX1);
+	shared_ptr<string> spNicoX3(spNicoX1);
+
+	weak_ptr<string> wpNico{ spNicoX1 }; // weak-ref
+
+	// delete the strongs
+	spNicoX1.reset();
+	spNicoX2.reset();
+	spNicoX3.reset();
+
+	// delete the weak
+	wpNico.reset();
+}
+
 void my_delete_string(string *s)
 {
 	delete s;
@@ -84,10 +104,37 @@ void test4()
 	shared_ptr<string> spNico4{ pNico4, CMyDeleteString() };
 }
 
+void test5_weakptr()
+{
+	string* pNico5 = new string("nico5");
+	shared_ptr<string> spNico5(pNico5);
+
+	weak_ptr<string> wp1(spNico5);
+	weak_ptr<string> wp2(spNico5);
+
+	// Memo:
+	//		&((*spNico5._Rep)._Uses) == &((*wp1._Rep)._Uses)
+	// So, the weak_ptr object's control block is exactly its master-shared_ptr's.
+
+	{
+		shared_ptr<string> sq1 = wp1.lock(); // sq1 non-empty
+		assert(sq1);
+	}	
+
+	spNico5.reset(); // user resource destroyed
+
+	shared_ptr<string> sq0 = wp1.lock(); // sq0 empty
+	assert(!sq0);
+}
+
 
 int main(int argc, char *argv[])
 {
 	test1();
 	test3();
 	test4();
+
+	test5_weakptr();
+
+	test_strong_weak();
 }
