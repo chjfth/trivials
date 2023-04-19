@@ -127,6 +127,14 @@ void test5_weakptr()
 	assert(!sq0);
 }
 
+void test6_weakptr_dup()
+{
+	string* pNico6 = new string("nico6");
+	shared_ptr<string> spNico6(pNico6);
+
+	weak_ptr<string> wp6a(spNico6);
+	auto wp6b = wp6a;
+}
 
 int main(int argc, char *argv[])
 {
@@ -135,6 +143,7 @@ int main(int argc, char *argv[])
 	test4();
 
 	test5_weakptr();
+	test6_weakptr_dup();
 
 	test_strong_weak();
 }
