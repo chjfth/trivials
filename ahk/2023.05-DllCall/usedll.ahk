@@ -21,7 +21,7 @@ call_BadEntry()
 	MsgBox, % "chjdll.dll\BadEntry, ErrorLevel = " ErrorLevel ; -4
 }
 
-use_intAst_ahkver()
+use_intAst_ahkvar()
 {
 	sumhalf := DllCall("chjdll.dll\SumHalf"
 		, "int*", input
@@ -70,7 +70,7 @@ use_Ptr_Cvar()
 
 call_BadDllName()
 call_BadEntry()
-use_intAst_ahkver()
+use_intAst_ahkvar()
 use_Ptr_ahkvar()
 use_Ptr_ahkvarAd()
 use_Ptr_Cvar()
