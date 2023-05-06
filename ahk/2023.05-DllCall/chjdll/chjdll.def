@@ -1,0 +1,4 @@
+EXPORTS
+	SumHalf
+	chjdll_getversion
+	chjdll_printversion
