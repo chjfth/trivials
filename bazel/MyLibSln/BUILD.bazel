@@ -1,0 +1,13 @@
+
+cc_library(
+    name = "MyLib",
+    srcs = ["MyLib/MyLib.cpp", "MyLib/iversion.h"],
+    hdrs = ["MyLib/MyLib.h"],
+)
+
+cc_binary(
+	name = "MyExeUseLib",
+	srcs = ["MyExeUseLib/MyExeUseLib.cpp"],
+	deps = ["MyLib"],
+	copts = ["-I MyLib"],
+)
