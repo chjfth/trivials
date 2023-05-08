@@ -1,28 +1,58 @@
+#### Section 1, for Linux only. ####
+
 cc_binary(
-    name = "MyDll",
-    srcs = ["MyDll/MyDll.cpp", "MyDll/iversion.h",
-    	"MyDll/MyDll.h"
-    	],
-#    hdrs = ["MyDll/MyDll.h"],
-    
-    copts = ["-fPIC"],
-#    linkopts = ["-static"], # cause relocation R_X86_64_32 against hidden symbol `__TMC_END__' error.
-    visibility = ["//visibility:public"],
-    linkshared = True,
+	name = "MyDll",
+	srcs = ["MyDll/MyDll.cpp", "MyDll/iversion.h",
+		"MyDll/MyDll.h"
+		],
+
+	copts = ["-fPIC"],
+	visibility = ["//visibility:public"],
+	linkshared = True,
 )
 
 # https://bazel.build/reference/be/c-cpp#cc_import
 cc_import (
-    name = "myimplib",
-    hdrs = ["MyDll/MyDll.h"],
+	name = "myImplib",
+	hdrs = ["MyDll/MyDll.h"],
+	deps = [":MyDll"], # but no use
 	shared_library = "bazel-bin/libMyDll.so", # note: Cannot auto detect .so filename
 )
-
 
 cc_binary(
 	name = "MyExeUseDll",
 	srcs = ["MyExeUseDll/MyExeUseDll.cpp"],
-	deps = [":myimplib"],
+	deps = [":MyDll", ":myImplib"],
 	linkstatic = False,
+	copts = ["-I MyDll"],
+)
+
+#### Section 2, for MSVC, all target names have _vc suffix. ####
+
+cc_binary(
+	name = "MyDll_vc",
+	srcs = ["MyDll/MyDll.cpp", "MyDll/iversion.h",
+		"MyDll/MyDll.h"
+		],
+
+	copts = ["/D DLLEXPORT_MyDll=__declspec(dllexport)"],
+	visibility = ["//visibility:public"],
+	linkshared = True,
+)
+
+cc_import (
+	name = "myImplib_vc",
+	hdrs = ["MyDll/MyDll.h"],
+	interface_library = "MyDll_vc.if.lib", # tell the input implib
+	shared_library = "MyDll_vc.dll",       # note: Cannot auto detect .dll filename
+)
+
+cc_binary(
+	name = "MyExeUseDll_vc",
+	srcs = ["MyExeUseDll/MyExeUseDll.cpp"],
+	deps = [":myImplib_vc"],
 	copts = ["-I MyDll"]
+
+#	deps = ["MyDll_vc", ":myImplib_vc"],
+#	linkstatic = True,
 )
