@@ -11,7 +11,7 @@ extern"C" {
 #endif
 
 #ifndef DLL_CALLCONV // DLL function calling convention
-#define DLL_CALLCONV __stdcall
+#define DLL_CALLCONV
 #endif
 	
 struct MyDll_version_st 
