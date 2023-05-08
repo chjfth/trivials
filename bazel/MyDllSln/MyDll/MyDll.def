@@ -1,0 +1,3 @@
+EXPORTS
+	MyDll_getversion
+	MyDll_printversion
