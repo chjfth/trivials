@@ -1,0 +1,27 @@
+cc_binary(
+    name = "MyDll",
+    srcs = ["MyDll/MyDll.cpp", "MyDll/iversion.h",
+    	"MyDll/MyDll.h"
+    	],
+#    hdrs = ["MyDll/MyDll.h"],
+    
+    copts = ["-fPIC"],
+#    linkopts = ["-static"], # cause relocation R_X86_64_32 against hidden symbol `__TMC_END__' error.
+    visibility = ["//visibility:public"],
+    linkshared = True,
+)
+
+cc_library(
+    name = "MyLib_pre",
+    srcs = ["MyDll/MyDll.cpp", "MyDll/iversion.h"],
+    hdrs = ["MyDll/MyDll.h"],
+	copts = ["-D DLLEXPORT_MyDll=__declspec(dllexport)"],
+)
+
+
+cc_binary(
+	name = "MyExeUseDll",
+	srcs = ["MyExeUseDll/MyExeUseDll.cpp"],
+	deps = [":MyDll"],
+	copts = ["-I MyDll"],
+)
