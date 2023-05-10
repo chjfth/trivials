@@ -12,6 +12,11 @@ void print_localtime() {
   std::cout << std::asctime(std::localtime(&result));
 }
 
+TEST(HelloTest, GetGreet) {
+  EXPECT_EQ(123, 100+23);
+}
+
+
 int main(int argc, char** argv) {
   std::string who = "world";
   if (argc > 1) {
@@ -19,5 +24,8 @@ int main(int argc, char** argv) {
   }
   std::cout << get_greet(who) << std::endl;
   print_localtime();
-  return 0;
+
+
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }
