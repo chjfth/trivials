@@ -1,0 +1,6 @@
+
+cc_binary(
+    name = "hello-world",
+    srcs = ["hello-world.cc"],
+    deps = ["@gtestX//googletest-release-1.10.0:gtest"],
+)
