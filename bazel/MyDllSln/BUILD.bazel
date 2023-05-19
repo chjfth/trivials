@@ -1,4 +1,5 @@
 #### Section 1, for Linux only. ####
+# (problem exists)
 
 cc_binary(
 	name = "MyDll",
@@ -28,6 +29,7 @@ cc_binary(
 )
 
 #### Section 2, for MSVC, all target names have _vc suffix. ####
+# (problem exists)
 
 cc_binary(
 	name = "MyDll_vc",
@@ -56,3 +58,35 @@ cc_binary(
 #	deps = ["MyDll_vc", ":myImplib_vc"],
 #	linkstatic = True,
 )
+
+
+#### Section 3 , Generate DLL triggered by building EXE ####
+# ( ok, as hinted by googletest //:gtest_samples )
+
+config_setting(
+    name = "windows",
+    constraint_values = ["@platforms//os:windows"],
+)
+
+cc_library(
+	name = "MyLibA",
+	srcs = ["MyDll/MyDll.cpp", "MyDll/iversion.h",
+		"MyDll/MyDll.h"
+		],
+    features = select({
+        ":windows": ["windows_export_all_symbols"],
+        "//conditions:default": [],
+    }),
+#	visibility = ["//visibility:public"],
+)
+
+cc_binary(
+	name = "Test_MyLibA",
+#	size = "small", # only for cc_test()
+	srcs = ["MyExeUseDll/MyExeUseDll.cpp"],
+	copts = ["-I MyDll"],
+	
+	linkstatic = False,
+	deps = [":MyLibA"],
+)
+
