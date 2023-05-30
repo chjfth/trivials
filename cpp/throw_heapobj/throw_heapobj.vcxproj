@@ -74,9 +74,9 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{20230412-0000-0000-0000-003700000001}</ProjectGuid>
-    <ProjectName>ctor_throw</ProjectName>
-    <TargetName>ctor_throw</TargetName>
+    <ProjectGuid>{20230530-0000-0000-0000-143500000001}</ProjectGuid>
+    <ProjectName>throw_heapobj</ProjectName>
+    <TargetName>throw_heapobj</TargetName>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Configuration.EndsWith('-gcc'))" Label="Globals">
@@ -109,6 +109,13 @@
   <PropertyGroup Condition="$(Configuration.Contains('Release'))" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
+
+  <PropertyGroup Condition="!$(Configuration.EndsWith('-gcc'))">
+    <!-- 'Unicode' should be set *before* Microsoft.Cpp.props is included,
+        so that /D_UNICODE DUNICODE can be added to compiler flags. -->
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -166,12 +173,12 @@
 
     <!-- [20230326.R1] This is to workround a possible VS2019 16.11 VSLinux bug: 
       When launching WSL_1_0 exe, VSIDE will go hard to launch exe inside:
-        /mnt/d/gitw/Templates/vs2019/ctor_throw/bin/x64/Debug-WSL-gcc
+        /mnt/d/gitw/Templates/vs2019/throw_heapobj/bin/x64/Debug-WSL-gcc
       instead of the correct:
-        /mnt/d/gitw/Templates/vs2019/ctor_throw/bin.linux/x64/Debug-WSL-gcc
+        /mnt/d/gitw/Templates/vs2019/throw_heapobj/bin.linux/x64/Debug-WSL-gcc
       .
       Without this workaround, user needs to set the `<DebuggerWorkingDirectory>$(OutDir)</DebuggerWorkingDirectory>` 
-      into ctor_throw.vcxproj.user to make it work.
+      into throw_heapobj.vcxproj.user to make it work.
     -->
     <DebuggerWorkingDirectory>$(OutDir)</DebuggerWorkingDirectory>
 
@@ -318,7 +325,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="ctor_throw.cpp" />
+    <ClCompile Include="throw_heapobj.cpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- 
