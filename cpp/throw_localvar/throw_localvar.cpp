@@ -3,10 +3,9 @@
 
 void do_throw()
 {
-	int localvar = 4;
-	printf("do_throw()'s localvar   @[%p]\n", &localvar);
-
 	std::exception local_excobj("Boom!");
+	printf("do_throw()'s localvar   @[%p]\n", &local_excobj);
+
 	throw(local_excobj);
 }
 
