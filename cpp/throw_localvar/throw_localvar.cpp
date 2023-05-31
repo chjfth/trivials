@@ -1,14 +1,26 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <tchar.h>
-#include <locale.h>
+#include <stdexcept>
 
-int _tmain(int argc, TCHAR* argv[])
+void do_throw()
 {
-	setlocale(LC_ALL, "");
-	
-	_tprintf(_T("Hello, throw_localvar!\n"));
-	_tprintf(_T("sizeof(TCHAR)=%d\n"), (int)sizeof(TCHAR));
-	return 0;
+	int localvar = 4;
+	printf("do_throw()'s localvar   @[%p]\n", &localvar);
+
+	std::exception local_excobj("Boom!");
+	throw(local_excobj);
+}
+
+int main(int argc, char *argv[])
+{
+	const char* ptrexe = argv[0];
+	printf("main's localvar         @[%p]\n", &ptrexe);
+
+	try	{
+		do_throw();
+	}
+	catch (std::exception &rcv_excobj) {
+		printf("[Caught] Got rcv_excobj @[%p]\n", &rcv_excobj);
+		printf("         excobj message: %s\n", rcv_excobj.what());
+	}
 }
 
