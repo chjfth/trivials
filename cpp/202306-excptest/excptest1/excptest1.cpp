@@ -6,6 +6,7 @@ extern void will_throw(unsigned int);
 void doWork(unsigned int ui)
 {
 	char bufa[8] = "AAAAAAA";
+	
 	will_throw(0xBBBBbbbb);
 }
 
