@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32002.261
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "excptest1", "excptest1\excptest1.vcxproj", "{20230608-0000-0000-0000-110122000001}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug-remote-gcc|ARM = Debug-remote-gcc|ARM
+		Debug-remote-gcc|ARM64 = Debug-remote-gcc|ARM64
+		Debug-remote-gcc|x64 = Debug-remote-gcc|x64
+		Debug-remote-gcc|x86 = Debug-remote-gcc|x86
+		Debug-vs2019|ARM = Debug-vs2019|ARM
+		Debug-vs2019|ARM64 = Debug-vs2019|ARM64
+		Debug-vs2019|x64 = Debug-vs2019|x64
+		Debug-vs2019|x86 = Debug-vs2019|x86
+		Debug-WSL-gcc|ARM = Debug-WSL-gcc|ARM
+		Debug-WSL-gcc|ARM64 = Debug-WSL-gcc|ARM64
+		Debug-WSL-gcc|x64 = Debug-WSL-gcc|x64
+		Debug-WSL-gcc|x86 = Debug-WSL-gcc|x86
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|ARM.ActiveCfg = Debug-remote-gcc|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|ARM.Build.0 = Debug-remote-gcc|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|ARM.Deploy.0 = Debug-remote-gcc|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|ARM64.ActiveCfg = Debug-remote-gcc|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|ARM64.Build.0 = Debug-remote-gcc|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|ARM64.Deploy.0 = Debug-remote-gcc|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|x64.ActiveCfg = Debug-remote-gcc|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|x64.Build.0 = Debug-remote-gcc|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|x64.Deploy.0 = Debug-remote-gcc|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|x86.ActiveCfg = Debug-remote-gcc|x86
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|x86.Build.0 = Debug-remote-gcc|x86
+		{20230608-0000-0000-0000-110122000001}.Debug-remote-gcc|x86.Deploy.0 = Debug-remote-gcc|x86
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|ARM.ActiveCfg = Debug-vs2019|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|ARM.Build.0 = Debug-vs2019|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|ARM64.ActiveCfg = Debug-vs2019|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|ARM64.Build.0 = Debug-vs2019|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|x64.ActiveCfg = Debug-vs2019|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|x64.Build.0 = Debug-vs2019|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|x86.ActiveCfg = Debug-vs2019|Win32
+		{20230608-0000-0000-0000-110122000001}.Debug-vs2019|x86.Build.0 = Debug-vs2019|Win32
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|ARM.ActiveCfg = Debug-WSL-gcc|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|ARM.Build.0 = Debug-WSL-gcc|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|ARM.Deploy.0 = Debug-WSL-gcc|ARM
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|ARM64.ActiveCfg = Debug-WSL-gcc|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|ARM64.Build.0 = Debug-WSL-gcc|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|ARM64.Deploy.0 = Debug-WSL-gcc|ARM64
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|x64.ActiveCfg = Debug-WSL-gcc|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|x64.Build.0 = Debug-WSL-gcc|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|x64.Deploy.0 = Debug-WSL-gcc|x64
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|x86.ActiveCfg = Debug-WSL-gcc|x86
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|x86.Build.0 = Debug-WSL-gcc|x86
+		{20230608-0000-0000-0000-110122000001}.Debug-WSL-gcc|x86.Deploy.0 = Debug-WSL-gcc|x86
+		{20230608-0000-0000-0000-110122000001}.Release|ARM.ActiveCfg = Release|ARM
+		{20230608-0000-0000-0000-110122000001}.Release|ARM.Build.0 = Release|ARM
+		{20230608-0000-0000-0000-110122000001}.Release|ARM64.ActiveCfg = Release|ARM64
+		{20230608-0000-0000-0000-110122000001}.Release|ARM64.Build.0 = Release|ARM64
+		{20230608-0000-0000-0000-110122000001}.Release|x64.ActiveCfg = Release|x64
+		{20230608-0000-0000-0000-110122000001}.Release|x64.Build.0 = Release|x64
+		{20230608-0000-0000-0000-110122000001}.Release|x86.ActiveCfg = Release|Win32
+		{20230608-0000-0000-0000-110122000001}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1A10358E-F19E-43D5-8E5E-0BAB9E8CB5FC}
+	EndGlobalSection
+EndGlobal
