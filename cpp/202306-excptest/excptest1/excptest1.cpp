@@ -12,9 +12,7 @@ void doWork(unsigned int ui)
 
 int main(int argc, char *argv[])
 {
-	bool path1 = (argc > 1 && argv[1][0] == '1') ? true : false;
-	
-	printf("Start try{} ...\n");
+	printf("Start excptest1 ...\n");
 	try
 	{
 		doWork(0xAAAAaaaa);
