@@ -60,3 +60,6 @@ In will_throw()...
 [Caught!] e.what() is: The will_throw() really throws.
 Safe return from will_throw().
  */
+
+// BUT: gcc-7.5/gcc-12 will STILL hold-stop the Exception at doWork().
+// We will not see [Caught!] from a gcc-compiled excptest5 .
