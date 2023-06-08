@@ -15,7 +15,7 @@ public:
 	int m1;
 };
 
-void doWork(unsigned int ui)
+void doWork(unsigned int ui) noexcept // !
 {
 	CSpam sobj;
 	char bufa[8] = "AAAAAAA";
@@ -43,17 +43,10 @@ int main(int argc, char *argv[])
 }
 
 // VC2019 compile and link command
-//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest3.cpp worklib.cpp
+//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest4.cpp worklib.cpp
 //
-// excptest3 Memo:
-//	Compared to excptest2, will_throw() is now declared 'noexcept',
-//	then, doWork() now does NOT have EH-push/pop code.
-//	That is, compiler thinks doWork() does NOT need to equipped with
-//	EH-push/pop code.
-//
-//	doWork()'s epilog do NOT hold-stop stack-unwinding for any Exception
-//	thrown from inside doWork(). This is the case no matter will_throw()
-//	is *declared* 'noexcept' or not.
-//	.
-//	So, the std::runtime_error Exception will propagate to main()'s catch(),
-//	and we see [Caught!] on program run.
+// excptest4 Memo:
+//	Compared to excptest3, doWork() is now defined with 'noexcept',
+//	so, doWork() will hold-stop Exception's propagation and calls.
+//	std::terminate() to quit the whole program.
+//	That is, we will NOT see [Caught!] on program run.
