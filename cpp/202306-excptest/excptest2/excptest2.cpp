@@ -45,6 +45,6 @@ int main(int argc, char *argv[])
 // VC2019 compile and link command
 //	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest2.cpp worklib.cpp
 //
-// Memo:
+// excptest2 Memo:
 //	doWork() needs to destruct C++ object sobj on doWork's quit,
-//	so doWork() needs EH-push and EH-pop code.
+//	so doWork() needs EH-push/pop code.
