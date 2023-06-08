@@ -87,7 +87,7 @@
     <LinuxProjectType>{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
+  <PropertyGroup Condition="!$(Configuration.EndsWith('-gcc'))" Label="Configuration">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.EndsWith('-WSL-gcc'))" Label="Globals">
@@ -213,7 +213,7 @@
 
       <AdditionalIncludeDirectories>.;;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <ClCompile Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
+    <ClCompile Condition="!$(Configuration.EndsWith('-gcc'))" Label="Configuration">
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>    
     <Link>
