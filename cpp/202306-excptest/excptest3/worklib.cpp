@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdexcept>
 
-void will_throw(unsigned int ui)
+void mybar(unsigned int ui)
 {
 	char bufb[8] = "BBBBBBB";
-	printf("In will_throw()...\n");
+	printf("In mybar()...\n");
 
-	throw std::runtime_error("The will_throw() really throws.");
+	throw std::runtime_error("mybar() really throws.");
 }

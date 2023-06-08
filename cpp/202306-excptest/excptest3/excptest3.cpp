@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdexcept>
 
-extern void will_throw(unsigned int) noexcept;
+extern void mybar(unsigned int) noexcept;
 
 class CSpam
 {
@@ -15,12 +15,12 @@ public:
 	int m1;
 };
 
-void doWork(unsigned int ui)
+void myfoo(unsigned int ui)
 {
 	CSpam sobj;
-	char bufa[8] = "AAAAAAA";
+	char bufa[8] = "FFFFFFF";
 	
-	will_throw(0xBBBBbbbb);
+	mybar(0xB0B0B0B0);
 }
 
 int main(int argc, char *argv[])
@@ -28,14 +28,14 @@ int main(int argc, char *argv[])
 	printf("Start excptest3 ...\n");
 	try
 	{
-		doWork(0xAAAAaaaa);
+		myfoo(0xF0F0F0F0);
 	}
 	catch (std::exception &e)
 	{
 		printf("[Caught!] e.what() is: %s\n", e.what());
 	}
 	
-	printf("Safe return from will_throw().\n");
+	printf("Safe return from mybar().\n");
 	
 	return 0;
 }
@@ -44,13 +44,13 @@ int main(int argc, char *argv[])
 //	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest3.cpp worklib.cpp
 //
 // excptest3 Memo:
-//	Compared to excptest2, will_throw() is now declared 'noexcept',
-//	then, doWork() now does NOT have EH-push/pop code.
-//	That is, compiler thinks doWork() does NOT need to equipped with
+//	Compared to excptest2, mybar() is now declared 'noexcept',
+//	then, myfoo() now does NOT have EH-push/pop code.
+//	That is, compiler thinks myfoo() does NOT need to equipped with
 //	EH-push/pop code.
 //
-//	doWork()'s epilog do NOT hold-stop stack-unwinding for any Exception
-//	thrown from inside doWork(). This is the case no matter will_throw()
+//	myfoo()'s epilog do NOT hold-stop stack-unwinding for any Exception
+//	thrown from inside myfoo(). This is the case no matter mybar()
 //	is *declared* 'noexcept' or not.
 //	.
 //	So, the std::runtime_error Exception will propagate to main()'s catch(),
@@ -61,11 +61,11 @@ int main(int argc, char *argv[])
 > excptest3
 Start try{} ...
 Spam ctor for [@008FFEE8]
-In will_throw()...
-[Caught!] e.what() is: The will_throw() really throws.
-Safe return from will_throw().
+In mybar()...
+[Caught!] e.what() is: mybar() really throws.
+Safe return from mybar().
 */
 // We see that, although stack unwinding has out-reached to main(),
-// but doWork()'s sobj's dtor is NOT executed.
+// but myfoo()'s sobj's dtor is NOT executed.
 // 
 // VC2019 16.11 and gcc-7.5 both exhibit such behavior.

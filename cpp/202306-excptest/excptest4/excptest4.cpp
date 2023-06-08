@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdexcept>
 
-extern void will_throw(unsigned int) noexcept;
+extern void mybar(unsigned int) noexcept;
 
 class CSpam
 {
@@ -15,12 +15,12 @@ public:
 	int m1;
 };
 
-void doWork(unsigned int ui) noexcept // *new*
+void myfoo(unsigned int ui) noexcept // *new*
 {
 	CSpam sobj;
-	char bufa[8] = "AAAAAAA";
+	char bufa[8] = "FFFFFFF";
 	
-	will_throw(0xBBBBbbbb);
+	mybar(0xB0B0B0B0);
 }
 
 int main(int argc, char *argv[])
@@ -28,14 +28,14 @@ int main(int argc, char *argv[])
 	printf("Start excptest4 ...\n");
 	try
 	{
-		doWork(0xAAAAaaaa);
+		myfoo(0xF0F0F0F0);
 	}
 	catch (std::exception &e)
 	{
 		printf("[Caught!] e.what() is: %s\n", e.what());
 	}
 	
-	printf("Safe return from will_throw().\n");
+	printf("Safe return from mybar().\n");
 	
 	return 0;
 }
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 //	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest4.cpp worklib.cpp
 //
 // excptest4 Memo:
-//	Compared to excptest3, doWork() is now defined with 'noexcept',
-//	so, doWork() will hold-stop Exception's propagation and calls.
+//	Compared to excptest3, myfoo() is now defined with 'noexcept',
+//	so, myfoo() will hold-stop Exception's propagation and calls.
 //	std::terminate() to quit the whole program.
 //	That is, we will NOT see [Caught!] on program run.

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdexcept>
 
-extern void will_throw(unsigned int) noexcept;
+extern void mybar(unsigned int) noexcept;
 
 class CSpam
 {
@@ -15,12 +15,12 @@ public:
 	int m1;
 };
 
-void doWork(unsigned int ui) noexcept
+void myfoo(unsigned int ui) noexcept
 {
 //	CSpam sobj; // *new* no local C++ object to destruct
-	char bufa[8] = "AAAAAAA";
+	char bufa[8] = "FFFFFFF";
 	
-	will_throw(0xBBBBbbbb);
+	mybar(0xB0B0B0B0);
 }
 
 int main(int argc, char *argv[])
@@ -28,14 +28,14 @@ int main(int argc, char *argv[])
 	printf("Start excptest5 ...\n");
 	try
 	{
-		doWork(0xAAAAaaaa);
+		myfoo(0xF0F0F0F0);
 	}
 	catch (std::exception &e)
 	{
 		printf("[Caught!] e.what() is: %s\n", e.what());
 	}
 	
-	printf("Safe return from will_throw().\n");
+	printf("Safe return from mybar().\n");
 	
 	return 0;
 }
@@ -44,22 +44,22 @@ int main(int argc, char *argv[])
 //	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest5.cpp worklib.cpp
 //
 // excptest5 Memo:
-//	Compared to excptest4, this time, doWork() does NOT define a local
-//	C++ object, so doWork() does not need to destruct any object on
+//	Compared to excptest4, this time, myfoo() does NOT define a local
+//	C++ object, so myfoo() does not need to destruct any object on
 //	Exception-triggered stack-unwind.
-//	What's more, we tell the compiler will_throw() is 'noexcept',
-//	then the compiler decides(even doWork() is marked 'noexcept'):
+//	What's more, we tell the compiler mybar() is 'noexcept',
+//	then the compiler decides(even myfoo() is marked 'noexcept'):
 //	no EH-push/pop instructions are required.
 //
-//	So the result is: On will_throw()'s actually throwing an Exception,
+//	So the result is: On mybar()'s actually throwing an Exception,
 //	NO std::terminate() sentinel is there to hold-stop the program.
 //	We see program output like this:
 /*
 Start try{} ...
-In will_throw()...
-[Caught!] e.what() is: The will_throw() really throws.
-Safe return from will_throw().
+In mybar()...
+[Caught!] e.what() is: mybar() really throws.
+Safe return from mybar().
  */
 
-// BUT: gcc-7.5/gcc-12 will STILL hold-stop the Exception at doWork().
+// BUT: gcc-7.5/gcc-12 will STILL hold-stop the Exception at myfoo().
 // We will not see [Caught!] from a gcc-compiled excptest5 .

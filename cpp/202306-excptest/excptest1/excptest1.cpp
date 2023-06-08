@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdexcept>
 
-extern void will_throw(unsigned int);
+extern void mybar(unsigned int);
 
-void doWork(unsigned int ui)
+void myfoo(unsigned int ui)
 {
-	char bufa[8] = "AAAAAAA";
+	char bufa[8] = "FFFFFFF";
 	
-	will_throw(0xBBBBbbbb);
+	mybar(0xB0B0B0B0);
 }
 
 int main(int argc, char *argv[])
@@ -15,14 +15,14 @@ int main(int argc, char *argv[])
 	printf("Start excptest1 ...\n");
 	try
 	{
-		doWork(0xAAAAaaaa);
+		myfoo(0xF0F0F0F0);
 	}
 	catch (std::exception &e)
 	{
 		printf("[Caught!] e.what() is: %s\n", e.what());
 	}
 	
-	printf("Safe return from will_throw().\n");
+	printf("Safe return from mybar().\n");
 	
 	return 0;
 }
