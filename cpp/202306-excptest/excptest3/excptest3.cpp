@@ -57,3 +57,17 @@ int main(int argc, char *argv[])
 //	.
 //	So, the std::runtime_error Exception will propagate to main()'s catch(),
 //	and we see [Caught!] on program run.
+//
+// [2023-06-08] And there also arise a subtle problem, dtor-leaking.
+/*
+> excptest3
+Start try{} ...
+Spam ctor for [@008FFEE8]
+In will_throw()...
+[Caught!] e.what() is: The will_throw() really throws.
+Safe return from will_throw().
+*/
+// We see that, although stack unwinding has out-reached to main(),
+// but doWork()'s sobj's dtor is NOT executed.
+// 
+// VC2019 16.11 and gcc-7.5 both exhibit such behavior.
