@@ -15,7 +15,7 @@ public:
 	int m1;
 };
 
-void doWork(unsigned int ui) noexcept // !
+void doWork(unsigned int ui) noexcept // *new*
 {
 	CSpam sobj;
 	char bufa[8] = "AAAAAAA";
