@@ -27,3 +27,6 @@ int main(int argc, char *argv[])
 	
 	return 0;
 }
+
+// VC2019 compile and link command
+//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest1.cpp worklib.cpp
