@@ -330,7 +330,7 @@
    -->
   <ItemGroup>
     <ClCompile Include="excptest1.cpp" />
-    <ClCompile Include="worklib.cpp" />
+    <ClCompile Include="mybar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- 

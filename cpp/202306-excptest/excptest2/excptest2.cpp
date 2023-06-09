@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 }
 
 // VC2019 compile and link command
-//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest2.cpp worklib.cpp
+//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest2.cpp mybar.cpp
 //
 // excptest2 Memo:
 //	myfoo() needs to destruct C++ object sobj on myfoo's quit,

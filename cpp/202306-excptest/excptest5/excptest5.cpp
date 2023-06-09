@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 }
 
 // VC2019 compile and link command
-//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest5.cpp worklib.cpp
+//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest5.cpp mybar.cpp
 //
 // excptest5 Memo:
 //	Compared to excptest4, this time, myfoo() does NOT define a local

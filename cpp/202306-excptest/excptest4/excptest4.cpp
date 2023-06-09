@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 }
 
 // VC2019 compile and link command
-//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest4.cpp worklib.cpp
+//	cl /EHsc /MT /Zi /JMC- /GS- /FAsc excptest4.cpp mybar.cpp
 //
 // excptest4 Memo:
 //	Compared to excptest3, myfoo() is now defined with 'noexcept',
