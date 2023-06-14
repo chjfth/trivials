@@ -12,7 +12,7 @@ void myfoo(unsigned int ui)
 
 int main(int argc, char *argv[])
 {
-	printf("Start excptest1_gcc_frameaddr ...\n");
+	printf("Start excptest1_gcc_return_addr ...\n");
 	try
 	{
 		myfoo(0xF0F0F0F0);
