@@ -1,7 +1,6 @@
 //==================================================
-// MYSEH - Matt Pietrek 1997
+// MYSEH1.CPP - Matt Pietrek 1997
 // Microsoft Systems Journal, January 1997
-// FILE: MYSEH1.CPP
 // To compile: CL MYSEH1.CPP
 //==================================================
 /* [2023-06-18] Chj memo:

@@ -1,12 +1,11 @@
 //==================================================
-// MYSEH - Matt Pietrek 1997
+// MYSEH2.CPP - Matt Pietrek 1997
 // Microsoft Systems Journal, January 1997
-// FILE: MYSEH2.CPP
 // To compile: CL MYSEH2.CPP
 //==================================================
 /* [2023-06-18] Chj memo:
   
-  With VC7.1+, In order to see "Hello from an exception handler" printed, 
+  With VC7.1+, In order to see _except_handler() being executed , 
   we need to assign linker option /SAFESEH:NO , otherwise, Windows would
   just neglect our _except_handler() handler. 
   
@@ -84,4 +83,3 @@ int main()
 
 	return 0;
 }
-
