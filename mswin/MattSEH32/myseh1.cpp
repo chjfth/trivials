@@ -18,7 +18,7 @@ _except_handler(
 	void * DispatcherContext 
 	)
 {
-	unsigned i;
+	unsigned i = 0;
 
 	// Indicate that we made it to our exception handler
 	printf( "Hello from an exception handler\n" );
