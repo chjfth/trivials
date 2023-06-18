@@ -4,6 +4,18 @@
 // FILE: MYSEH.CPP
 // To compile: CL MYSEH.CPP
 //==================================================
+/* [2023-06-18] Chj memo:
+  
+  With VC7.1+, In order to see "Hello from an exception handler" printed, 
+  we need to assign linker option /SAFESEH:NO , otherwise, Windows would
+  just neglect our _except_handler() handler. 
+  
+  With VC7.1+, we will always see a warning message from cl.exe :
+
+  warning C4733: Inline asm assigning to 'FS:0' : handler not registered as safe handler
+
+  We are doing this by purpose, so just ignore that warning.
+*/
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdio.h>
