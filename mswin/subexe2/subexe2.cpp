@@ -161,7 +161,7 @@ int _tmain(int argc, TCHAR* argv[])
 	//    So, MSDN requires the szCmdLine to be (non-const) TCHAR*. 
 
 	if(winerr==0)
-		_tprintf(_T("CreateProcess() success. Sub-process exitcode=%u.\n"), subproc_exitcode);
+		_tprintf(_T("CreateProcess() success. Sub-process exitcode=%u (0x%X).\n"), subproc_exitcode, subproc_exitcode);
 	else
 		_tprintf(_T("CreateProcess() fail, WinErr=%d.\n"), winerr);
 

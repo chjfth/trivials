@@ -22,7 +22,7 @@ TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd)
 void vaDbgTs(const TCHAR *fmt, ...)
 {
 	// Note: Each calling outputs one line, with timestamp prefix.
-	// A '\n' will be added automatially at end.
+	// A '\n' will be added automatically at end.
 
 	static int count = 0;
 	static DWORD s_prev_msec = GetTickCount();
