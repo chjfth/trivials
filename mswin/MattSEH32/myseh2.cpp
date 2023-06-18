@@ -1,8 +1,8 @@
 //==================================================
 // MYSEH - Matt Pietrek 1997
 // Microsoft Systems Journal, January 1997
-// FILE: MYSEH1.CPP
-// To compile: CL MYSEH1.CPP
+// FILE: MYSEH2.CPP
+// To compile: CL MYSEH2.CPP
 //==================================================
 /* [2023-06-18] Chj memo:
   
@@ -20,8 +20,6 @@
 #include <windows.h>
 #include <stdio.h>
 
-DWORD  scratch = 0;
-
 EXCEPTION_DISPOSITION __cdecl
 _except_handler(
 	struct _EXCEPTION_RECORD *ExceptionRecord,
@@ -30,20 +28,27 @@ _except_handler(
 	void * DispatcherContext 
 	)
 {
-	unsigned i = 0;
+	printf( "Home Grown handler: Exception Code: %08X Exception Flags %X",
+		ExceptionRecord->ExceptionCode, ExceptionRecord->ExceptionFlags );
 
-	// Indicate that we made it to our exception handler
-	printf( "Hello from an exception handler\n" );
+	if ( ExceptionRecord->ExceptionFlags & 1 )
+		printf( " EH_NONCONTINUABLE" );
+	if ( ExceptionRecord->ExceptionFlags & 2 )
+		printf( " EH_UNWINDING" );
+	if ( ExceptionRecord->ExceptionFlags & 4 )
+		printf( " EH_EXIT_UNWIND" );
+	if ( ExceptionRecord->ExceptionFlags & 8 )
+		printf( " EH_STACK_INVALID" );
+	if ( ExceptionRecord->ExceptionFlags & 0x10 )
+		printf( " EH_NESTED_CALL" );
 
-	// Change EAX in the context record so that it points to someplace
-	// where we can successfully write
-	ContextRecord->Eax = (DWORD)&scratch;
+	printf( "\n" );
 
-	// Tell the OS to restart the faulting instruction
-	return ExceptionContinueExecution;
+	// Punt... We don't want to handle this... Let somebody else handle it
+	return ExceptionContinueSearch;
 }
 
-int main()
+void HomeGrownFrame( void )
 {
 	DWORD handler = (DWORD)_except_handler;
 
@@ -54,19 +59,27 @@ int main()
 		mov     FS:[0],ESP      // Install new EXECEPTION_REGISTRATION
 	}
 
-	__asm
-	{
-		mov     eax,0           // Zero out EAX
-		mov     [eax], 1        // Write to EAX to deliberately cause a fault
-	}
+	*(PDWORD)0 = 0;             // Write to address 0 to cause a fault
 
-	printf( "After writing!\n" );
+	printf( "I should never get here!\n" );
 
 	__asm
 	{                           // Remove our EXECEPTION_REGISTRATION record
 		mov     eax,[ESP]       // Get pointer to previous record
 		mov     FS:[0], EAX     // Install previous record
 		add     esp, 8          // Clean our EXECEPTION_REGISTRATION off stack
+	}
+}
+
+int main()
+{
+	__try
+	{
+		HomeGrownFrame(); 
+	}
+	__except( EXCEPTION_EXECUTE_HANDLER )
+	{
+		printf( "Caught the exception in main()\n" );
 	}
 
 	return 0;
