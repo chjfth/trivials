@@ -4,6 +4,35 @@
 // FILE: ShowSEHFrames.CPP
 // To compile: CL ShowSehFrames.CPP
 //==================================================
+/* [2023-06-19] Chj updates to the program: 
+
+  In ShowSEHFrame(), we need to check whether pVCExcRec->handler is _except_handler3.
+
+  We should know, if compiled with VC2010, we can really see _except_handler4,  
+  and the `scopetable_entry` struct does not apply.
+
+  If not _except_handler3, this program takes one of two actions.
+
+  (1) Default behavior. Refuse to interpret it using scopetable_entry, 
+      and go on with next SEH-frame. This is the safe action, and this
+	  program runs to end normally.
+  
+  (2) Run this program with "force" parameter, then we'll force interpret 
+      it as _except_handler3. 
+	  
+	  * Using VC6 SP6 compiler, this is still ok.
+	  
+	  * Using VC2010 compiler, this will cause bad-pointer dereference,
+        and we'll see "Oops! Caught Exception in main()!" printed.
+
+  IMPORTANT NOTE on using VC2005 and later compilers:
+
+    In order to see `scopetable_entry` in action, we need to compile with /GS- option, 
+	otherwise, we'll always see _except_handler4 (the newer EH-model handler).
+
+  In summary, the actual program behavior depends on the actual MSVCRT runtime used,
+  and whether /GS- is assigned to cl.exe .
+*/
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <stdio.h>
@@ -19,6 +48,8 @@
 #endif
 
 void WalkSEHFrames( void );
+
+bool g_force_print = false;
 
 //----------------------------------------------------------------------------
 // Structure Definitions
@@ -75,6 +106,30 @@ void ShowSEHFrame( VC_EXCEPTION_REGISTRATION * pVCExcRec )
 	printf( "Frame: %08X  Handler: %08X  Prev: %08X  Scopetable: %08X\n",
 		pVCExcRec, pVCExcRec->handler, pVCExcRec->prev,
 		pVCExcRec->scopetable );
+
+	static bool s_run1 = false;
+	if(pVCExcRec->handler != (void*)_except_handler3)
+	{
+		if(g_force_print)
+		{
+			printf("    Not _except_handler3, but force-print it (will cause real exception on Win7+).\n");
+		}
+		else
+		{
+			// Chj: We do not recognize this handler( _except_handler4 in VC2010 etc ).
+			printf( "    Not _except_handler3, cannot interpret.\n" );
+
+			if(!s_run1)
+			{
+				printf( "    (Hint: to meet _except_handler3, please use /GS- compiler option.)\n" );
+			}
+
+			printf("\n");
+			s_run1 = true;
+			return;
+		}
+	}
+	s_run1 = true;
 
 	scopetable_entry * pScopeTableEntry = pVCExcRec->scopetable;
 
@@ -140,8 +195,13 @@ void Function1( void )
 	}
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+	if(argc>1 && _stricmp(argv[1], "force")==0)
+	{
+		g_force_print = true;
+	}
+
 	int i = 0;
 
 	// Use two (non-nested) __try blocks.  This causes two scopetable entries
@@ -163,10 +223,8 @@ int main()
 	__except( EXCEPTION_EXECUTE_HANDLER )
 	{
 		// Should never get here, since we aren't expecting an exception
-		printf( "Caught Exception in main\n" );
+		printf( "Oops! Caught Exception in main()!\n" );
 	}
 
 	return 0;
 }
-
-// Note: VC2010, 需加入 /GS- 来编译.
