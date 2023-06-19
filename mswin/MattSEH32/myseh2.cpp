@@ -22,7 +22,7 @@
 EXCEPTION_DISPOSITION __cdecl
 _except_handler(
 	struct _EXCEPTION_RECORD *ExceptionRecord,
-	void * EstablisherFrame,
+	void * EstablisherFrame, // = pointer to a EXCEPTION_REGISTRATION
 	struct _CONTEXT *ContextRecord,
 	void * DispatcherContext 
 	)
