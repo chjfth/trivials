@@ -136,7 +136,7 @@ void ShowSEHFrame( VC_EXCEPTION_REGISTRATION * pVCExcRec )
 	for ( int i = 0; i <= pVCExcRec->trylevel; i++ )
 	{
 		printf( "    scopetable[%u] PrevTryLevel: %08X  "
-			"filter: %08X  ___except: %08X\n", i,
+			"filter: %08X  __except: %08X\n", i,
 			pScopeTableEntry->previousTryLevel,
 			pScopeTableEntry->lpfnFilter,
 			pScopeTableEntry->lpfnHandler );
