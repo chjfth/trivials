@@ -104,8 +104,8 @@ extern "C" int _except_handler3(PEXCEPTION_RECORD, EXCEPTION_REGISTRATION *,
 void ShowSEHFrame( VC_EXCEPTION_REGISTRATION * pVCExcRec )
 {
 	printf( "Frame: %08X  Handler: %08X  Prev: %08X  Scopetable: %08X\n",
-		pVCExcRec, pVCExcRec->handler, pVCExcRec->prev,
-		pVCExcRec->scopetable );
+		(UINT32)pVCExcRec, (UINT32)pVCExcRec->handler, 
+		(UINT32)pVCExcRec->prev, (UINT32)pVCExcRec->scopetable );
 
 	static bool s_run1 = false;
 	if(pVCExcRec->handler != (void*)_except_handler3)
@@ -135,11 +135,11 @@ void ShowSEHFrame( VC_EXCEPTION_REGISTRATION * pVCExcRec )
 
 	for ( int i = 0; i <= pVCExcRec->trylevel; i++ )
 	{
-		printf( "    scopetable[%u] PrevTryLevel: %08X  "
-			"filter: %08X  __except: %08X\n", i,
+		printf( "    scopetable[%u] PrevTryLevel: %08X  filter: %08X  __except: %08X\n", 
+			i,
 			pScopeTableEntry->previousTryLevel,
-			pScopeTableEntry->lpfnFilter,
-			pScopeTableEntry->lpfnHandler );
+			(UINT32)pScopeTableEntry->lpfnFilter,
+			(UINT32)pScopeTableEntry->lpfnHandler );
 
 		pScopeTableEntry++;
 	}
@@ -156,7 +156,7 @@ void WalkSEHFrames( void )
 	VC_EXCEPTION_REGISTRATION * pVCExcRec;
 
 	// Print out the location of the __except_handler3 function
-	printf( "_except_handler3 is at address: %08X\n", _except_handler3 );
+	printf( "_except_handler3 is at address: %08X\n", (UINT32)_except_handler3 );
 	printf( "\n" );
 
 	// Get a pointer to the head of the chain at FS:[0]
