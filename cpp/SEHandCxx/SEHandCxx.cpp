@@ -10,12 +10,12 @@ public:
 	int m1;
 };
 
-int main(int argc, char* argv[])
+void test_seh_finally(bool throw_seh_genre)
 {
 	C1 cobj;
 	__try 
 	{
-		if(argc==1)
+		if(throw_seh_genre)
 		{
 			printf("In __try block, now will do an invalid memory access.\n");
 			*(int*)nullptr = 5;  // This causes an access violation
@@ -34,7 +34,13 @@ int main(int argc, char* argv[])
 	}
 
 	printf("After __finally block, normal process termination.\n");	
-	return 0;
+}
+
+int main(int argc, char* argv[])
+{
+	bool throw_seh_genre = argc==1 ? true : false;
+	
+	test_seh_finally(throw_seh_genre);
 }
 
 /* Program memo: for VC2010+, 

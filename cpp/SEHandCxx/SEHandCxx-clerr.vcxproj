@@ -40,9 +40,9 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{20230621-0000-0000-0000-101152000002}</ProjectGuid>
-    <ProjectName>SEHandCxx</ProjectName>
-     <TargetName>SEHandCxx</TargetName>
+    <ProjectGuid>{20230621-0000-0000-0000-101152000001}</ProjectGuid>
+    <ProjectName>SEHandCxx-clerr</ProjectName>
+     <TargetName>SEHandCxx-clerr</TargetName>
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -90,8 +90,6 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      
-      <ExceptionHandling>false</ExceptionHandling>
 
       <!-- Note: $(TargetPath) cannot receive a value in <PropertyGroup>, so it has to be in ItemDefinitionGroup. -->
 
