@@ -10,12 +10,12 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug ANSI|Win32">
-      <Configuration>Debug ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Debug|Win32">
+      <Configuration>vs2019 Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release ANSI|Win32">
-      <Configuration>Release ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Release|Win32">
+      <Configuration>vs2019 Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <!-- x64 -->
@@ -27,12 +27,12 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug ANSI|x64">
-      <Configuration>Debug ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Debug|x64">
+      <Configuration>vs2019 Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release ANSI|x64">
-      <Configuration>Release ANSI</Configuration>
+    <ProjectConfiguration Include="vs2019 Release|x64">
+      <Configuration>vs2019 Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -40,10 +40,11 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{20230618-0000-0000-0000-210631000003}</ProjectGuid>
-    <ProjectName>ShowSEHFrames</ProjectName>
-     <TargetName>ShowSEHFrames</TargetName>
+    <ProjectGuid>{20230621-0000-0000-0000-101152000002}</ProjectGuid>
+    <ProjectName>SEHandCxx</ProjectName>
+     <TargetName>SEHandCxx</TargetName>
     <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   
   <!-- Microsoft.Cpp.Default.props 
@@ -51,19 +52,16 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
   <!-- Debug or Release -->
-  <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))" Label="Configuration">
+  <PropertyGroup Condition="$(Configuration.Contains('Debug'))" Label="Configuration">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Configuration.StartsWith('Release'))" Label="Configuration">
+  <PropertyGroup Condition="$(Configuration.Contains('Release'))" Label="Configuration">
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
 
-  <!-- Unicode or ANSI(MBCS) -->
-  <PropertyGroup Condition="!$(Configuration.Contains('ANSI'))" Label="Configuration">
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" $(Configuration.Contains('ANSI'))" Label="Configuration">
-    <CharacterSet>MultiByte</CharacterSet>
+  <!-- VC2010 or VC2019 -->
+  <PropertyGroup Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -77,7 +75,11 @@
   <!-- Better .obj/.exe/.pdb output folder structure -->
   <PropertyGroup>
     <LinkIncremental>false</LinkIncremental>
-     <IntDir>$(ProjectDir)obj-$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
+
+    <objdirsuffix></objdirsuffix>
+    <!-- VC2019: If .sln contains 2+ .vcxproj, different .vcxproj should have different objdirnam to avoid compiler warning MSB8028. -->
+    <objdirsuffix Condition="$(SolutionName)!=$(ProjectName)">.$(ProjectName)</objdirsuffix>
+    <IntDir>$(ProjectDir)obj-$(PlatformToolset)$(objdirsuffix)\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)bin-$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
 
@@ -89,10 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       
-      <!-- CL option /GS- , so that compiler uses __except_handler3 is used instead of newer __except_handler4 -->
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExceptionHandling>false</ExceptionHandling>
 
       <!-- Note: $(TargetPath) cannot receive a value in <PropertyGroup>, so it has to be in ItemDefinitionGroup. -->
 
@@ -105,6 +104,9 @@
 
       <AdditionalIncludeDirectories>.;;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>    
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -115,9 +117,6 @@
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'"  >;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SetupAPI.lib;;%(AdditionalDependencies)</AdditionalDependencies>
-
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <!-- Better build.log file naming -->
     <BuildLog>
@@ -127,7 +126,7 @@
   <!-- 
   	Compiler Behavior Settings : Debug 
   -->
-  <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Debug'))">
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('Debug'))">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;DBG=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -140,7 +139,7 @@
   <!-- 
   	Compiler Behavior Settings : Release 
   -->
-  <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Release'))">
+  <ItemDefinitionGroup Condition="$(Configuration.Contains('Release'))">
     <ClCompile>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -156,7 +155,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="ShowSEHFrames.cpp" />
+    <ClCompile Include="SEHandCxx.cpp" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
@@ -165,11 +164,13 @@
   </ImportGroup>
 
   <!-- import VSPG start -->
+                                        <!-- 
   <PropertyGroup>
     <VSPG_BootsDir_NoTBS>$(SolutionDir)_VSPG\boots</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
   </ImportGroup>
+                                        -->
   <!-- import VSPG end -->
 </Project>
