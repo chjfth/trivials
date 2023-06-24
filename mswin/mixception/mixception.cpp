@@ -13,7 +13,7 @@ int do_divide(int dividend, int divisor)
 int do_work()
 {
 	const TCHAR* pz = GetCommandLine();
-	int slen = _tcslen(pz);
+	int slen = (int)_tcslen(pz);
 
 	int divisor = 0;
 	if (pz[slen - 1] == '1') // if command-line end with param "1"
@@ -24,6 +24,11 @@ int do_work()
 }
 
 int _tmain(int argc, TCHAR* argv[])
+{
+	return do_work();
+}
+
+int __stdcall _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int)
 {
 	return do_work();
 }

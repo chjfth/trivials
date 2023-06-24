@@ -2,12 +2,12 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <!-- Win32(x86) -->
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="GUI-Debug|Win32">
+      <Configuration>GUI-Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="GUI-Release|Win32">
+      <Configuration>GUI-Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Console-Debug|Win32">
@@ -19,12 +19,12 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <!-- x64 -->
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="GUI-Debug|x64">
+      <Configuration>GUI-Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="GUI-Release|x64">
+      <Configuration>GUI-Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Console-Debug|x64">
@@ -59,8 +59,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
 
-  <!-- VC2010 or VC2019 -->
-  <PropertyGroup Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
+  <PropertyGroup>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   
@@ -106,7 +105,10 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>    
     <Link>
-      <SubSystem>Console</SubSystem>
+      
+      <SubSystem Condition=" $(Configuration.Contains('Console'))">Console</SubSystem>
+      <SubSystem Condition="!$(Configuration.Contains('Console'))">Windows</SubSystem>
+      
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDataBaseFile>$(TargetPath).pdb</ProgramDataBaseFile>
       <ImportLibrary>$(OutDir)$(TargetName)--imp.lib</ImportLibrary>
