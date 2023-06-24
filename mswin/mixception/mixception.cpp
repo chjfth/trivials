@@ -32,3 +32,13 @@ int __stdcall _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int)
 {
 	return do_work();
 }
+
+/*
+Command line compile as Console exe:
+
+	cl /MT mixception.cpp /link /subsystem:console /out:mixception-console.exe
+
+Command line compile as GUI exe:
+
+	cl /MT mixception.cpp /link /subsystem:windows /out:mixception-gui.exe
+*/

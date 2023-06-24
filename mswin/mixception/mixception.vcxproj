@@ -42,7 +42,10 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20230624-0000-0000-0000-074933000001}</ProjectGuid>
     <ProjectName>mixception</ProjectName>
-     <TargetName>mixception</TargetName>
+     
+     <TargetName Condition=" $(Configuration.Contains('Console'))">mixception-console</TargetName>
+     <TargetName Condition="!$(Configuration.Contains('Console'))">mixception-gui</TargetName>
+    
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
