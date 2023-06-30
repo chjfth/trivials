@@ -3,7 +3,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-bool g_read_nullptr = false; // false: will do divide-by-zero
+enum HowToExcept_et
+{
+	NoExcept = 0,
+	DivideByZero = 1, // "div0"
+	ReadNullptr = 2,  // "readnull"
+	CxxThrow = 3,     // "throw"
+};
+
+//bool g_read_nullptr = false; // false: will do divide-by-zero
+HowToExcept_et g_howexcp = NoExcept;
 
 class C1
 {
@@ -13,13 +22,18 @@ public:
 	int m1;
 };
 
-int do_bad(int divisor)
+int do_bad()
 {
+	HowToExcept_et how = g_howexcp;
 	int ret = 0;
-	if(!g_read_nullptr)
+	int divisor = 0;
+	
+	if(how==DivideByZero)
 		ret = 3 / divisor;
-	else
+	else if(how==ReadNullptr)
 		ret = ((int*)nullptr)[0];
+	else if(how==CxxThrow)
+		throw 3;
 
 	return ret;
 }
@@ -27,7 +41,7 @@ int do_bad(int divisor)
 int cxx_raii()
 {
 	C1 c1obj;
-	int ret = do_bad(0);
+	int ret = do_bad();
 	return ret;
 }
 
@@ -50,6 +64,7 @@ void test_seh_guard()
 		cxx_raii();
 	}
 	__except(Filter_RecoverDvZero(GetExceptionCode()))
+		// Only catch DivideByZero
 	{
 		printf("[Caught] in test_seh_guard __except{...}\n");
 	}
@@ -58,7 +73,23 @@ void test_seh_guard()
 int main(int argc, char* argv[])
 {
 	if(argc>1)
-		g_read_nullptr = true;
+	{
+		if(_stricmp(argv[1], "div0")==0) {
+			g_howexcp = DivideByZero;
+			printf("Will do DivideByZero.\n");
+		}
+		else if(_stricmp(argv[1], "readnull")==0) {
+			g_howexcp = ReadNullptr;
+			printf("Will do ReadNullptr.\n");
+		}
+		if(_stricmp(argv[1], "throw")==0) {
+			g_howexcp = CxxThrow;
+			printf("Will do C++ throw.\n");
+		}
+	}
+
+	if(g_howexcp==NoExcept)
+		printf("Will not raise any exception.\n");
 	
 	test_seh_guard();
 
