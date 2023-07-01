@@ -58,7 +58,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20230630-0000-0000-0000-233826000001}</ProjectGuid>
     <ProjectName>CxxSehMix</ProjectName>
-     <TargetName>CxxSehMix</TargetName>
+     <TargetName>CxxSehMix-$(Configuration)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
