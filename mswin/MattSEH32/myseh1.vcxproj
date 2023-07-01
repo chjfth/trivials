@@ -66,6 +66,21 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   
+  <PropertyGroup>
+    <!-- Referring to $(DefaultPlatformToolset), so that this .vcxproj 
+      adapts automatically to lastest SDK on current Visual Studio version. 
+     
+      $(DefaultPlatformToolset) has such values:
+        empty  on VC2010
+        "v120" on VC2013
+        "v140" on VC2015
+        "v141" on VC2017
+          "v142" on VC2019
+          "v143" on VC2022
+      -->
+    <PlatformToolset Condition="$(DefaultPlatformToolset)!=''">$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
