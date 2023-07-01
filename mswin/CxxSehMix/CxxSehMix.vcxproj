@@ -2,37 +2,53 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <!-- Win32(x86) -->
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Debug.EHsc.H3|Win32">
+      <Configuration>Debug.EHsc.H3</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Debug.EHa.H3|Win32">
+      <Configuration>Debug.EHa.H3</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="vs2019 Debug|Win32">
-      <Configuration>vs2019 Debug</Configuration>
+    <ProjectConfiguration Include="Debug.EHs-.H3|Win32">
+      <Configuration>Debug.EHs-.H3</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="vs2019 Release|Win32">
-      <Configuration>vs2019 Release</Configuration>
+    <ProjectConfiguration Include="Debug.EHsc.H4|Win32">
+      <Configuration>Debug.EHsc.H4</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.EHa.H4|Win32">
+      <Configuration>Debug.EHa.H4</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.EHs-.H4|Win32">
+      <Configuration>Debug.EHs-.H4</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <!-- x64 -->
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
+    <ProjectConfiguration Include="Debug.EHsc.H3|x64">
+      <Configuration>Debug.EHsc.H3</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
+    <ProjectConfiguration Include="Debug.EHa.H3|x64">
+      <Configuration>Debug.EHa.H3</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="vs2019 Debug|x64">
-      <Configuration>vs2019 Debug</Configuration>
+    <ProjectConfiguration Include="Debug.EHs-.H3|x64">
+      <Configuration>Debug.EHs-.H3</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="vs2019 Release|x64">
-      <Configuration>vs2019 Release</Configuration>
+    <ProjectConfiguration Include="Debug.EHsc.H4|x64">
+      <Configuration>Debug.EHsc.H4</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.EHa.H4|x64">
+      <Configuration>Debug.EHa.H4</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug.EHs-.H4|x64">
+      <Configuration>Debug.EHs-.H4</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -59,9 +75,10 @@
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
 
-  <!-- VC2010 or VC2019 -->
-  <PropertyGroup Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
+  <PropertyGroup>
+    <!-- Enable this for new Visual Studio versions. v142=VC2019, v143=VC2022 etc
     <PlatformToolset>v142</PlatformToolset>
+    -->
   </PropertyGroup>
   
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -91,11 +108,16 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
 
-      <!-- Require /EHsc -->
-      <ExceptionHandling>Sync</ExceptionHandling>
+      <!-- /EHsc or /EHa or /EHs- -->
+      <ExceptionHandling Condition="$(Configuration.Contains('EHsc'))">Sync</ExceptionHandling>
+      <ExceptionHandling Condition="$(Configuration.Contains('EHa'))">Async</ExceptionHandling>
+      <ExceptionHandling Condition="$(Configuration.Contains('EHs-'))">false</ExceptionHandling>
       
-      <!-- CL option /GS- , so that compiler uses __except_handler3 instead of newer __except_handler4 -->
-      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <!-- CL option /GS- or /GS , 
+        /GS- : uses __except_handler3 
+        /GS  : uses __except_handler4 -->
+      <BufferSecurityCheck Condition="$(Configuration.Contains('H3'))">false</BufferSecurityCheck>
+      <BufferSecurityCheck Condition="$(Configuration.Contains('H4'))">true</BufferSecurityCheck>
 
       <!-- Note: $(TargetPath) cannot receive a value in <PropertyGroup>, so it has to be in ItemDefinitionGroup. -->
 
@@ -108,9 +130,6 @@
 
       <AdditionalIncludeDirectories>.;;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
-    <ClCompile Condition=" $(Configuration.Contains('vs2019'))" Label="Configuration">
-      <LanguageStandard>stdcpp20</LanguageStandard>
-    </ClCompile>    
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
