@@ -6,8 +6,13 @@ void catch3()
 {
 	__try 
 	{
-		// Note: If run with a debugger attached,
+		// Note: If run with VC2010/VC2019 debugger attached,
 		// the __except {...} block will NOT be executed.
+		// That's a deliberate design of VSIDE.
+		//
+		// In order to see the __except {...} block executed,
+		// we need to run it under WinDBG(10.0.18362), and 
+		// apply "Go Unhandled Exception"(gn) .
 #ifdef _M_IX86
 		__asm int 3;
 #else
