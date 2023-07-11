@@ -176,6 +176,8 @@ void Test1()
     RemoveVectoredExceptionHandler(h3);
     RemoveVectoredExceptionHandler(h2);
     check_all_zeros();
+
+	printf("\n");
 }
 
 void Test2()
@@ -190,6 +192,8 @@ void Test2()
     RemoveVectoredExceptionHandler(h1);
     check_all_zeros();
 
+	printf("\n");
+
     e[0] = 1; e[1] = 2; e[2] = 0xcc;
     h2 = AddVectoredExceptionHandler(CALL_FIRST, VectoredHandler2);
     h3 = AddVectoredExceptionHandler(CALL_LAST, VectoredHandlerSkip3);
@@ -201,6 +205,8 @@ void Test2()
     RemoveVectoredExceptionHandler(h3);
     check_all_zeros();
 
+	printf("\n");
+
     e[0] = 1; e[1] = 0xcc; e[2] = 0;
     h1 = AddVectoredExceptionHandler(CALL_LAST, VectoredHandler1);
     h2 = AddVectoredExceptionHandler(CALL_LAST, VectoredHandlerSkip2);
@@ -211,6 +217,8 @@ void Test2()
     RemoveVectoredExceptionHandler(h2);
     RemoveVectoredExceptionHandler(h3);
     check_all_zeros();
+
+	printf("\n");
 
     e[0] = 2; e[1] = 0xcc; e[2] = 1;
     h1 = AddVectoredExceptionHandler(CALL_LAST, VectoredHandler1);
@@ -231,6 +239,8 @@ void Test2()
     RemoveVectoredExceptionHandler(h2);
     RemoveVectoredExceptionHandler(h3);
     check_all_zeros();
+
+	printf("\n");
 }
 
 void main()
