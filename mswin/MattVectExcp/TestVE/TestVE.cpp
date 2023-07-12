@@ -9,9 +9,16 @@ int main()
 {
 	// Load a couple of DLLs, which in turn also call LoadLibrary on
 	// other DLLs.
-	LoadLibrary( _T("MFC42") );
 
-	LoadLibrary( _T("WININET") );
+	const TCHAR *dllname = _T("MFC42");
+
+	_tprintf(_T("Loading %s ...\n"), dllname);
+	LoadLibrary(dllname);
+
+	dllname =  _T("WININET");
+
+	_tprintf(_T("Loading %s ...\n"), dllname);
+	LoadLibrary(dllname);
 
 	// Call exported function in VectoredExcBP DLL.  This is simply
 	// to force that DLL to be loaded.

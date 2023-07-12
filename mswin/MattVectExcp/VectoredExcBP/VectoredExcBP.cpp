@@ -34,7 +34,7 @@ void RemoveBreakpoint( PVOID pAddr, BYTE bOriginalOpcode );
 
 // Global variables
 PVOID g_pfnLoadLibraryAddress = 0;
-BYTE g_originalCodeByte;
+BYTE g_originalCodeByte = 0;
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
@@ -62,11 +62,11 @@ void SetupLoadLibraryExWCallback(void)
 	// Obtain the address of LoadLibraryExW.  
 	// All LoadLibraryA/W/ExA calls
 	// go through LoadLibraryExW
-	g_pfnLoadLibraryAddress=(PVOID)GetProcAddress(
+	g_pfnLoadLibraryAddress = (PVOID)GetProcAddress(
 		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" );
 
 	// Add a vectored exception handler for our breakpoint
-	AddVectoredExceptionHandler( 1, LoadLibraryBreakpointHandler );
+	PVOID pvret = AddVectoredExceptionHandler( 1, LoadLibraryBreakpointHandler );
 
 	// Set the breakpoint on LoadLibraryExW.
 	g_originalCodeByte = SetBreakpoint( g_pfnLoadLibraryAddress );
@@ -116,8 +116,7 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS
 	}
 	else if ( exceptionCode == STATUS_SINGLE_STEP )
 	{
-		// Make sure the exception address is the single step we caused 
-		// above.
+		// Make sure the exception address is the single step we caused above.
 		// If not, pass on to other handlers
 		if ( pExceptionInfo->ExceptionRecord->ExceptionAddress
 			!= (PVOID)((DWORD_PTR)g_pfnLoadLibraryAddress+1) )
@@ -127,8 +126,7 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS
 
 		// printf( "In STATUS_SINGLE_STEP handler\n" );
 
-		// We've stepped the original instruction, so put the breakpoint 
-		// back
+		// We've stepped the original instruction, so put the breakpoint back
 		SetBreakpoint( g_pfnLoadLibraryAddress );
 
 		// Turn off trace flag that we set above
@@ -150,9 +148,8 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 void BreakpointCallback( PVOID pCodeAddr, PVOID pStackAddr )
 {
-	DWORD nBytes;
-
-	LPWSTR pwszDllName;
+	DWORD nBytes = 0;
+	LPWSTR pwszDllName = 0;
 
 	// pStackAddr+0 == return address
 	// pStackAddr+4 == first parameter
@@ -170,8 +167,8 @@ void BreakpointCallback( PVOID pCodeAddr, PVOID pStackAddr )
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 BYTE SetBreakpoint( PVOID pAddr )
 {
-	DWORD nBytes;
-	BYTE bOriginalOpcode;
+	DWORD nBytes = 0;
+	BYTE bOriginalOpcode = 0;
 
 	// Read the byte at the specified address
 	ReadProcessMemory( GetCurrentProcess(), pAddr,
@@ -193,7 +190,7 @@ BYTE SetBreakpoint( PVOID pAddr )
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 void RemoveBreakpoint( PVOID pAddr, BYTE bOriginalOpcode )
 {
-	DWORD nBytes;
+	DWORD nBytes = 0;
 
 	WriteProcessMemory( GetCurrentProcess(),
 		pAddr,
