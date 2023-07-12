@@ -36,6 +36,8 @@ void RemoveBreakpoint( PVOID pAddr, BYTE bOriginalOpcode );
 PVOID g_pfnLoadLibraryAddress = 0;
 BYTE g_originalCodeByte = 0;
 
+HANDLE g_hVectHandler = NULL; // handle of our installed exception-handler
+
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 BOOL APIENTRY DllMain( HANDLE hModule, 
@@ -48,10 +50,16 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 
 	// At startup, set LoadLibrary breakpoint, at shutdown, remove it
 	if ( DLL_PROCESS_ATTACH == ul_reason_for_call )
+	{
 		SetupLoadLibraryExWCallback();
+	}
 	else if ( DLL_PROCESS_DETACH == ul_reason_for_call )
+	{
 		RemoveBreakpoint( g_pfnLoadLibraryAddress, g_originalCodeByte );
 
+		RemoveVectoredExceptionHandler(g_hVectHandler);
+		g_hVectHandler = NULL;
+	}
 	return TRUE;
 }
 
@@ -66,7 +74,7 @@ void SetupLoadLibraryExWCallback(void)
 		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" );
 
 	// Add a vectored exception handler for our breakpoint
-	PVOID pvret = AddVectoredExceptionHandler( 1, LoadLibraryBreakpointHandler );
+	g_hVectHandler = AddVectoredExceptionHandler( 1, LoadLibraryBreakpointHandler );
 
 	// Set the breakpoint on LoadLibraryExW.
 	g_originalCodeByte = SetBreakpoint( g_pfnLoadLibraryAddress );
@@ -80,8 +88,7 @@ void SetupLoadLibraryExWCallback(void)
 // function's code
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS 
-	pExceptionInfo )
+LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo )
 {
 	// printf( "In LoadLibraryBreakpointHandler: EIP=%p\n",
 	//          pExceptionInfo->ExceptionRecord->ExceptionAddress );
