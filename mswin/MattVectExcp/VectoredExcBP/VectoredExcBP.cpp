@@ -98,6 +98,8 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
 
+		printf("[Matt] In STATUS_BREAKPOINT handler\n");
+
 		// We need to step the original instruction, so temporarily 
 		// remove the breakpoint
 		RemoveBreakpoint( g_pfnLoadLibraryAddress, g_originalCodeByte );
@@ -124,7 +126,7 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
 
-		// printf( "In STATUS_SINGLE_STEP handler\n" );
+		printf("[Matt] In STATUS_SINGLE_STEP handler\n");
 
 		// We've stepped the original instruction, so put the breakpoint back
 		SetBreakpoint( g_pfnLoadLibraryAddress );
@@ -136,6 +138,8 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS
 	}
 	else    // Not a breakpoint or single step.  Definitely not ours!
 	{
+		printf("[Matt] See excpcode 0x%0X , bypass it.\n", exceptionCode);
+
 		return EXCEPTION_CONTINUE_SEARCH;
 	}
 }
@@ -158,7 +162,7 @@ void BreakpointCallback( PVOID pCodeAddr, PVOID pStackAddr )
 		&pwszDllName, sizeof(pwszDllName),
 		&nBytes );
 
-	printf( "LoadLibrary called on: %ls\n", pwszDllName );
+	printf("[Matt] LoadLibrary called on: %ls\n", pwszDllName);
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
