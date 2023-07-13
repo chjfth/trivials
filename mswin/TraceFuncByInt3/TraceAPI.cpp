@@ -125,8 +125,11 @@ LONG NTAPI int3_BreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo)
 		// We've stepped the original instruction, so put the breakpoint back
 		SetBreakpoint( g_pfnMonitored );
 
+		//printf("[Matt] >>>> EFlags=0x%08X.\n", pExceptionInfo->ContextRecord->EFlags); 
+		// -- Chj: I see 0x00000202, so EFlags's single-step bit already turned-off by system.
+
 		// Turn off trace flag that we set above
-		pExceptionInfo->ContextRecord->EFlags &= ~0x00000100;
+		// pExceptionInfo->ContextRecord->EFlags &= ~0x00000100; // Chj: this is not necessary 
 
 		return EXCEPTION_CONTINUE_EXECUTION;    // Continue on!
 	}
