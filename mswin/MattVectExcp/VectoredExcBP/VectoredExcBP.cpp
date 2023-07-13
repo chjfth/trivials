@@ -15,6 +15,11 @@
 // Visual C++ 6.0.  At the time of this writing, Windows XP is in beta,
 // so things could change, including API behavior, etc...  No guarantees
 // are made that this code will work in the future.
+//
+// [2023-07-14] Jimm Chen does some FIX for WinXP SP3 and Win7+ :
+// For STATUS_SINGLE_STEP, addr_diff can be any value, so do NOT check it. 
+// This program now runs both as x86 and x64 exe.
+//
 //===========================================================================
 
 #define WIN32_LEAN_AND_MEAN
@@ -22,8 +27,8 @@
 #include <tchar.h>
 #include <stdio.h>
 
-#ifndef _M_IX86
-#error "This code only runs on an x86 architecture CPU"
+#if !defined(_M_IX86) && !defined(_M_X64)
+#error "This code only runs on an x86 or X64 machine."
 #endif
 
 LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo );
@@ -33,17 +38,14 @@ BYTE SetBreakpoint( PVOID pAddr );
 void RemoveBreakpoint( PVOID pAddr, BYTE bOriginalOpcode );
 
 // Global variables
-PVOID g_pfnLoadLibraryAddress = 0;
+PVOID g_pfnMonitored = 0;
 BYTE g_originalCodeByte = 0;
 
 HANDLE g_hVectHandler = NULL; // handle of our installed exception-handler
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-BOOL APIENTRY DllMain( HANDLE hModule, 
-	DWORD  ul_reason_for_call, 
-	LPVOID lpReserved
-	)
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
 	// We don't need thread start/stop notifications, so disable them
 	DisableThreadLibraryCalls( (HINSTANCE)hModule );
@@ -55,7 +57,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 	}
 	else if ( DLL_PROCESS_DETACH == ul_reason_for_call )
 	{
-		RemoveBreakpoint( g_pfnLoadLibraryAddress, g_originalCodeByte );
+		RemoveBreakpoint( g_pfnMonitored, g_originalCodeByte );
 
 		RemoveVectoredExceptionHandler(g_hVectHandler);
 		g_hVectHandler = NULL;
@@ -70,14 +72,14 @@ void SetupLoadLibraryExWCallback(void)
 	// Obtain the address of LoadLibraryExW.  
 	// All LoadLibraryA/W/ExA calls
 	// go through LoadLibraryExW
-	g_pfnLoadLibraryAddress = (PVOID)GetProcAddress(
-		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" );
+	g_pfnMonitored = (PVOID)GetProcAddress(
+		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" ); // chj: not using LoadLibraryExW on Win7
 
 	// Add a vectored exception handler for our breakpoint
 	g_hVectHandler = AddVectoredExceptionHandler( 1, LoadLibraryBreakpointHandler );
 
 	// Set the breakpoint on LoadLibraryExW.
-	g_originalCodeByte = SetBreakpoint( g_pfnLoadLibraryAddress );
+	g_originalCodeByte = SetBreakpoint( g_pfnMonitored );
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -90,31 +92,33 @@ void SetupLoadLibraryExWCallback(void)
 
 LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo )
 {
-	// printf( "In LoadLibraryBreakpointHandler: EIP=%p\n",
-	//          pExceptionInfo->ExceptionRecord->ExceptionAddress );
-
 	LONG exceptionCode = pExceptionInfo->ExceptionRecord->ExceptionCode;
+
+	printf( "[Matt] ==== In LoadLibraryBreakpointHandler: ExcpCode=0x%X EIP=%p\n",
+		exceptionCode, pExceptionInfo->ExceptionRecord->ExceptionAddress );
 
 	if ( exceptionCode == STATUS_BREAKPOINT)
 	{
-		// Make sure it's our breakpoint.  If not, pass on to other 
-		// handlers
-		if ( pExceptionInfo->ExceptionRecord->ExceptionAddress
-			!= g_pfnLoadLibraryAddress )
+		// Make sure it's our breakpoint.  If not, pass on to other handlers
+		if ( pExceptionInfo->ExceptionRecord->ExceptionAddress != g_pfnMonitored )
 		{
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
 
-		printf("[Matt] In STATUS_BREAKPOINT handler\n");
+		printf("[Matt] Do STATUS_BREAKPOINT handling.\n");
 
 		// We need to step the original instruction, so temporarily 
 		// remove the breakpoint
-		RemoveBreakpoint( g_pfnLoadLibraryAddress, g_originalCodeByte );
+		RemoveBreakpoint( g_pfnMonitored, g_originalCodeByte );
 
 		// Call our code to do whatever processing desired at this point
-		BreakpointCallback( pExceptionInfo->
-			ExceptionRecord->ExceptionAddress,
-			(PVOID)pExceptionInfo->ContextRecord->Esp );
+		BreakpointCallback( pExceptionInfo->ExceptionRecord->ExceptionAddress,
+#ifdef _M_IX86
+			(PVOID)pExceptionInfo->ContextRecord->Esp 
+#else
+			(PVOID)pExceptionInfo->ContextRecord->Rcx // the first parameter value for x64 ABI
+#endif
+			);
 
 		// Set trace flag in the EFlags register so that only one 
 		// instruction  will execute before we get a STATUS_SINGLE_STEP
@@ -127,16 +131,21 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo )
 	{
 		// Make sure the exception address is the single step we caused above.
 		// If not, pass on to other handlers
-		if ( pExceptionInfo->ExceptionRecord->ExceptionAddress
-			!= (PVOID)((DWORD_PTR)g_pfnLoadLibraryAddress+1) )
-		{
-			return EXCEPTION_CONTINUE_SEARCH;
-		}
+		PVOID excpaddr = pExceptionInfo->ExceptionRecord->ExceptionAddress;
+		int addr_diff = int( (INT_PTR)excpaddr - (INT_PTR)g_pfnMonitored );
 
-		printf("[Matt] In STATUS_SINGLE_STEP handler\n");
+		// Jimm: We should not check this, addr_diff can be any value.
+		// * 2 on WinXP SP3
+		// * -12 on Win7 x64, 64-bit process.
+// 		if ( !(addr_diff>0 && addr_diff<=4) )
+// 		{
+// 			return EXCEPTION_CONTINUE_SEARCH;
+// 		}
+
+		printf("[Matt] Do STATUS_SINGLE_STEP handling. (addr_diff=%d)\n", addr_diff);
 
 		// We've stepped the original instruction, so put the breakpoint back
-		SetBreakpoint( g_pfnLoadLibraryAddress );
+		SetBreakpoint( g_pfnMonitored );
 
 		// Turn off trace flag that we set above
 		pExceptionInfo->ContextRecord->EFlags &= ~0x00000100;
@@ -145,7 +154,7 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo )
 	}
 	else    // Not a breakpoint or single step.  Definitely not ours!
 	{
-		printf("[Matt] See excpcode 0x%0X , bypass it.\n", exceptionCode);
+//		printf("[Matt] See excpcode 0x%0X , bypass it.\n", exceptionCode);
 
 		return EXCEPTION_CONTINUE_SEARCH;
 	}
@@ -159,9 +168,10 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo )
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 void BreakpointCallback( PVOID pCodeAddr, PVOID pStackAddr )
 {
-	DWORD nBytes = 0;
+	SIZE_T nBytes = 0;
 	LPWSTR pwszDllName = 0;
 
+#ifdef _M_IX86
 	// pStackAddr+0 == return address
 	// pStackAddr+4 == first parameter
 	ReadProcessMemory(  GetCurrentProcess(),
@@ -169,7 +179,12 @@ void BreakpointCallback( PVOID pCodeAddr, PVOID pStackAddr )
 		&pwszDllName, sizeof(pwszDllName),
 		&nBytes );
 
-	printf("[Matt] LoadLibrary called on: %ls\n", pwszDllName);
+	printf("[Matt] # LoadLibrary called on: %ls\n", pwszDllName);
+#else
+//	DebugBreak();
+	PVOID first_param = pStackAddr;
+	printf("[Matt] # LoadLibrary called on: %ls\n", first_param);
+#endif
 }
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
@@ -178,7 +193,7 @@ void BreakpointCallback( PVOID pCodeAddr, PVOID pStackAddr )
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 BYTE SetBreakpoint( PVOID pAddr )
 {
-	DWORD nBytes = 0;
+	SIZE_T nBytes = 0;
 	BYTE bOriginalOpcode = 0;
 
 	// Read the byte at the specified address
@@ -201,7 +216,7 @@ BYTE SetBreakpoint( PVOID pAddr )
 /*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 void RemoveBreakpoint( PVOID pAddr, BYTE bOriginalOpcode )
 {
-	DWORD nBytes = 0;
+	SIZE_T nBytes = 0;
 
 	WriteProcessMemory( GetCurrentProcess(),
 		pAddr,
