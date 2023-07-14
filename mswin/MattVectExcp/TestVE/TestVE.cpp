@@ -1,15 +1,17 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <stdio.h>
 #include <tchar.h>
 
 // Prototype for function exported from VectoredExcBP DLL.
 extern"C" void VectoredExcBP_ExportedAPI(void);
 
-int main()
+int main(int argc, char *argv[])
 {
-//	test_monitoring_myfunc();
+	if(argc>1 && argv[1][0]=='1')
+		DebugBreak();
 
-	// Load a couple of DLLs, which in turn also call LoadLibrary on
+	// Load a couple of DLLs, which in turn (may) also call LoadLibrary on
 	// other DLLs.
 
 	const TCHAR *dllname = _T("MFC42");
@@ -27,4 +29,9 @@ int main()
 	// Call exported function in VectoredExcBP DLL.  This is simply
 	// to force that DLL to be loaded.
 	VectoredExcBP_ExportedAPI();
+
+	if(argc>2 && argv[2][0]=='1')
+		DebugBreak();
+
+	return 0;
 }
