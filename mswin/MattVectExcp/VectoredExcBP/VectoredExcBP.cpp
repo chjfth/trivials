@@ -73,7 +73,7 @@ void SetupLoadLibraryExWCallback(void)
 	// All LoadLibraryA/W/ExA calls
 	// go through LoadLibraryExW
 	g_pfnMonitored = (PVOID)GetProcAddress(
-		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" ); // chj: not using LoadLibraryExW on Win7
+		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" );
 
 	// Add a vectored exception handler for our breakpoint
 	g_hVectHandler = AddVectoredExceptionHandler( 1, LoadLibraryBreakpointHandler );
