@@ -147,8 +147,9 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo )
 		// We've stepped the original instruction, so put the breakpoint back
 		SetBreakpoint( g_pfnMonitored );
 
-		// Turn off trace flag that we set above
-		pExceptionInfo->ContextRecord->EFlags &= ~0x00000100;
+		// Turn off trace flag that we set above 
+		// ( Jimm: This is not required, it is automatically off. )
+		// pExceptionInfo->ContextRecord->EFlags &= ~0x00000100;
 
 		return EXCEPTION_CONTINUE_EXECUTION;    // Continue on!
 	}
