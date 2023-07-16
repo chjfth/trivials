@@ -1,14 +1,20 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <tchar.h>
-#include <locale.h>
 
-int _tmain(int argc, TCHAR* argv[])
+int func2()
 {
-	setlocale(LC_ALL, "");
-	
-	_tprintf(_T("Hello, XdisProlog!\n"));
-	_tprintf(_T("sizeof(TCHAR)=%d\n"), (int)sizeof(TCHAR));
-	return 0;
+	int retv = 0;
+	retv += 3;
+	return retv;
 }
 
+int func1()
+{
+	int retv = func2();
+	return retv;
+}
+
+int main(int argc, char* argv[])
+{
+	int retv = func1();
+	return retv;
+}

@@ -10,12 +10,12 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug ANSI|Win32">
-      <Configuration>Debug ANSI</Configuration>
+    <ProjectConfiguration Include="Debug incre-link no|Win32">
+      <Configuration>Debug incre-link no</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release ANSI|Win32">
-      <Configuration>Release ANSI</Configuration>
+    <ProjectConfiguration Include="Release incre-link no|Win32">
+      <Configuration>Release incre-link no</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
     <!-- x64 -->
@@ -27,12 +27,12 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug ANSI|x64">
-      <Configuration>Debug ANSI</Configuration>
+    <ProjectConfiguration Include="Debug incre-link no|x64">
+      <Configuration>Debug incre-link no</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release ANSI|x64">
-      <Configuration>Release ANSI</Configuration>
+    <ProjectConfiguration Include="Release incre-link no|x64">
+      <Configuration>Release incre-link no</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -44,6 +44,7 @@
     <ProjectName>XdisProlog</ProjectName>
      <TargetName>XdisProlog</TargetName>
     <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   
   <!-- Microsoft.Cpp.Default.props 
@@ -58,14 +59,6 @@
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
 
-  <!-- Unicode or ANSI(MBCS) -->
-  <PropertyGroup Condition="!$(Configuration.Contains('ANSI'))" Label="Configuration">
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" $(Configuration.Contains('ANSI'))" Label="Configuration">
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  
   <PropertyGroup>
     <!-- Referring to $(DefaultPlatformToolset), so that this .vcxproj 
       adapts automatically to lastest SDK on current Visual Studio version. 
@@ -93,7 +86,11 @@
 
   <!-- Better .obj/.exe/.pdb output folder structure -->
   <PropertyGroup>
-    <LinkIncremental>false</LinkIncremental>
+    
+    <!-- Key part of this .vcxproj demo -->
+    <LinkIncremental Condition="!$(Configuration.Contains('incre-link no'))">true</LinkIncremental>
+    <LinkIncremental Condition=" $(Configuration.Contains('incre-link no'))">false</LinkIncremental>
+    
      <IntDir>$(ProjectDir)obj-$(PlatformToolset)\$(Platform)\$(Configuration)\</IntDir>
     <OutDir>$(SolutionDir)bin-$(PlatformToolset)\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
@@ -127,6 +124,7 @@
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'"  >;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SetupAPI.lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      
     </Link>
     <!-- Better build.log file naming -->
     <BuildLog>
