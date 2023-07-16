@@ -115,12 +115,15 @@ LONG NTAPI int3_BreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo)
 		//
 		PVOID excpaddr = pExceptionInfo->ExceptionRecord->ExceptionAddress;
 		int addr_diff = int( (INT_PTR)excpaddr - (INT_PTR)g_pfnMonitored );
+#if 0
+		// [2023-07-14] Actually, we should not check addr_diff, bcz it can be any value. 
+		// If we int3-hook system API LoadLibraryExW, we may see addr_diff=-12 .
 		if ( !(addr_diff>0 && addr_diff<=4) )
 		{
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
-
-		printf("[Matt] Do STATUS_SINGLE_STEP handling.\n");
+#endif
+		printf("[Matt] Do STATUS_SINGLE_STEP handling. (addr_diff=%d)\n", addr_diff);
 
 		// We've stepped the original instruction, so put the breakpoint back
 		SetBreakpoint( g_pfnMonitored );

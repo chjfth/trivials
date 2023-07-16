@@ -73,7 +73,7 @@ void SetupLoadLibraryExWCallback(void)
 	// All LoadLibraryA/W/ExA calls
 	// go through LoadLibraryExW
 	g_pfnMonitored = (PVOID)GetProcAddress(
-		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" ); // chj: not using LoadLibraryExW on Win7
+		GetModuleHandle(_T("KERNEL32")), "LoadLibraryExW" );
 
 	// Add a vectored exception handler for our breakpoint
 	g_hVectHandler = AddVectoredExceptionHandler( 1, LoadLibraryBreakpointHandler );
@@ -147,8 +147,9 @@ LONG NTAPI LoadLibraryBreakpointHandler(PEXCEPTION_POINTERS pExceptionInfo )
 		// We've stepped the original instruction, so put the breakpoint back
 		SetBreakpoint( g_pfnMonitored );
 
-		// Turn off trace flag that we set above
-		pExceptionInfo->ContextRecord->EFlags &= ~0x00000100;
+		// Turn off trace flag that we set above 
+		// ( Jimm: This is not required, it is automatically off. )
+		// pExceptionInfo->ContextRecord->EFlags &= ~0x00000100;
 
 		return EXCEPTION_CONTINUE_EXECUTION;    // Continue on!
 	}
