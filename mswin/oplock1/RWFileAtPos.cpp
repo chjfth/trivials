@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "share.h"
 
-const TCHAR *g_version = _T("1.3");
+const TCHAR *g_version = _T("1.4");
 
 void wait_enter()
 {
@@ -143,27 +143,45 @@ int _tmain(int argc, TCHAR* argv[])
 		_tprintf(_T("    RWFileAtPos <file> [S?] [Wpos1,size1] [Wpos2,size2] [Rpos3,size3] ...\n"));
 		_tprintf(_T("S? can be:\n"));
 		_tprintf(_T("    S1: FILE_SHARE_READ , S2: FILE_SHARE_WRITE , S3: both(default)\n"));
+		_tprintf(_T("    Use '+' before 'S' to force create a new file(clear old file).\n"));
 		_tprintf(_T("Example:\n"));
-		_tprintf(_T("    RWFileAtPos input.txt    W4096,100,ab  W8000,200,cd\n"));
-		_tprintf(_T("    RWFileAtPos input.txt    W4096,100,xx  W8000,200,yy  R4096,40\n"));
-		_tprintf(_T("    RWFileAtPos input.txt S2 R4096,10\n"));
+		_tprintf(_T("    RWFileAtPos input.txt     W4096,100,ab  W8000,200,cd\n"));
+		_tprintf(_T("    RWFileAtPos input.txt     W4096,100,xx  W8000,200,yy  R4096,40\n"));
+		_tprintf(_T("    RWFileAtPos input.txt  S2 R4096,10\n"));
+		_tprintf(_T("    RWFileAtPos input.txt +S2 W4096,10,abcd\n"));
 
 		exit(4);
 	}
 
 	const TCHAR *szfn = argv[1];
-	DWORD ShareMode = FILE_SHARE_READ|FILE_SHARE_WRITE;
+	DWORD ShareMode = 0;
 	int idxRW = 2;
+	bool isCreateNewFile = false;
 
-	if(argc>2 && (argv[2][0]=='S' || argv[2][0]=='s'))
+	if(argc>2)
 	{
-		TCHAR schar = argv[2][1];
-		if(schar=='1')
-			ShareMode = FILE_SHARE_READ;
-		else if(schar=='2')
-			ShareMode = FILE_SHARE_WRITE;
+		TCHAR *pc = argv[2];
 
-		idxRW = 3;
+		if(*pc=='+')
+		{
+			isCreateNewFile = true;
+			pc++;
+
+			idxRW = 3;
+		}
+
+		if(*pc=='S' || *pc=='s')
+		{
+			TCHAR schar = pc[1];
+			if(schar=='1')
+				ShareMode = FILE_SHARE_READ;
+			else if(schar=='2')
+				ShareMode = FILE_SHARE_WRITE;
+			else if(schar='3')
+				ShareMode = FILE_SHARE_READ|FILE_SHARE_WRITE;
+
+			idxRW = 3;
+		}
 	}
 
 	// Scan through remaining params, to see whether we use read-only, write-only or read-write.
@@ -191,16 +209,24 @@ int _tmain(int argc, TCHAR* argv[])
 		DesiredAccess,
 		ShareMode,
 		NULL, // no security attribute
-		OPEN_EXISTING, // dwCreationDisposition
+		isCreateNewFile ? CREATE_ALWAYS : OPEN_EXISTING, // dwCreationDisposition
 		FILE_FLAG_OVERLAPPED,
 		NULL);
 
+	DWORD winerr = GetLastError();
 	if(hfile==INVALID_HANDLE_VALUE) {
-		PrnTs(_T("File open error. WinErr=%d."), GetLastError());
+		PrnTs(_T("File open error. WinErr=%d."), winerr);
 		exit(4);
 	}
 
-	PrnTs(_T("CreateFile() success, hfile=0x%p."), hfile);
+	const TCHAR *pszResult = _T("");
+	if(isCreateNewFile)
+	{
+		pszResult = (winerr==ERROR_ALREADY_EXISTS ? 
+			_T("(old file cleared)") : _T("(created new file)") );
+	}
+
+	PrnTs(_T("CreateFile() success, hfile=0x%p. %s"), hfile, pszResult);
 
 	RWFile_steps(hfile, argv+idxRW);
 
@@ -213,4 +239,3 @@ int _tmain(int argc, TCHAR* argv[])
 
 	return 0;
 }
-
