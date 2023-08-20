@@ -6,34 +6,42 @@
 #include <windows.h>
 #include "share.h"
 
-const TCHAR *g_version = _T("1.4");
+const TCHAR *g_version = _T("1.5");
 
 void wait_enter()
 {
 	while(_getch()!='\r');
 }
 
-void do_writefile(HANDLE hfile, int pos, int size, const TCHAR *wpattern)
+void do_writefile(HANDLE hfile, int pos, int bytelen_totwrite, const TCHAR *wpattern)
 {
 	char wbpattern[100] = {};
-	WideCharToMultiByte(CP_ACP, 0, wpattern,-1, wbpattern, sizeof(wbpattern), NULL, NULL);
+	const char* pbytes_pattern = wbpattern;
 
-	int plen = (int)strlen(wbpattern);
-	char *wbuf = new char[size+plen];
+#ifdef UNICODE
+	WideCharToMultiByte(CP_ACP, 0, wpattern,-1, wbpattern, sizeof(wbpattern), NULL, NULL);
+#else
+	pbytes_pattern = wpattern;
+#endif
+
+	int bytelen_pattern = (int)strlen(pbytes_pattern);
+	char *writebuf = new char[bytelen_totwrite + bytelen_pattern];
+
 	int j=0;
-	for(; j<size; j+=plen)
+	for(; j<bytelen_totwrite; j+=bytelen_pattern)
 	{
-		memcpy(wbuf+j, wbpattern, plen);
+		memcpy(writebuf+j, pbytes_pattern, bytelen_pattern);
 	}
+	writebuf[j] = '\0'; // for debug ease
 
 	OVERLAPPED ovlp = {};
 	ovlp.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 	ovlp.Offset = pos;
 
-	PrnTs(_T("WriteFile: pos=%d bytes=%d pattern=%s"), pos, size, wpattern);
+	PrnTs(_T("WriteFile: pos=%d bytes=%d pattern=%s"), pos, bytelen_totwrite, wpattern);
 
 	DWORD nBytesDone = 0;
-	BOOL succ = WriteFile(hfile, wbuf, size, &nBytesDone, &ovlp);
+	BOOL succ = WriteFile(hfile, writebuf, bytelen_totwrite, &nBytesDone, &ovlp);
 	DWORD winerr = GetLastError();
 	if(!succ && winerr==ERROR_IO_PENDING)
 	{
@@ -45,7 +53,7 @@ void do_writefile(HANDLE hfile, int pos, int size, const TCHAR *wpattern)
 	else
 		PrnTs(_T("WriteFile fail, WinErr=%d."), GetLastError());
 
-	delete wbuf;
+	delete writebuf;
 	CloseHandle(ovlp.hEvent);
 }
 
@@ -138,7 +146,7 @@ int _tmain(int argc, TCHAR* argv[])
 	
 	if(argc==1)
 	{
-		_tprintf(_T("RWFileAtPos version %s.\n"), g_version);
+		_tprintf(_T("RWFileAtPos version %s\n"), g_version);
 		_tprintf(_T("Usage:\n"));
 		_tprintf(_T("    RWFileAtPos <file> [S?] [Wpos1,size1] [Wpos2,size2] [Rpos3,size3] ...\n"));
 		_tprintf(_T("S? can be:\n"));
