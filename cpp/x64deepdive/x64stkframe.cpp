@@ -1,12 +1,26 @@
+/*
+Using VC2010+ x64 to compile this program, we can see .pdata section generated
+in the EXE(PE+ format), and UNWIND_INFO, UNWIND_CODE structures for each function
+in the generated x64stkframe.cod file.
+
+	cl /FAsc /Zi /RTC1 x64stkframe.cpp
+
+Note of the /RTC1 option: 
+* Without /RTC1, Bottom() will have only one unwind-code.
+* With /RTC1, Bottom() will have two unwind-codes.
+
+That difference can be seen at $unwind$Bottom in x64stkframe.cod .
+
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <tchar.h>
 #include <locale.h>
 
-void Middle(int c, int d);
-void Bottom(int e);
+extern"C" void Middle(int c, int d);
+extern"C" void Bottom(int e);
 
-void Top(int a, int b)
+extern"C" void Top(int a, int b)
 {
     int toplocal = b + 5;
     Middle(a, toplocal);
@@ -24,13 +38,12 @@ void Bottom(int e)
     printf("In Bottom() e=%X ; %X , %X\n", e, btlocal1, btlocal2);
 }
 
-int _tmain(int argc, TCHAR* argv[])
+int main(int argc, char* argv[])
 {
     setlocale(LC_ALL, "");
 
     Top(0x41414141, 0x42424242);
    
-    _tprintf(_T("Hello, x64stkframe!\n"));
-    _tprintf(_T("sizeof(TCHAR)=%d\n"), (int)sizeof(TCHAR));
+    printf("Hello, x64stkframe!\n");
     return 0;
 }
