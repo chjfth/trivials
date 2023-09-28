@@ -44,4 +44,7 @@ int main(int argc, char* argv[])
 		printf("CUDA kernel call error(%d): %s\n", kerr, cudaGetErrorName(kerr));
 	else
 		printf("CUDA kernel call OK.\n");
+
+	printf("Done. (press any key)\n");
+	_getch();
 }
