@@ -9,6 +9,10 @@
 //
 // Ref: https://docs.nvidia.com/deploy/nvml-api/nvml-api-reference.html
 
+#ifndef _M_AMD64
+#error Nvidia only provides 64bit NVML library(nvml.dll), so this program cannot be compiled as 32bit.
+#endif
+
 int main(int argc, char* argv[])
 {
 	printf("Hello, nvmlGetDriverVer!\n");
