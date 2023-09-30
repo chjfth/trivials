@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "unp_autofree.h"
 
-/* This program shows *wrap* a resource pointer(FILE*) inside a unique_ptr object,
+/* This program shows how to *wrap* a resource pointer(FILE*) inside a unique_ptr object,
 so that the resource can be destroyed/free-ed on current function exit.
 */
 
