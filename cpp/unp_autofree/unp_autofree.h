@@ -14,6 +14,15 @@
 	static PTR_TYPE UnpClassName ## _dullptr; \
 	typedef std::unique_ptr< std::remove_reference<decltype(*UnpClassName ## _dullptr)>::type, UnpClassName ## _deleter > UnpClassName;
 
+//
 
+#define MakeUniquePVoidClass(UnpClassName, CleanupFunction) \
+	class UnpClassName ## _deleter { \
+	public: \
+		void operator() (void *ptr) { \
+		CleanupFunction(ptr); \
+		} \
+	}; \
+	typedef std::unique_ptr< void, UnpClassName ## _deleter > UnpClassName;
 
 #endif

@@ -14,6 +14,12 @@ int fclose_debug_wrapper(FILE *fp)
 
 MakeUniquePtrClass(Unp_fclose, fclose_debug_wrapper, FILE*)
 
+#if 1
+MakeUniquePVoidClass(Unp_free, free) // This is OK
+#else
+MakeUniquePtrClass(Unp_free, free, void*) // This compiles error, sigh!
+#endif
+
 void test_autofree(const char *filename)
 {
 	FILE *fp = fopen("abc1.txt", "w");
@@ -26,7 +32,14 @@ void test_autofree(const char *filename)
 	Unp_fclose _unp_fp(fp); 
 
 	printf("%s opened, FILE* ptr: %p\n", filename, fp);
+
+	// Create a resource by void*
+
+	void *cptr = malloc(100);
+	Unp_free _unp_cptr(cptr);
+	printf("malloc() ptr: %p\n", cptr);
 }
+
 
 int main(int argc, char* argv[])
 {
