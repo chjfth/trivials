@@ -1,3 +1,4 @@
 EXPORTS
 	CmdCook_getversion
 	CmdCook_printversion
+	Cook1

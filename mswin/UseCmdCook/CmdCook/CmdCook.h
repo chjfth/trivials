@@ -1,6 +1,11 @@
 #ifndef __CmdCook_h_
 #define __CmdCook_h_
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <tchar.h>
+#include <stdio.h>
+
 #ifdef __cplusplus
 extern"C" {
 #endif
@@ -37,6 +42,8 @@ bool DLL_CALLCONV CmdCook_getversion(struct CmdCook_version_st *pver);
 DLLEXPORT_CmdCook
 void DLL_CALLCONV CmdCook_printversion();
 
+DLLEXPORT_CmdCook
+void DLL_CALLCONV Cook1(HWND hwnd, HINSTANCE hinst, LPSTR lpszCmdLine, int nCmdShow);
 
 
 #ifdef __cplusplus
