@@ -122,10 +122,13 @@ void myprint_hexrp00(char *argv[])
 	for(; argv[i]!=nullptr; i++)
 	{
 		const char* hexrp00 = argv[i];
-
-		unsigned char cbuf[100] = {};
+		
+		int hexrp_len = (int)strlen(hexrp00);
+		unsigned char *cbuf = new unsigned char[hexrp_len/2 + 1]; 
+		cbuf[hexrp_len/2] = '\0';
+		
 		int j = 0;
-		for(; j<(int)sizeof(cbuf) && hexrp00[2*j]; j++)
+		for(; 2*j < hexrp_len; j++)
 		{
 			if(hexrp00[2*j+1]=='\0')
 			{
@@ -144,13 +147,15 @@ void myprint_hexrp00(char *argv[])
 		}
 
 		myprint_slow((const char*)cbuf, j);
+		
+		delete[] cbuf;
 	}
 	
 }
 
 void print_helptext()
 {
-	printf("print unicode text to console, slowly, as UTF-8 stream byte-by-byte.\n");
+	printf("print given unicode text to console, slowly, as a UTF-8 stream, byte-by-byte.\n");
 	printf("Examples:\n"
 "printu-slow 41 42 4B\n"
 "printu-slow 41424B\n"
