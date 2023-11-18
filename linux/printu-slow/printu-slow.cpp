@@ -167,14 +167,15 @@ void print_helptext()
 "\n"
 "    will see: \"ABK电脑\"\n"
 "\n"
-"printu-slow wchar 41 42 4B 7535 8111\n"
+"printu-slow WCHAR 41 42 4B 7535 8111\n"
 "\n"
 "    will see: \"ABK电脑\"\n"
-"    If first param is 'wchar', each of remaining params represents one Unicode value, in hex.\n"
+"    If first param is 'WCHAR', each of remaining params is one Unicode value, in hex.\n"
+"    A Unicode value can be ExtUnicode, like 1f34e (red apple).\n"
 "\n"
-"printu-slow wchar 41424B 7535 8111\n"
+"printu-slow WCHAR 41424B 7535 8111\n"
 "\n"
-"    will crash the program, bcz 0x41424B is not a legal Unicode codepoint.\n"
+"    will fail the program, because 0x41424B is not a legal Unicode codepoint.\n"
 "\n"
 	);
 }
@@ -187,7 +188,7 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-	if(strcmp(argv[1], "wchar") == 0)
+	if(strcmp(argv[1], "WCHAR") == 0)
 	{
 		if(argc==2)
 		{
