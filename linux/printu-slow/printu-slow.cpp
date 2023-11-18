@@ -123,7 +123,7 @@ void myprint_hexrp00(char *argv[])
 	{
 		const char* hexrp00 = argv[i];
 
-		unsigned char *cbuf[100] = {};
+		unsigned char cbuf[100] = {};
 		int j = 0;
 		for(; j<(int)sizeof(cbuf) && hexrp00[2*j]; j++)
 		{
