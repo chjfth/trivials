@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    MonitorMyWinMove_VMAJOR, MonitorMyWinMove_VMINOR, MonitorMyWinMove_VPATCH, MonitorMyWinMove_VTAIL
+ProductVersion MonitorMyWinMove_VMAJOR, MonitorMyWinMove_VMINOR, MonitorMyWinMove_VPATCH, MonitorMyWinMove_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     MonitorMyWinMove_NAME
+            VALUE "FileDescription", MonitorMyWinMove_NAME
+            VALUE "FileVersion",    MonitorMyWinMove_VMAJORs "." MonitorMyWinMove_VMINORs "." MonitorMyWinMove_VPATCHs
+            VALUE "ProductVersion",    MonitorMyWinMove_VMAJORs "." MonitorMyWinMove_VMINORs "." MonitorMyWinMove_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , MonitorMyWinMove_NAME ".exe"
+            VALUE "InternalName", MonitorMyWinMove_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
