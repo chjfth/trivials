@@ -108,8 +108,11 @@ void AppendText_mled(HWND hedit, const TCHAR *text)
 	Edit_ReplaceSel(hedit, text);
 }
 
-void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
+void vaSetDlgItemText(HWND hwnd, UINT id_edit, const TCHAR *szfmt, ...)
 {
+	HWND hedit = GetDlgItem(hwnd, id_edit);
+	assert(hedit);
+
 	TCHAR tbuf[4000] = {};
 	va_list args;
 	va_start(args, szfmt);

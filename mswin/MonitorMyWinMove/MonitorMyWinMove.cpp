@@ -19,16 +19,23 @@ struct DlgPrivate_st
 {
 //	const TCHAR *mystr; 
 	int count;
+	RECT rwin; // window position last seen
 };
+
+#define MY_TIMER_ID ((void*)0x11) // only test, no use
 
 void PrintMyPosition(HWND hdlg)
 {
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+
 	RECT rwin = {};
 	GetWindowRect(hdlg,	&rwin);
 
-	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("Now position: X=%d, Y=%d, size=(%d, %d)\r\n"), 
-		rwin.left, rwin.top, (rwin.right-rwin.left), (rwin.bottom-rwin.top) );	
+	vaSetDlgItemText(hdlg, IDC_EDIT1, 
+		_T("Now position: X=%d, Y=%d, size=(%d, %d)\r\n"), 
+		rwin.left, rwin.top, (rwin.right-rwin.left), (rwin.bottom-rwin.top) );
+
+	prdata->rwin = rwin;
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
@@ -65,11 +72,11 @@ void Dlg_OnMove(HWND hdlg, int x, int y)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	prdata->count++;
 
-	RECT rwin = {};
+	RECT &rwin = prdata->rwin;
 	GetWindowRect(hdlg,	&rwin);
 
-	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("[#%d] Move: X=%d, Y=%d\r\n"), 
+	vaSetDlgItemText(hdlg, IDC_EDIT1, 
+		_T("[#%d] Move: X=%d, Y=%d\r\n"), 
 		prdata->count, rwin.left, rwin.top);
 }
 
@@ -78,12 +85,33 @@ void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	prdata->count++;
 
+	RECT &rwin = prdata->rwin;
+	GetWindowRect(hdlg,	&rwin);
+
+	vaSetDlgItemText(hdlg, IDC_EDIT1, 
+		_T("[#%d] Size: (%d, %d)\r\n"), 
+		prdata->count, rwin.right-rwin.left, rwin.bottom-rwin.top);
+}
+
+void Dlg_OnTimer(HWND hdlg, UINT id)
+{
+	// M$ buggy, id should be of type UINT_PTR.
+	assert((void*)id==MY_TIMER_ID);
+
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+
 	RECT rwin = {};
 	GetWindowRect(hdlg,	&rwin);
 
-	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("[#%d] Size: (%d, %d)\r\n"), 
-		prdata->count, rwin.right-rwin.left, rwin.bottom-rwin.top);
+	if(!EqualRect(&rwin, &prdata->rwin))
+	{
+		HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
+		vaSetDlgItemText(hdlg, IDC_EDIT1, 
+			_T("PANIC: Window-position changed to: X=%d, Y=%d, size=(%d, %d)\r\n"), 
+			rwin.left, rwin.top, rwin.right-rwin.left, rwin.bottom-rwin.top);
+
+		prdata->rwin = rwin;
+	}
 }
 
 // Sets the dialog box icons
@@ -107,6 +135,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	prdata->count = 0;
 	PrintMyPosition(hdlg);
+
+	SetTimer(hdlg, (UINT_PTR)MY_TIMER_ID, 100, NULL);
 
 /*
 	TCHAR textbuf[200];
@@ -134,8 +164,10 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HANDLE_MSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_MSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+		
 		HANDLE_MSG(hdlg, WM_MOVE,          Dlg_OnMove);
 		HANDLE_MSG(hdlg, WM_SIZE,          Dlg_OnSize);
+		HANDLE_MSG(hdlg, WM_TIMER,         Dlg_OnTimer);
 	}
 	return FALSE;
 }
