@@ -27,19 +27,8 @@ void PrintMyPosition(HWND hdlg)
 	GetWindowRect(hdlg,	&rwin);
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("Now: X=%d, Y=%d size=(%d, %d)\r\n"), 
+	vaAppendText_mled(hedit, _T("Now position: X=%d, Y=%d, size=(%d, %d)\r\n"), 
 		rwin.left, rwin.top, (rwin.right-rwin.left), (rwin.bottom-rwin.top) );	
-}
-
-void ClearEdit(HWND hdlg)
-{
-	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-
-	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	Edit_SetText(hedit, _T(""));
-
-	prdata->count = 0;
-	PrintMyPosition(hdlg);
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
@@ -57,7 +46,9 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		SetDlgItemText(hdlg, IDC_EDIT1, textbuf);
 		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
 */
-		ClearEdit(hdlg);
+		prdata->count = 0;
+		SetDlgItemText(hdlg, IDC_EDIT1, _T(""));
+		PrintMyPosition(hdlg);
 		break;
 	}
 	case IDOK:
@@ -74,8 +65,12 @@ void Dlg_OnMove(HWND hdlg, int x, int y)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	prdata->count++;
 
+	RECT rwin = {};
+	GetWindowRect(hdlg,	&rwin);
+
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("[#%d] Move: X=%d, Y=%d\r\n"), prdata->count, x, y);
+	vaAppendText_mled(hedit, _T("[#%d] Move: X=%d, Y=%d\r\n"), 
+		prdata->count, rwin.left, rwin.top);
 }
 
 void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
@@ -83,8 +78,12 @@ void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	prdata->count++;
 
+	RECT rwin = {};
+	GetWindowRect(hdlg,	&rwin);
+
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("[#%d] Size: (%d, %d)\r\n"), prdata->count, cx, cy);
+	vaAppendText_mled(hedit, _T("[#%d] Size: (%d, %d)\r\n"), 
+		prdata->count, rwin.right-rwin.left, rwin.bottom-rwin.top);
 }
 
 // Sets the dialog box icons
@@ -106,7 +105,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
-	ClearEdit(hdlg);
+	prdata->count = 0;
+	PrintMyPosition(hdlg);
 
 /*
 	TCHAR textbuf[200];
