@@ -21,6 +21,26 @@ struct DlgPrivate_st
 	int count;
 };
 
+void PrintMyPosition(HWND hdlg)
+{
+	RECT rwin = {};
+	GetWindowRect(hdlg,	&rwin);
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
+	vaAppendText_mled(hedit, _T("Now: X=%d, Y=%d size=(%d, %d)\r\n"), 
+		rwin.left, rwin.top, (rwin.right-rwin.left), (rwin.bottom-rwin.top) );	
+}
+
+void ClearEdit(HWND hdlg)
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
+	Edit_SetText(hedit, _T(""));
+
+	prdata->count = 0;
+	PrintMyPosition(hdlg);
+}
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
@@ -36,8 +56,9 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
 		SetDlgItemText(hdlg, IDC_EDIT1, textbuf);
 		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
-		break;
 */
+		ClearEdit(hdlg);
+		break;
 	}
 	case IDOK:
 	case IDCANCEL:
@@ -54,7 +75,7 @@ void Dlg_OnMove(HWND hdlg, int x, int y)
 	prdata->count++;
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("[%d] Move: X=%d, Y=%d\n"), prdata->count, x, y);
+	vaAppendText_mled(hedit, _T("[#%d] Move: X=%d, Y=%d\r\n"), prdata->count, x, y);
 }
 
 void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
@@ -63,7 +84,7 @@ void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
 	prdata->count++;
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-	vaAppendText_mled(hedit, _T("[%d] Size: (%d, %d)\n"), prdata->count, cx, cy);
+	vaAppendText_mled(hedit, _T("[#%d] Size: (%d, %d)\r\n"), prdata->count, cx, cy);
 }
 
 // Sets the dialog box icons
@@ -81,11 +102,11 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 
-	prdata->count = 0;
-
 	SetDlgItemText(hdlg, IDC_LABEL1, _T("WM_MOVE and WM_SIZE messages will be notified here."));
 
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
+
+	ClearEdit(hdlg);
 
 /*
 	TCHAR textbuf[200];
