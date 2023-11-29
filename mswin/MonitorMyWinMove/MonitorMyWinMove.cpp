@@ -129,6 +129,11 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 
+	TCHAR szTitle[100] = _T("");
+	_sntprintf_s(szTitle, _TRUNCATE, _T("Monitor my window moving/sizing, ver %d.%d"), 
+		MonitorMyWinMove_VMAJOR, MonitorMyWinMove_VMINOR);
+	SetWindowText(hdlg, szTitle);
+
 	SetDlgItemText(hdlg, IDC_LABEL1, _T("WM_MOVE and WM_SIZE messages will be notified here."));
 
 	chSETDLGICONS(hdlg, IDI_WINMAIN);

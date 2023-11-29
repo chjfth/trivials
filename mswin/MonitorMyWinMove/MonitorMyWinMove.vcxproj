@@ -183,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JULayout2.h" />
+    <ClInclude Include="iversion.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
