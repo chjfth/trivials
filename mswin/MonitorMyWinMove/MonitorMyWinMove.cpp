@@ -17,26 +17,27 @@ HINSTANCE g_hinstExe;
 
 struct DlgPrivate_st
 {
-	const TCHAR *mystr;
-	int clicks;
+//	const TCHAR *mystr; 
+	int count;
 };
 
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR textbuf[200];
+//	TCHAR textbuf[200];
 
 	switch (id) 
 	{{
 	case IDC_BUTTON1:
 	{
+/*
 		++(prdata->clicks);
 		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
 		SetDlgItemText(hdlg, IDC_EDIT1, textbuf);
-
 		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
 		break;
+*/
 	}
 	case IDOK:
 	case IDCANCEL:
@@ -45,6 +46,24 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	}
 	}}
+}
+
+void Dlg_OnMove(HWND hdlg, int x, int y)
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	prdata->count++;
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
+	vaAppendText_mled(hedit, _T("[%d] Move: X=%d, Y=%d\n"), prdata->count, x, y);
+}
+
+void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	prdata->count++;
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
+	vaAppendText_mled(hedit, _T("[%d] Size: (%d, %d)\n"), prdata->count, cx, cy);
 }
 
 // Sets the dialog box icons
@@ -61,15 +80,21 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
-	
+
+	prdata->count = 0;
+
+	SetDlgItemText(hdlg, IDC_LABEL1, _T("WM_MOVE and WM_SIZE messages will be notified here."));
+
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
+/*
 	TCHAR textbuf[200];
 	_sntprintf_s(textbuf, _TRUNCATE, _T("version: %d.%d.%d"), 
 		MonitorMyWinMove_VMAJOR, MonitorMyWinMove_VMINOR, MonitorMyWinMove_VPATCH);
 	SetDlgItemText(hdlg, IDC_LABEL1, textbuf);
 	
 	SetDlgItemText(hdlg, IDC_EDIT1, prdata->mystr);
+*/
 
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
@@ -88,6 +113,8 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HANDLE_MSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_MSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+		HANDLE_MSG(hdlg, WM_MOVE,          Dlg_OnMove);
+		HANDLE_MSG(hdlg, WM_SIZE,          Dlg_OnSize);
 	}
 	return FALSE;
 }
@@ -100,7 +127,7 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
-	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
+	DlgPrivate_st dlgdata = { };
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, Dlg_Proc, (LPARAM)&dlgdata);
 
 	return 0;

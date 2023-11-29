@@ -1,5 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <windowsx.h>
 #include <stdio.h>
 
 #include "utils.h"
@@ -97,4 +98,28 @@ void vaDbgS(const TCHAR *fmt, ...)
 	buf[slen+1] = '\0';
 
 	OutputDebugString(buf);
+}
+
+void AppendText_mled(HWND hedit, const TCHAR *text)
+{
+	int pos = GetWindowTextLength (hedit);
+	//  SetFocus (hedit); // optional, as needed
+	Edit_SetSel(hedit, pos, pos);
+	Edit_ReplaceSel(hedit, text);
+}
+
+void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
+{
+	TCHAR tbuf[4000] = {};
+	va_list args;
+	va_start(args, szfmt);
+
+	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
+
+	int pos = GetWindowTextLength (hedit);
+
+	Edit_SetSel(hedit, pos, pos);
+	Edit_ReplaceSel(hedit, tbuf);
+
+	va_end(args);
 }
