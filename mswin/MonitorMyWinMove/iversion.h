@@ -3,7 +3,7 @@
 
 
 #define MonitorMyWinMove_VMAJOR 1
-#define MonitorMyWinMove_VMINOR 0
+#define MonitorMyWinMove_VMINOR 1
 #define MonitorMyWinMove_VPATCH 0
 #define MonitorMyWinMove_VTAIL  1
 

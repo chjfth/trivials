@@ -24,6 +24,15 @@ struct DlgPrivate_st
 
 #define MY_TIMER_ID ((void*)0x11) // only test, no use
 
+TCHAR *NowtimeStr(TCHAR buf[], int bufchars)
+{
+	SYSTEMTIME st = {0};
+	GetLocalTime(&st);
+	_sntprintf_s(buf, bufchars, _TRUNCATE, _T("%02d:%02d:%02d.%03d"),
+		st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+	return buf;
+}
+
 void PrintMyPosition(HWND hdlg)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -72,12 +81,15 @@ void Dlg_OnMove(HWND hdlg, int x, int y)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	prdata->count++;
 
+	TCHAR timebuf[20] = {};
+
 	RECT &rwin = prdata->rwin;
 	GetWindowRect(hdlg,	&rwin);
 
 	vaSetDlgItemText(hdlg, IDC_EDIT1, 
-		_T("[#%d] Move: X=%d, Y=%d\r\n"), 
-		prdata->count, rwin.left, rwin.top);
+		_T("[#%d][%s] Move: X=%d, Y=%d\r\n"), 
+		prdata->count, NowtimeStr(timebuf, ARRAYSIZE(timebuf)),
+		rwin.left, rwin.top);
 }
 
 void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
@@ -85,12 +97,15 @@ void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	prdata->count++;
 
+	TCHAR timebuf[20] = {};
+
 	RECT &rwin = prdata->rwin;
 	GetWindowRect(hdlg,	&rwin);
 
 	vaSetDlgItemText(hdlg, IDC_EDIT1, 
-		_T("[#%d] Size: (%d, %d)\r\n"), 
-		prdata->count, rwin.right-rwin.left, rwin.bottom-rwin.top);
+		_T("[#%d][%s] Size: (%d, %d)\r\n"), 
+		prdata->count, NowtimeStr(timebuf, ARRAYSIZE(timebuf)),
+		rwin.right-rwin.left, rwin.bottom-rwin.top);
 }
 
 void Dlg_OnTimer(HWND hdlg, UINT id)
