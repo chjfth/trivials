@@ -8,16 +8,16 @@ int main(int argc, char* argv[])
 	printf("argv[0] = %s\n", argv[0]);
 
 	pid_t mypid = getpid();
-	printf("getpid()  = %5d     (my process ID)\n", mypid);
+	printf("getpid()  = %5d     (my process ID, PID)\n", mypid);
 
 	pid_t pgid = getpgrp();
-	printf("getpgrp() = %5d     (process group ID)\n", pgid);
+	printf("getpgrp() = %5d     (process group ID, PGID)\n", pgid);
 
 	pid_t orig_sid = getsid(0);
-	printf("getsid(0) = %5d     (session ID)\n", orig_sid);
+	printf("getsid(0) = %5d     (session ID, SID)\n", orig_sid);
 
 	pid_t parentpid = getppid();
-	printf("getppid() = %5d     (parent process ID)\n", parentpid);
+	printf("getppid() = %5d     (parent process ID, PPID)\n", parentpid);
 
 	printf("\n");
 
