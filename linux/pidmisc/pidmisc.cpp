@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -18,6 +19,13 @@ int main(int argc, char* argv[])
 
 	pid_t parentpid = getppid();
 	printf("getppid() = %5d     (parent process ID, PPID)\n", parentpid);
+
+	printf("\n");
+
+	char catcmd[80] = "";
+	snprintf(catcmd, sizeof(catcmd), "cat /proc/%u/sessionid", (unsigned)mypid);
+	printf("Now executing `%s`\n", catcmd);
+	system(catcmd);
 
 	printf("\n");
 
