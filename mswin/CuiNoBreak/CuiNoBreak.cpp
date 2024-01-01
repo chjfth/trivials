@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 		g_delay_sec = atoi(argv[1]);
 	}
 
-	int cycles = 10;
+	int cycles = 20;
 	for (int i = 0; i < cycles; i++)
 	{
 		printf("Sleep cycles: %d\n", i + 1);
