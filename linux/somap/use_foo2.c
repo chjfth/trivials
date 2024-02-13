@@ -4,6 +4,8 @@
 #define MYEXPORT
 #endif
 
+extern void FooX(int);
+
 MYEXPORT
 void use_foo2(int i)
 {
