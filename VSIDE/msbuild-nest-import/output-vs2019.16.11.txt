@@ -1,0 +1,27 @@
+Rebuild started...
+1>------ Rebuild All started: Project: fiddle, Configuration: Debug Win32 ------
+1>Build started 2024-02-14 09:21:57.
+1>Target _PrepareForClean:
+1>    Deleting file "D:\gitw\trivials\VSIDE\msbuild-nest-import\obj-v142\Win32\Debug\fiddle.tlog\fiddle.lastbuildstate".
+1>Target InSub1_target:
+1>    +++++++++++ .\myprops\sub1.props
+1>Target InSub0_target:
+1>    +++++++++++ .\myprops\sub0.props
+1>Target InSub2_target:
+1>    +++++++++++ .\myprops\sub2.props
+1>Target InitializeBuildStatus:
+1>    Creating "D:\gitw\trivials\VSIDE\msbuild-nest-import\obj-v142\Win32\Debug\fiddle.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+1>Target ClCompile:
+1>    fiddle.cpp
+1>Target Link:
+1>    fiddle.vcxproj -> D:\gitw\trivials\VSIDE\msbuild-nest-import\bin-v142\Win32\Debug\fiddle.exe
+1>Target FinalizeBuildStatus:
+1>    Deleting file "D:\gitw\trivials\VSIDE\msbuild-nest-import\obj-v142\Win32\Debug\fiddle.tlog\unsuccessfulbuild".
+1>    Touching "D:\gitw\trivials\VSIDE\msbuild-nest-import\obj-v142\Win32\Debug\fiddle.tlog\fiddle.lastbuildstate".
+1>
+1>Build succeeded.
+1>    0 Warning(s)
+1>    0 Error(s)
+1>
+1>Time Elapsed 00:00:01.70
+========== Rebuild All: 1 succeeded, 0 failed, 0 skipped ==========
