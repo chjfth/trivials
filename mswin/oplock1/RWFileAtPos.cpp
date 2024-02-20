@@ -6,7 +6,7 @@
 #include <windows.h>
 #include "share.h"
 
-const TCHAR *g_version = _T("1.5");
+const TCHAR *g_version = _T("1.6");
 
 void wait_enter()
 {
@@ -150,7 +150,7 @@ int _tmain(int argc, TCHAR* argv[])
 		_tprintf(_T("Usage:\n"));
 		_tprintf(_T("    RWFileAtPos <file> [S?] [Wpos1,size1] [Wpos2,size2] [Rpos3,size3] ...\n"));
 		_tprintf(_T("S? can be:\n"));
-		_tprintf(_T("    S1: FILE_SHARE_READ , S2: FILE_SHARE_WRITE , S3: both(default)\n"));
+		_tprintf(_T("    S1: FILE_SHARE_READ, S2: FILE_SHARE_WRITE, S3: both, default: 0\n"));
 		_tprintf(_T("    Use '+' before 'S' to force create a new file(clear old file).\n"));
 		_tprintf(_T("Example:\n"));
 		_tprintf(_T("    RWFileAtPos input.txt     W4096,100,ab  W8000,200,cd\n"));
