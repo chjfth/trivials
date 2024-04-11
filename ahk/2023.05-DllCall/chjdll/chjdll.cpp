@@ -11,7 +11,7 @@ DLLEXPORT_chjdll
 double DLL_CALLCONV SumHalf(int *ptr, int size)
 {
 	WCHAR buf[100];
-	wsprintf(buf, L"SumHalf() sees ptr=0x%p\r\n", ptr);
+	wsprintf(buf, L"SumHalf() sees ptr=0x%p , size=%d\r\n", ptr, size);
 	OutputDebugStringW(buf);
 
 	double dret = (double)(*ptr + size)/2;
@@ -22,6 +22,15 @@ double DLL_CALLCONV SumHalf(int *ptr, int size)
 	OutputDebugStringW(buf);
 
 	return dret;
+}
+
+DLLEXPORT_chjdll
+int DLL_CALLCONV Fill1str(WCHAR *ptr, int bufsize)
+{
+	OutputDebugStringW(L"Fill1Str()\n");
+
+	int ret = _snwprintf_s(ptr, bufsize, _TRUNCATE, L"%s", L"1.2345");
+	return ret;
 }
 
 DLLEXPORT_chjdll

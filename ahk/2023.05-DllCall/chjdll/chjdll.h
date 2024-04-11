@@ -28,6 +28,8 @@ bool DLL_CALLCONV chjdll_getversion(struct chjdll_version_st *pver);
 DLLEXPORT_chjdll
 void DLL_CALLCONV chjdll_printversion();
 
+DLLEXPORT_chjdll
+int DLL_CALLCONV Fill1str(WCHAR *ptr, int bufsize);
 
 
 #ifdef __cplusplus
