@@ -185,11 +185,11 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		RECT uprect = {rect.left, rect.top, rect.right, rect.bottom/2};
 		RECT downrect = {rect.left, rect.bottom/2, rect.right, rect.bottom};
 
-		FrameRect(hdc, &uprect, GetStockBrush(BLACK_BRUSH));
+		FrameRect(hdc, &uprect, GetStockBrush(LTGRAY_BRUSH));
 		DrawText(hdc, TEXT("Click here to call SetWindowPos( )."), -1, &uprect,
 			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-		FrameRect(hdc, &downrect, GetStockBrush(BLACK_BRUSH));
+		FrameRect(hdc, &downrect, GetStockBrush(GRAY_BRUSH));
 		DrawText(hdc, TEXT("Click here to call RedrawWindow( )."), -1, &downrect,
 			DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
