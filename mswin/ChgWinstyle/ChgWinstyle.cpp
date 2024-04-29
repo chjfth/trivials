@@ -214,6 +214,39 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 	
+	case WM_NCCALCSIZE: // Chj: probe DefWindowProc's client-area calculating behavior
+	{
+		LRESULT lr = 0;
+		NCCALCSIZE_PARAMS *pNccs = (NCCALCSIZE_PARAMS*)lParam;
+		RECT &or = *(RECT*)lParam;
+
+		if(wParam==0) // first WM_NCCALCSIZE callback
+		{
+			RECT ircClient = *(RECT*)lParam;
+			RECT &orcClient = *(RECT*)lParam;
+
+			LRESULT lr = DefWindowProc(hwnd, message, wParam, lParam);
+		}
+		else // second and later WM_NCCALCSIZE callback
+		{
+			//  Give names to these things
+			RECT ircWndPosNow = pNccs->rgrc[0]; // input naming, rela-to hWnd's parent
+			RECT ircWndPosWas = pNccs->rgrc[1]; // input naming, rela-to hWnd's parent
+			RECT ircClientAreasWas = pNccs->rgrc[2]; // input naming, rela-to hWnd's parent
+			//
+			RECT &orcClientNew = pNccs->rgrc[0]; // output naming, rela-to hWnd's parent
+			RECT &orcValidDst  = pNccs->rgrc[1]; // output naming, rela-to hWnd's parent
+			RECT &orcValidSrc  = pNccs->rgrc[2]; // output naming, rela-to hWnd's parent
+
+			lr = DefWindowProc(hwnd, message, wParam, lParam);
+		}
+
+		vaDbg(_T("WM_NCCALCSIZE: w=%d lr=0x%X new-client-rect: X[%d~%d) Y[%d~%d)"), 
+			(int)wParam, lr, or.left, or.right, or.top, or.bottom);
+
+		return lr;
+	}
+
 	case WM_DESTROY:
 	{
 		PostQuitMessage (0) ;
