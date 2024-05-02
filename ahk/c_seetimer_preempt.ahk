@@ -1,4 +1,4 @@
-#Include prints.ahk
+#Include %A_LineFile%\..\prints.ahk
 
 do_work()
 
@@ -22,14 +22,13 @@ do_work()
 	}
 	
 	WinWait, % winti
-	WinActivate, % winti
+	WinActivate,
 	WinWaitActive
 	
 	WinGet, hwnd, ID
 	
 	fnobj := Func("TimerDo").Bind(hwnd)
 	SetTimer, % fnobj, 1000
-	;WinGetPos
 }
 
 TimerDo(hwnd)
@@ -46,7 +45,6 @@ TimerDo(hwnd)
 	
 	WinGetPos, x0, y0, w, h, % winti
 	x1 := x0 + 10
-	y1 := y0 + 10
 
 	Loop, 3
 	{
