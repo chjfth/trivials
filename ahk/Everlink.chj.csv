@@ -2,10 +2,12 @@
 https://www.evernote.com/shard/s21/nl/2425275/e84984e1-0f3a-4030-aaac-3243ba61ee73 , A320BK , 群升公寓的备份机 , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/98761ee8-a18f-4367-bb39-3fd31567d8e0 , AARDIO , 国产脚本语言兼Windows开发平台
 https://www.evernote.com/shard/s21/nl/2425275/cfc1b30e-9ea2-43da-8d11-163f37a1ef8f , AboutIQ , 智商表现的哪些方面
+https://www.evernote.com/shard/s21/nl/2425275/d399995c-707f-4dc6-8c81-1c11d3d9fdfc , AbRetAddr , 汇编语言术语: Foo's return address 歧义收集
 https://www.evernote.com/shard/s21/nl/2425275/537afc56-a58a-40fc-8206-8e935a13d71d , AccessMaster , 
 https://www.evernote.com/shard/s21/nl/2425275/2c903369-2c41-4d7c-b2d6-6ebbb10aaec3 , AcerR7 , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/0953e36a-32c0-404b-aa01-f0cdbd3e4200 , AHKv2 , Autohotkey v2
 https://www.evernote.com/shard/s21/nl/2425275/ee33a56c-3a14-45bf-a42e-f7b0b765e453 , AIDA64 , PC 硬件检测工具
+https://www.evernote.com/shard/s21/nl/2425275/a9730894-fec2-4437-9309-383e6dceffe1 , AlienWords , 品味一些外来词/英语翻译
 https://www.evernote.com/shard/s21/nl/2425275/5cfb0da8-4f25-4300-9749-fa1c196c9ad3 , AMBIG , 歧义收集帖
 https://www.evernote.com/shard/s21/nl/2425275/6a9fedc2-25ca-4df1-987b-96381b14e3f5 , AmDbg , AmHotkey 设计的调试信息控制框架
 https://www.evernote.com/shard/s21/nl/2425275/d5771d04-29e7-4b23-a4ee-7403a7bb48f6 , AmHotkey , 自创 AutoHotkey 功能
@@ -24,6 +26,7 @@ https://www.evernote.com/shard/s21/nl/2425275/2e652fef-61f0-4bdf-9528-78cc454284
 https://www.evernote.com/shard/s21/nl/2425275/b49be72e-4bbe-4949-b95b-a777b7ed23a0 , BATCMD , Windows batch script
 https://www.evernote.com/shard/s21/nl/2425275/06850a7b-6913-453f-b8aa-c2ae03e3aaf4 , BAZEL , 谷歌新创的 C++/Java 构建工具
 https://www.evernote.com/shard/s21/nl/2425275/2cf1d0ae-03a5-460b-b7a0-c46f19489b62 , BESTPRAC , 最佳实践收集
+https://www.evernote.com/shard/s21/nl/2425275/d2fab750-5057-4351-9ec9-a0e75f5be8fa , BitLocker , Windows 自带磁盘加密功能
 https://www.evernote.com/shard/s21/nl/2425275/e263d139-bdc7-48de-b414-5dbef0c876e1 , BookNoting , 读书笔记模式备忘
 https://www.evernote.com/shard/s21/nl/2425275/6a06a3d1-d5f4-4af9-98f3-12ed3daff442 , BOOTMGR , Vista+ Boot manager
 https://www.evernote.com/shard/s21/nl/2425275/eeb1f9c1-9cbc-4b5a-a202-278c473f9896 , BPFTools2019 , BPF Performance Tools - by Brendan Gregg 读书笔记
@@ -51,11 +54,13 @@ https://www.evernote.com/shard/s21/nl/2425275/431cba60-f0b4-4223-9c05-b9c623425c
 https://www.evernote.com/shard/s21/nl/2425275/4d921755-9917-4da4-b884-da7aa12f2e57 , CompAlgorithm , 计算机算法, Algorithm
 https://www.evernote.com/shard/s21/nl/2425275/4c473184-2eaa-41df-be37-4495a711f796 , Confluence , Atlassian 的知识库平台软件
 https://www.evernote.com/shard/s21/nl/2425275/e00cbd1d-f6a6-4b5f-8660-5b80c22056ed , ConscpLab , 
+https://www.evernote.com/shard/s21/nl/2425275/74e606d4-ab69-42d8-a594-9789d7f1509b , ContraWorld , 矛盾与辩证
 https://www.evernote.com/shard/s21/nl/2425275/98fa3fbd-35e3-4b66-a40e-f27706946055 , copybadfile.py , 坏块文件拷贝工具 用来对付伤残的 SSD
 https://www.evernote.com/shard/s21/nl/2425275/68f18a8e-d3af-47d4-8a24-69579b8d02fe , CORPUP , 开办公司
 https://www.evernote.com/shard/s21/nl/2425275/b811231e-0342-4628-b09e-5d0bdc52058a , cpuhog , 单纯消耗 CPU 的简单程序 用于测试目的
 https://www.evernote.com/shard/s21/nl/2425275/8ffd6c2f-a7e3-40bb-9f1f-c761b6da2045 , CreateFile , 收集: 自写的用到 CreateFile 的测试程序
 https://www.evernote.com/shard/s21/nl/2425275/a42d019c-f47d-493c-9fbe-b64b206b75ef , CRTLocale , 
+https://www.evernote.com/shard/s21/nl/2425275/f4101baa-6ac6-48b9-85ab-2e94c76ed825 , CryptDisk , 移动硬盘加密方案实现方法
 https://www.evernote.com/shard/s21/nl/2425275/842522bf-b2f2-4a9a-bfe7-bacfc5eba6f0 , Crypto , 加密解密编程
 https://www.evernote.com/shard/s21/nl/2425275/35e458a1-d25e-45bb-83ab-b7358c4af4f5 , CSharp , C# language
 https://www.evernote.com/shard/s21/nl/2425275/58bdb796-2485-4520-b387-0d98f1d2a844 , CSSID , CSS in Depth 读书笔记
@@ -75,6 +80,7 @@ https://www.evernote.com/shard/s21/nl/2425275/c9323a30-4bb8-4312-8863-a6344c24f6
 https://www.evernote.com/shard/s21/nl/2425275/2e3ccbbb-3424-4918-a0ff-c0abac056588 , DiskPartTable , 硬盘分区表
 https://www.evernote.com/shard/s21/nl/2425275/14fb79bb-4d64-4fdd-b8f9-4164c6c20bc7 , DiskPart , Win7+ diskpart 命令行分区工具
 https://www.evernote.com/shard/s21/nl/2425275/1b7e905b-e435-4231-92cc-196bc4344cbd , DiskVolMap , 探测盘符和 \Device\HarddiskVolume1 对应关系的程序
+https://www.evernote.com/shard/s21/nl/2425275/3240bdcc-e131-4875-900f-d313fedd53b9 , DISM , Windows WIM 映像操作
 https://www.evernote.com/shard/s21/nl/2425275/5b26eff4-b26c-40be-af7e-557a001f4da2 , DOSBOX , DOSBOX-x 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/25ed1750-962c-4ec1-8032-f1e1646d555c , DoSched , Windows 计划任务最佳实践: DoSched Wrapper
 https://www.evernote.com/shard/s21/nl/2425275/fb0bdf25-f1d4-48d5-b62f-ba08be158567 , dotNET , 
@@ -125,6 +131,7 @@ https://www.evernote.com/shard/s21/nl/2425275/35f98026-8092-466c-83aa-1efbbe89e5
 https://www.evernote.com/shard/s21/nl/2425275/52a1086f-251e-407e-b2cf-de815b639a70 , Handbrake , 
 https://www.evernote.com/shard/s21/nl/2425275/6f3a3c9a-c6c8-4c67-abe8-ba5567b4a995 , hdisk , 我用过的硬盘
 https://www.evernote.com/shard/s21/nl/2425275/0f3a64a8-bbc1-4a73-8ed5-dc29798a3f0e , HeapSort , 算法笔记：堆排序(Heap Sort)
+https://www.evernote.com/shard/s21/nl/2425275/8f339d2e-2b37-4153-b189-4edc4bd0d18b , HOWLW , No Starch - How Linux Works 3rd-ed
 https://www.evernote.com/shard/s21/nl/2425275/88cd0469-7be3-4245-ac1b-6644432d4857 , HTMLCSS , 
 https://www.evernote.com/shard/s21/nl/2425275/b8d347a4-dbdc-4833-a5eb-6bc3c085658f , HTMLDOM , 
 https://www.evernote.com/shard/s21/nl/2425275/dfe011c6-02e9-4047-82cf-f9d21b3bae12 , HTTPx , HTTP 协议
@@ -159,12 +166,14 @@ https://www.evernote.com/shard/s21/nl/2425275/559be835-319a-4dac-830c-12e892f2ca
 https://www.evernote.com/shard/s21/nl/2425275/8ab63fea-b812-4f47-b85f-20b9ebf97079 , LinuxDev , Linux 开发收集帖
 https://www.evernote.com/shard/s21/nl/2425275/56051bbc-a0ca-4415-a60a-9d7b0251ce7c , LinuxKernel , Linux 内核开发
 https://www.evernote.com/shard/s21/nl/2425275/051671d5-127f-45b1-b2b3-3eef9baee35b , LinuxPs , Linux ps 进程查看命令
+https://www.evernote.com/shard/s21/nl/2425275/2dac59cf-f924-4be3-aa2d-93c0276b7a70 , LinuxSession , [LinuxSession] Linux 上的各种 session
 https://www.evernote.com/shard/s21/nl/2425275/4fd2a893-995a-4120-ba0b-4108b73bf2d7 , LinuxTerm , Linux Terminal API
 https://www.evernote.com/shard/s21/nl/2425275/9322ed82-d494-4bda-b1dc-48a1103eebfa , LinuxUdisks , udisks 磁盘管理工具
 https://www.evernote.com/shard/s21/nl/2425275/a73019f6-e1ef-41cd-a2c4-1bf58b23729b , LinuxWeird , 各种 Linux 怪象
 https://www.evernote.com/shard/s21/nl/2425275/09cab69f-b849-4def-853f-f7bb33ef3a7a , LOBPF2019 , OReilly - Linux Observability with BPF (2019) 读书笔记
 https://www.evernote.com/shard/s21/nl/2425275/4d24d7d2-af10-4885-9f6b-7420fd84e3d1 , MacDev , Apple/Mac/iOS 开发工具
 https://www.evernote.com/shard/s21/nl/2425275/afb4fc04-aec3-4243-8770-ef3b8a818d50 , MbrPartId , MBR partition scheme, partition ID 列表
+https://www.evernote.com/shard/s21/nl/2425275/ca2ad3a5-9aea-4758-b5cd-9ca474d0c188 , Mi11U , 小米手机 Xiaomi 11 Ultra (M2102K1C)
 https://www.evernote.com/shard/s21/nl/2425275/cd24bd65-f5e8-45c0-8bd4-20f4db55ace9 , Mi8 , 小米 8 手机
 https://www.evernote.com/shard/s21/nl/2425275/8175f2b6-47d6-417f-ba4b-2f26bf456078 , Microservice , 微服务架构
 https://www.evernote.com/shard/s21/nl/2425275/1184ee73-783a-4205-b667-4d71cdd0ca04 , MiddleStripOff , 给长截图制作断层撕除效果
@@ -182,6 +191,8 @@ https://www.evernote.com/shard/s21/nl/2425275/2b82c349-33f9-4acc-8a16-98258658b3
 https://www.evernote.com/shard/s21/nl/2425275/2f463742-8a19-44a2-a699-233bd7d0b592 , MSDNsupp , 对于 MSDN 含糊主题的补充实验/注解
 https://www.evernote.com/shard/s21/nl/2425275/78d5ee72-4ae9-4d05-8fbb-3549d4b653cf , MSDNview , MSDN 文档查看器 操作备忘
 https://www.evernote.com/shard/s21/nl/2425275/67ce244f-80c4-460e-bbd4-09b4f935aeac , MSFEEDBACK , 微软产品问题反馈
+https://www.evernote.com/shard/s21/nl/2425275/e5adc740-88bd-4929-9f57-0416b8237515 , MsMpEng , [MsMpEng] Windows Defender, Win10 自带的杀毒软件
+https://www.evernote.com/shard/s21/nl/2425275/f1bc3e72-d9b9-47ee-b91d-eef6ce677c24 , MSSPEC , 微软技术标准(specification)收集帖
 https://www.evernote.com/shard/s21/nl/2425275/a7f5797b-f464-41e7-9098-93f6d3286dd3 , MyNUCs , Intel NUC , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/e3afc836-01d6-42f6-af62-fecfe9154339 , MYPCS , My PCs - 收集帖 , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/c6dca407-074c-49ce-b797-2291325bea8b , MyPrg , 自写程序收集备忘
@@ -200,6 +211,7 @@ https://www.evernote.com/shard/s21/nl/2425275/37802e8d-f116-4447-80d7-af89d4ec83
 https://www.evernote.com/shard/s21/nl/2425275/44097003-60bc-48a4-bf07-522ab9a77bbd , PartiWiz , 新晋硬盘分区工具 Partition Wizard
 https://www.evernote.com/shard/s21/nl/2425275/0fef82b4-a55b-4d91-96f3-1d8debc4206b , PAWIN4 , Programming Applications for MSWin, Jeffrey Ritchter 1999
 https://www.evernote.com/shard/s21/nl/2425275/41a0fc2c-b818-4e16-ab7e-2704dcd18dc5 , PDBSEW , PDB-sewing 主题
+https://www.evernote.com/shard/s21/nl/2425275/bc60c234-2469-461e-9383-5e2b5888d5b0 , PdfRead , [PdfRead] PDF 电子书美化/调教
 https://www.evernote.com/shard/s21/nl/2425275/25020b57-70c3-442d-b3f8-0b532a973f13 , PDLiChen , Bilibili 主播: 灯塔破灯人李晨, 专揭欧美犹太人坏事
 https://www.evernote.com/shard/s21/nl/2425275/0f70cb59-bd88-47bf-a114-50c1c01880dd , PEviewer , Windows EXE/DLL PE 文件格式
 https://www.evernote.com/shard/s21/nl/2425275/5742f8a7-15f7-4f6a-89fa-dcfa58ac01de , PickFont , PRWIN5 提供的 Windows 字体展示程序
@@ -207,7 +219,9 @@ https://www.evernote.com/shard/s21/nl/2425275/e661b13e-bbd5-4332-a576-22227917bf
 https://www.evernote.com/shard/s21/nl/2425275/8b41b41e-4cee-47e8-9810-3e979352264d , pidmisc , Linux 测试程序, 查看本进程的 PID, PPID, PGID, SID etc
 https://www.evernote.com/shard/s21/nl/2425275/0bb0a5d7-33df-42a0-8f4c-4c7e60e09938 , PNGTRANS , PNG 透明图片操作
 https://www.evernote.com/shard/s21/nl/2425275/9a8d0e8f-ebed-4001-8002-317667d15375 , prints.ahk , 基于命令行窗口的 AHK 信息打印函数/调试输出
+https://www.evernote.com/shard/s21/nl/2425275/5518d907-19f0-4134-8e8f-2f95fd2836ae , ProcExp , Process Explorer
 https://www.evernote.com/shard/s21/nl/2425275/3f3cfe47-6797-4645-b7bc-060bc8e80173 , ProCMake , Professional CMake - A Practical Guide by Craig Scott (2018)
+https://www.evernote.com/shard/s21/nl/2425275/123c35f9-dc47-41d9-9329-70f513c6e447 , Procmon , Process Monitor 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/82243165-da77-4906-8fff-aff504379a46 , ProGit , Pro Git 电子书
 https://www.evernote.com/shard/s21/nl/2425275/148645a9-26a5-4b99-8411-50eef7fbb828 , Proxifier , Windows 内核态代理服务器软件
 https://www.evernote.com/shard/s21/nl/2425275/3287cab7-94d9-4b3c-a530-0be9421ac1ae , PRWIN5 , Programming Windows 5th-ed, Charles Petzold 1998
@@ -231,6 +245,8 @@ https://www.evernote.com/shard/s21/nl/2425275/892e0ac2-3b3f-4a83-bef8-721ea7eb65
 https://www.evernote.com/shard/s21/nl/2425275/59e3fa0f-2398-482e-9d69-52a739c4ef1a , REGEX , 正则表达式
 https://www.evernote.com/shard/s21/nl/2425275/b452bc90-9d96-42ae-973e-01d26847afba , RemopContext , 领悟: 涉及远程操作的话题, 每个操作需要有 Context 命名
 https://www.evernote.com/shard/s21/nl/2425275/ed1d817d-69dc-4e9e-9b99-9dc4c1a699f9 , RPI4a , 树莓派 4, 单板机
+https://www.evernote.com/shard/s21/nl/2425275/be57920d-4211-48a2-afbf-299f074f901c , RSTCPv1 , Richard Stevens - TCP/IP Illustrated Vol1, 2nd-ed
+https://www.evernote.com/shard/s21/nl/2425275/5c40a7f2-16bb-43df-a871-cd1075b8c04f , RunAsAdmin , Run as Administrator 信息收集
 https://www.evernote.com/shard/s21/nl/2425275/4143c35a-fe40-4468-bc54-14ea0978ea5a , RUST , 
 https://www.evernote.com/shard/s21/nl/2425275/2df1b0db-cfed-4c53-957b-cc951fc8a1fb , SanDiskNVM2T , Sandisk Extreme NVMe SSD 2TB, 2024.05 购
 https://www.evernote.com/shard/s21/nl/2425275/505f1815-9178-4923-b68b-323d36914ffe , Scalacon , C++ 源码管理模型
@@ -269,6 +285,7 @@ https://www.evernote.com/shard/s21/nl/2425275/3369e751-0348-45fb-8dd7-92a545f948
 https://www.evernote.com/shard/s21/nl/2425275/0b74c1b8-01b3-4266-be10-da6cf8b431d4 , UNICODE , 
 https://www.evernote.com/shard/s21/nl/2425275/e6c52045-91ed-4ec4-8309-06b1538b461b , UsbDiskImage , 收集: 给 SD/TF 卡制作全盘镜像/映像的方法
 https://www.evernote.com/shard/s21/nl/2425275/14c822c3-420c-4f44-ae7d-3dcea5ab74fa , UseGcc , GNU compiler GCC
+https://www.evernote.com/shard/s21/nl/2425275/23937986-32e8-41b9-ac4b-b1e86b73888a , UseiPad , iOS, iPad, iPhone 日常使用
 https://www.evernote.com/shard/s21/nl/2425275/586c101e-dbdb-44d0-b9f5-82ebffb7c8de , UseLinux , Linux 日常使用
 https://www.evernote.com/shard/s21/nl/2425275/c49d7832-48ea-4d3c-a35b-eba73e1169c0 , UseMac , macOS 日常使用
 https://www.evernote.com/shard/s21/nl/2425275/ca444b3b-65bb-4f5f-8ba2-1dc3a6124099 , UseSuse , SUSE Linux 日常使用
@@ -277,6 +294,7 @@ https://www.evernote.com/shard/s21/nl/2425275/82db2908-ba28-48f4-a7f2-7cdb933728
 https://www.evernote.com/shard/s21/nl/2425275/61aadf62-3e78-4cb5-aedc-3cf6608a259c , Vcx64WalkStk , 调查与实验记录: MSVC x64 程序的 callstack 如何回溯
 https://www.evernote.com/shard/s21/nl/2425275/d43a0466-9fb2-4660-b4a1-2ac17f274355 , VecDraw , 矢量绘图软件
 https://www.evernote.com/shard/s21/nl/2425275/66a2acec-5d85-4be7-a714-f9d85fa11679 , VirtualBox , 
+https://www.evernote.com/shard/s21/nl/2425275/d23c9a16-ab6e-4922-b13b-fe97b1782541 , VirtualVT , 虚拟机的 Virtual VT-x/AMD-V 设置项
 https://www.evernote.com/shard/s21/nl/2425275/482e794b-7dde-4653-bd68-f16c100e3b60 , VisualDDK , 
 https://www.evernote.com/shard/s21/nl/2425275/01654f18-5c3c-4a70-8686-5623a68d80e7 , VLOGERs , 收集各式风格的网络视频主播
 https://www.evernote.com/shard/s21/nl/2425275/43fa8d22-f425-4d80-9cf5-7c6a2bcbd908 , VmctlAhk , vmware-control.ahk 虚拟机控制脚本
@@ -308,6 +326,7 @@ https://www.evernote.com/shard/s21/nl/2425275/c8739fb7-56df-470c-8558-7d805c6d5f
 https://www.evernote.com/shard/s21/nl/2425275/5dd911c7-6bae-44e0-8726-05f1a5644e61 , WinDrv , Windows Driver 主帖
 https://www.evernote.com/shard/s21/nl/2425275/ee552f1d-8e4b-4051-8039-9ab7ee52c8f9 , WINFONTC , Windows Fonts and Charset
 https://www.evernote.com/shard/s21/nl/2425275/4586fb5e-4414-4e81-8ea8-75bf28d9d666 , WinGUI , Windows UI 编程
+https://www.evernote.com/shard/s21/nl/2425275/42c51e92-0b42-49d9-a5dc-bdfcab8d6a39 , WinKeys , [WinKeys] Windows 序列号/激活
 https://www.evernote.com/shard/s21/nl/2425275/68b7db39-ecb5-4128-9e53-7263292885c2 , WinLocale , 
 https://www.evernote.com/shard/s21/nl/2425275/b86653d1-f665-48db-a87e-f651ab52f009 , WinMgmt , Windows 系统管理
 https://www.evernote.com/shard/s21/nl/2425275/a56322fb-1dc6-4f88-b939-f5c5a90e51ff , WinMisc , 杂类 Windows 编程
@@ -335,6 +354,7 @@ https://www.evernote.com/shard/s21/nl/2425275/7c1d2f0d-50e2-416b-bd3c-2699afe3e9
 https://www.evernote.com/shard/s21/nl/2425275/5f69d6ef-f047-4310-805e-3aa33bb7e6df , x64deepdive , [CodeMachine.com] X64 Deep Dive (大量自注)
 https://www.evernote.com/shard/s21/nl/2425275/efa86a95-147c-4343-a321-f765cbfc6b87 , XiaomiH300 , 米家 H300 电吹风机
 https://www.evernote.com/shard/s21/nl/2425275/e87ef56b-1a3a-431e-a368-3eeedac25ce7 , XiaoMi , [XiaoMi] 小米手机/家电主题帖
+https://www.evernote.com/shard/s21/nl/2425275/53d8fdbc-30e9-4417-b076-f5645e7a6911 , XML , [XML] XML 标记语言
 https://www.evernote.com/shard/s21/nl/2425275/7835814f-422c-4eb2-97b4-e8bef0ee80a8 , XWindow , Unix X Window 远程显示协议
 https://www.evernote.com/shard/s21/nl/2425275/b9219a0f-309a-4275-84f4-83b89271854e , XYLL , 心医林霖说--狂扒英美日韩黑幕主播
 https://www.evernote.com/shard/s21/nl/2425275/6ee9c8c2-bcfa-403b-bbcd-af2c67c42fe7 , YiCam , [YiCam] 小蚁智能摄像头 & 米家摄像头
