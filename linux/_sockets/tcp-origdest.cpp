@@ -12,7 +12,7 @@
 int main(int argc, char *argv[])
 {
 	if(argc==1) {
-		printf("This Linux program accepts TCP connections and prints out the sin_addr behind SO_ORIGINAL_DST.");
+		printf("This Linux program accepts TCP connections and prints out the sin_addr behind SO_ORIGINAL_DST.\n");
 		printf("Usage:\n");
 		printf("    tcp-origdest <listen-port>\n");
 		exit(1);
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 		
 		// Say bye and disconnect client.
 
-		const char bye[] = "Bye!\n";
+		const char bye[] = "Bye~!\n";
 		write(new_socket, bye, sizeof(bye)-1);
 		
 		usleep(500*1000);
