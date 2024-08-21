@@ -28,6 +28,7 @@ https://www.evernote.com/shard/s21/nl/2425275/b49be72e-4bbe-4949-b95b-a777b7ed23
 https://www.evernote.com/shard/s21/nl/2425275/06850a7b-6913-453f-b8aa-c2ae03e3aaf4 , BAZEL , 谷歌新创的 C++/Java 构建工具
 https://www.evernote.com/shard/s21/nl/2425275/2cf1d0ae-03a5-460b-b7a0-c46f19489b62 , BESTPRAC , 最佳实践收集
 https://www.evernote.com/shard/s21/nl/2425275/d2fab750-5057-4351-9ec9-a0e75f5be8fa , BitLocker , Windows 自带磁盘加密功能
+https://www.evernote.com/shard/s21/nl/2425275/d999941d-d965-4f11-9faf-6b743d78f818 , BlueTooth , 蓝牙 收集帖/主题帖
 https://www.evernote.com/shard/s21/nl/2425275/e263d139-bdc7-48de-b414-5dbef0c876e1 , BookNoting , 读书笔记模式备忘
 https://www.evernote.com/shard/s21/nl/2425275/6a06a3d1-d5f4-4af9-98f3-12ed3daff442 , BOOTMGR , Vista+ Boot manager
 https://www.evernote.com/shard/s21/nl/2425275/eeb1f9c1-9cbc-4b5a-a202-278c473f9896 , BPFTools2019 , BPF Performance Tools - by Brendan Gregg 读书笔记
@@ -90,6 +91,7 @@ https://www.evernote.com/shard/s21/nl/2425275/14fb79bb-4d64-4fdd-b8f9-4164c6c20b
 https://www.evernote.com/shard/s21/nl/2425275/1b7e905b-e435-4231-92cc-196bc4344cbd , DiskVolMap , 探测盘符和 \Device\HarddiskVolume1 对应关系的程序
 https://www.evernote.com/shard/s21/nl/2425275/3240bdcc-e131-4875-900f-d313fedd53b9 , DISM , Windows WIM 映像操作
 https://www.evernote.com/shard/s21/nl/2425275/0064d79d-bb5a-4955-8610-24c342052906 , Docker , 著名容器软件
+https://www.evernote.com/shard/s21/nl/2425275/d6d73bb5-2ae1-4164-a522-c7539ba5b591 , DOKRA2 , Docker in Action 2nd-ed (2019) 读书笔记
 https://www.evernote.com/shard/s21/nl/2425275/5b26eff4-b26c-40be-af7e-557a001f4da2 , DOSBOX , DOSBOX-x 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/25ed1750-962c-4ec1-8032-f1e1646d555c , DoSched , Windows 计划任务最佳实践: DoSched Wrapper
 https://www.evernote.com/shard/s21/nl/2425275/fb0bdf25-f1d4-48d5-b62f-ba08be158567 , dotNET , 
@@ -143,6 +145,7 @@ https://www.evernote.com/shard/s21/nl/2425275/52a1086f-251e-407e-b2cf-de815b639a
 https://www.evernote.com/shard/s21/nl/2425275/6f3a3c9a-c6c8-4c67-abe8-ba5567b4a995 , hdisk , 我用过的硬盘
 https://www.evernote.com/shard/s21/nl/2425275/0f3a64a8-bbc1-4a73-8ed5-dc29798a3f0e , HeapSort , 算法笔记：堆排序(Heap Sort)
 https://www.evernote.com/shard/s21/nl/2425275/8f339d2e-2b37-4153-b189-4edc4bd0d18b , HOWLW , No Starch - How Linux Works 3rd-ed
+https://www.evernote.com/shard/s21/nl/2425275/4ef7054b-3af4-4e2c-90b6-09f66800652a , HsOffline , 自己的技术词汇: 硬断网 vs 软断网
 https://www.evernote.com/shard/s21/nl/2425275/88cd0469-7be3-4245-ac1b-6644432d4857 , HTMLCSS , 
 https://www.evernote.com/shard/s21/nl/2425275/b8d347a4-dbdc-4833-a5eb-6bc3c085658f , HTMLDOM , 
 https://www.evernote.com/shard/s21/nl/2425275/dfe011c6-02e9-4047-82cf-f9d21b3bae12 , HTTPx , HTTP 协议
@@ -214,6 +217,7 @@ https://www.evernote.com/shard/s21/nl/2425275/7d2bfa22-fe88-4074-86fe-2a087ee972
 https://www.evernote.com/shard/s21/nl/2425275/9c137c2f-08c5-4429-86c8-88b2f3414a7c , N_m3u8DL , 2024 - 国人用 C# 写的开源 m3u8 视频文件下载器
 https://www.evernote.com/shard/s21/nl/2425275/7e033fd3-1797-4f26-8fb8-efac2b79af23 , NamedPipe , Windows Named-pipe API 收集帖
 https://www.evernote.com/shard/s21/nl/2425275/2626ae56-a0eb-4c2a-97ae-8c331e8f581e , Naming , 起名难题
+https://www.evernote.com/shard/s21/nl/2425275/5b37f1a3-f3b9-4b6a-9218-f852eab8bbbf , netcat , Linux 平台精巧的 TCP/UDP 测试工具
 https://www.evernote.com/shard/s21/nl/2425275/7673a0dd-45ee-46f6-9524-b16b1ec07d92 , NiekGptweb , OpenAI ChatGPT Web 前端
 https://www.evernote.com/shard/s21/nl/2425275/bb772d1e-e18b-4451-87cb-28fc511ca0c8 , NLSBuildEnv , 绿色版编译器集合包
 https://www.evernote.com/shard/s21/nl/2425275/1623509f-e319-46a3-a02b-81eb35068905 , nt5src , Windows XP/2003 泄漏源代码主题帖
@@ -235,6 +239,7 @@ https://www.evernote.com/shard/s21/nl/2425275/e661b13e-bbd5-4332-a576-22227917bf
 https://www.evernote.com/shard/s21/nl/2425275/8b41b41e-4cee-47e8-9810-3e979352264d , pidmisc , Linux 测试程序, 查看本进程的 PID, PPID, PGID, SID etc
 https://www.evernote.com/shard/s21/nl/2425275/0bb0a5d7-33df-42a0-8f4c-4c7e60e09938 , PNGTRANS , PNG 透明图片操作
 https://www.evernote.com/shard/s21/nl/2425275/23e89b6d-fb2e-4869-8813-67ae10bd8123 , PNY-RTX4060 , 2024: Nvidia 显卡 RTX 4060 Ti 16GB
+https://www.evernote.com/shard/s21/nl/2425275/78eea29a-efad-4c3a-8ecb-4d3d1288741a , PowerShell , 
 https://www.evernote.com/shard/s21/nl/2425275/9a8d0e8f-ebed-4001-8002-317667d15375 , prints.ahk , 基于命令行窗口的 AHK 信息打印函数/调试输出
 https://www.evernote.com/shard/s21/nl/2425275/5518d907-19f0-4134-8e8f-2f95fd2836ae , ProcExp , Process Explorer
 https://www.evernote.com/shard/s21/nl/2425275/3f3cfe47-6797-4645-b7bc-060bc8e80173 , ProCMake , Professional CMake - A Practical Guide by Craig Scott (2018)
@@ -243,6 +248,7 @@ https://www.evernote.com/shard/s21/nl/2425275/82243165-da77-4906-8fff-aff504379a
 https://www.evernote.com/shard/s21/nl/2425275/148645a9-26a5-4b99-8411-50eef7fbb828 , Proxifier , Windows 内核态代理服务器软件
 https://www.evernote.com/shard/s21/nl/2425275/3287cab7-94d9-4b3c-a530-0be9421ac1ae , PRWIN5 , Programming Windows 5th-ed, Charles Petzold 1998
 https://www.evernote.com/shard/s21/nl/2425275/717b2348-7b5c-4c70-afba-3c8e61ffbca5 , PSSA2000 , Programming Server-side Win2000
+https://www.evernote.com/shard/s21/nl/2425275/b9433778-0c18-4494-a525-4df8159f87c8 , PuTTY , [PuTTY] 著名 Unix Terminal on Windows
 https://www.evernote.com/shard/s21/nl/2425275/7f6cc57e-acf7-4bc1-bcbb-24911753eb71 , PWDM2 , MSPress - Programming WDM 2nd-ed, by Walter Oney (2003)
 https://www.evernote.com/shard/s21/nl/2425275/0a04735f-9f28-4c1a-8714-6c341356921d , PyCharm , JetBrains Python IDE
 https://www.evernote.com/shard/s21/nl/2425275/0470d216-f4cb-411d-ad4b-11ed98707c6b , PYJJ , 拼音加加, 主题帖
@@ -285,6 +291,7 @@ https://www.evernote.com/shard/s21/nl/2425275/d9de7ec4-cb0f-42c9-a2c5-2eb901a71d
 https://www.evernote.com/shard/s21/nl/2425275/b446af9e-7972-4e3a-bae8-e50cba367de7 , SpyEx , WinSpy/Spy++ 增强版软件, 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/2cf25675-57a3-44cf-b53c-4020ad6bff80 , SSDMX300 , 2017 镁光 MX300 CT1050 硬盘(SSD)
 https://www.evernote.com/shard/s21/nl/2425275/e910d3b7-505a-4988-a243-aeb36720e376 , SshuttleES1 , [SshuttleES1] sshuttle 实验成功
+https://www.evernote.com/shard/s21/nl/2425275/367b7107-1609-4edd-83de-6979a4a5a2b7 , SSH , Secure Shell 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/9125955c-7f29-4982-b6ab-22bd98a2ff32 , StockMkt , 股票买卖/股票市场 Stock Market
 https://www.evernote.com/shard/s21/nl/2425275/bd2128d7-2397-46d9-98fd-eedc905d2dc8 , strace , Linux kernel API tracing
 https://www.evernote.com/shard/s21/nl/2425275/ca444b3b-65bb-4f5f-8ba2-1dc3a6124099 , SUSE , SUSE/openSUSE Linux
@@ -358,6 +365,7 @@ https://www.evernote.com/shard/s21/nl/2425275/323c1e39-02ae-47fe-ae65-8f2c7b149d
 https://www.evernote.com/shard/s21/nl/2425275/6d1f779e-5f7a-4e45-824d-5c0836010716 , WinPAE , Windows Server, PAE 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/7dd94f40-6dcd-43d2-b0d3-eed6fb3030ed , WinPE , 
 https://www.evernote.com/shard/s21/nl/2425275/71250470-508d-442f-b3c0-498cd8329dd8 , WinPriva , Windows 上可以设置权限的对象(NTFS etc)
+https://www.evernote.com/shard/s21/nl/2425275/ec0f843a-d2b2-4de8-bca5-e46408d745b0 , WinProN , Windows 10 N / Windows 11N 闹出的麻烦
 https://www.evernote.com/shard/s21/nl/2425275/c0a9ab2e-bebe-45b8-a2f2-61effca286fa , WinPwrcfg , Windows 睡眠/休眠/唤醒
 https://www.evernote.com/shard/s21/nl/2425275/61130b53-504e-45f2-8bca-834e32261fae , WinRegKeys , Windows 注册表项收集
 https://www.evernote.com/shard/s21/nl/2425275/7c40bc6c-fda6-40d1-8b84-d9f851f8a88b , winreg , Windows 注册表相关笔记
@@ -371,6 +379,7 @@ https://www.evernote.com/shard/s21/nl/2425275/40652c4a-93c7-41a2-b6c5-cf343bb975
 https://www.evernote.com/shard/s21/nl/2425275/86797a71-55a1-4476-9190-b5480e8bbf9b , WinUpdate , Windows Update
 https://www.evernote.com/shard/s21/nl/2425275/5affa6e0-ff54-47ac-987d-b2e514748502 , WinVss , Volume Shadow copy Service 主题帖/收集帖
 https://www.evernote.com/shard/s21/nl/2425275/0bb453f4-20a9-4b84-bb25-cf19121dcd3e , WireGuard , 加密隧道软件
+https://www.evernote.com/shard/s21/nl/2425275/3d7c2a87-5524-483d-afab-b8490ed20440 , WirelessDisplay , 无线显示 收集贴
 https://www.evernote.com/shard/s21/nl/2425275/23cbec45-a27b-406c-9917-b272bb2a4fc3 , Wireshark , 
 https://www.evernote.com/shard/s21/nl/2425275/3b7b2945-6b01-4767-98ef-d0be848e3182 , WisEBPF2022 , What is eBPF, free book 2022, by Liz Rice
 https://www.evernote.com/shard/s21/nl/2425275/846ad67d-3ce9-4c1e-9d9f-a390164de725 , WSWP2012 , Web Security - A WhiteHat Perspective (2015)
