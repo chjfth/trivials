@@ -1,0 +1,3 @@
+# Note: ComfyUI 0.2.2 saved workflow.json uses LF as new-line separator.
+#
+*.json     text=auto
