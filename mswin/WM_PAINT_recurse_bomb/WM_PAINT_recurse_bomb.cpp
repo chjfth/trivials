@@ -83,7 +83,7 @@ void DoPaint(HWND hwnd)
 		assert(g_bombflag==0);
 
 		// Using MessageBox() is also bad:
-		MessageBox(hwnd, _T("Msgbox inside WM_PAINT."), _T("title"), MB_OK);
+		// MessageBox(hwnd, _T("Msgbox inside WM_PAINT."), _T("title"), MB_OK);
 	}
 
 	hdc = BeginPaint(hwnd, &ps);

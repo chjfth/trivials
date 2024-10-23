@@ -41,8 +41,8 @@
   
   <PropertyGroup Label="Configuration">
     <ProjectGuid>{20241023-0000-0000-0000-093238000001}</ProjectGuid>
-    <ProjectName>WM_PAINT_resurse_bomb</ProjectName>
-     <TargetName>WM_PAINT_resurse_bomb</TargetName>
+    <ProjectName>WM_PAINT_recurse_bomb</ProjectName>
+     <TargetName>WM_PAINT_recurse_bomb</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   
@@ -166,7 +166,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="WM_PAINT_resurse_bomb.cpp" />
+    <ClCompile Include="WM_PAINT_recurse_bomb.cpp" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
