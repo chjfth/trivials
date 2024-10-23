@@ -16,7 +16,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PTSTR szCmdLine, int iCmdShow)
 {
 	(void)hPrevInstance; (void)szCmdLine; 
-	static TCHAR szAppName[] = TEXT ("WM_PAINT_resurse_bomb") ;
+	static TCHAR szAppName[] = TEXT ("WM_PAINT_recurse_bomb") ;
 	HWND         hwnd ;
 	MSG          msg ;
 	WNDCLASS     wndclass ;
@@ -35,7 +35,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass (&wndclass);
 	 
 	hwnd = CreateWindow (szAppName,    // window class name
-		TEXT ("The WM_PAINT_resurse_bomb Program"), // window caption
+		TEXT ("The WM_PAINT_recurse_bomb Program"), // window caption
 		WS_OVERLAPPEDWINDOW,           // window style
 		20,              // initial x position
 		20,              // initial y position
