@@ -114,6 +114,18 @@ void vaDbgS(const TCHAR *fmt, ...)
 	OutputDebugString(buf);
 }
 
+void vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
+{
+	TCHAR tbuf[4000] = {};
+	va_list args;
+	va_start(args, szfmt);
+
+	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
+
+	SetDlgItemText(hwnd, nIDDlgItem, tbuf);
+
+	va_end(args);
+}
 
 void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
 {
@@ -132,3 +144,4 @@ void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
 
 	va_end(args);
 }
+

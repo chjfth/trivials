@@ -19,4 +19,6 @@ void vaDbgTs(const TCHAR *fmt, ...);
 
 void vaDbgS(const TCHAR *fmt, ...);
 
+void vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...);
+
 void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...);

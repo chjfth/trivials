@@ -142,7 +142,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
-	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T("Run-info appears here."));
+	vaSetDlgItemText(hdlg, IDC_EDIT_RUNINFO, 
+		_T("Version %d.%d\r\n\r\n")
+		_T("Probing progress appears here."),
+		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR);
 
 	TellTimerResolution(hdlg);
 
@@ -181,7 +184,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		if(textlen>20000)
 			SetWindowText(hedit, _T("")); // Clear old text
 
-		vaAppendText_mled(hedit, _T("[%d] +%u ms\r\n"), prdata->count, step_ms);
+		vaAppendText_mled(hedit, _T("[#%d] +%u ms\r\n"), prdata->count, step_ms);
 	}
 
 	prdata->prevTickMillisec = nowtick;
@@ -192,16 +195,22 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 	if(step_ms > prdata->max_step_ms)
 		prdata->max_step_ms = step_ms;
 
-	TCHAR tbuf[100] = {};
-	_sntprintf_s(tbuf, _TRUNCATE, _T("Timer interval(ms): min: %d , max: %d"),
+	vaSetDlgItemText(hdlg, IDC_LBL_Result, _T("Timer interval(ms): min: %d , max: %d"),
 		prdata->min_step_ms, prdata->max_step_ms);
-	SetDlgItemText(hdlg, IDC_LBL_Result, tbuf);
 
 	if(step_ms < prdata->wm_timer_ms)
 	{
+		// Note: When the message box pops out, the WM_TIMER is still generated.
+		// So to preserve the spot, we tweak prdata->count_max to make it stop prematurely.
+		//
+		prdata->count_max = prdata->count + 10;
+
 		vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, _T(APPNAME), 
-			_T("Unexpected! Got a timer interval(%d ms) LESS THAN user requested(%d ms)"),
-			step_ms, prdata->wm_timer_ms);
+			_T("Unexpected! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms)")
+			_T("\r\n\r\n")
+			_T("Probing will stop prematurely.")
+			,
+			prdata->count, step_ms, prdata->wm_timer_ms);
 	}
 
 	if(prdata->count == prdata->count_max)
