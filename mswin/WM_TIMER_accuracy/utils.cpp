@@ -114,6 +114,19 @@ void vaDbgS(const TCHAR *fmt, ...)
 	OutputDebugString(buf);
 }
 
+void vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...)
+{
+	TCHAR tbuf[4000] = {};
+	va_list args;
+	va_start(args, szfmt);
+
+	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
+
+	SetWindowText(hwnd, tbuf);
+
+	va_end(args);
+}
+
 void vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
 {
 	TCHAR tbuf[4000] = {};

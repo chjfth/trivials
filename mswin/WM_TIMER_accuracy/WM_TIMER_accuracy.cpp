@@ -164,12 +164,11 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
-	SetDlgItemText(hdlg, IDC_LBL_Result, _T(""));
-
-	vaSetDlgItemText(hdlg, IDC_EDIT_RUNINFO, 
-		_T("Version %d.%d\r\n\r\n")
-		_T("Probing progress appears here."),
+	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d"), 
 		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR);
+
+	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T("Probing progress appears here."));
+	SetDlgItemText(hdlg, IDC_LBL_Result, _T(""));
 
 	TellTimerResolution(hdlg);
 
