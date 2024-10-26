@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR, WM_TIMER_accuracy_VPATCH, WM_TIMER_accuracy_VTAIL
+ProductVersion WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR, WM_TIMER_accuracy_VPATCH, WM_TIMER_accuracy_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     WM_TIMER_accuracy_NAME
+            VALUE "FileDescription", WM_TIMER_accuracy_NAME
+            VALUE "FileVersion",    WM_TIMER_accuracy_VMAJORs "." WM_TIMER_accuracy_VMINORs "." WM_TIMER_accuracy_VPATCHs
+            VALUE "ProductVersion",    WM_TIMER_accuracy_VMAJORs "." WM_TIMER_accuracy_VMINORs "." WM_TIMER_accuracy_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , WM_TIMER_accuracy_NAME ".exe"
+            VALUE "InternalName", WM_TIMER_accuracy_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
