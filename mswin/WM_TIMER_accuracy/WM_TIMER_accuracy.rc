@@ -48,7 +48,7 @@ BEGIN
     PUSHBUTTON      "&Start Probe",IDC_BUTTON1,96,121,66,14
     LTEXT           "WM_TIMER millisec:",IDC_STATIC,4,21,64,8
     EDITTEXT        IDC_EDIT_TimerMillisec,73,19,40,14,ES_AUTOHSCROLL
-    LTEXT           "Min/Max interval",IDC_LBL_Result,4,112,250,8
+    LTEXT           "Min/Max interval",IDC_LBL_Result,4,111,250,8
     LTEXT           "Run count:",IDC_STATIC,162,21,36,8
     EDITTEXT        IDC_EDIT_RunCount,201,19,40,14,ES_AUTOHSCROLL
 END

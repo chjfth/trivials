@@ -142,6 +142,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
+	SetDlgItemText(hdlg, IDC_LBL_Result, _T(""));
+
 	vaSetDlgItemText(hdlg, IDC_EDIT_RUNINFO, 
 		_T("Version %d.%d\r\n\r\n")
 		_T("Probing progress appears here."),
@@ -206,7 +208,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		prdata->count_max = prdata->count + 10;
 
 		vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, _T(APPNAME), 
-			_T("Unexpected! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms)")
+			_T("Unexpected! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms).")
 			_T("\r\n\r\n")
 			_T("Probing will stop prematurely.")
 			,
