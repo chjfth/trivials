@@ -24,17 +24,17 @@ HINSTANCE g_hinstExe;
 
 struct DlgPrivate_st
 {
-	const TCHAR *mystr;
-	int clicks;
-
 	bool isProbeStarted;
-	int count;
-	int count_max; // user UI input
+
+	// user UI input
+	int count_max; 
+	int wm_timer_ms;
+	int is_stophustle;
 	
 	DWORD startTickMillisec;
 	DWORD prevTickMillisec;
 
-	int wm_timer_ms; // user UI input
+	int count;
 	int min_step_ms;
 	int max_step_ms;
 };
@@ -92,6 +92,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			prdata->isProbeStarted = true;
 			prdata->count = 0;
 			prdata->count_max = GetDlgItemInt(hdlg, IDC_EDIT_RunCount, NULL, FALSE);
+			prdata->is_stophustle = Button_GetCheck(GetDlgItem(hdlg, IDC_CHECK_ReportHustleTick));
 			prdata->wm_timer_ms = millisec;
 			prdata->min_step_ms = millisec + 1000;
 			prdata->max_step_ms = 0;
@@ -221,7 +222,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 	vaSetDlgItemText(hdlg, IDC_LBL_Result, _T("Timer interval(ms): min: %d , max: %d"),
 		prdata->min_step_ms, prdata->max_step_ms);
 
-	if(step_ms < prdata->wm_timer_ms)
+	if(prdata->is_stophustle && (step_ms < prdata->wm_timer_ms))
 	{
 		// Note: When the message box pops out, the WM_TIMER is still generated.
 		// So to preserve the spot, we tweak prdata->count_max to make it stop prematurely.
@@ -264,7 +265,8 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
-	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
+
+	DlgPrivate_st dlgdata = { };
 	dlgdata.isProbeStarted = false;
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, Dlg_Proc, (LPARAM)&dlgdata);
 
