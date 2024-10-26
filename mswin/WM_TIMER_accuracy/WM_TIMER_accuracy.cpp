@@ -29,18 +29,38 @@ struct DlgPrivate_st
 
 	bool isProbeStarted;
 	int count;
-	int count_max;
+	int count_max; // user UI input
+	
+	DWORD startTickMillisec;
 	DWORD prevTickMillisec;
 
-	int wm_timer_ms;
+	int wm_timer_ms; // user UI input
 	int min_step_ms;
 	int max_step_ms;
 };
 
 void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 {
+	if(prdata->isProbeStarted==false)
+	{
+		// We need this, bcz vaMsgBox() may call OnTimer() -> DoTimerStop() nested.
+		return;
+	}
+
 	KillTimer(hdlg, TIMER_ID);
 	prdata->isProbeStarted = false;
+
+	DWORD endTickMillisec = GetTickCount();
+	int elapsed_mils = endTickMillisec - prdata->startTickMillisec;
+
+	if(elapsed_mils>=100)
+	{
+		HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
+		vaAppendText_mled(hedit, 
+			_T("Got %d timer messages in total %g seconds, average %g ms per message."), 
+			prdata->count, elapsed_mils/1000.0, (double)elapsed_mils/prdata->count);
+	}
+
 	SetDlgItemText(hdlg, IDC_BUTTON1, _T("&Start Probe"));
 }
 
@@ -75,7 +95,8 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			prdata->wm_timer_ms = millisec;
 			prdata->min_step_ms = millisec + 1000;
 			prdata->max_step_ms = 0;
-			prdata->prevTickMillisec = GetTickCount();
+			prdata->prevTickMillisec = prdata->startTickMillisec = GetTickCount();
+			
 			SetDlgItemText(hdlg, IDC_BUTTON1, _T("&Stop Probe"));
 		}
 		else
@@ -152,7 +173,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	TellTimerResolution(hdlg);
 
 	SetDlgItemInt(hdlg, IDC_EDIT_TimerMillisec, 50, FALSE);
-	SetDlgItemInt(hdlg, IDC_EDIT_RunCount, 10000, FALSE);
+	SetDlgItemInt(hdlg, IDC_EDIT_RunCount, 1000, FALSE);
 
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
