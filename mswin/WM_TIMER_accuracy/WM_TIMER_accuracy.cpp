@@ -14,6 +14,8 @@
 #define JULAYOUT_IMPL
 #include "JULayout2.h"
 
+#pragma warning(disable:4800)  // warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
+
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 HINSTANCE g_hinstExe;
@@ -27,15 +29,18 @@ struct DlgPrivate_st
 	bool isProbeStarted;
 
 	// user UI input
-	int count_max; 
+	int timer_count_max; 
 	int wm_timer_ms;
-	int is_stophustle;
+	bool is_stophustle;
 	int sleepms; // Sleep millisec in WM_TIMER callback
+	bool is_sleep_onlyonce;
 	
 	DWORD startTickMillisec;
 	DWORD prevTickMillisec;
 
-	int count;
+	int timer_count;
+	int sleep_count;
+	int sleep_max;
 	int min_step_ms;
 	int max_step_ms;
 };
@@ -68,10 +73,12 @@ void DoTimerStart(HWND hdlg, DlgPrivate_st *prdata)
 	}
 
 	prdata->isProbeStarted = true;
-	prdata->count = 0;
-	prdata->count_max = GetDlgItemInt(hdlg, IDC_EDIT_RunCount, NULL, FALSE);
-	prdata->is_stophustle = Button_GetCheck(GetDlgItem(hdlg, IDC_CHECK_ReportHustleTick));
+	prdata->timer_count = 0;
+	prdata->timer_count_max = GetDlgItemInt(hdlg, IDC_EDIT_RunCount, NULL, FALSE);
+	prdata->is_stophustle = (bool)Button_GetCheck(GetDlgItem(hdlg, IDC_CHECK_ReportHustleTick));
 	prdata->sleepms = GetDlgItemInt(hdlg, IDC_EDIT_Sleepms, NULL, TRUE);
+	prdata->is_sleep_onlyonce = (bool)Button_GetCheck(GetDlgItem(hdlg, IDC_CHECK_SleepOnlyOnce));
+	prdata->sleep_count = 0;
 	prdata->wm_timer_ms = millisec;
 	prdata->min_step_ms = millisec + 1000;
 	prdata->max_step_ms = 0;
@@ -105,7 +112,7 @@ void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 		HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
 		vaAppendText_mled(hedit, 
 			_T("Got %d timer messages in total %g seconds, average %g ms per message."), 
-			prdata->count, elapsed_mils/1000.0, (double)elapsed_mils/prdata->count);
+			prdata->timer_count, elapsed_mils/1000.0, (double)elapsed_mils/prdata->timer_count);
 	}
 
 	EnableDisableInputUic(hdlg, true);
@@ -192,7 +199,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 
 	assert(prdata->isProbeStarted);
 
-	prdata->count++;
+	prdata->timer_count++;
 	DWORD nowtick = GetTickCount();
 	
 	int step_ms = nowtick-prdata->prevTickMillisec;
@@ -206,7 +213,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		if(textlen>20000)
 			SetWindowText(hedit, _T("")); // Clear old text
 
-		vaAppendText_mled(hedit, _T("[#%d] +%u ms\r\n"), prdata->count, step_ms);
+		vaAppendText_mled(hedit, _T("[#%d] +%u ms\r\n"), prdata->timer_count, step_ms);
 	}
 
 	prdata->prevTickMillisec = nowtick;
@@ -225,28 +232,33 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		// Note: When the message box pops out, the WM_TIMER is still generated.
 		// So to preserve the spot, we tweak prdata->count_max to make it stop prematurely.
 		//
-		prdata->count_max = Min(prdata->count + 10, prdata->count_max);
+		prdata->timer_count_max = Min(prdata->timer_count + 10, prdata->timer_count_max);
 
 		vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, _T(APPNAME), 
 			_T("Unexpected! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms).")
 			_T("\r\n\r\n")
 			_T("Probing will stop prematurely soon.")
 			,
-			prdata->count, step_ms, prdata->wm_timer_ms);
+			prdata->timer_count, step_ms, prdata->wm_timer_ms);
 	}
 
 	// Extra Sleep()
 
 	if(prdata->sleepms >= 0)
 	{
+		if(prdata->is_sleep_onlyonce==false || prdata->sleep_count==0)
+		{
+			prdata->sleep_count++;
+
 //		ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_SHOW); // seems cached by system
-		SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T("<sleeping>"));
-		Sleep(prdata->sleepms);
-		SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
+			SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T("<sleeping>"));
+			Sleep(prdata->sleepms);
+			SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
 //		ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_HIDE);
+		}
 	}
 
-	if(prdata->count == prdata->count_max)
+	if(prdata->timer_count == prdata->timer_count_max)
 	{
 		DoTimerStop(hdlg, prdata);
 	}
