@@ -2,7 +2,7 @@
 #define __WM_TIMER_accuracy_iversion_h_
 
 #define WM_TIMER_accuracy_VMAJOR 1
-#define WM_TIMER_accuracy_VMINOR 1
+#define WM_TIMER_accuracy_VMINOR 2
 #define WM_TIMER_accuracy_VPATCH 0
 #define WM_TIMER_accuracy_VTAIL  0
 

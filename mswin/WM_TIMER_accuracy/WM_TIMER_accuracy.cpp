@@ -30,6 +30,7 @@ struct DlgPrivate_st
 	int count_max; 
 	int wm_timer_ms;
 	int is_stophustle;
+	int sleepms; // Sleep millisec in WM_TIMER callback
 	
 	DWORD startTickMillisec;
 	DWORD prevTickMillisec;
@@ -38,6 +39,52 @@ struct DlgPrivate_st
 	int min_step_ms;
 	int max_step_ms;
 };
+
+void DlgItem_Enable(HWND hdlg, int nIDDlgItem, bool en)
+{
+	EnableWindow(GetDlgItem(hdlg, nIDDlgItem), en?TRUE:FALSE);
+}
+
+void EnableDisableInputUic(HWND hdlg, bool en)
+{
+	DlgItem_Enable(hdlg, IDC_EDIT_TimerMillisec, en);
+	DlgItem_Enable(hdlg, IDC_EDIT_RunCount, en);
+	DlgItem_Enable(hdlg, IDC_CHECK_ReportHustleTick, en);
+	DlgItem_Enable(hdlg, IDC_EDIT_Sleepms, en);
+}
+
+void DoTimerStart(HWND hdlg, DlgPrivate_st *prdata)
+{
+	TCHAR tbuf[200];
+
+	BOOL isTrans = FALSE;
+	UINT millisec = GetDlgItemInt(hdlg, IDC_EDIT_TimerMillisec, &isTrans, FALSE);
+	if(!isTrans)
+	{
+		GetDlgItemText(hdlg, IDC_EDIT_TimerMillisec, tbuf, ARRAYSIZE(tbuf)-1);
+		vaMsgBox(hdlg, MB_OK|MB_ICONASTERISK, _T(APPNAME),
+			_T("Wrong millisec input: %s"), tbuf);
+		return;
+	}
+
+	prdata->isProbeStarted = true;
+	prdata->count = 0;
+	prdata->count_max = GetDlgItemInt(hdlg, IDC_EDIT_RunCount, NULL, FALSE);
+	prdata->is_stophustle = Button_GetCheck(GetDlgItem(hdlg, IDC_CHECK_ReportHustleTick));
+	prdata->sleepms = GetDlgItemInt(hdlg, IDC_EDIT_Sleepms, NULL, TRUE);
+	prdata->wm_timer_ms = millisec;
+	prdata->min_step_ms = millisec + 1000;
+	prdata->max_step_ms = 0;
+	prdata->prevTickMillisec = prdata->startTickMillisec = GetTickCount();
+
+	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T(""));
+
+	SetDlgItemText(hdlg, IDC_BUTTON1, _T("&Stop Probe"));
+
+	EnableDisableInputUic(hdlg, false);
+
+	SetTimer(hdlg, TIMER_ID, millisec, NULL);
+}
 
 void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 {
@@ -61,13 +108,14 @@ void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 			prdata->count, elapsed_mils/1000.0, (double)elapsed_mils/prdata->count);
 	}
 
+	EnableDisableInputUic(hdlg, true);
+
 	SetDlgItemText(hdlg, IDC_BUTTON1, _T("&Start Probe"));
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR tbuf[200];
 
 	switch (id) 
 	{{
@@ -75,30 +123,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		if(!prdata->isProbeStarted)
 		{
-			BOOL isTrans = FALSE;
-			UINT millisec = GetDlgItemInt(hdlg, IDC_EDIT_TimerMillisec, &isTrans, FALSE);
-			if(!isTrans)
-			{
-				GetDlgItemText(hdlg, IDC_EDIT_TimerMillisec, tbuf, ARRAYSIZE(tbuf)-1);
-				vaMsgBox(hdlg, MB_OK|MB_ICONASTERISK, _T(APPNAME),
-					_T("Wrong millisec input: %s"), tbuf);
-				return;
-			}
-
-			SetTimer(hdlg, TIMER_ID, millisec, NULL);
-
-			SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T(""));
-
-			prdata->isProbeStarted = true;
-			prdata->count = 0;
-			prdata->count_max = GetDlgItemInt(hdlg, IDC_EDIT_RunCount, NULL, FALSE);
-			prdata->is_stophustle = Button_GetCheck(GetDlgItem(hdlg, IDC_CHECK_ReportHustleTick));
-			prdata->wm_timer_ms = millisec;
-			prdata->min_step_ms = millisec + 1000;
-			prdata->max_step_ms = 0;
-			prdata->prevTickMillisec = prdata->startTickMillisec = GetTickCount();
-			
-			SetDlgItemText(hdlg, IDC_BUTTON1, _T("&Stop Probe"));
+			DoTimerStart(hdlg, prdata);
 		}
 		else
 		{
@@ -157,36 +182,6 @@ void TellTimerResolution(HWND hdlg)
 	SetDlgItemText(hdlg, IDC_LBL_TimerResolution, textbuf);
 }
 
-BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
-{
-	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
-	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
-	
-	chSETDLGICONS(hdlg, IDI_WINMAIN);
-
-	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d"), 
-		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR);
-
-	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T("Probing progress appears here."));
-	SetDlgItemText(hdlg, IDC_LBL_Result, _T(""));
-
-	TellTimerResolution(hdlg);
-
-	SetDlgItemInt(hdlg, IDC_EDIT_TimerMillisec, 50, FALSE);
-	SetDlgItemInt(hdlg, IDC_EDIT_RunCount, 1000, FALSE);
-
-	JULayout *jul = JULayout::EnableJULayout(hdlg);
-
-	jul->AnchorControl(0,0, 100,0, IDC_LBL_TimerResolution);
-	jul->AnchorControl(0,0, 100,100, IDC_EDIT_RUNINFO);
-	jul->AnchorControl(0,100, 0,100, IDC_LBL_Result);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
-
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
-	
-	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
-}
-
 void Dlg_OnTimer(HWND hdlg, UINT timerid)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -231,15 +226,65 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, _T(APPNAME), 
 			_T("Unexpected! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms).")
 			_T("\r\n\r\n")
-			_T("Probing will stop prematurely.")
+			_T("Probing will stop prematurely soon.")
 			,
 			prdata->count, step_ms, prdata->wm_timer_ms);
+	}
+
+	// Extra Sleep()
+
+	if(prdata->sleepms >= 0)
+	{
+//		ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_SHOW); // seems cached by system
+		SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T("<sleeping>"));
+		Sleep(prdata->sleepms);
+		SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
+//		ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_HIDE);
 	}
 
 	if(prdata->count == prdata->count_max)
 	{
 		DoTimerStop(hdlg, prdata);
 	}
+}
+
+BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
+	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
+
+	chSETDLGICONS(hdlg, IDI_WINMAIN);
+
+	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d"), 
+		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR);
+
+	// Set Initial Uic content:
+
+	SetDlgItemInt(hdlg, IDC_EDIT_TimerMillisec, 50, FALSE);
+	SetDlgItemInt(hdlg, IDC_EDIT_RunCount, 1000, FALSE);
+	SetDlgItemInt(hdlg, IDC_EDIT_Sleepms, -1, TRUE);
+	SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
+	SetDlgItemText(hdlg, IDC_LBL_Result, _T(""));
+	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, 
+		_T("The program probes WM_TIMER's actual timing behavior by checking GetTickCount() timestamps.")
+		_T("\r\n\r\n")
+		_T("Parameter hint: \r\n")
+		_T("- If Sleep millisec is -1, then I will NOT call of Sleep() in WM_TIMER callback.\r\n")
+		_T("- If Sleep millisec is 0, then I will call Sleep(0) in WM_TIMER callback.")
+		);
+
+	TellTimerResolution(hdlg);
+
+	JULayout *jul = JULayout::EnableJULayout(hdlg);
+
+	jul->AnchorControl(0,0, 100,0, IDC_LBL_TimerResolution);
+	jul->AnchorControl(0,0, 100,100, IDC_EDIT_RUNINFO);
+	jul->AnchorControl(0,100, 0,100, IDC_LBL_Result);
+	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+
+	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+
+	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
 
