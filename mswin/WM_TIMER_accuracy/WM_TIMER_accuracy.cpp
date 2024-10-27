@@ -225,7 +225,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		// Note: When the message box pops out, the WM_TIMER is still generated.
 		// So to preserve the spot, we tweak prdata->count_max to make it stop prematurely.
 		//
-		prdata->count_max = prdata->count + 10;
+		prdata->count_max = Min(prdata->count + 10, prdata->count_max);
 
 		vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, _T(APPNAME), 
 			_T("Unexpected! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms).")

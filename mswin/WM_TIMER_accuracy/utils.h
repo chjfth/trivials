@@ -4,6 +4,9 @@
 
 #include <tchar.h>
 
+template<typename T> T Min(T x, T y) { return x<y ? x : y; }
+template<typename T> T Max(T x, T y) { return x>y ? x : y; }
+
 #define HANDLE_dlgMSG(hwnd, message, fn) \
   case (message): \
   return SetDlgMsgResult( hwnd, message, HANDLE_##message((hwnd), (wParam), (lParam), (fn)) );
