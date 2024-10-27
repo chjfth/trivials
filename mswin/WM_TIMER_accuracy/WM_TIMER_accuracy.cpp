@@ -134,7 +134,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	}
 	case IDCANCEL:
 	{
-		EndDialog(hdlg, id);
+		// [2024-10-27] I do NOT call EndDialog() here, just as a special code demo.
+		// I do not want ESC key to close the dialog(=End whole exe).
+		// Instead, I call EndDialog() in Dlg_FilterSysCommand(), which can be triggered
+		// by click window-title Close[X] button.
+		// EndDialog(hdlg, id);
 		break;
 	}
 	}}
@@ -287,6 +291,13 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
+void Dlg_HookSysCommand(HWND hwnd, UINT cmd, int x, int y)
+{
+	if(cmd==SC_CLOSE)
+	{
+		EndDialog(hwnd, 0);
+	}
+}
 
 INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
@@ -295,6 +306,11 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
 		HANDLE_dlgMSG(hdlg, WM_TIMER,         Dlg_OnTimer);
+
+		// [2024-10-27] For WM_SYSCOMMAND, must use HANDLE_MSG() instead of HANDLE_dlgMSG().
+		// HANDLE_dlgMSG() will return 1, which will bypass DefWindowProc() WM_SYSCOMMAND processing,
+		// defeating all intrinsic window behaviors, like "window cannot move by mouse".
+		HANDLE_MSG(hdlg, WM_SYSCOMMAND, Dlg_HookSysCommand); // return 0
 	}
 	return FALSE;
 }
