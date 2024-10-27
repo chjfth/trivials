@@ -3,7 +3,7 @@
 
 #define WM_TIMER_accuracy_VMAJOR 1
 #define WM_TIMER_accuracy_VMINOR 3
-#define WM_TIMER_accuracy_VPATCH 0
+#define WM_TIMER_accuracy_VPATCH 1
 #define WM_TIMER_accuracy_VTAIL  0
 
 #define WM_TIMER_accuracystr__(n) #n

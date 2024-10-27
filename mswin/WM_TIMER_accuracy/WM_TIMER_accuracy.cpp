@@ -235,7 +235,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		prdata->timer_count_max = Min(prdata->timer_count + 10, prdata->timer_count_max);
 
 		vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, _T(APPNAME), 
-			_T("Unexpected! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms).")
+			_T("Unusual! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms).")
 			_T("\r\n\r\n")
 			_T("Probing will stop prematurely soon.")
 			,
@@ -271,8 +271,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
-	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d"), 
-		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR);
+	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d.%d"), 
+		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR, WM_TIMER_accuracy_VPATCH);
 
 	// Set Initial Uic content:
 
