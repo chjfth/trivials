@@ -9,8 +9,7 @@
 #define IDC_EDIT_RunCount               1002
 #define IDC_CHECK_ReportHustleTick      1003
 #define IDC_EDIT_RUNINFO                1004
-#define IDC_LBL_Result                  1005
-#define IDC_BUTTON1                     1006
+#define IDC_LBL_MinMax                  1005
 #define IDC_EDIT_Sleepms                1007
 #define IDC_LBL_Sleeping                1008
 #define IDC_STATIC                      -1

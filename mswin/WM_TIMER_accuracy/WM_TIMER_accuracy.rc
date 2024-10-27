@@ -53,8 +53,8 @@ BEGIN
     EDITTEXT        IDC_EDIT_Sleepms,142,34,32,12,ES_AUTOHSCROLL
     LTEXT           "<sleeping>",IDC_LBL_Sleeping,178,36,38,8
     EDITTEXT        IDC_EDIT_RUNINFO,4,50,249,71,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "&Start Probe",IDC_BUTTON1,96,139,66,14
-    LTEXT           ">Min/Max interval",IDC_LBL_Result,4,125,249,8
+    PUSHBUTTON      "&Start Probe",IDOK,96,139,66,14
+    LTEXT           ">Min/Max interval",IDC_LBL_MinMax,4,125,249,8
 END
 
 

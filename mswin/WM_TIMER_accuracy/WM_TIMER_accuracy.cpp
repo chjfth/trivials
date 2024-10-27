@@ -79,7 +79,7 @@ void DoTimerStart(HWND hdlg, DlgPrivate_st *prdata)
 
 	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T(""));
 
-	SetDlgItemText(hdlg, IDC_BUTTON1, _T("&Stop Probe"));
+	SetDlgItemText(hdlg, IDOK, _T("&Stop Probe"));
 
 	EnableDisableInputUic(hdlg, false);
 
@@ -110,7 +110,7 @@ void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 
 	EnableDisableInputUic(hdlg, true);
 
-	SetDlgItemText(hdlg, IDC_BUTTON1, _T("&Start Probe"));
+	SetDlgItemText(hdlg, IDOK, _T("&Start Probe"));
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
@@ -119,7 +119,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDOK:
 	{
 		if(!prdata->isProbeStarted)
 		{
@@ -213,7 +213,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 	if(step_ms > prdata->max_step_ms)
 		prdata->max_step_ms = step_ms;
 
-	vaSetDlgItemText(hdlg, IDC_LBL_Result, _T("Timer interval(ms): min: %d , max: %d"),
+	vaSetDlgItemText(hdlg, IDC_LBL_MinMax, _T("Timer interval(ms): min: %d , max: %d"),
 		prdata->min_step_ms, prdata->max_step_ms);
 
 	if(prdata->is_stophustle && (step_ms < prdata->wm_timer_ms))
@@ -264,7 +264,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemInt(hdlg, IDC_EDIT_RunCount, 1000, FALSE);
 	SetDlgItemInt(hdlg, IDC_EDIT_Sleepms, -1, TRUE);
 	SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
-	SetDlgItemText(hdlg, IDC_LBL_Result, _T(""));
+	SetDlgItemText(hdlg, IDC_LBL_MinMax, _T(""));
 	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, 
 		_T("The program probes WM_TIMER's actual timing behavior by checking GetTickCount() timestamps.")
 		_T("\r\n\r\n")
@@ -279,10 +279,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	jul->AnchorControl(0,0, 100,0, IDC_LBL_TimerResolution);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_RUNINFO);
-	jul->AnchorControl(0,100, 0,100, IDC_LBL_Result);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+	jul->AnchorControl(0,100, 0,100, IDC_LBL_MinMax);
+	jul->AnchorControl(50,100, 50,100, IDOK);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDC_EDIT_TimerMillisec));
 
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
