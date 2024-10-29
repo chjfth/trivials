@@ -250,11 +250,12 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		{
 			prdata->sleep_count++;
 
-//		ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_SHOW); // seems cached by system
-			SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T("<sleeping>"));
+			ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_SHOW); // why cached by system?
+//			UpdateWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping));
+
 			Sleep(prdata->sleepms);
-			SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
-//		ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_HIDE);
+			
+			ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_HIDE);
 		}
 	}
 
@@ -271,7 +272,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
-	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d.%d"), 
+	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d.%dt"), 
 		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR, WM_TIMER_accuracy_VPATCH);
 
 	// Set Initial Uic content:
@@ -279,7 +280,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemInt(hdlg, IDC_EDIT_TimerMillisec, 50, FALSE);
 	SetDlgItemInt(hdlg, IDC_EDIT_RunCount, 1000, FALSE);
 	SetDlgItemInt(hdlg, IDC_EDIT_Sleepms, -1, TRUE);
-	SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
+//	SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
 	SetDlgItemText(hdlg, IDC_LBL_MinMax, _T(""));
 	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, 
 		_T("The program probes WM_TIMER's actual timing behavior by checking GetTickCount() timestamps.")
