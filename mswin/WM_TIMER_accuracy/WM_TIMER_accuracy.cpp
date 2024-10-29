@@ -193,27 +193,49 @@ void TellTimerResolution(HWND hdlg)
 	SetDlgItemText(hdlg, IDC_LBL_TimerResolution, textbuf);
 }
 
+const TCHAR *gets_QueueStatus(DWORD qs, TCHAR *tbuf, int bufsize)
+{
+	_sntprintf_s(tbuf, bufsize, _TRUNCATE, _T("QS=0x%08X"), qs);
+	
+	if(HIWORD(qs) & QS_TIMER)
+	{
+		_sntprintf_s(tbuf, bufsize, _TRUNCATE, _T("%s QS_TIMER"), tbuf);
+	}
+	return tbuf;
+}
+
 void Dlg_OnTimer(HWND hdlg, UINT timerid)
 {
+	TCHAR tbuf[100] = {};
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 
 	assert(prdata->isProbeStarted);
 
 	prdata->timer_count++;
 	DWORD nowtick = GetTickCount();
-	
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
+	int textlen = Edit_GetTextLength(hedit);
+	if(textlen>20000)
+		SetWindowText(hedit, _T("")); // Clear old overly long text
+
 	int step_ms = nowtick-prdata->prevTickMillisec;
 
 	{
 		// Append text with length limit:
 
-		HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
+		DWORD qs = GetQueueStatus(QS_TIMER);
+		if(qs)
+		{
+			// During normal run(not delayed by a debugger at Dlg_Timer() entrance),
+			// we should not meet this.
+			TCHAR tbuf2[40] = {};
+			gets_QueueStatus(qs, tbuf2, ARRAYSIZE(tbuf2));
+			_sntprintf_s(tbuf, _TRUNCATE, _T(" (%s)"), tbuf2);
+		}
 
-		int textlen = Edit_GetTextLength(hedit);
-		if(textlen>20000)
-			SetWindowText(hedit, _T("")); // Clear old text
-
-		vaAppendText_mled(hedit, _T("[#%d] +%u ms\r\n"), prdata->timer_count, step_ms);
+		vaAppendText_mled(hedit, _T("[#%d] +%u ms") _T("%s\r\n"), 
+			prdata->timer_count, step_ms, tbuf);
 	}
 
 	prdata->prevTickMillisec = nowtick;
@@ -255,6 +277,16 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 			Sleep(prdata->sleepms);
 			SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
 //		ShowWindow(GetDlgItem(hdlg, IDC_LBL_Sleeping), SW_HIDE);
+
+			DWORD qs = GetQueueStatus(QS_TIMER);
+			if(qs)
+			{
+				// We will see this if Sleep() longer than WM_TIMER interval.
+				gets_QueueStatus(qs, tbuf, ARRAYSIZE(tbuf));
+				vaAppendText_mled(hedit, _T("    After Sleep(), %s\r\n"),
+					gets_QueueStatus(qs, tbuf, ARRAYSIZE(tbuf)));
+			}
+
 		}
 	}
 
@@ -286,7 +318,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		_T("\r\n\r\n")
 		_T("Parameter hint: \r\n")
 		_T("- If Sleep millisec is -1, then I will NOT call of Sleep() in WM_TIMER callback.\r\n")
-		_T("- If Sleep millisec is 0, then I will call Sleep(0) in WM_TIMER callback.")
+		_T("- If Sleep millisec is 0, then I will call Sleep(0) in WM_TIMER callback.\r\n")
+		_T("- If Sleep millisec is 500, then I will call Sleep(500) in WM_TIMER callback, just before our DlgProc returns.\r\n.")
 		);
 
 	TellTimerResolution(hdlg);

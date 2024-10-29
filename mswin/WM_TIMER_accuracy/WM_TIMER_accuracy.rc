@@ -38,7 +38,7 @@ IDI_WINMAIN             ICON                    "WM_TIMER_accuracy.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 257, 159
+IDD_WINMAIN DIALOGEX 0, 0, 271, 159
 STYLE DS_SETFONT | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "WM_TIMER_accuracy"
 FONT 8, "Tahoma", 0, 0, 0x0
@@ -48,14 +48,14 @@ BEGIN
     EDITTEXT        IDC_EDIT_TimerMillisec,68,19,32,12,ES_AUTOHSCROLL
     LTEXT           "Run count:",IDC_STATIC,105,21,36,8
     EDITTEXT        IDC_EDIT_RunCount,142,19,38,12,ES_AUTOHSCROLL
-    CONTROL         "&Report hustle tick",IDC_CHECK_ReportHustleTick,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,185,21,68,10
+    CONTROL         "&Report hustle tick",IDC_CHECK_ReportHustleTick,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,187,21,68,10
     LTEXT           "Sleep millisec in each WM_TIMER callback:",IDC_STATIC,4,36,134,8
     EDITTEXT        IDC_EDIT_Sleepms,142,34,32,12,ES_AUTOHSCROLL
     CONTROL         "&Once",IDC_CHECK_SleepOnlyOnce,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,179,36,30,10
     LTEXT           "<sleeping>",IDC_LBL_Sleeping,213,36,38,8
-    EDITTEXT        IDC_EDIT_RUNINFO,4,50,249,71,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    EDITTEXT        IDC_EDIT_RUNINFO,4,50,263,71,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
     DEFPUSHBUTTON   "&Start Probe",IDOK,96,139,66,14
-    LTEXT           ">Min/Max interval",IDC_LBL_MinMax,4,125,249,8
+    LTEXT           ">Min/Max interval",IDC_LBL_MinMax,4,125,263,8
 END
 
 
@@ -70,7 +70,7 @@ BEGIN
     IDD_WINMAIN, DIALOG
     BEGIN
         LEFTMARGIN, 4
-        RIGHTMARGIN, 253
+        RIGHTMARGIN, 267
         TOPMARGIN, 4
         BOTTOMMARGIN, 153
     END
