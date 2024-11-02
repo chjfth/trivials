@@ -317,7 +317,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		_T("The program probes WM_TIMER's actual timing behavior by checking GetTickCount() timestamps.")
 		_T("\r\n\r\n")
 		_T("Parameter hint: \r\n")
-		_T("- If Sleep millisec is -1, then I will NOT call of Sleep() in WM_TIMER callback.\r\n")
+		_T("- If Sleep millisec is -1, then I will NOT call Sleep() in WM_TIMER callback.\r\n")
 		_T("- If Sleep millisec is 0, then I will call Sleep(0) in WM_TIMER callback.\r\n")
 		_T("- If Sleep millisec is 500, then I will call Sleep(500) in WM_TIMER callback, just before our DlgProc returns.\r\n.")
 		);
