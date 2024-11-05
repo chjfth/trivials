@@ -8,11 +8,11 @@
 
 #include "iversion.h"
 
-#include "utils.h"
-#include "dlptr_winapi.h"
+#include "..\utils.h"
+#include "..\dlptr_winapi.h"
 
 #define JULAYOUT_IMPL
-#include "JULayout2.h"
+#include "..\JULayout2.h"
 
 #pragma warning(disable:4800)  // warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
 
