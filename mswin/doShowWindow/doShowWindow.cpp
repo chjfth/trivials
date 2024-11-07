@@ -73,7 +73,6 @@ void Execute_ShowWindow(HWND hdlg, Action_et act)
 			(UINT)hwndTgt, SendRet);
 	}
 
-
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_INFO);
 	vaAppendText_mled(hedit, _T("\r\n\r\n(%d millisec)"), msec_end-msec_start);
 }
@@ -94,7 +93,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		Execute_ShowWindow(hdlg, SendShowWin);
 		break;
 	}
-	case IDOK:
+//	case IDOK:
 	case IDCANCEL:
 	{
 		EndDialog(hdlg, id);
