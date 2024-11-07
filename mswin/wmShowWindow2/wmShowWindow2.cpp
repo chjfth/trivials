@@ -19,7 +19,7 @@ link /debug wmShowWindow2.obj wmShowWindow2.res kernel32.lib user32.lib gdi32.li
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "utils.h"
+#include "../utils.h"
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
@@ -27,7 +27,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PTSTR szCmdLine, int iCmdShow)
 {
 	(void)hPrevInstance; (void)szCmdLine; 
-	static TCHAR szAppName[] = TEXT ("HelloWin") ;
+	static TCHAR szAppName[] = TEXT ("wmShowWindow2") ;
 	HWND         hwnd ;
 	MSG          msg ;
 	WNDCLASS     wndclass ;
@@ -46,7 +46,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass (&wndclass);
 	 
 	hwnd = CreateWindow (szAppName,    // window class name
-		TEXT ("The HelloWin Program"), // window caption
+		TEXT ("wmShowWindow2"),        // window caption
 		WS_OVERLAPPEDWINDOW,           // window style
 		20,              // initial x position
 		20,              // initial y position
@@ -89,8 +89,11 @@ void Cls_OnPaint(HWND hwnd)
 
 	GetClientRect (hwnd, &rect) ;          
 	Ellipse(hdc, 0,0, rect.right, rect.bottom);
-	DrawText (hdc, TEXT ("Hello, WindowsX !"), -1, &rect,
-		DT_SINGLELINE | DT_CENTER | DT_VCENTER) ;
+	DrawText (hdc, 
+		TEXT ("Shows my WM_SHOWWINDOW messages.\r\n")
+		TEXT ("Use DbgView.exe to see my output.")
+		, -1, &rect,
+		DT_CENTER | DT_VCENTER) ;
 
 	EndPaint (hwnd, &ps) ;
 }

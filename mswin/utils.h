@@ -1,7 +1,5 @@
 #pragma once
 
-#include "targetver.h"
-
 #include <tchar.h>
 
 template<typename T> T Min(T x, T y) { return x<y ? x : y; }
