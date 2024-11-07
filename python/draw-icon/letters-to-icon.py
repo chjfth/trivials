@@ -39,9 +39,14 @@ def genenrate_ico_file(letters, font_color):
 	draw.text(text_position, letters, font=font, fill=font_color)
 
 	# Save the image as an .ico file
+	# Note that this have 32bit-png as .ico's internal format, which is not friendly with WinXP.
+	# Embedding such .ico into an EXE, WinXP will not show that EXE' icon in Explorer.
 	filename = letters + ".ico"
 	icon.save(filename, format="ICO", sizes=[icon_size])
 	print("%s generated."%(filename))
+
+	# Save a .png as well, so that I can use http://icoconvert.com/
+	icon.save(filename+".png", format="PNG", sizes=[icon_size])
 
 
 if __name__=='__main__':
