@@ -184,8 +184,8 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 
 	InitCommonControls(); // WinXP requires this, to work with Visual-style manifest
 
-	const TCHAR *szfullcmdline = GetCommandLine();
-	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
+//	const TCHAR *szfullcmdline = GetCommandLine();
+//	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
 	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, Dlg_Proc, (LPARAM)&dlgdata);
