@@ -15,6 +15,8 @@
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+#define TITLE_VER "doShowWindow v1.0"
+
 HINSTANCE g_hinstExe;
 
 struct DlgPrivate_st
@@ -23,7 +25,9 @@ struct DlgPrivate_st
 	int clicks;
 };
 
-void Execute_ShowWindow(HWND hdlg)
+enum Action_et { CallShowWindow=1, SendShowWin=2 };
+
+void Execute_ShowWindow(HWND hdlg, Action_et act)
 {
 	static int s_count = 0;
 	s_count++;
@@ -43,12 +47,35 @@ void Execute_ShowWindow(HWND hdlg)
 		return;
 	}
 
-	BOOL isPrevVis = ShowWindow(hwndTgt, nCmdShow);
-	vaSetDlgItemText(hdlg, IDC_EDIT_INFO, 
-		_T("[#%d] ShowWindow(0x%08X, %s) returns %d\r\n\r\n0x%08X %s."), 
-		s_count,
-		(UINT)hwndTgt, tbuf, isPrevVis, 
-		(UINT)hwndTgt, isPrevVis?_T("was Visible"):_T("was Hidden"));
+	BOOL isPrevVis = 0;
+	UINT SendRet = 0;
+
+	DWORD msec_start = GetTickCount();
+	if(act==CallShowWindow) {
+		isPrevVis = ShowWindow(hwndTgt, nCmdShow);
+	}
+	else {
+		SendRet = (UINT)SendMessage(hwndTgt, WM_SHOWWINDOW, 7, 8);
+	}
+	DWORD msec_end = GetTickCount();
+
+	if(act==CallShowWindow) {
+		vaSetDlgItemText(hdlg, IDC_EDIT_INFO, 
+			_T("[#%d] ShowWindow(0x%08X, %s) returns %d\r\n\r\n0x%08X %s."), 
+			s_count,
+			(UINT)hwndTgt, tbuf, isPrevVis, 
+			(UINT)hwndTgt, isPrevVis?_T("was Visible"):_T("was Hidden"));
+	}
+	else {
+		vaSetDlgItemText(hdlg, IDC_EDIT_INFO,
+			_T("[#%d] Send WM_SHOWWINDOW to 0x%08X returns %d."), 
+			s_count, 
+			(UINT)hwndTgt, SendRet);
+	}
+
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_INFO);
+	vaAppendText_mled(hedit, _T("\r\n\r\n(%d millisec)"), msec_end-msec_start);
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
@@ -57,9 +84,14 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 	switch (id) 
 	{{
-	case IDC_BTN_EXECUTE:
+	case IDC_BTN_ShowWindow:
 	{
-		Execute_ShowWindow(hdlg);
+		Execute_ShowWindow(hdlg, CallShowWindow);
+		break;
+	}
+	case IDC_BTN_SendShowWin:
+	{
+		Execute_ShowWindow(hdlg, SendShowWin);
 		break;
 	}
 	case IDOK:
@@ -87,7 +119,7 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 //	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
 //	jul->AnchorControl(0,0, 100,100, IDC_EDIT1);
-	jul->AnchorControl(50,100, 50,100, IDC_BTN_EXECUTE);
+//	jul->AnchorControl(50,100, 50,100, IDC_BTN_EXECUTE);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
@@ -116,7 +148,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
-	
+
+	SetWindowText(hdlg, _T(TITLE_VER));
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
 	vaSetDlgItemText(hdlg, IDC_EDIT_INFO, 

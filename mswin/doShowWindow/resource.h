@@ -5,9 +5,10 @@
 #define IDI_WINMAIN                     100
 #define IDD_WINMAIN                     101
 #define IDC_EDIT_INFO                   1001
-#define IDC_BTN_EXECUTE                 1002
+#define IDC_BTN_ShowWindow              1002
 #define IDC_EDIT_HWND                   1003
 #define IDC_LABEL2                      1004
+#define IDC_BTN_SendShowWin             1005
 #define IDC_nCmdShow                    1006
 
 // Next default values for new objects

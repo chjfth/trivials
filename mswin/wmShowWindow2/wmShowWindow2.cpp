@@ -21,18 +21,19 @@ link /debug wmShowWindow2.obj wmShowWindow2.res kernel32.lib user32.lib gdi32.li
 
 #include "../utils.h"
 
+static TCHAR szAppName[] = TEXT ("wmShowWindow2") ;
+
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
 int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PTSTR szCmdLine, int iCmdShow)
 {
 	(void)hPrevInstance; (void)szCmdLine; 
-	static TCHAR szAppName[] = TEXT ("wmShowWindow2") ;
 	HWND         hwnd ;
 	MSG          msg ;
 	WNDCLASS     wndclass ;
 
-	wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
+	wndclass.style         = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 	wndclass.lpfnWndProc   = WndProc ;
 	wndclass.cbClsExtra    = 0 ;
 	wndclass.cbWndExtra    = 0 ;
@@ -46,7 +47,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass (&wndclass);
 	 
 	hwnd = CreateWindow (szAppName,    // window class name
-		TEXT ("wmShowWindow2"),        // window caption
+		szAppName,        // window caption
 		WS_OVERLAPPEDWINDOW,           // window style
 		20,              // initial x position
 		20,              // initial y position
@@ -76,8 +77,14 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	return msg.wParam; // the value N told by PostQuitMessage(N);
 }
 
+void SetMyWintitle(HWND hwnd)
+{
+	vaSetWindowText(hwnd, _T("%s HWND=0x%08X"), szAppName, (UINT)hwnd);
+}
+
 BOOL Cls_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
+	SetMyWintitle(hwnd);
 	return TRUE; // success, go on creation
 }
 
@@ -90,8 +97,11 @@ void Cls_OnPaint(HWND hwnd)
 	GetClientRect (hwnd, &rect) ;          
 	Ellipse(hdc, 0,0, rect.right, rect.bottom);
 	DrawText (hdc, 
-		TEXT ("Shows my WM_SHOWWINDOW messages.\r\n")
-		TEXT ("Use DbgView.exe to see my output.")
+		_T("Shows my WM_SHOWWINDOW messages.\r\n")
+		_T("Use DbgView.exe to see my output.\r\n")
+		_T("\r\n")
+		_T("Double-click to Sleep 5 sec\r\n")
+		_T("(would stop calling GetMessage meanwhile).")
 		, -1, &rect,
 		DT_CENTER | DT_VCENTER) ;
 
@@ -113,6 +123,16 @@ void Cls_OnSize(HWND hwnd, UINT state, int cx, int cy)
 	vaDbgTs(_T("-- in WM_SIZE, cx=%d , cy=%d"), cx, cy);
 }
 
+void Cls_OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+{
+	if(fDoubleClick)
+	{
+		SetWindowText(hwnd, _T("Sleep 5 sec..."));
+		Sleep(5000);
+		SetMyWintitle(hwnd);
+	}
+}
+
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -123,6 +143,8 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		HANDLE_MSG(hwnd, WM_SHOWWINDOW, Cls_OnShowWindow);
 		HANDLE_MSG(hwnd, WM_SIZE, Cls_OnSize);
+
+		HANDLE_MSG(hwnd, WM_LBUTTONDBLCLK, Cls_OnLButtonDown);
 	}}
 	
 	return DefWindowProc (hwnd, message, wParam, lParam) ;
