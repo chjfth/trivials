@@ -87,7 +87,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_WINMAIN             ICON                    "MonitorMyWinMove1.ico"
+IDI_WINMAIN             ICON                    "MonitorMyWinMove.ico"
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 

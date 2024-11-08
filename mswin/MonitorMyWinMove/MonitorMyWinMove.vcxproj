@@ -175,11 +175,11 @@
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="MonitorMyWinMove1.rc" />
+    <ResourceCompile Include="MonitorMyWinMove.rc" />
     <ResourceCompile Include="iversion.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MonitorMyWinMove1.ico" />
+    <None Include="MonitorMyWinMove.ico" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="JULayout2.h" />

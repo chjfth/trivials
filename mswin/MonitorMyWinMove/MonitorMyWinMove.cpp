@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
 #include "resource.h"
@@ -196,9 +197,7 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int) 
 {
 	g_hinstExe = hinstExe;
-
-	const TCHAR *szfullcmdline = GetCommandLine();
-	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
+	InitCommonControls(); // WinXP needs this.
 
 	DlgPrivate_st dlgdata = { };
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, Dlg_Proc, (LPARAM)&dlgdata);
