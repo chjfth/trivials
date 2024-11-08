@@ -45,7 +45,10 @@ def genenrate_ico_file(letters, font_color):
 	icon.save(filename, format="ICO", sizes=[icon_size])
 	print("%s generated."%(filename))
 
-	# Save a .png as well, so that I can use http://icoconvert.com/
+	# Save a .png as well, so that we can later Ubuntu `icotool` to make a BMP-style ico.
+	# 	sudo apt install icoutils
+	# 	icotool -c -o AB-bmp.ico AB.ico.png
+	#
 	icon.save(filename+".png", format="PNG", sizes=[icon_size])
 
 
