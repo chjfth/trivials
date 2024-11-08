@@ -21,6 +21,8 @@ link /debug wmShowWindow2.obj wmShowWindow2.res kernel32.lib user32.lib gdi32.li
 
 #include "../utils.h"
 
+#define VERSTR "1.0"
+
 static TCHAR szAppName[] = TEXT ("wmShowWindow2") ;
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
@@ -74,12 +76,13 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		DispatchMessage (&msg) ;
 	}
 
-	return msg.wParam; // the value N told by PostQuitMessage(N);
+	return (int)msg.wParam; // the value N told by PostQuitMessage(N);
 }
 
 void SetMyWintitle(HWND hwnd)
 {
-	vaSetWindowText(hwnd, _T("%s HWND=0x%08X"), szAppName, (UINT)hwnd);
+	vaSetWindowText(hwnd, _T("%s (v%s) HWND=0x%08X"), 
+		szAppName, _T(VERSTR), (UINT)hwnd);
 }
 
 BOOL Cls_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
@@ -101,7 +104,8 @@ void Cls_OnPaint(HWND hwnd)
 		_T("Use DbgView.exe to see my output.\r\n")
 		_T("\r\n")
 		_T("Double-click to Sleep 5 sec\r\n")
-		_T("(would stop calling GetMessage meanwhile).")
+		_T("(would stop calling GetMessage meanwhile).\r\n")
+		_T("Hold Ctrl before click, to add 2 seconds preparation time.\r\n")
 		, -1, &rect,
 		DT_CENTER | DT_VCENTER) ;
 
@@ -123,13 +127,28 @@ void Cls_OnSize(HWND hwnd, UINT state, int cx, int cy)
 	vaDbgTs(_T("-- in WM_SIZE, cx=%d , cy=%d"), cx, cy);
 }
 
+void do_sleep_myself(void *usercontext)
+{
+	HWND hwnd = (HWND)usercontext;
+	SetWindowText(hwnd, _T("Sleep 5 sec..."));
+	Sleep(5000);
+	SetMyWintitle(hwnd);
+}
+
 void Cls_OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	if(fDoubleClick)
 	{
-		SetWindowText(hwnd, _T("Sleep 5 sec..."));
-		Sleep(5000);
-		SetMyWintitle(hwnd);
+		bool isCtrl = GetKeyState(VK_CONTROL)<0;
+
+		if(isCtrl)
+		{
+			int delay_sec = 2;
+			vaSetWindowText(hwnd, _T("Will do Sleep in %d sec"), delay_sec);
+			WM_TIMER_call_once(hwnd, delay_sec*1000, do_sleep_myself, hwnd);
+		}
+		else
+			do_sleep_myself(hwnd);
 	}
 }
 

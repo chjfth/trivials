@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <assert.h>
 #include <stdio.h>
 
 #include "utils.h"
@@ -157,4 +158,50 @@ void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
 
 	va_end(args);
 }
+
+//////////////////////////////////////////
+
+typedef void PROC_WM_TIMER_call_once(void *usercontext);
+
+struct WM_TIMER_call_once_st
+{
+	HWND hwnd;
+	PROC_WM_TIMER_call_once *userproc;
+	void *usercontext;
+};
+
+void CALLBACK WM_TIMER_call_once_TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+	WM_TIMER_call_once_st *indata = (WM_TIMER_call_once_st*)idEvent;
+
+	indata->userproc(indata->usercontext);
+
+	KillTimer(indata->hwnd, idEvent);
+	delete indata;
+}
+
+
+bool WM_TIMER_call_once(HWND hwnd, int delay_millisec, 
+	PROC_WM_TIMER_call_once *userproc, void *usercontext)
+{
+	// TODO: If hwnd==NULL, maybe we can create a hidden window automatically.
+	assert(hwnd);
+	if(!hwnd)
+		return false;
+
+	WM_TIMER_call_once_st *indata = new WM_TIMER_call_once_st;
+	indata->hwnd = hwnd;
+	indata->userproc = userproc;
+	indata->usercontext = usercontext;
+
+	UINT_PTR uret = SetTimer(hwnd, (UINT_PTR)indata, delay_millisec, WM_TIMER_call_once_TimerProc);
+	if(uret!=(UINT_PTR)indata)
+	{
+		delete indata;
+		return false;
+	}
+
+	return true;
+}
+
 

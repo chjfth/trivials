@@ -24,3 +24,6 @@ void vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...);
 void vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...);
 
 void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...);
+
+typedef void PROC_WM_TIMER_call_once(void *usercontext);
+bool WM_TIMER_call_once(HWND hwnd, int delay_millisec, PROC_WM_TIMER_call_once *userproc, void *usercontext);
