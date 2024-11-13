@@ -11,6 +11,8 @@ WinErr_t myCreateProcess(
 	TCHAR *szCommandLine, bool isShowWindow, bool isWait, 
 	DWORD *p_subproc_exitcode)
 {
+	_tprintf(_T("Calling CreateProcess()...\n"));
+
 	STARTUPINFO sti = {sizeof(STARTUPINFO)};
 	sti.dwFlags = STARTF_USESHOWWINDOW;
 	sti.wShowWindow = isShowWindow ? SW_SHOW : SW_HIDE;
@@ -31,7 +33,7 @@ WinErr_t myCreateProcess(
 	if(!succ)
 		return GetLastError();
 
-	_tprintf(_T("Subprocess PID = %u\n"), procinfo.dwProcessId);
+	_tprintf(_T("CreateProcess() returned. Subprocess PID = %u\n"), procinfo.dwProcessId);
 
 	if(isWait)
 	{
@@ -108,7 +110,23 @@ const TCHAR *wincmdline_strip_argv0(
 
 int _tmain(int argc, TCHAR* argv[])
 {
+	// Will use env-var SUBEXE_errormode's value as subproc's GetErrorMode() value.
 	// Will use env-var SUBEXE's value as CreateProcess's first param(lpApplicationName).
+
+	TCHAR szErrormode[16]={}; // you can try 1 (SEM_FAILCRITICALERRORS)
+	GetEnvironmentVariable(_T("SUBEXE_errormode"), szErrormode, _countof(szErrormode));
+	if(szErrormode[0])
+	{
+		UINT errormode = (UINT)_tcstoul(szErrormode, nullptr, 0);
+		_tprintf(_T("Before CreateProcess, do SetErrorMode(%u);\n"), errormode);
+
+		UINT orig = SetErrorMode(errormode);
+		_tprintf(_T("SetErrorMode() returns %u\n"), orig);
+	}
+	else
+	{
+		_tprintf(_T("Env-var SUBEXE_errormode is empty, so will not call SetErrorMode().\n"));
+	}
 
 	TCHAR exepath[MAX_PATH]={};
 	GetEnvironmentVariable(_T("SUBEXE"), exepath, MAX_PATH-1);
@@ -160,10 +178,16 @@ int _tmain(int argc, TCHAR* argv[])
 	//    then before CreateProcess() return, that user TCHAR is restored.
 	//    So, MSDN requires the szCmdLine to be (non-const) TCHAR*. 
 
+	Sleep(100);
+	_tprintf(_T("\n"));
+
 	if(winerr==0)
-		_tprintf(_T("CreateProcess() success. Sub-process exitcode=%u (0x%X).\n"), subproc_exitcode, subproc_exitcode);
+	{
+		_tprintf(_T("[SUMUP] CreateProcess() succeeded. Sub-process exitcode=%u or %d (0x%X).\n"), 
+			subproc_exitcode, subproc_exitcode, subproc_exitcode);
+	}
 	else
-		_tprintf(_T("CreateProcess() fail, WinErr=%d.\n"), winerr);
+		_tprintf(_T("[SUMUP] CreateProcess() failed, WinErr=%d.\n"), winerr);
 
 #if 0
 	// This verifies that szCmdLine[] is "finally" unmodified after CreateProcess returns.
