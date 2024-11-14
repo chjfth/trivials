@@ -183,8 +183,16 @@ int _tmain(int argc, TCHAR* argv[])
 
 	if(winerr==0)
 	{
-		_tprintf(_T("[SUMUP] CreateProcess() succeeded. Sub-process exitcode=%u or %d (0x%X).\n"), 
-			subproc_exitcode, subproc_exitcode, subproc_exitcode);
+		if((int)subproc_exitcode >= 0) {
+			_tprintf(_T("[SUMUP] CreateProcess() succeeded. Sub-process exitcode=%u (0x%X).\n"), 
+				subproc_exitcode, subproc_exitcode);
+		}
+		else {
+			// would also show negative(%d), decimal exitcode to user.
+			// CMD would show %ERRORLEVEL% as negative, so to make comparison easy.
+			_tprintf(_T("[SUMUP] CreateProcess() succeeded. Sub-process exitcode=%u or %d (0x%X).\n"), 
+				subproc_exitcode, subproc_exitcode, subproc_exitcode);
+		}
 	}
 	else
 		_tprintf(_T("[SUMUP] CreateProcess() failed, WinErr=%d.\n"), winerr);
