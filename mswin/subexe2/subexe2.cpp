@@ -157,7 +157,7 @@ int _tmain(int argc, TCHAR* argv[])
 		else
 			_tcscpy_s(szCmdLine, subexe_cmdline);
 
-		_tprintf(_T("Will call CreateProcess() with second param: (%d chars)\n"), _tcslen(szCmdLine));
+		_tprintf(_T("Will call CreateProcess() with second param: (%d chars)\n"), (int)_tcslen(szCmdLine));
 		_tprintf(_T("    %s\n"), szCmdLine);
 	}
 	else
