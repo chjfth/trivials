@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    cpuhog_gui_VMAJOR, cpuhog_gui_VMINOR, cpuhog_gui_VPATCH, cpuhog_gui_VTAIL
+ProductVersion cpuhog_gui_VMAJOR, cpuhog_gui_VMINOR, cpuhog_gui_VPATCH, cpuhog_gui_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     cpuhog_gui_NAME
+            VALUE "FileDescription", cpuhog_gui_NAME
+            VALUE "FileVersion",    cpuhog_gui_VMAJORs "." cpuhog_gui_VMINORs "." cpuhog_gui_VPATCHs
+            VALUE "ProductVersion",    cpuhog_gui_VMAJORs "." cpuhog_gui_VMINORs "." cpuhog_gui_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , cpuhog_gui_NAME ".exe"
+            VALUE "InternalName", cpuhog_gui_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
