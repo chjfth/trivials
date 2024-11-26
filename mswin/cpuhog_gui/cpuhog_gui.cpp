@@ -8,10 +8,14 @@
 
 #include "iversion.h"
 
-#include "utils.h"
+#include "../utils.h"
+
+#include "cpuhog.h"
 
 #define JULAYOUT_IMPL
 #include "JULayout2.h"
+
+#define VERSION "1.0"
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -23,24 +27,83 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+#define MY_TIMER_ID 1
+
+static bool g_is_hog_started = false;
+static DWORD g_start_msec = 0; // GetTickCount()
+static HCURSOR g_cursorBusy, g_cursorArrow;
+
+void Gui_StartCpuHog(HWND hdlg)
+{
+	int threads = GetDlgItemInt(hdlg, IDC_EDIT_THREADS, NULL, TRUE);
+	int seconds = GetDlgItemInt(hdlg, IDC_EDIT_SECONDS, NULL, TRUE);
+	HWND hbtn = GetDlgItem(hdlg, IDC_BTN_RUN);
+
+	bool succ = start_cpu_hog(threads, seconds);
+	assert(succ);
+
+	g_start_msec = GetTickCount();
+
+	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Start hogging..."));
+
+//	SetCursor(g_cursorBusy); // No use calling it here.
+
+	SetTimer(hdlg, MY_TIMER_ID, 500, NULL);
+
+	Button_Enable(hbtn, FALSE);
+	g_is_hog_started = true;
+}
+
+void Gui_StopCpuHog(HWND hdlg)
+{
+	HWND hbtn = GetDlgItem(hdlg, IDC_BTN_RUN);
+
+	bool succ = done_cpu_hog();
+	assert(succ);
+
+//	SetCursor(g_cursorArrow); // No use calling it here.
+
+	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Done hogging."));
+	Button_Enable(hbtn, TRUE);
+	g_is_hog_started = false;
+}
+
+void Dlg_OnTimer(HWND hdlg, UINT id)
+{
+	assert(id==MY_TIMER_ID);
+
+	bool is_end = cpu_hog_is_end();
+	if(is_end)
+	{
+		Gui_StopCpuHog(hdlg);
+		KillTimer(hdlg, MY_TIMER_ID);
+	}
+	else
+	{
+		int elapsed_msec = GetTickCount() - g_start_msec;
+
+		vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
+			_T("Hogging for %d milliseconds..."), elapsed_msec);		
+	}
+}
+
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
-	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR textbuf[200];
+//	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDC_BTN_RUN:
 	{
-		++(prdata->clicks);
-		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
-		SetDlgItemText(hdlg, IDC_EDIT1, textbuf);
+		if(!g_is_hog_started)
+			Gui_StartCpuHog(hdlg);
+		else
+			Gui_StopCpuHog(hdlg);
 
-		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
 		break;
 	}
-	case IDOK:
+	//case IDOK:
 	case IDCANCEL:
 	{
 		EndDialog(hdlg, id);
@@ -63,32 +126,53 @@ static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
-	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
-	jul->AnchorControl(0,0, 100,100, IDC_EDIT1);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
 
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
-	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
-	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
-	
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
-	TCHAR textbuf[200];
-	_sntprintf_s(textbuf, _TRUNCATE, _T("version: %d.%d.%d"), 
-		cpuhog_gui_VMAJOR, cpuhog_gui_VMINOR, cpuhog_gui_VPATCH);
-	SetDlgItemText(hdlg, IDC_LABEL1, textbuf);
-	
-	SetDlgItemText(hdlg, IDC_EDIT1, prdata->mystr);
+	g_cursorArrow = LoadCursor(NULL, IDC_ARROW);
+	g_cursorBusy = LoadCursor(NULL, IDC_WAIT);
+
+	vaSetWindowText(hdlg, _T("cpuhog GUI v%s"), _T(VERSION));
+
+	SetDlgItemInt(hdlg, IDC_EDIT_THREADS, 1, TRUE);
+	SetDlgItemInt(hdlg, IDC_EDIT_SECONDS, 2, TRUE);
+
+	vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG,
+		_T("This program hogs CPU times. \r\n")
+		_T("You can assign threads(max %d) and seconds to hog.")
+		,
+		MAX_THREADS
+		);
 
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDC_EDIT_THREADS));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
+
+BOOL Dlg_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mosuemsg)
+{
+	if(codeHitTest==HTCLIENT)
+	{
+		if(g_is_hog_started)
+			SetCursor(g_cursorBusy);
+		else
+			SetCursor(g_cursorArrow);
+	}
+	else
+	{
+		vaDbgS(_T("Dlg_OnSetCursor--"));
+		FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, mosuemsg, DefWindowProc);
+	}
+	return TRUE; // any
+}
+
 
 INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
@@ -96,6 +180,8 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+		HANDLE_dlgMSG(hdlg, WM_TIMER, Dlg_OnTimer);
+		HANDLE_dlgMSG(hdlg, WM_SETCURSOR, Dlg_OnSetCursor);
 	}
 	return FALSE;
 }

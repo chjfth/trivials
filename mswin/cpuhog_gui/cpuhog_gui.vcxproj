@@ -211,6 +211,7 @@
 
   <ItemGroup>
     <ClCompile Include="cpuhog_gui.cpp" />
+    <ClCompile Include="cpuhog.cpp" />
     <ClCompile Include="..\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -223,6 +224,7 @@
   <ItemGroup>
     <ClInclude Include="JULayout2.h" />
     <ClInclude Include="iversion.h" />
+    <ClInclude Include="cpuhog.h" />
     <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
@@ -234,7 +236,7 @@
  
   <!-- import VSPG start -->
   <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>$(SolutionDir)_VSPG\boots</VSPG_BootsDir_NoTBS>
+    <VSPG_BootsDir_NoTBS>..\..\__VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
