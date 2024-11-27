@@ -167,7 +167,6 @@ BOOL Dlg_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mosuemsg
 	}
 	else
 	{
-		vaDbgS(_T("Dlg_OnSetCursor--"));
 		FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, mosuemsg, DefWindowProc);
 	}
 	return TRUE; // any
