@@ -158,18 +158,19 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 BOOL Dlg_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mosuemsg)
 {
-	if(codeHitTest==HTCLIENT)
+	if(codeHitTest==HTCLIENT && g_is_hog_started)
 	{
-		if(g_is_hog_started)
-			SetCursor(g_cursorBusy);
-		else
-			SetCursor(g_cursorArrow);
+		SetCursor(g_cursorBusy);
+		return TRUE; 
+		// -- TRUE: so that the Busy-cursor *persists*, whether on dlgbox's blank area,
+		//          or on editbox 's area.
 	}
 	else
 	{
-		FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, mosuemsg, DefWindowProc);
+		// We obey system's default mouse-cursor strategy,
+		// by calling DefWindowProc() for this WM_CURSOR.
+		return FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, mosuemsg, DefWindowProc);
 	}
-	return TRUE; // any
 }
 
 
