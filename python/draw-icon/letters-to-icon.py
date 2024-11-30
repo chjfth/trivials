@@ -47,9 +47,17 @@ def genenrate_ico_file(letters, font_color):
 
 	# Save a .png as well, so that we can later Ubuntu `icotool` to make a BMP-style ico.
 	# 	sudo apt install icoutils
-	# 	icotool -c -o AB-bmp.ico AB.ico.png
+	# 	icotool -c  AB.ico.png  -o AB-bmp.ico 
 	#
-	icon.save(filename+".png", format="PNG", sizes=[icon_size])
+	filename_png = filename + ".png"
+	icon.save(filename_png, format="PNG", sizes=[icon_size])
+	print("%s generated."%(filename_png))
+	
+	print("")
+	print("Hint: To make the exe-embedded icon recognized by WinXP, ")
+	print("      you need to further convert it to be a BMP-backed ico,")
+	print("      using command:")
+	print("icotool -c  %s  -o %s-bmp.ico"%(filename_png, letters))
 
 
 if __name__=='__main__':
@@ -59,7 +67,8 @@ if __name__=='__main__':
 		print('    letters-to-icon.py <letters> [color]')
 		print("Example: ")
 		print('    letters-to-icon.py "Hi" blue')
-		print('    letters-to-icon.py "mg" #EE00FF')
+		print('    letters-to-icon.py "mg" "#EE00FF"') 
+		# -- Need to enclose #RGB in quotes, bcz Linux shell considers # as comment start.
 		sys.exit(1)
 
 	letters = sys.argv[1]
