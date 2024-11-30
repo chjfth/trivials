@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 mydir = os.path.dirname(__file__)
 
-def genenrate_ico_file(letters, font_color):
+def genenrate_ico_file(letters, font_color, fontfile):
 
 	# Define the icon size and the letters to display
 	icon_size = (32, 32)
@@ -21,9 +21,10 @@ def genenrate_ico_file(letters, font_color):
 	try:
 		# Using a default font available within PIL (as custom fonts might not be available)
 		# Adjust font size as needed
-		font = ImageFont.truetype(os.path.join(mydir, "Tahoma.ttf"), 24)
+		font = ImageFont.truetype(os.path.join(mydir, fontfile), 24)
 	except IOError:
-		print("Bad! TTF Font loading fail.")
+		print("Bad! TTF Font loading fail:")
+		print("    " + FONTFILE)
 		sys.exit(1) # font = ImageFont.load_default()
 
 	# Calculate text position to center it in the icon using textbbox
@@ -66,13 +67,26 @@ if __name__=='__main__':
 		print("Usage: ")
 		print('    letters-to-icon.py <letters> [color]')
 		print("Example: ")
-		print('    letters-to-icon.py "Hi" blue')
-		print('    letters-to-icon.py "mg" "#EE00FF"') 
+		print('    letters-to-icon.py "OK" blue')
+		print('    letters-to-icon.py "Pg1" "#EE00FF"') 
+		print('Env-var:')
+		print('    FONTFILE : This assigns a ttf file to use as drawing font.')
 		# -- Need to enclose #RGB in quotes, bcz Linux shell considers # as comment start.
 		sys.exit(1)
 
 	letters = sys.argv[1]
 	color = sys.argv[2] if arglen>2 else "red"
-	genenrate_ico_file(letters, color)
+	
+	fontfile = os.getenv('FONTFILE')
+	if not fontfile:
+		nchars = len(letters)
+		if nchars<=3:
+			fontfile = 'BigShouldersText-Bold.ttf'
+		elif nchars==4:
+			fontfile = 'MouseMemoirs-Regular.ttf'
+		else:
+			fontfile = 'LeagueGothic_Condensed-Regular.ttf'
+
+	genenrate_ico_file(letters, color, fontfile)
 
 	sys.exit(0)
