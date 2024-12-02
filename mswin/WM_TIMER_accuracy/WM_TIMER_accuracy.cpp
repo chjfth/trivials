@@ -187,7 +187,7 @@ void Tell_HardIntr_TimerResolution(HWND hdlg)
 		if(!ntserr)
 		{
 			_sntprintf_s(textbuf, _TRUNCATE, 
-				_T("NtQueryTimerResolution(ms): current: %g  (min: %g , max: %g)"),
+				_T("NtQueryTimerResolution(millisec): current: %g  (min: %g , max: %g)"),
 				curRes/10000.0, minRes/10000.0, maxRes/10000.0);
 		}
 		else
