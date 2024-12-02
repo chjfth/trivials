@@ -50,7 +50,7 @@ static DWORD MyGetMillisec()
 	// We should use QueryPerformanceCounter(), bcz GetTickCount only has 15.6 ms resolution.
 	LARGE_INTEGER li = {};
 	QueryPerformanceCounter(&li);
-	return li.QuadPart / 10000;
+	return (DWORD)(li.QuadPart / 10000);
 }
 
 void DlgItem_Enable(HWND hdlg, int nIDDlgItem, bool en)
@@ -316,13 +316,16 @@ static UINT64 wait_perft_change()
 {
 	LARGE_INTEGER li1 = {};
 	QueryPerformanceCounter(&li1);
+	UINT64 us1 = li1.QuadPart / 10;
 
 	for(;;)
 	{
 		LARGE_INTEGER li2 = {};
 		QueryPerformanceCounter(&li2);
-		if(li2.QuadPart!=li1.QuadPart)
-			return li2.QuadPart / 10; // return microseconds
+		UINT64 us2 = li2.QuadPart / 10;
+
+		if(us2 != us1)
+			return us2; // return microseconds
 	}
 }
 
