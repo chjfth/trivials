@@ -45,6 +45,14 @@ struct DlgPrivate_st
 	int max_step_ms;
 };
 
+static DWORD MyGetMillisec()
+{
+	// We should use QueryPerformanceCounter(), bcz GetTickCount only has 15.6 ms resolution.
+	LARGE_INTEGER li = {};
+	QueryPerformanceCounter(&li);
+	return li.QuadPart / 10000;
+}
+
 void DlgItem_Enable(HWND hdlg, int nIDDlgItem, bool en)
 {
 	EnableWindow(GetDlgItem(hdlg, nIDDlgItem), en?TRUE:FALSE);
@@ -82,7 +90,7 @@ void DoTimerStart(HWND hdlg, DlgPrivate_st *prdata)
 	prdata->wm_timer_ms = millisec;
 	prdata->min_step_ms = millisec + 1000;
 	prdata->max_step_ms = 0;
-	prdata->prevTickMillisec = prdata->startTickMillisec = GetTickCount();
+	prdata->prevTickMillisec = prdata->startTickMillisec = MyGetMillisec();
 
 	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T(""));
 
@@ -104,7 +112,7 @@ void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 	KillTimer(hdlg, TIMER_ID);
 	prdata->isProbeStarted = false;
 
-	DWORD endTickMillisec = GetTickCount();
+	DWORD endTickMillisec = MyGetMillisec();
 	int elapsed_mils = endTickMillisec - prdata->startTickMillisec;
 
 	if(elapsed_mils>=100)
@@ -169,7 +177,7 @@ NTSTATUS WINAPI NtQueryTimerResolution(
 );
 DEFINE_DLPTR_WINAPI("ntdll.dll", NtQueryTimerResolution)
 
-void TellTimerResolution(HWND hdlg)
+void Tell_HardIntr_TimerResolution(HWND hdlg)
 {
 	TCHAR textbuf[100] = _T("ntdll!NtQueryTimerResolution not available.");
 	if(dlptr_NtQueryTimerResolution)
@@ -212,7 +220,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 	assert(prdata->isProbeStarted);
 
 	prdata->timer_count++;
-	DWORD nowtick = GetTickCount();
+	DWORD nowtick = MyGetMillisec();
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
 	int textlen = Edit_GetTextLength(hedit);
@@ -296,6 +304,45 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 	}
 }
 
+static DWORD wait_tickcount_change()
+{
+	DWORD ms1 = GetTickCount();
+	DWORD ms2 = 0;
+	while( (ms2=GetTickCount()) == ms1 );
+	return ms2;
+}
+
+static UINT64 wait_perft_change()
+{
+	LARGE_INTEGER li1 = {};
+	QueryPerformanceCounter(&li1);
+
+	for(;;)
+	{
+		LARGE_INTEGER li2 = {};
+		QueryPerformanceCounter(&li2);
+		if(li2.QuadPart!=li1.QuadPart)
+			return li2.QuadPart / 10; // return microseconds
+	}
+}
+
+static void show_timer_resolution(HWND hdlg)
+{
+	DWORD ms1 = wait_tickcount_change();
+	DWORD ms2 = wait_tickcount_change();
+	
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
+	vaAppendText_mled(hedit, _T("\r\nGetTickCount() resolution is: %d millisec.\r\n"), ms2-ms1);
+
+	UINT64 us1 = wait_perft_change();
+	UINT64 us2 = wait_perft_change();
+	vaAppendText_mled(hedit, _T("QueryPerformanceCounter() resolution is: %I64d microsec.\r\n"), us2-us1);
+
+	vaAppendText_mled(hedit, _T("\r\nI will use QueryPerformanceCounter to measure WM_TIMER."));
+
+	Tell_HardIntr_TimerResolution(hdlg);
+}
+
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
@@ -319,10 +366,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		_T("Parameter hint: \r\n")
 		_T("- If Sleep millisec is -1, then I will NOT call Sleep() in WM_TIMER callback.\r\n")
 		_T("- If Sleep millisec is 0, then I will call Sleep(0) in WM_TIMER callback.\r\n")
-		_T("- If Sleep millisec is 500, then I will call Sleep(500) in WM_TIMER callback, just before our DlgProc returns.\r\n.")
+		_T("- If Sleep millisec is 500, then I will call Sleep(500) in WM_TIMER callback, just before our DlgProc returns.\r\n")
 		);
 
-	TellTimerResolution(hdlg);
+	show_timer_resolution(hdlg);
 
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
