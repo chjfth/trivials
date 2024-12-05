@@ -12,22 +12,39 @@
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+HINSTANCE g_hInstance;
 HWND g_hdlgVarFont;
 HWND g_hdlgSysFont;
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM);
 INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+void CreateDemoModelessDialogboxes(HWND hwndParent)
+{
+	g_hdlgVarFont = CreateDialog(g_hInstance, 
+		MAKEINTRESOURCE(IDD_VARFONT), hwndParent, Dlg_Proc);
+	assert(g_hInstance);
+	
+	g_hdlgSysFont = CreateDialog(g_hInstance,
+		MAKEINTRESOURCE(IDD_SYSFONT), hwndParent, Dlg_Proc);
+	assert(g_hdlgSysFont);
+}
+
 int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PTSTR szCmdLine, int nCmdShow)
 {
 	InitCommonControls(); // WinXP needs this
+
+	TCHAR szTitle[100] = {};
+	_sntprintf_s(szTitle, _TRUNCATE, _T("DlgBaseUnits %d.%d.%d"),
+		DlgBaseUnits_VMAJOR, DlgBaseUnits_VMINOR, DlgBaseUnits_VPATCH);
 
 	(void)hPrevInstance; (void)szCmdLine; 
 	static TCHAR szAppName[] = TEXT ("DlgBaseUnits") ;
 	HWND         hwnd = NULL;
 	MSG          msg = {};
 	WNDCLASS     wndclass = {};
+	g_hInstance = hInstance;
 
 	wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
 	wndclass.lpfnWndProc   = WndProc ;
@@ -43,12 +60,12 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass (&wndclass);
 	 
 	hwnd = CreateWindow (szAppName,    // window class name
-		TEXT ("The DlgBaseUnits Program"), // window caption
+		szTitle,         // window caption
 		WS_OVERLAPPEDWINDOW,           // window style
 		20,              // initial x position
 		20,              // initial y position
-		400,             // initial x size
-		200,             // initial y size
+		420,             // initial x size
+		360,             // initial y size
 		NULL,            // parent window handle
 		NULL,            // window menu handle
 		hInstance,       // program instance handle
@@ -56,12 +73,11 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	 
 	SendMessage(hwnd, WM_SETICON, TRUE, (LPARAM)LoadIcon(hInstance,	MAKEINTRESOURCE(IDI_WINMAIN)));
 
-	g_hdlgVarFont = CreateDialog(hInstance, 
-		MAKEINTRESOURCE(IDD_VARFONT), hwnd, Dlg_Proc);
+	CreateDemoModelessDialogboxes(hwnd);
 
 	ShowWindow (hwnd, nCmdShow) ;
 	UpdateWindow (hwnd) ;
-	
+
 	while (GetMessage (&msg, NULL, 0, 0))
 	{
 		if(IsDialogMessage(g_hdlgVarFont, &msg))
@@ -85,19 +101,43 @@ void Cls_OnPaint(HWND hwnd)
 	RECT        rect ;
 	HDC hdc = BeginPaint (hwnd, &ps) ;
 
-	GetClientRect (hwnd, &rect) ;          
-	Ellipse(hdc, 0,0, rect.right, rect.bottom);
-	DrawText (hdc, TEXT ("Hello, WindowsX !"), -1, &rect,
-		DT_SINGLELINE | DT_CENTER | DT_VCENTER) ;
+	TCHAR *psztext = _T("Observe different API results from different dialog fonts.");
+	TextOut(hdc, 0, 0, psztext, _tcslen(psztext));
+
+	GetClientRect (hwnd, &rect) ;
+//	DrawText (hdc, TEXT ("Hello, WindowsX !"), -1, &rect,DT_SINGLELINE) ;
 
 	EndPaint (hwnd, &ps) ;
+}
+
+void Cls_OnMove(HWND hwnd, int x, int y)
+{
+	const int gap = 20;
+	BOOL succ = 0;
+	HWND hwndParent = hwnd;
+	RECT rc = {};
+
+	HWND hSubdlg = g_hdlgVarFont;
+	succ = GetWindowRect(hSubdlg, &rc);
+	succ = MoveWindow(hSubdlg, 
+		x+gap, y+gap, 
+		rc.right-rc.left, rc.bottom-rc.top, 
+		TRUE);
+
+	int subdlg1_height = rc.bottom-rc.top;
+
+	hSubdlg = g_hdlgSysFont;
+	succ = GetWindowRect(hSubdlg, &rc);
+	succ = MoveWindow(hSubdlg, 
+		x+gap, y+gap + (subdlg1_height + gap), 
+		rc.right-rc.left, rc.bottom-rc.top, 
+		TRUE);
 }
 
 void Cls_OnDestroy(HWND hwnd)
 {
 	PostQuitMessage(44);
 }
-
 
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -106,6 +146,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{{
 		HANDLE_MSG(hwnd, WM_CREATE, Cls_OnCreate);
 		HANDLE_MSG(hwnd, WM_PAINT, Cls_OnPaint);
+		HANDLE_MSG(hwnd, WM_MOVE, Cls_OnMove);
 		HANDLE_MSG(hwnd, WM_DESTROY, Cls_OnDestroy);
 	}}
 	
@@ -138,11 +179,6 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{
 	case IDC_BTN_REFRESH:
 		ShowDlgBaseUnits(hdlg);
-		break;
-	
-	case IDOK:
-	case IDCANCEL:
-		EndDialog(hdlg, id);
 		break;
 	}
 }
