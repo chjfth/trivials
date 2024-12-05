@@ -89,8 +89,10 @@ https://www.evernote.com/shard/s21/nl/2425275/ebfc0c57-1180-47fe-bbb0-aa0c19ed72
 https://www.evernote.com/shard/s21/nl/2425275/96c3f7da-03a2-45fe-9bcb-616a72e4f159 , DeDaoAI , 得到 App 提供的 AI 信息
 https://www.evernote.com/shard/s21/nl/2425275/bd8a358b-768d-4b81-a45b-c3c91c92c3f8 , DeDaoApp , 得到 App 收集帖
 https://www.evernote.com/shard/s21/nl/2425275/56b3b85f-2e31-4ff6-b873-a75fe076dfa1 , DefaultLocales , 
+https://www.evernote.com/shard/s21/nl/2425275/e3bcd1b8-307c-4315-b5d0-0762faf77a63 , DefWindowProc , 窗口系统的 default winow procedure 内部做的事
 https://www.evernote.com/shard/s21/nl/2425275/fce669b8-7dc1-4847-95a8-9e1c86cc6e67 , demo_clone , TLPI CH28 演示 Linux clone() 的程序
 https://www.evernote.com/shard/s21/nl/2425275/ad2498fa-cfac-4e63-8322-83aa53aea30c , DesignPattern , 设计模式
+https://www.evernote.com/shard/s21/nl/2425275/c4a5f7ba-0816-4995-b98b-77c094d9dddb , DesignRational , 合理性设计收集帖
 https://www.evernote.com/shard/s21/nl/2425275/ba90658c-59ce-46bc-96f7-4d7623f24d72 , devcon , 
 https://www.evernote.com/shard/s21/nl/2425275/aa81f0e2-0922-47c8-98a2-662a081a3588 , DEVINTL2 , Developing International Software, 2nd-ed (2003)
 https://www.evernote.com/shard/s21/nl/2425275/611b66b1-8fe8-4e6c-8a77-5dbe8618d0dc , DFL_Druuzil2022 , DeepfaceLab 2022.08 Advanced Training Methods - Druuzil Tech
@@ -106,13 +108,13 @@ https://www.evernote.com/shard/s21/nl/2425275/2e3ccbbb-3424-4918-a0ff-c0abac0565
 https://www.evernote.com/shard/s21/nl/2425275/14fb79bb-4d64-4fdd-b8f9-4164c6c20bc7 , DiskPart , Win7+ diskpart 命令行分区工具
 https://www.evernote.com/shard/s21/nl/2425275/1b7e905b-e435-4231-92cc-196bc4344cbd , DiskVolMap , 探测盘符和 \Device\HarddiskVolume1 对应关系的程序
 https://www.evernote.com/shard/s21/nl/2425275/3240bdcc-e131-4875-900f-d313fedd53b9 , DISM , Windows WIM 映像操作
+https://www.evernote.com/shard/s21/nl/2425275/98ea578d-a080-4d12-8206-c605faba8c67 , DlgBaseUnits , 演示程序对比 GetDialogBaseUnits 和 MapDialogRect
 https://www.evernote.com/shard/s21/nl/2425275/0064d79d-bb5a-4955-8610-24c342052906 , Docker , 著名容器软件
 https://www.evernote.com/shard/s21/nl/2425275/d6d73bb5-2ae1-4164-a522-c7539ba5b591 , DOKRA2 , Docker in Action 2nd-ed (2019) 读书笔记
 https://www.evernote.com/shard/s21/nl/2425275/5b26eff4-b26c-40be-af7e-557a001f4da2 , DOSBOX , DOSBOX-x 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/25ed1750-962c-4ec1-8032-f1e1646d555c , DoSched , Windows 计划任务最佳实践: DoSched Wrapper
 https://www.evernote.com/shard/s21/nl/2425275/fb0bdf25-f1d4-48d5-b62f-ba08be158567 , dotNET , 
-https://www.evernote.com/shard/s21/nl/2425275/51824870-0471-4f73-999c-8d396ae0e8b5 , DPI Scaling , Windows 屏幕显示 DPI Scaling
-https://www.evernote.com/shard/s21/nl/2425275/51824870-0471-4f73-999c-8d396ae0e8b5 , DPI_Scaling , 
+https://www.evernote.com/shard/s21/nl/2425275/51824870-0471-4f73-999c-8d396ae0e8b5 , DPI_Scaling , Windows 屏幕 DPI Scaling 话题
 https://www.evernote.com/shard/s21/nl/2425275/9881c9fb-f016-40c0-be2e-b713b4bfd0f8 , DPSLOST , DisplayPort / HDMI 线缆拔除/软关机, Windows 重排显示器问题
 https://www.evernote.com/shard/s21/nl/2425275/97cfd9c3-26e2-4a25-8870-915a45eb906c , DropInReplace , 软件模块化原则: Drop-in replacement
 https://www.evernote.com/shard/s21/nl/2425275/28efac91-2784-431a-af68-4bf8eed76c79 , eBPF , extended Berkeley Packet Filter, Linux 内核钩子扩展
@@ -140,6 +142,7 @@ https://www.evernote.com/shard/s21/nl/2425275/6de5b4e8-0915-48b9-bbd3-d1d295c0cc
 https://www.evernote.com/shard/s21/nl/2425275/7881d456-18fc-41d1-a28b-18f783a63b53 , FetchV , 2024 一个网页插件形式的视频下载利器
 https://www.evernote.com/shard/s21/nl/2425275/9027fb71-b5c0-49a8-b844-7546bcbd9b03 , FFmpeg , 
 https://www.evernote.com/shard/s21/nl/2425275/60f84ac4-388e-442f-9747-d15d15f37ad3 , Fiddler , 
+https://www.evernote.com/shard/s21/nl/2425275/1591fb68-4cf7-4106-8b9e-1ecaa70ef48a , FLPY , Fluent Python 1st(2015)
 https://www.evernote.com/shard/s21/nl/2425275/33540000-5da8-40cb-b094-53d333fe483b , FONTS , 字体相关
 https://www.evernote.com/shard/s21/nl/2425275/0c9ce4db-9d60-49f4-a98d-e754a000d668 , FoxitCoedit , 让两台机器上的 Foxit Reader/Editor 能协同修改同一个 pdf 文件
 https://www.evernote.com/shard/s21/nl/2425275/c315679c-9b29-481f-af2c-009352c10002 , Foxit , Foxit PDF Reader/Editor
@@ -223,6 +226,7 @@ https://www.evernote.com/shard/s21/nl/2425275/8175f2b6-47d6-417f-ba4b-2f26bf4560
 https://www.evernote.com/shard/s21/nl/2425275/1184ee73-783a-4205-b667-4d71cdd0ca04 , MiddleStripOff , 给长截图制作断层撕除效果
 https://www.evernote.com/shard/s21/nl/2425275/0ec4ab0c-99b2-4b9b-8b71-38c828c4054d , MidWare , 中间物
 https://www.evernote.com/shard/s21/nl/2425275/ed3e7d4d-81df-4fb0-87dc-2d7d53ebac1a , MinGW , 生成 Windows 原生应用程序的 gcc port
+https://www.evernote.com/shard/s21/nl/2425275/31536f49-170d-4201-aed0-cb33584c41fb , MiPad2 , 小米平板2 (2016)
 https://www.evernote.com/shard/s21/nl/2425275/ec5f7645-d762-4e21-8662-57f4420eef6d , MiWebcam , 小米/米家 摄像头 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/9e6cf18a-7fe6-4547-92d7-5320b218eb41 , MonitorMyWinMove , 将自己的 WM_MOVE, WM_SIZE 消息显示出来
 https://www.evernote.com/shard/s21/nl/2425275/a130bbdb-7d4e-498a-b4f4-84f712a62dc9 , MPC-HC , Media Player Classic
@@ -274,6 +278,8 @@ https://www.evernote.com/shard/s21/nl/2425275/0f70cb59-bd88-47bf-a114-50c1c01880
 https://www.evernote.com/shard/s21/nl/2425275/5742f8a7-15f7-4f6a-89fa-dcfa58ac01de , PickFont , PRWIN5 提供的 Windows 字体展示程序
 https://www.evernote.com/shard/s21/nl/2425275/e661b13e-bbd5-4332-a576-22227917bf3e , pidmisc_rawchild , 探查一个新进程的 PGID, SID 的初始值
 https://www.evernote.com/shard/s21/nl/2425275/8b41b41e-4cee-47e8-9810-3e979352264d , pidmisc , Linux 测试程序, 查看本进程的 PID, PPID, PGID, SID etc
+https://www.evernote.com/shard/s21/nl/2425275/e1ac539d-a8ca-4b2f-9f25-065835995d18 , PlopBoot , PLOP Boot Manager
+https://www.evernote.com/shard/s21/nl/2425275/8654e613-eac6-418d-bfe0-c9328f49828d , PLXUSBSSD , Plextor 128GB USB-SSD
 https://www.evernote.com/shard/s21/nl/2425275/0bb0a5d7-33df-42a0-8f4c-4c7e60e09938 , PNGTRANS , PNG 透明图片操作
 https://www.evernote.com/shard/s21/nl/2425275/23e89b6d-fb2e-4869-8813-67ae10bd8123 , PNY-RTX4060 , 2024: Nvidia 显卡 RTX 4060 Ti 16GB
 https://www.evernote.com/shard/s21/nl/2425275/78eea29a-efad-4c3a-8ecb-4d3d1288741a , PowerShell , 
@@ -301,6 +307,7 @@ https://www.evernote.com/shard/s21/nl/2425275/9d22d931-2684-4768-b9f4-a922e2309c
 https://www.evernote.com/shard/s21/nl/2425275/02573fe7-4e3d-4c1e-a82f-e4586c6785df , QuadroM2000 , [QuadroM2000] Nvidia Quadro M2000 显卡
 https://www.evernote.com/shard/s21/nl/2425275/94dbd95e-789b-4ba9-9400-04c5e1473923 , QuickSort , 快速排序算法
 https://www.evernote.com/shard/s21/nl/2425275/803ad1b0-9e6e-4f1a-9b62-e76ebb7eeecf , RasPi , Raspberry Pi
+https://www.evernote.com/shard/s21/nl/2425275/8c720e88-e9f4-4538-bda1-d65b07be426c , Rational , 有关合理性
 https://www.evernote.com/shard/s21/nl/2425275/b3cf5122-d05a-4aff-91d8-ce4f11111eaa , RaymondC , 微软博主 Raymond Chen 文章收集
 https://www.evernote.com/shard/s21/nl/2425275/8ba5bcfc-2c2a-45c5-bb1e-5018a18953ee , RecollX , Recoll/Xapian 全文搜索软件
 https://www.evernote.com/shard/s21/nl/2425275/892e0ac2-3b3f-4a83-bef8-721ea7eb6527 , RedBlackTree , 红黑树 主题帖
@@ -339,7 +346,9 @@ https://www.evernote.com/shard/s21/nl/2425275/ca444b3b-65bb-4f5f-8ba2-1dc3a61240
 https://www.evernote.com/shard/s21/nl/2425275/1a8f6e07-7afc-4020-af03-0043a303a860 , SVN , Subversion
 https://www.evernote.com/shard/s21/nl/2425275/e23bb8d7-86fe-4c4b-91e2-b3c99a42d410 , systemd , Ubuntu Linux 用的 init 进程
 https://www.evernote.com/shard/s21/nl/2425275/7a6a65ca-7b6a-4d80-8190-bbbb02b7d204 , SysTrayClock , [SysTrayClock] 话题: 系统托盘中的时钟
+https://www.evernote.com/shard/s21/nl/2425275/62f9e0f4-7d7e-4a89-850f-d9d7b3f33327 , szBear , [szBear] Bear : 显示进程消耗各种 Windows 资源的计数
 https://www.evernote.com/shard/s21/nl/2425275/a59ec410-ec8a-413b-8a35-ee280bbc41fa , taskschd , Windows 内置计划任务功能
+https://www.evernote.com/shard/s21/nl/2425275/3c4cfa8a-69fb-465e-98b2-0994a46fc1eb , TFDC , 听风的蚕军事评书
 https://www.evernote.com/shard/s21/nl/2425275/a9416fe2-72d2-44ab-9e59-b297f2276ce4 , ThingRela , 信息分类关系
 https://www.evernote.com/shard/s21/nl/2425275/23a51b98-5bfe-4e28-9075-efee3a74a2dc , ThinkPrg , 编程思想
 https://www.evernote.com/shard/s21/nl/2425275/58b490a0-38ff-4fa0-a655-8b3ba6af8f03 , ThinkUserPerm , 关于资源与用户访问权限的设计思考
