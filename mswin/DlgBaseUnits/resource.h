@@ -4,9 +4,11 @@
 //
 #define IDI_WINMAIN                     100
 #define IDD_WINMAIN                     101
+#define IDD_VARFONT                     102
+#define IDD_SYSFONT                     103
 #define IDC_LABEL1                      1000
 #define IDC_EDIT_LOGMSG                 1001
-#define IDC_BUTTON1                     1002
+#define IDC_BTN_REFRESH                 1002
 
 // Next default values for new objects
 // 
