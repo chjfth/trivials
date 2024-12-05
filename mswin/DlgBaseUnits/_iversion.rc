@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    DlgBaseUnits_VMAJOR, DlgBaseUnits_VMINOR, DlgBaseUnits_VPATCH, DlgBaseUnits_VTAIL
+ProductVersion DlgBaseUnits_VMAJOR, DlgBaseUnits_VMINOR, DlgBaseUnits_VPATCH, DlgBaseUnits_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     DlgBaseUnits_NAME
+            VALUE "FileDescription", DlgBaseUnits_NAME
+            VALUE "FileVersion",    DlgBaseUnits_VMAJORs "." DlgBaseUnits_VMINORs "." DlgBaseUnits_VPATCHs
+            VALUE "ProductVersion",    DlgBaseUnits_VMAJORs "." DlgBaseUnits_VMINORs "." DlgBaseUnits_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , DlgBaseUnits_NAME ".exe"
+            VALUE "InternalName", DlgBaseUnits_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
