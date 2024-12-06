@@ -79,8 +79,8 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	hwnd = CreateWindow (szAppName,    // window class name
 		szTitle,         // window caption
 		WS_OVERLAPPEDWINDOW,           // window style
-		20,              // initial x position
-		20,              // initial y position
+		CW_USEDEFAULT,   // initial x position
+		CW_USEDEFAULT,   // initial y position
 		420,             // initial x size
 		360,             // initial y size
 		NULL,            // parent window handle
