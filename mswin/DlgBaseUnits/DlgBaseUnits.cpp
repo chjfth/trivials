@@ -1,11 +1,13 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <ShellAPI.h>
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "resource.h"
 #include "iversion.h"
 #include "../utils.h"
@@ -15,6 +17,8 @@
 HINSTANCE g_hInstance;
 HWND g_hdlgVarFont;
 HWND g_hdlgSysFont;
+
+int g_mapX_input = 4, g_mapY_input = 8;
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM);
 INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -34,6 +38,19 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PTSTR szCmdLine, int nCmdShow)
 {
 	InitCommonControls(); // WinXP needs this
+
+	int nArgc = __argc;
+#ifdef UNICODE
+	PCTSTR* ppArgv = (PCTSTR*) CommandLineToArgvW(GetCommandLine(), &nArgc);
+#else
+	PCTSTR* ppArgv = (PCTSTR*) __argv;
+#endif
+
+	if(nArgc>=3)
+	{
+		g_mapX_input = _tcstoul(ppArgv[1], nullptr, 0);
+		g_mapY_input = _tcstoul(ppArgv[2], nullptr, 0);
+	}
 
 	TCHAR szTitle[100] = {};
 	_sntprintf_s(szTitle, _TRUNCATE, _T("DlgBaseUnits %d.%d.%d"),
@@ -159,7 +176,7 @@ void ShowDlgBaseUnits(HWND hdlg)
 {
 	ULONG bus = GetDialogBaseUnits();
 
-	int dlgx = 4, dlgy = 8;
+	int dlgx = g_mapX_input, dlgy = g_mapY_input;
 	RECT rc = {0,0, dlgx,dlgy};
 	BOOL succ = MapDialogRect(hdlg, &rc);
 	assert(succ);

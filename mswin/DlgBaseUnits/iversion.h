@@ -2,9 +2,9 @@
 #define __DlgBaseUnits_iversion_h_
 
 #define DlgBaseUnits_VMAJOR 1
-#define DlgBaseUnits_VMINOR 0
+#define DlgBaseUnits_VMINOR 1
 #define DlgBaseUnits_VPATCH 0
-#define DlgBaseUnits_VTAIL  1
+#define DlgBaseUnits_VTAIL  0
 
 #define DlgBaseUnitsstr__(n) #n
 #define DlgBaseUnitsstr(n) DlgBaseUnitsstr__(n)
