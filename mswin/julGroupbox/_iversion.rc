@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    julGroupbox_VMAJOR, julGroupbox_VMINOR, julGroupbox_VPATCH, julGroupbox_VTAIL
+ProductVersion julGroupbox_VMAJOR, julGroupbox_VMINOR, julGroupbox_VPATCH, julGroupbox_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     julGroupbox_NAME
+            VALUE "FileDescription", julGroupbox_NAME
+            VALUE "FileVersion",    julGroupbox_VMAJORs "." julGroupbox_VMINORs "." julGroupbox_VPATCHs
+            VALUE "ProductVersion",    julGroupbox_VMAJORs "." julGroupbox_VMINORs "." julGroupbox_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , julGroupbox_NAME ".exe"
+            VALUE "InternalName", julGroupbox_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
