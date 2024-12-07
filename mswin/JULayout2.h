@@ -285,7 +285,7 @@ JULayout::JulWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		jul->HandleMinMax(pMinMaxInfo);
 	}
 
-	LRESULT ret = jul->m_prevWndProc(hwnd, msg, wParam, lParam);
+	LRESULT ret = CallWindowProc(jul->m_prevWndProc, hwnd, msg, wParam, lParam);
 
 	if(msg==WM_NCDESTROY)
 	{
@@ -496,7 +496,7 @@ JULayout::PrshtWndProc(HWND hwndPrsht, UINT msg, WPARAM wParam, LPARAM lParam)
 		}
 	}
 
-	LRESULT ret = jprsht->prev_winproc(hwndPrsht, msg, wParam, lParam); // change to CallWindowProc?
+	LRESULT ret = CallWindowProc(jprsht->prev_winproc, hwndPrsht, msg, wParam, lParam);
 
 	if(msg==WM_NCDESTROY)
 	{
