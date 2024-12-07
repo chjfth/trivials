@@ -115,20 +115,21 @@ void vaDbgS(const TCHAR *fmt, ...)
 	OutputDebugString(buf);
 }
 
-void vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...)
+BOOL vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...)
 {
-	TCHAR tbuf[4000] = {};
 	va_list args;
 	va_start(args, szfmt);
 
-	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
+	TCHAR msgtext[400] = {};
+	_vsntprintf_s(msgtext, _TRUNCATE, szfmt, args);
 
-	SetWindowText(hwnd, tbuf);
+	BOOL succ = SetWindowText(hwnd, msgtext);
 
 	va_end(args);
+	return succ;
 }
 
-void vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
+BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
 {
 	TCHAR tbuf[4000] = {};
 	va_list args;
@@ -136,9 +137,10 @@ void vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
 
 	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
 
-	SetDlgItemText(hwnd, nIDDlgItem, tbuf);
+	BOOL succ = SetDlgItemText(hwnd, nIDDlgItem, tbuf);
 
 	va_end(args);
+	return succ;
 }
 
 void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
@@ -152,6 +154,8 @@ void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
 	int pos = GetWindowTextLength (hedit);
 	// -- [2024-10-26] Note: when pos reaches 30000, Edit_SetSel() will fail with
 	// WinErr=5 (ERROR_ACCESS_DENIED).
+	// User needs to raise the limit by calling:
+	//   Edit_LimitText(hedit, 200*1024); // EM_LIMITTEXT
 
 	Edit_SetSel(hedit, pos, pos);
 	Edit_ReplaceSel(hedit, tbuf);
