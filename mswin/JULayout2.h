@@ -6,6 +6,7 @@ Purpose: This class manages child window positioning and sizing when a parent
          See Appendix B.
 
 [2022-11-07] Updated by Chj, renamed to JULayout2.h .
+[2024-12-07] Cope with Groupbox background painting issue. Works OK now.
 
 Chj Note: To use this lib, pick one and only one of your xxx.cpp, write at its start:
 	
@@ -17,8 +18,9 @@ Chj Note: To use this lib, pick one and only one of your xxx.cpp, write at its s
 #ifndef __JULayout2_h_
 #define __JULayout2_h_
 
-///////////////////////////////////////////////////////////////////////////////
+#include <assert.h>
 
+// #define JULAYOUT_DEBUG_INFO
 
 #define JULAYOUT_MAX_CONTROLS 200 
 
@@ -41,14 +43,14 @@ public:
 	bool AnchorControl(int x1Anco, int y1Anco, int x2Anco, int y2Anco, int nCtrlID);
 	
 	bool AnchorControls(int x1Anco, int y1Anco, int x2Anco, int y2Anco, ...);
-	// -- ... is a series of control-id, ending by a value of -1.
+	// -- ... is a series of control-IDs, ending by a value of -1.
 
 public:
 	static bool PropSheetProc(HWND hwndPrsht, UINT uMsg, LPARAM lParam);
 	// -- In order to make PropertySheet() dialog resizable, user should hook into
 	// JULayout::PropSheetProc() in PropertySheet()'s PFNPROPSHEETCALLBACK, like this:
 	//
-	// 	static int CALLBACK PrshtProc(HWND hwndPrsht, UINT uMsg, LPARAM lParam)
+	// 	static int CALLBACK MyPrshtProc(HWND hwndPrsht, UINT uMsg, LPARAM lParam)
 	// 	{
 	// 		bool succ = JULayout::PropSheetProc(hwndPrsht, uMsg, lParam);
 	//		if(!succ) ... do some logging ...;
@@ -63,7 +65,7 @@ public:
 	// 		psh.hInstance   = ...;
 	// 		psh.hwndParent  = hWnd;
 	// 	...
-	// 		psh.pfnCallback = PrshtProc;
+	// 		psh.pfnCallback = MyPrshtProc;
 	// 
 	// 		return PropertySheet(&psh);
 	// 	}
@@ -98,6 +100,7 @@ private:
 		int         m_nID; 
 		Ancofs_st pt1x, pt1y; // pt1 means the north-west corner of the control
 		Ancofs_st pt2x, pt2y; // pt2 means the south-east corner of the control
+		RECT rectnow; // current position cache, debugging purpose
 	}; 
 
 	bool PatchWndProc();
@@ -112,6 +115,10 @@ private:
 	static LRESULT CALLBACK JulWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	static LRESULT CALLBACK PrshtWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	static bool IsGroupBox(HWND hwnd);
+	static void SubClassTheGroupbox(HWND hwndGroupbox);
+	static LRESULT CALLBACK GroupboxWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 private:    
 	CtrlInfo_st m_CtrlInfo[JULAYOUT_MAX_CONTROLS]; // Max controls allowed in a dialog template
@@ -138,11 +145,12 @@ private:
 
 //#include "dbgprint.h" // temp debug
 
-#define JULAYOUT_STR _T("JULayout")
-#define JULAYOUT_PRSHT_STR _T("JULayout.Prsht")
-#define JULAYOUT_PRSHT2_STR _T("JULayout.Prsht2")
-	// Will use these strings to call SetProp()/GetProp(),
-	// to associate JULayout object with an HWND.
+#define JULAYOUT_STR          _T("JULayout")
+#define JULAYOUT_PRSHT_STR    _T("JULayout.Prsht")
+#define JULAYOUT_PRSHT2_STR   _T("JULayout.Prsht2")
+#define JULAYOUT_GROUPBOX_STR _T("JULayout.GroupBox")
+// -- Will use these strings to call SetProp()/GetProp(),
+//    to associate JULayout object with an HWND.
 
 #define ADD_PREV_WINPROC_SUFFIX(stem) stem _T(".PrevWndProc")
 
@@ -315,13 +323,14 @@ struct DLGTEMPLATEEX_msdn  {
 	// remaining members omitted
 };
 
-// dup constant from prsht.h, so that user don't have to include prsht.h
+// Duplicate defining SDK constant (PSCB_INITIALIZED and PSCB_PRECREATE) from prsht.h, 
+// so that JULayout user don't have to include prsht.h .
 #define PSCB_INITIALIZED_1  1
 #define PSCB_PRECREATE_2    2
 
 bool JULayout::PropSheetProc(HWND hwndPrsht, UINT uMsg, LPARAM lParam)
 {
-	if (uMsg==PSCB_PRECREATE_2) 
+	if (uMsg==PSCB_PRECREATE_2) // =PSCB_PRECREATE
 	{
 		DLGTEMPLATE& dt = *(DLGTEMPLATE*)lParam;
 		DLGTEMPLATEEX_msdn& dtex = *(DLGTEMPLATEEX_msdn*)lParam;
@@ -339,7 +348,7 @@ bool JULayout::PropSheetProc(HWND hwndPrsht, UINT uMsg, LPARAM lParam)
 
 		return 0;
 	}
-	else if(uMsg==PSCB_INITIALIZED_1)
+	else if(uMsg==PSCB_INITIALIZED_1) // =PSCB_INITIALIZED
 	{
 		bool succ = JULayout::in_PropSheetPrepare(hwndPrsht);
 		return succ;
@@ -385,7 +394,8 @@ bool JULayout::in_PropSheetPrepare(HWND hwndPrsht)
 	return true;
 }
 
-LRESULT CALLBACK JULayout::PrshtWndProc(HWND hwndPrsht, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK 
+JULayout::PrshtWndProc(HWND hwndPrsht, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	JULPrsht_st *jprsht = (JULPrsht_st*)GetProp(hwndPrsht, JULAYOUT_PRSHT_STR);
 	if(!jprsht)
@@ -486,7 +496,7 @@ LRESULT CALLBACK JULayout::PrshtWndProc(HWND hwndPrsht, UINT msg, WPARAM wParam,
 		}
 	}
 
-	LRESULT ret = jprsht->prev_winproc(hwndPrsht, msg, wParam, lParam);
+	LRESULT ret = jprsht->prev_winproc(hwndPrsht, msg, wParam, lParam); // change to CallWindowProc?
 
 	if(msg==WM_NCDESTROY)
 	{
@@ -519,7 +529,7 @@ bool JULayout::AnchorControl(int x1Anco, int y1Anco, int x2Anco, int y2Anco, int
 	cinfo.pt1x.Anco = x1Anco; cinfo.pt1y.Anco = y1Anco;
 	cinfo.pt2x.Anco = x2Anco; cinfo.pt2y.Anco = y2Anco; 
 
-	RECT rcControl;
+	RECT &rcControl = cinfo.rectnow;
 	GetWindowRect(hwndControl, &rcControl);  // Screen coords of control
 	// Convert coords to parent-relative coordinates
 	MapWindowPoints(HWND_DESKTOP, m_hwndParent, (PPOINT) &rcControl, 2);
@@ -537,6 +547,15 @@ bool JULayout::AnchorControl(int x1Anco, int y1Anco, int x2Anco, int y2Anco, int
 	cinfo.pt2y.Offset = rcControl.bottom - pt.y;
 
 	m_nNumControls++;
+
+	// Need special processing for GroupBox
+
+	bool isGroupbox = IsGroupBox(hwndControl);
+	if(isGroupbox)
+	{
+		SubClassTheGroupbox(hwndControl);
+	}
+
 	return true;
 }
 
@@ -566,7 +585,7 @@ bool JULayout::AdjustControls(int cx, int cy)
 		CtrlInfo_st &cinfo = m_CtrlInfo[i];
 
 		// Get control's upper/left position w/respect to parent's width/height
-		RECT rcControl; 
+		RECT rcControl = {};
 		PixelFromAnchorPoint(cx, cy, cinfo.pt1x.Anco, cinfo.pt1y.Anco, (PPOINT)&rcControl);
 		rcControl.left += cinfo.pt1x.Offset; 
 		rcControl.top  += cinfo.pt1y.Offset; 
@@ -580,18 +599,129 @@ bool JULayout::AdjustControls(int cx, int cy)
 		HWND hwndControl = GetDlgItem(m_hwndParent, cinfo.m_nID);
 
 		DeferWindowPos(hdwp, hwndControl,
-			NULL, // insert-after
+			NULL, // no use bcz of SWP_NOZORDER
 			rcControl.left, 
 			rcControl.top, 
 			rcControl.right - rcControl.left, 
 			rcControl.bottom - rcControl.top, 
 			SWP_NOZORDER);		
+
+#ifdef JULAYOUT_DEBUG_INFO
+		vaDbgTs(_T("JUL: HWND 0x%08X LT[%d,%d],RB[%d,%d] => LT[%d,%d],RB[%d,%d]"),
+			hwndControl,
+			cinfo.rectnow.left, cinfo.rectnow.top, cinfo.rectnow.right, cinfo.rectnow.bottom,
+			rcControl.left, rcControl.top, rcControl.right, rcControl.bottom
+			);
+#endif
+		cinfo.rectnow = rcControl;
 	}
 	
 	::EndDeferWindowPos(hdwp);
 
 	return true;
 }
+
+
+bool JULayout::IsGroupBox(HWND hwnd)
+{
+	TCHAR szWndclass[200] = {};
+	GetClassName(hwnd, szWndclass, ARRAYSIZE(szWndclass));
+	if(_tcscmp(szWndclass, _T("Button"))==0)
+	{
+		UINT ws = GetWindowStyle(hwnd);
+		if(ws & BS_GROUPBOX)
+			return true;
+	}
+	return false;
+}
+
+void JULayout::SubClassTheGroupbox(HWND hwndGroupbox)
+{
+	WNDPROC prevWndproc = SubclassWindow(hwndGroupbox, GroupboxWndProc);
+	assert(prevWndproc);
+
+	BOOL succ = SetProp(hwndGroupbox, JULAYOUT_GROUPBOX_STR, (HANDLE)prevWndproc);
+	assert(succ);
+}
+
+static POINT GetOffset_from_child1_to_child2(HWND hwnd1, HWND hwnd2)
+{
+	RECT rc1 = {}, rc2 = {};
+	GetWindowRect(hwnd1, &rc1);
+	GetWindowRect(hwnd2, &rc2);
+
+	POINT ofs = {rc2.left-rc1.left, rc2.top-rc1.top};
+	return ofs;
+}
+
+LRESULT CALLBACK 
+JULayout::GroupboxWndProc(HWND hwndGroupbox, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	WNDPROC prevWndproc = (WNDPROC)GetProp(hwndGroupbox, JULAYOUT_GROUPBOX_STR);
+
+	if(msg!=WM_ERASEBKGND)
+	{
+		return CallWindowProc(prevWndproc, hwndGroupbox, msg, wParam, lParam);
+	}
+
+	// We only care for WM_ERASEBKGND. We paint the background for the groupbox.
+	// To avoid/minimize flickering other Uic's face, we need to exclude
+	// all sibling Uic from painting.
+
+	HDC hdc = (HDC)wParam;
+
+	RECT rccligb = {};
+	GetClientRect(hwndGroupbox, &rccligb);
+
+	int excludes = 0;
+	HRGN hrgnClip = CreateRectRgn(0, 0, rccligb.right, rccligb.bottom) ; // init the whole groupbox
+
+	HWND hwndSib = GetFirstSibling(hwndGroupbox);
+	for(;;)
+	{
+		if(!hwndSib)
+			break;
+		
+		if(hwndSib!=hwndGroupbox) // only if not groupbox itself
+		{
+			RECT rcScrn = {};
+			GetWindowRect(hwndSib, &rcScrn); // we need its width & height
+
+			POINT ofs = GetOffset_from_child1_to_child2(hwndGroupbox, hwndSib);
+			RECT rcSib = {}; // will be relative to hwndGroupbox
+			rcSib.left = ofs.x;
+			rcSib.top = ofs.y;
+			rcSib.right = rcSib.left + (rcScrn.right-rcScrn.left);
+			rcSib.bottom = rcSib.top + (rcScrn.bottom-rcScrn.top);
+
+			HRGN hrgnSib = CreateRectRgn(rcSib.left, rcSib.top, rcSib.right, rcSib.bottom);
+		
+			int rgntype = CombineRgn(hrgnClip, hrgnClip, hrgnSib, RGN_DIFF);
+
+			DeleteObject(hrgnSib);
+
+			excludes++;
+
+#ifdef JULAYOUT_DEBUG_INFO
+			vaDbgS(_T("JUL: Exclude sibling from groupbox bg-painting #%d, hwnd=0x%08X, LT[%d,%d],RB[%d,%d]."),
+				excludes, hwndSib, rcSib.left, rcSib.top, rcSib.right, rcSib.bottom);
+#endif
+		}
+
+		hwndSib = GetNextSibling(hwndSib);
+	}
+
+	SelectClipRgn(hdc, hrgnClip); // set new clip region
+
+	FillRect(hdc, &rccligb, GetSysColorBrush(COLOR_BTNFACE));
+
+	SelectClipRgn(hdc, NULL);     // restore orig
+
+	DeleteObject(hrgnClip);
+
+	return TRUE;
+}
+
 
 #endif   // JULAYOUT_IMPL
 
