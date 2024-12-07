@@ -5,7 +5,7 @@ Purpose: This class manages child window positioning and sizing when a parent
          window is resized.
          See Appendix B.
 
-[2012-11-07] Updated by Chj, renamed to JULayout2.h .
+[2022-11-07] Updated by Chj, renamed to JULayout2.h .
 
 Chj Note: To use this lib, pick one and only one of your xxx.cpp, write at its start:
 	
@@ -27,10 +27,12 @@ class JULayout
 public:
 	JULayout();
 
-	static JULayout* EnableJULayout(HWND hwndParent);
+	static JULayout* EnableJULayout(HWND hwndParent,
+		int nMinWidth=0, int nMinHeight=0, int nMaxWidth=32000, int nMaxHeight=32000);
 	// -- A new JULayout object is returned to caller, and the lifetime of this object
 	// is managed automatically, i.e. the JULayout object is destroyed when the
 	// window by HWND is destroyed by the system.
+	// -- If nMinWidth=0, the min-width will be dlgbox's initial width. Same for other three.
 
 	static JULayout* GetJULayout(HWND hwndParent);
    
@@ -72,11 +74,15 @@ public:
 	// Return false on fail, probably due to system running out of resource.
 
 private: // was public, now they are private
-	bool Initialize(HWND hwndParent, int nMinWidth = 0, int nMinHeight = 0);
+	bool Initialize(HWND hwndParent, 
+		int nMinWidth=0, int nMinHeight=0, int nMaxWidth=32000, int nMaxHeight=32000);
+	// -- If nMinWidth=0, the min-width will be dlgbox's initial width. Same for other three.
+
 	bool AdjustControls(int cx, int cy);
 	void HandleMinMax(PMINMAXINFO pMinMax) 
 	{ 
 		pMinMax->ptMinTrackSize = m_ptMinParentDims; 
+		pMinMax->ptMaxTrackSize = m_ptMaxParentDims;
 	}
 
 private:
@@ -111,7 +117,8 @@ private:
 	CtrlInfo_st m_CtrlInfo[JULAYOUT_MAX_CONTROLS]; // Max controls allowed in a dialog template
 	int     m_nNumControls;
 	HWND    m_hwndParent;
-	POINT   m_ptMinParentDims; 
+	POINT   m_ptMinParentDims;
+	POINT   m_ptMaxParentDims;
 
 	WNDPROC m_prevWndProc;
 }; 
@@ -147,10 +154,12 @@ JULayout::JULayout()
 	m_nNumControls = 0;
 	m_hwndParent = NULL;
 	m_ptMinParentDims.x = m_ptMinParentDims.y = 0;
+	m_ptMaxParentDims.x = m_ptMaxParentDims.y = 0;
 	m_prevWndProc = NULL;
 }
 
-bool JULayout::Initialize(HWND hwndParent, int nMinWidth, int nMinHeight) 
+bool JULayout::Initialize(HWND hwndParent, 
+	int nMinWidth, int nMinHeight, int nMaxWidth, int nMaxHeight) 
 {
 	// User should call this from within WM_INITDIALOG.
 
@@ -160,17 +169,29 @@ bool JULayout::Initialize(HWND hwndParent, int nMinWidth, int nMinHeight)
 	m_hwndParent = hwndParent;
 	m_nNumControls = 0;
 
-	if ((nMinWidth == 0) || (nMinHeight == 0)) {
-		RECT rc;
-		GetWindowRect(m_hwndParent, &rc);
-		m_ptMinParentDims.x = rc.right  - rc.left; 
-		m_ptMinParentDims.y = rc.bottom - rc.top; 
-	}
-	if (nMinWidth  != 0) 
-		m_ptMinParentDims.x = nMinWidth;
-	if (nMinHeight != 0) 
-		m_ptMinParentDims.y = nMinHeight; 
+	RECT rc = {};
+	GetWindowRect(m_hwndParent, &rc);
 
+	if(nMinWidth == 0) 
+		m_ptMinParentDims.x = rc.right  - rc.left; 
+	else
+		m_ptMinParentDims.x = nMinWidth;
+
+	if(nMinHeight == 0)
+		m_ptMinParentDims.y = rc.bottom - rc.top;
+	else
+		m_ptMinParentDims.y = nMinHeight;
+
+	if(nMaxWidth == 0)
+		m_ptMaxParentDims.x = rc.right  - rc.left;
+	else
+		m_ptMaxParentDims.x = nMaxWidth;
+
+	if(nMaxHeight == 0)
+		m_ptMaxParentDims.y = rc.bottom - rc.top;
+	else
+		m_ptMaxParentDims.y = nMaxHeight;
+	
 	// Force WS_CLIPCHILDEN on hwndParent(the dlgbox) to reduce repaint flickering.
 	UINT ostyle = GetWindowStyle(hwndParent);
 	SetWindowLong(hwndParent, GWL_STYLE, ostyle | WS_CLIPCHILDREN);
@@ -187,7 +208,8 @@ JULayout* JULayout::GetJULayout(HWND hwndParent)
 	return jul;
 }
 
-JULayout* JULayout::EnableJULayout(HWND hwndParent)
+JULayout* JULayout::EnableJULayout(HWND hwndParent,
+	int nMinWidth, int nMinHeight, int nMaxWidth, int nMaxHeight)
 {
 	if(!IsWindow(hwndParent))
 		return NULL;
@@ -202,7 +224,7 @@ JULayout* JULayout::EnableJULayout(HWND hwndParent)
 	if(!jul)
 		return NULL;
 	
-	bool succ = jul->Initialize(hwndParent);
+	bool succ = jul->Initialize(hwndParent, nMinWidth, nMinHeight, nMaxWidth, nMaxHeight);
 	if(!succ)
 	{
 		delete jul;
