@@ -45,6 +45,8 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	jul->AnchorControl(50,0, 50,0, IDC_BUTTON1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
 	jul->AnchorControl(50,100, 50,100, IDC_BUTTON2);
+
+	// memo: If IDC_GROUPBOX1 is placed at end, it reduces flickers a bit.
 }
 
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
