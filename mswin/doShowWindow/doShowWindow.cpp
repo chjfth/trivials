@@ -23,7 +23,12 @@ struct DlgPrivate_st
 	int clicks;
 };
 
-enum Action_et { CallShowWindow=1, SendShowWin=2 };
+enum Action_et { 
+	CallShowWindow = 1, 
+	SendShowWin = 2,
+	CallSetActiveWindow = 3,
+	CallBringWindowToTop = 4,
+};
 
 void Execute_ShowWindow(HWND hdlg, Action_et act)
 {
@@ -65,14 +70,23 @@ void Execute_ShowWindow(HWND hdlg, Action_et act)
 
 	BOOL isPrevVis = 0;
 	UINT SendRet = 0;
+	HWND prevActiveHwnd = nullptr;
+	BOOL succ = 0;
 
 	DWORD msec_start = GetTickCount();
 	if(act==CallShowWindow) {
 		isPrevVis = ShowWindow(hwndTgt, nCmdShow);
 	}
-	else {
+	else if(act==SendShowWin) {
 		SendRet = (UINT)SendMessage(hwndTgt, WM_SHOWWINDOW, 7, 8);
 	}
+	else if(act==CallSetActiveWindow) {
+		prevActiveHwnd = SetActiveWindow(hwndTgt);
+	}
+	else {
+		succ = BringWindowToTop(hwndTgt);
+	}
+
 	DWORD msec_end = GetTickCount();
 
 	if(act==CallShowWindow) {
@@ -82,11 +96,23 @@ void Execute_ShowWindow(HWND hdlg, Action_et act)
 			(UINT)hwndTgt, tbuf, isPrevVis, 
 			(UINT)hwndTgt, isPrevVis?_T("was Visible"):_T("was Hidden"));
 	}
-	else {
+	else if(act==SendShowWin) {
 		vaSetDlgItemText(hdlg, IDC_EDIT_INFO,
 			_T("[#%d] Send WM_SHOWWINDOW to 0x%08X returns %d."), 
 			s_count, 
 			(UINT)hwndTgt, SendRet);
+	}
+	else if(act==CallSetActiveWindow) {
+		vaSetDlgItemText(hdlg, IDC_EDIT_INFO,
+			_T("[#%d] SetActiveWindow(0x%08X) returns 0x%08X"),
+			s_count,
+			hwndTgt, prevActiveHwnd);
+	}
+	else {
+		vaSetDlgItemText(hdlg, IDC_EDIT_INFO,
+			_T("[#%d] BringWindowToTop(0x%08X) returns %s"),
+			s_count,
+			hwndTgt, succ ? _T("TRUE") : _T("FALSE"));
 	}
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_INFO);
@@ -111,6 +137,17 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		Execute_ShowWindow(hdlg, SendShowWin);
 		break;
 	}
+	case IDC_BTN_SetActiveWindow:
+	{
+		Execute_ShowWindow(hdlg, CallSetActiveWindow);
+		break;
+	}
+	case IDC_BTN_BringWindowToTop:
+	{
+		Execute_ShowWindow(hdlg, CallBringWindowToTop);
+		break;
+	}
+
 //	case IDOK:
 	case IDCANCEL:
 	{
