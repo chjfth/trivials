@@ -41,7 +41,7 @@ void Execute_ShowWindow(HWND hdlg, Action_et act)
 	GetDlgItemText(hdlg, IDC_EDIT_HWND, tbuf, Bufsize-1);
 	HWND hwndTgt = (HWND)_tcstoul(tbuf, NULL, 16);
 
-	GetDlgItemText(hdlg, IDC_nCmdShow, tbuf, Bufsize-1);
+	GetDlgItemText(hdlg, IDC_CBX_nCmdShow, tbuf, Bufsize-1);
 	int nCmdShow = _ttoi(tbuf);
 
 	if(!IsWindow(hwndTgt))
@@ -180,7 +180,7 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 void Fill_DropdownList(HWND hdlg)
 {
-	HWND hctl = GetDlgItem(hdlg, IDC_nCmdShow);
+	HWND hctl = GetDlgItem(hdlg, IDC_CBX_nCmdShow);
 	ComboBox_AddString(hctl, _T("0 SW_HIDE"));
 	ComboBox_AddString(hctl, _T("1 SW_SHOWNORMAL"));
 	ComboBox_AddString(hctl, _T("2 SW_SHOWMINIMIZED"));
