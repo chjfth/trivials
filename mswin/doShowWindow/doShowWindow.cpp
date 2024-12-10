@@ -15,8 +15,6 @@
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-#define TITLE_VER "doShowWindow v1.0"
-
 HINSTANCE g_hinstExe;
 
 struct DlgPrivate_st
@@ -47,6 +45,24 @@ void Execute_ShowWindow(HWND hdlg, Action_et act)
 		return;
 	}
 
+	///////
+
+	SetCursor(LoadCursor(NULL, IDC_WAIT));
+
+	if(Button_GetCheck(GetDlgItem(hdlg, IDC_CKB_DELAY))==1)
+	{
+		// [2024-12-10] Chj: Assuming the target hwnd is 0x1503A4.
+		// With this Sleep, human user can eliminate the *doubt* that: 
+		// After the click on the doShowWindow UI activates hwnd 0x1503A4, 
+		// the very click seizes the activate-state back to doShowWindow itself, 
+		// causing "activating 0x1503A4" to be obscured.
+		//
+		// So with a quick click and release the mouse, human user can be
+		// convinced, that obscuring will NEVER happens.
+		//
+		Sleep(500);
+	}
+
 	BOOL isPrevVis = 0;
 	UINT SendRet = 0;
 
@@ -75,6 +91,8 @@ void Execute_ShowWindow(HWND hdlg, Action_et act)
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_INFO);
 	vaAppendText_mled(hedit, _T("\r\n\r\n(%d millisec)"), msec_end-msec_start);
+
+	SetCursor(LoadCursor(NULL, IDC_ARROW));
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
@@ -114,7 +132,7 @@ inline void chSETDLGICONS(HWND hwnd, int idi) {
 
 static void Dlg_EnableJULayout(HWND hdlg)
 {
-	JULayout *jul = JULayout::EnableJULayout(hdlg);
+//	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
 //	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
 //	jul->AnchorControl(0,0, 100,100, IDC_EDIT1);
@@ -142,13 +160,12 @@ void Fill_DropdownList(HWND hdlg)
 	ComboBox_SetCurSel(hctl, 1);
 }
 
-
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 
-	SetWindowText(hdlg, _T(TITLE_VER));
+	vaSetWindowText(hdlg, _T("doShowWindow v%d.%d"), doShowWindow_VMAJOR, doShowWindow_VMINOR);
 	chSETDLGICONS(hdlg, IDI_WINMAIN);
 
 	vaSetDlgItemText(hdlg, IDC_EDIT_INFO, 

@@ -2,9 +2,9 @@
 #define __doShowWindow_iversion_h_
 
 #define doShowWindow_VMAJOR 1
-#define doShowWindow_VMINOR 0
+#define doShowWindow_VMINOR 1
 #define doShowWindow_VPATCH 0
-#define doShowWindow_VTAIL  1
+#define doShowWindow_VTAIL  0
 
 #define doShowWindowstr__(n) #n
 #define doShowWindowstr(n) doShowWindowstr__(n)

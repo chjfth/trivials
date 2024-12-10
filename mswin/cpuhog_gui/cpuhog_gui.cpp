@@ -156,7 +156,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
-BOOL Dlg_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mosuemsg)
+BOOL Dlg_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mousemsg)
 {
 	if(codeHitTest==HTCLIENT && g_is_hog_started)
 	{
@@ -169,7 +169,7 @@ BOOL Dlg_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mosuemsg
 	{
 		// We obey system's default mouse-cursor strategy,
 		// by calling DefWindowProc() for this WM_CURSOR.
-		return FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, mosuemsg, DefWindowProc);
+		return FORWARD_WM_SETCURSOR(hwnd, hwndCursor, codeHitTest, mousemsg, DefWindowProc);
 	}
 }
 
