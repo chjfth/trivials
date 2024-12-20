@@ -10,6 +10,7 @@
 #include "iversion.h"
 
 #include "utils.h"
+#include "myutils.h"
 
 #define JULAYOUT_IMPL
 #include "JULayout2.h"
@@ -24,6 +25,7 @@ struct DlgPrivate_st
 
 	DWORD gtcStart;   // GetTickCount() start value, as milliseconds
 	__int64 qpcStart; // QueryPerformanceCounter() start value, as CPU RDTSC
+	__int64 qpfInitial; 
 };
 
 //#define TIMER_ID 100
@@ -64,6 +66,15 @@ void RefreshInfo(HWND hdlg)
 		vaSetDlgItemText(hdlg, IDC_EDIT_BiasSeconds, _T("-%d.%03d"),
 			-bias_msec/1000, -bias_msec%1000);
 	}
+
+	if(qpfNow != ud.qpfInitial)
+	{
+		TCHAR tbuf2[40] = {};
+		vaAppendText_mled(hedit, _T("%s See new QPF value: %I64d\n"), 
+			now_timestr(tbuf2, _countof(tbuf2)),
+			BigNum64ToString(qpfNow, tbuf, _countof(tbuf))
+			);
+	}
 }
 
 VOID CALLBACK TimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent,	DWORD dwTime)
@@ -81,6 +92,8 @@ bool StartWork(HWND hdlg)
 
 	ud.gtcStart = GetTickCount();
 	
+	ud.qpfInitial = get_qpf();
+
 	ud.qpcStart = get_qpc();
 	if(ud.qpcStart == -1)
 	{
