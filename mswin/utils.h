@@ -12,7 +12,7 @@ template<typename T> T Max(T x, T y) { return x>y ? x : y; }
   // beyond that of windowsx.h's HANDLE_MSG(). This HANDLE_dlgMSG() applies that further step.
   // Ref: Raymond Chen https://devblogs.microsoft.com/oldnewthing/20031107-00/?p=41923
 
-TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd=false);
+TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd=false, bool add_millisec=true);
 
 int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...);
 

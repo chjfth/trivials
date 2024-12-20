@@ -106,7 +106,7 @@ bool StartWork(HWND hdlg)
 
 	TCHAR tbuf[100] = {};
 	vaAppendText_mled(hedit, _T("Start at %s\r\n"),
-		now_timestr(tbuf, _countof(tbuf), true));
+		now_timestr(tbuf, _countof(tbuf), true, false));
 	vaAppendText_mled(hedit, _T("GetTickCount start value: %s\r\n"),
 		BigNum64ToString(ud.gtcStart, tbuf, _countof(tbuf)));
 	vaAppendText_mled(hedit, _T("QueryPerformanceCounter start value: %s\r\n"),
