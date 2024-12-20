@@ -3,8 +3,8 @@
 
 #define testQPC_VMAJOR 1
 #define testQPC_VMINOR 0
-#define testQPC_VPATCH 0
-#define testQPC_VTAIL  1
+#define testQPC_VPATCH 1
+#define testQPC_VTAIL  0
 
 #define testQPCstr__(n) #n
 #define testQPCstr(n) testQPCstr__(n)

@@ -70,7 +70,7 @@ void RefreshInfo(HWND hdlg)
 	if(qpfNow != ud.qpfInitial)
 	{
 		TCHAR tbuf2[40] = {};
-		vaAppendText_mled(hedit, _T("%s See new QPF value: %I64d\n"), 
+		vaAppendText_mled(hedit, _T("[PANIC!] %s See new QPF value: %I64d\r\n"), 
 			now_timestr(tbuf2, _countof(tbuf2)),
 			BigNum64ToString(qpfNow, tbuf, _countof(tbuf))
 			);
@@ -101,6 +101,16 @@ bool StartWork(HWND hdlg)
 			_T("QueryPerformanceCounter() fail. WinErr=%d"), GetLastError());
 		return false;
 	}
+
+	SetWindowText(hedit, _T(""));
+
+	TCHAR tbuf[100] = {};
+	vaAppendText_mled(hedit, _T("Start at %s\r\n"),
+		now_timestr(tbuf, _countof(tbuf), true));
+	vaAppendText_mled(hedit, _T("GetTickCount start value: %s\r\n"),
+		BigNum64ToString(ud.gtcStart, tbuf, _countof(tbuf)));
+	vaAppendText_mled(hedit, _T("QueryPerformanceCounter start value: %s\r\n"),
+		BigNum64ToString(ud.qpcStart, tbuf, _countof(tbuf)));
 
 	SetTimer(hdlg, (UINT_PTR)hdlg, 100, TimerProc);
 	return true;
@@ -150,12 +160,19 @@ static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
-	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
+	jul->AnchorControl(0,0, 100, 0, IDC_EDIT_TimeElapsedByQPC);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
 	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
+
+static const TCHAR *g_szStart = _T(
+	"Use this program to check QueryPerformanceFrequency() and QueryPerformanceCounter()'s behavior.\r\n\
+* On WinXP SP3, you may see QPF equals to CPU's frequency. A 3GHz CPU will report 3000000000.\r\n\
+* On Win7 SP1, you may see QPF value like 2922373.\r\n\
+* On Win10+, you should see a fixed QPF value of 10000000, so each virtual cpu-tick is 100ns.\n"
+	);
 
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
@@ -166,6 +183,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	vaSetWindowText(hdlg, _T("testQPC v%d.%d.%d"), 
 		testQPC_VMAJOR, testQPC_VMINOR, testQPC_VPATCH);
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+
+	SetWindowText(hedit, g_szStart);
 
 	Dlg_EnableJULayout(hdlg);
 
