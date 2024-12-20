@@ -1,0 +1,122 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_WINMAIN             ICON                    "testQPC.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WINMAIN DIALOGEX 0, 0, 317, 167
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "testQPC"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    RTEXT           "Time elapsed by GetTickCount :",IDC_LABEL1,4,4,142,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_LOGMSG,4,76,309,68,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN
+    PUSHBUTTON      "&Start",IDC_BUTTON1,135,149,50,14
+    RTEXT           "QueryPerformanceFrequency :",IDC_LABEL2,20,19,126,12,SS_CENTERIMAGE
+    RTEXT           "QueryPerformanceCounters :",IDC_LABEL3,20,33,126,12,SS_CENTERIMAGE
+    RTEXT           "Time elapsed counted by QPC :",IDC_LABEL4,20,47,126,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_TimeElapsedByGetTickCount,152,6,121,12,ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_EDIT_QPF,152,21,121,12,ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_EDIT_QPC,152,35,121,12,ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_EDIT_TimeElapsedByQPC,152,49,161,12,ES_READONLY | NOT WS_BORDER
+    RTEXT           "Elapsed seconds bias :",IDC_LABEL5,20,61,126,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_BiasSeconds,152,63,121,12,ES_READONLY | NOT WS_BORDER
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_WINMAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 313
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 163
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#include ""_iversion.rc""\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "_iversion.rc"
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
