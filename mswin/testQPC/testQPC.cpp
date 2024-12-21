@@ -148,9 +148,14 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 	}
 	case IDOK:
+		break;
 	case IDCANCEL:
 	{
-		EndDialog(hdlg, id);
+		// Do not (accidentally) close dialogbox. User should click [X] to close it.
+		// EndDialog(hdlg, id);
+
+		// Just minimize the dialogbox.
+		ShowWindow(hdlg, SW_MINIMIZE);
 		break;
 	}
 	}}
@@ -194,12 +199,27 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
+void Dlg_OnSysCommand(HWND hdlg, UINT cmd, int x, int y)
+{
+	if(cmd==SC_CLOSE)
+	{
+		EndDialog(hdlg, 0);
+		return;
+	}
+	else
+	{
+		FORWARD_WM_SYSCOMMAND(hdlg, cmd, x, y, DefWindowProc);
+	}
+}
+
 INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
 	switch (uMsg) 
 	{
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+		
+		HANDLE_dlgMSG(hdlg, WM_SYSCOMMAND,    Dlg_OnSysCommand);
 	}
 	return FALSE;
 }
