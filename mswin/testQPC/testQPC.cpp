@@ -155,7 +155,13 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		// EndDialog(hdlg, id);
 
 		// Just minimize the dialogbox.
-		ShowWindow(hdlg, SW_MINIMIZE);
+		SendMessage(hdlg, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+		//
+		// Using `ShowWindow(hdlg, SW_MINIMIZE);` is inferior due to a flaw in DlgMan,
+		// which is: when we later restore the dlgbox window, the keyboard focus is
+		// reset to IDC_EDIT_LOGMSG(the first Uic in the dialogbox-template).
+		// This flaw persists through WinXP~Win10.
+
 		break;
 	}
 	}}
