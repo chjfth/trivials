@@ -203,12 +203,11 @@ void Dlg_OnSysCommand(HWND hdlg, UINT cmd, int x, int y)
 {
 	if(cmd==SC_CLOSE)
 	{
+		// Due to the fact that Dlg_OnCommand() has disabled SC_CLOSE's default behavior
+		// of "ESC closing dlgbox", so we need to intercept SC_CLOSE so that the window frame
+		// [X] close-button can close it.
 		EndDialog(hdlg, 0);
 		return;
-	}
-	else
-	{
-		FORWARD_WM_SYSCOMMAND(hdlg, cmd, x, y, DefWindowProc);
 	}
 }
 
@@ -219,7 +218,7 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
 		
-		HANDLE_dlgMSG(hdlg, WM_SYSCOMMAND,    Dlg_OnSysCommand);
+		HANDLE_MSG(hdlg, WM_SYSCOMMAND,    Dlg_OnSysCommand);
 	}
 	return FALSE;
 }
