@@ -29,19 +29,8 @@ TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd, bool add_millisec)
 	return buf;
 }
 
-int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...)
-{
-	va_list args;
-	va_start(args, szfmt);
 
-	TCHAR msgtext[4000] = {};
-	_vsntprintf_s(msgtext, _TRUNCATE, szfmt, args);
-
-	int ret = MessageBox(hwnd, msgtext, szTitle, utype);
-
-	va_end(args);
-	return ret;
-}
+static int s_dbgcount = 0;
 
 void vaDbgTs(const TCHAR *fmt, ...)
 {
@@ -65,7 +54,8 @@ void vaDbgTs(const TCHAR *fmt, ...)
 	TCHAR timebuf[40] = {};
 	now_timestr(timebuf, ARRAYSIZE(timebuf));
 
-	_sntprintf_s(buf, _TRUNCATE, _T("%s (+%3u.%03us) "), 
+	_sntprintf_s(buf, _TRUNCATE, _T("[%d]%s (+%3u.%03us) "), 
+		++s_dbgcount,
 		timebuf, 
 		delta_msec/1000, delta_msec%1000);
 
@@ -95,10 +85,9 @@ void vaDbgS(const TCHAR *fmt, ...)
 {
 	// This only has Sequential prefix.
 
-	static int count = 0;
 	TCHAR buf[1000] = {0};
 
-	_sntprintf_s(buf, ARRAYSIZE(buf)-3, _TRUNCATE, TEXT("[%d] "), ++count); // prefix seq
+	_sntprintf_s(buf, ARRAYSIZE(buf)-3, _TRUNCATE, TEXT("[%d] "), ++s_dbgcount); // prefix seq
 
 	int prefixlen = (int)_tcslen(buf);
 
@@ -106,7 +95,7 @@ void vaDbgS(const TCHAR *fmt, ...)
 	va_start(args, fmt);
 
 	_vsntprintf_s(buf+prefixlen, ARRAYSIZE(buf)-3-prefixlen, _TRUNCATE, fmt, args);
-	
+
 	prefixlen = (int)_tcslen(buf);
 	_tcsncpy_s(buf+prefixlen, 2, TEXT("\r\n"), _TRUNCATE); // add trailing \r\n
 
@@ -121,6 +110,21 @@ void vaDbgS(const TCHAR *fmt, ...)
 	buf[slen+1] = '\0';
 
 	OutputDebugString(buf);
+}
+
+
+int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...)
+{
+	va_list args;
+	va_start(args, szfmt);
+
+	TCHAR msgtext[4000] = {};
+	_vsntprintf_s(msgtext, _TRUNCATE, szfmt, args);
+
+	int ret = MessageBox(hwnd, msgtext, szTitle, utype);
+
+	va_end(args);
+	return ret;
 }
 
 BOOL vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...)

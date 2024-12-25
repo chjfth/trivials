@@ -14,11 +14,11 @@ template<typename T> T Max(T x, T y) { return x>y ? x : y; }
 
 TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd=false, bool add_millisec=true);
 
-int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...);
-
 void vaDbgTs(const TCHAR *fmt, ...);
 
 void vaDbgS(const TCHAR *fmt, ...);
+
+int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...);
 
 BOOL vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...);
 BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...);
