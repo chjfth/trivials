@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    DlgEscNoClose1_VMAJOR, DlgEscNoClose1_VMINOR, DlgEscNoClose1_VPATCH, DlgEscNoClose1_VTAIL
+ProductVersion DlgEscNoClose1_VMAJOR, DlgEscNoClose1_VMINOR, DlgEscNoClose1_VPATCH, DlgEscNoClose1_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     DlgEscNoClose1_NAME
+            VALUE "FileDescription", DlgEscNoClose1_NAME
+            VALUE "FileVersion",    DlgEscNoClose1_VMAJORs "." DlgEscNoClose1_VMINORs "." DlgEscNoClose1_VPATCHs
+            VALUE "ProductVersion",    DlgEscNoClose1_VMAJORs "." DlgEscNoClose1_VMINORs "." DlgEscNoClose1_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , DlgEscNoClose1_NAME ".exe"
+            VALUE "InternalName", DlgEscNoClose1_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
