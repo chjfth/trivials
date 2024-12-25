@@ -7,13 +7,15 @@
 #include "resource.h"
 
 /*
-Purpose:
+Code behavior:
 (1) IDCANCEL: Do NOT allow ESC close dialog.
 (2) Move EndDialog() to WM_CLOSE.
+(3) Clicking the Post-button, I will Post WM_KEYDOWN(ESC) to the multiline-editbox.
 
-WEIRD: 
-* When keyboard focus is on the button, ESC will not close the dlgbox(expected behavior).
-* BUT, when keyboard focus is on the editbox, ESC will close the dlgbox, Why?
+UI behavior: 
+[1] When keyboard focus is on the button, ESC will not close the dlgbox(expected behavior).
+[2] When keyboard focus is on the editbox, ESC will close the dlgbox, why?
+[3] To explain [2], click the Post-button, we see that the dlgbox get clocsed as well.
 */
 
 #include "iversion.h"
@@ -33,6 +35,7 @@ struct DlgPrivate_st
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
+	
 	switch (id) 
 	{
 	case IDOK:
@@ -43,6 +46,13 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		// EndDialog(hdlg, id);
 		OutputDebugString(_T("Not calling EndDialog() on IDCANCEL.\n"));
 		break;
+
+	case IDC_BUTTON1:
+		{
+			HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+			PostMessage(hedit, WM_KEYDOWN, VK_ESCAPE, 0x10001);
+			break;
+		}
 	}
 }
 
