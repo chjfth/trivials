@@ -47,10 +47,10 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass (&wndclass);
 	 
 	hwnd = CreateWindow (szAppName,    // window class name
-		TEXT ("The winxMleChild Program"), // window caption
+		TEXT ("winxMleChild v1.0"), // window caption
 		WS_OVERLAPPEDWINDOW,           // window style
-		CW_USEDEFAULT,   // initial x position
-		CW_USEDEFAULT,   // initial y position
+		50,   // initial x position
+		50,   // initial y position
 		300 + iBorder*2,                  // initial x size
 		200 + iBorder*2 + iCaptionHeight, // initial y size
 		NULL,            // parent window handle
@@ -172,11 +172,31 @@ void Cls_OnDestroy(HWND hwnd)
 
 void Cls_OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	vaDbgTs(_T("%s mainwnd Got left-click: x=%d, y=%d"), 
+	vaDbgTs(_T("%s mainwnd left-click down: x=%d, y=%d"), 
 		InsideGetMessageMark(),
 		x, y);
 }
 
+void Cls_OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
+{
+	vaDbgTs(_T("%s mainwnd left-click up  : x=%d, y=%d"), 
+		InsideGetMessageMark(),
+		x, y);
+}
+
+void Cls_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+{
+	vaDbgTs(_T("%s mainwnd right-click down: x=%d, y=%d"), 
+		InsideGetMessageMark(),
+		x, y);
+}
+
+void Cls_OnRButtonUp(HWND hwnd, int x, int y, UINT flags)
+{
+	vaDbgTs(_T("%s mainwnd right-click up  : x=%d, y=%d"), 
+		InsideGetMessageMark(),
+		x, y);
+}
 
 int Cls_OnMouseActivate(HWND hwnd, HWND hwndTopLevel, UINT codeHitTest, UINT mousemsg)
 {
@@ -231,6 +251,9 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		HANDLE_MSG(hwnd, WM_DESTROY, Cls_OnDestroy);
 
 		HANDLE_MSG(hwnd, WM_LBUTTONDOWN, Cls_OnLButtonDown);
+		HANDLE_MSG(hwnd, WM_LBUTTONUP  , Cls_OnLButtonUp);
+		HANDLE_MSG(hwnd, WM_RBUTTONDOWN, Cls_OnRButtonDown);
+		HANDLE_MSG(hwnd, WM_RBUTTONUP  , Cls_OnRButtonUp);
 
 		HANDLE_MSG(hwnd, WM_MOUSEACTIVATE, Cls_OnMouseActivate);
 	}}
