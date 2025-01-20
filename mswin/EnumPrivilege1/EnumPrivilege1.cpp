@@ -97,10 +97,15 @@ void test_ListPrivsByUser(const WCHAR *szTrustee)
 	ntserr = LsaLookupNames2(hPolicy, 0,
 		1, &lsToQuery, 
 		&pDomainList, &pSidOut);
-	// -- Check the SID result in debugger: 
-	// (DWORD*)((*((SID*)(*((*pDomainList).Domains)).Sid)).SubAuthority),4
-	// or
-	// (DWORD*)(*((SID*)pSidOut->Sid)).SubAuthority,4
+	// -- Check the SID results in debugger: 
+	// (DWORD*) ((SID*) pDomainList->Domains[0].Sid)->SubAuthority ,4
+	// (DWORD*) ((SID*) pDomainList->Domains[1].Sid)->SubAuthority ,4
+	//
+	// (SID*)(pSidOut[0].Sid)
+	// (DWORD*) ((SID*)pSidOut[0].Sid)->SubAuthority ,5
+	// 
+	// (SID*)(pSidOut[1].Sid)
+	// (DWORD*) ((SID*)pSidOut[1].Sid)->SubAuthority ,5
 
 	if(ntserr)
 	{
