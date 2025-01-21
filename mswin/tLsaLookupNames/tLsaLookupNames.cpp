@@ -4,6 +4,7 @@
 #include <lm.h>
 #include <NTSecAPI.h>
 #include <SDDL.h>
+#include <ShellAPI.h>
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -37,6 +38,8 @@ MakeCleanupPtrClass_winapi(Cec_LsaFreeMemory, NTSTATUS, LsaFreeMemory, PVOID)
 MakeCleanupPtrClass_winapi(Cec_LocalFree, HLOCAL, LocalFree, HLOCAL)
 
 HINSTANCE g_hinstExe;
+
+int g_docycles = 1; // Use to test memory leak, set by command-line, eg 10000 
 
 struct DlgPrivate_st
 {
@@ -267,7 +270,20 @@ bool do_LsaLookupNames(HWND hdlg)
 	for(i=0; i<iline; i++)
 		vaDbgS(_T("    %.*s"), arus[i].Length/sizeof(TCHAR), arus[i].Buffer);
 
-	bool succ = in_LsaLookupNames(hdlg, arus, iline);
+	bool succ = false;
+	for(i=0; i<g_docycles; i++)
+	{
+		vaSetDlgItemText(hdlg, IDC_LBL_DoCycles, _T("DoCycle: %d/%d"),
+			i, g_docycles);
+
+		succ = in_LsaLookupNames(hdlg, arus, iline);
+		if(!succ)
+			break;
+	}
+
+	if(succ)
+		SetDlgItemText(hdlg, IDC_LBL_DoCycles, _T(""));
+	
 	return succ;
 }
 
@@ -313,6 +329,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 	
+	SetDlgItemText(hdlg, IDC_LBL_DoCycles, _T(""));
+
 	vaSetWindowText(hdlg, _T("tLsaLookupNames version: %d.%d.%d"), 
 		tLsaLookupNames_VMAJOR, tLsaLookupNames_VMINOR, tLsaLookupNames_VPATCH);
 
@@ -338,12 +356,23 @@ INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int) 
 {
+	int nArgc = __argc;
+#ifdef UNICODE
+	PCTSTR* ppArgv = (PCTSTR*) CommandLineToArgvW(GetCommandLine(), &nArgc);
+#else
+	PCTSTR* ppArgv = (PCTSTR*) __argv;
+#endif
+
 	g_hinstExe = hinstExe;
 
 	InitCommonControls(); // WinXP requires this, to work with Visual-style manifest
 
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
+
+	g_docycles = _tcstoul(ppArgv[1], nullptr, 0);
+	if(g_docycles<=0)
+		g_docycles = 1;
 
 	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, (LPARAM)&dlgdata);

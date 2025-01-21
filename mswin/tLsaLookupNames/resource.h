@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by tLsaLookupNames.rc
 //
+#define IDC_STATIC                      -1
 #define IDI_WINMAIN                     100
 #define IDD_WINMAIN                     101
 #define IDC_LABEL1                      1001
@@ -11,6 +12,7 @@
 #define IDC_EDIT_SidOutput              1005
 #define IDC_LABEL_DomainOutput          1006
 #define IDC_EDIT_DomainOutput           1007
+#define IDC_LBL_DoCycles                1008
 
 // Next default values for new objects
 // 
