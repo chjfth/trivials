@@ -147,10 +147,12 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 			i, 
 			arus[i].Length/sizeof(TCHAR), arus[i].Buffer);
 
-		if(xsid.DomainIndex==-1)
+		if(xsid.Use==SidTypeUnknown || xsid.Use==SidTypeInvalid)
 		{
-			_sntprintf_s(textbuf, _TRUNCATE, _T("%sCannot find this trustee name.\r\n\r\n"), textbuf);
-			continue;
+			_sntprintf_s(textbuf, _TRUNCATE, _T("%sBad! Cannot find this trustee name.\r\n"), textbuf);
+			
+			// [2025-01-22] Chj: But still try to show xsid's other members.
+			// We'll see that, xsid.DomainIndex can be -1, or a stale value (try "BUILTIN\baduser") .
 		}
 	
 		_sntprintf_s(textbuf, _TRUNCATE, _T("%s%s (=%d)\r\n"), textbuf,
