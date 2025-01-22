@@ -258,7 +258,7 @@ bool do_LsaLookupNames(HWND hdlg)
 		while(szinput[j]!='\r' && szinput[j]!='\n' && szinput[j]!='\0')
 			j++;
 
-		arus[iline].Length = (j - i) * sizeof(TCHAR); // length in bytes
+		arus[iline].Length = USHORT((j - i) * sizeof(TCHAR)); // length in bytes
 		arus[iline].MaximumLength = arus[iline].Length;
 
 		iline++;
@@ -312,6 +312,7 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	JULayout *jul = JULayout::EnableJULayout(hdlg, 440, 0); // min-width=440
 
 	jul->AnchorControl(0,0, 0,100, IDC_EDIT_Input);
+	jul->AnchorControl(0,100, 0, 100, IDC_LBL_DoCycles);
 	jul->AnchorControl(0,100, 0,100, IDC_BTN_LOOKUP);
 	
 	const int div = 70;
@@ -370,9 +371,12 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
-	g_docycles = _tcstoul(ppArgv[1], nullptr, 0);
-	if(g_docycles<=0)
-		g_docycles = 1;
+	if(nArgc>1)
+	{
+		g_docycles = _tcstoul(ppArgv[1], nullptr, 0);
+		if(g_docycles<=0)
+			g_docycles = 1;
+	}
 
 	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, (LPARAM)&dlgdata);
