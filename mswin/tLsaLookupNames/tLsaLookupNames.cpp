@@ -14,10 +14,10 @@
 #include "iversion.h"
 
 #include "../utils.h"
-#include "../../__chjcxx/common-include/include/EnsureClnup_mswin.h"
+#include <EnsureClnup_mswin.h>
 
 #define JULAYOUT_IMPL
-#include "JULayout2.h"
+#include <mswin/JULayout2.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -272,6 +272,8 @@ bool do_LsaLookupNames(HWND hdlg)
 	for(i=0; i<iline; i++)
 		vaDbgS(_T("    %.*s"), arus[i].Length/sizeof(TCHAR), arus[i].Buffer);
 
+	DWORD msec_start = TrueGetMillisec();
+
 	bool succ = false;
 	for(i=0; i<g_docycles; i++)
 	{
@@ -283,8 +285,18 @@ bool do_LsaLookupNames(HWND hdlg)
 			break;
 	}
 
-	if(succ)
-		SetDlgItemText(hdlg, IDC_LBL_DoCycles, _T(""));
+	DWORD msec_end = TrueGetMillisec();
+	DWORD msec_used = msec_end - msec_start; 
+	
+	if(g_docycles==1)
+	{
+		vaSetDlgItemText(hdlg, IDC_LBL_DoCycles, _T("Time used: %u millisec"), msec_used);
+	}
+	else
+	{
+		vaSetDlgItemText(hdlg, IDC_LBL_DoCycles, _T("%d cycles: %u millisec"),
+			g_docycles, msec_used);
+	}
 	
 	return succ;
 }
