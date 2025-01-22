@@ -9,10 +9,10 @@
 #include "iversion.h"
 
 #include "..\utils.h"
-#include "..\dlptr_winapi.h"
+#include <mswin/dlptr_winapi.h>
 
 #define JULAYOUT_IMPL
-#include "..\JULayout2.h"
+#include <mswin/JULayout2.h>
 
 #pragma warning(disable:4800)  // warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
 
@@ -83,7 +83,7 @@ void DoTimerStart(HWND hdlg, DlgPrivate_st *prdata)
 	prdata->wm_timer_ms = millisec;
 	prdata->min_step_ms = millisec + 1000;
 	prdata->max_step_ms = 0;
-	prdata->prevTickMillisec = prdata->startTickMillisec = MyGetMillisec();
+	prdata->prevTickMillisec = prdata->startTickMillisec = TrueGetMillisec();
 
 	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T(""));
 
@@ -105,7 +105,7 @@ void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 	KillTimer(hdlg, TIMER_ID);
 	prdata->isProbeStarted = false;
 
-	DWORD endTickMillisec = MyGetMillisec();
+	DWORD endTickMillisec = TrueGetMillisec();
 	int elapsed_mils = endTickMillisec - prdata->startTickMillisec;
 
 	if(elapsed_mils>=100)
@@ -213,7 +213,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 	assert(prdata->isProbeStarted);
 
 	prdata->timer_count++;
-	DWORD nowtick = MyGetMillisec();
+	DWORD nowtick = TrueGetMillisec();
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
 	int textlen = Edit_GetTextLength(hedit);
