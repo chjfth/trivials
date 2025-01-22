@@ -3,7 +3,7 @@
 
 #define tLsaLookupNames_VMAJOR 1
 #define tLsaLookupNames_VMINOR 1
-#define tLsaLookupNames_VPATCH 0
+#define tLsaLookupNames_VPATCH 1
 #define tLsaLookupNames_VTAIL  0
 
 #define tLsaLookupNamesstr__(n) #n
