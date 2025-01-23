@@ -28,8 +28,8 @@
 
 void debuginfo_SID() { SID nullsid = {}; } // let debugger know `SID` struct
 
-inline void _cpp_delete_UNICODE_STRING(LSA_UNICODE_STRING *pus) { delete pus; }
-MakeCleanupPtrClass(Cec_delete_UNICODE_STRING, void, _cpp_delete_UNICODE_STRING, LSA_UNICODE_STRING*)
+
+MakeCleanupCxxClass(LSA_UNICODE_STRING)
 
 MakeCleanupPtrClass_winapi(Cec_LsaClose, NTSTATUS, LsaClose, LSA_HANDLE)
 
@@ -242,7 +242,7 @@ bool do_LsaLookupNames(HWND hdlg)
 
 	// Build LSA_UNICODE_STRING array of nlines eles
 	
-	Cec_delete_UNICODE_STRING arus = new LSA_UNICODE_STRING[nlines];
+	CecArray_LSA_UNICODE_STRING arus = new LSA_UNICODE_STRING[nlines];
 	int i = 0, iline = 0;
 	while( szinput[i] )
 	{
