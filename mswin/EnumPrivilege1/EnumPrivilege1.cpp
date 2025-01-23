@@ -45,13 +45,13 @@ BOOL PrintTrusteePrivs(LSA_HANDLE hPolicy, PSID psid)
 			_sntprintf_s(szTempPrivBuf, _TRUNCATE, L"%.*s", 
 				plsastrPrivs[lIndex].Length/sizeof(WCHAR), plsastrPrivs[lIndex].Buffer);
 
-			wprintf(L"Programmatic Name: %s\n", szTempPrivBuf);
+			wprintf(L"%02d. Programmatic Name: %s\n", lIndex+1, szTempPrivBuf);
 
 			// Translate to Display Name
 			lDispLen = ARRAYSIZE(szPrivDispBuf); // Size of static Display buffer
 			if (LookupPrivilegeDisplayName(NULL, szTempPrivBuf, 
 				szPrivDispBuf, &lDispLen, &lDispLang))
-				wprintf(L"     Display Name: %s\n\n", szPrivDispBuf);
+				wprintf(L"         Display Name: %s\n\n", szPrivDispBuf);
 		}
 
 		fSuccess = TRUE;
