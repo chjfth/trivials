@@ -64,14 +64,17 @@ void test_NetFileEnum()
 	for(i=0; i<(int)entries_total; i++)
 	{
 		SHARE_INFO_2 &shi = par_shinfo[i];
-		_tprintf(_T("[#%d/%d] %s\n"), i+1, entries_total, shi.shi2_netname);
+		_tprintf(_T("[#%d/%d]\n"), i+1, entries_total);
+		_tprintf(_T("  .shi2_netname = %s\n"), shi.shi2_netname);
+		_tprintf(_T("  .shi2_path    = %s\n"), shi.shi2_path);
 		_tprintf(_T("  .shi2_type = 0x%X , %s\n"), shi.shi2_type, ITCSv(shi.shi2_type, STYPE_xxx));
 		_tprintf(_T("  .shi2_remark = %s\n"), shi.shi2_remark);
-		_tprintf(_T("  .shi2_permissions = 0x%X , %s (always 0 on WinNT)\n"), 
-			shi.shi2_permissions, ITCSv(shi.shi2_permissions, ACCESS_xxx));
 		_tprintf(_T("  .shi2_max_uses = %d\n"), shi.shi2_max_uses);
 		_tprintf(_T("  .shi2_current_uses = %d\n"), shi.shi2_current_uses);
-		_tprintf(_T("  .shi2_path = %s\n"), shi.shi2_path);
+
+		_tprintf(_T("  The following two are always 0/null on WinNT:\n"));
+		_tprintf(_T("  .shi2_permissions = 0x%X , %s\n"), 
+			shi.shi2_permissions, ITCSv(shi.shi2_permissions, ACCESS_xxx));
 		_tprintf(_T("  .shi2_passwd = %s\n"), shi.shi2_passwd);
 
 		_tprintf(_T("\n"));
