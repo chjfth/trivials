@@ -202,6 +202,7 @@
     <ClCompile Include="tNetShareEnum.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\LMAccess.itc.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
