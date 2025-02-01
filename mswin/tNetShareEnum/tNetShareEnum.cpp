@@ -124,6 +124,12 @@ void print_SharePermissions(LPCWSTR shareName)
 	{
 		int ace_count = pDACL->AceCount;
 		_tprintf(_T("  This share-node has %d permission entries(ACEs).\n"), ace_count);
+		
+		if(ace_count==0)
+		{
+			_tprintf(_T("  Meet \"Empty DACL\", nobody can access this share-node.\n"));
+			return;
+		}
 
 		for (int i = 0; i < ace_count; i++) 
 		{
@@ -150,7 +156,8 @@ void print_SharePermissions(LPCWSTR shareName)
 			}
 		}
 	} else {
-		printf("No DACL found in security descriptor.\n");
+		// Explorer UI operation cannot result in this.
+		printf("No DACL found in security descriptor. (Null DACL)\n");
 	}
 }
 
