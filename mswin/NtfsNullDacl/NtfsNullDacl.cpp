@@ -63,8 +63,10 @@ int _tmain(int argc, TCHAR* argv[])
 		_tprintf(_T("Missing parameters.\n"));
 		_tprintf(_T("Example:\n"));
 		_tprintf(_T("    NtfsNullDacl %s\n"), s);
+		_tprintf(_T("\n"));
 		_tprintf(_T("Explicitly add PROTECTED_DACL_SECURITY_INFORMATION flag(exp, no actual effect):\n"));
 		_tprintf(_T("    NtfsNullDacl %s +P\n"), s);
+		_tprintf(_T("\n"));
 		_tprintf(_T("Explicitly add UNPROTECTED_DACL_SECURITY_INFORMATION flag(exp, no actual effect):\n"));
 		_tprintf(_T("    NtfsNullDacl %s -P\n"), s);
 		exit(1);
@@ -84,4 +86,3 @@ int _tmain(int argc, TCHAR* argv[])
 
 	return 0;
 }
-
