@@ -143,7 +143,7 @@ BOOL vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...)
 
 BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
 {
-	TCHAR tbuf[4000] = {};
+	TCHAR tbuf[64000] = {};
 	va_list args;
 	va_start(args, szfmt);
 
@@ -157,7 +157,7 @@ BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
 
 void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
 {
-	TCHAR tbuf[4000] = {};
+	TCHAR tbuf[64000] = {};
 	va_list args;
 	va_start(args, szfmt);
 
