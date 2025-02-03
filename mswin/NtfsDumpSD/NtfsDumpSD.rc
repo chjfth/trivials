@@ -31,7 +31,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_WINMAIN             ICON                    "NtfsGetSD.ico"
+IDI_WINMAIN             ICON                    "NtfsDumpSD.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -40,7 +40,7 @@ IDI_WINMAIN             ICON                    "NtfsGetSD.ico"
 
 IDD_WINMAIN DIALOGEX 0, 0, 337, 135
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-CAPTION "NtfsGetSD"
+CAPTION "NtfsDumpSD"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_EDIT_Path,4,4,276,14,ES_AUTOHSCROLL

@@ -190,8 +190,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 
-	vaSetWindowText(hdlg, _T("NtfsGetSD v%d.%d.%d"), 
-		NtfsGetSD_VMAJOR, NtfsGetSD_VMINOR, NtfsGetSD_VPATCH);
+	vaSetWindowText(hdlg, _T("NtfsDumpSD v%d.%d.%d"), 
+		NtfsDumpSD_VMAJOR, NtfsDumpSD_VMINOR, NtfsDumpSD_VPATCH);
 
 	TCHAR textbuf[MAX_PATH] = {};
 	GetSystemDirectory(textbuf, ARRAYSIZE(textbuf));

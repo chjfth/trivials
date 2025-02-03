@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    NtfsDumpSD_VMAJOR, NtfsDumpSD_VMINOR, NtfsDumpSD_VPATCH, NtfsDumpSD_VTAIL
+ProductVersion NtfsDumpSD_VMAJOR, NtfsDumpSD_VMINOR, NtfsDumpSD_VPATCH, NtfsDumpSD_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     NtfsDumpSD_NAME
+            VALUE "FileDescription", NtfsDumpSD_NAME
+            VALUE "FileVersion",    NtfsDumpSD_VMAJORs "." NtfsDumpSD_VMINORs "." NtfsDumpSD_VPATCHs
+            VALUE "ProductVersion",    NtfsDumpSD_VMAJORs "." NtfsDumpSD_VMINORs "." NtfsDumpSD_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , NtfsDumpSD_NAME ".exe"
+            VALUE "InternalName", NtfsDumpSD_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}

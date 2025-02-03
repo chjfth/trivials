@@ -75,7 +75,7 @@
 
   <PropertyGroup Label="Configuration">
     <ProjectGuid>{20250203-0000-0000-0000-080455000001}</ProjectGuid>
-    <ProjectName>NtfsGetSD</ProjectName>
+    <ProjectName>NtfsDumpSD</ProjectName>
      <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
@@ -210,17 +210,17 @@
    -->
 
   <ItemGroup>
-    <ClCompile Include="NtfsGetSD.cpp" />
+    <ClCompile Include="NtfsDumpSD.cpp" />
     <ClCompile Include="ch10-DumpSD.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
     <ClCompile Include="..\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="NtfsGetSD.rc" />
+    <ResourceCompile Include="NtfsDumpSD.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="NtfsGetSD.ico" />
+    <None Include="NtfsDumpSD.ico" />
     <None Include="_iversion.rc" />
   </ItemGroup>
   <ItemGroup>
