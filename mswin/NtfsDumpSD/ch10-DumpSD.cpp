@@ -206,7 +206,8 @@ void CH10_DumpSD( PSECURITY_DESCRIPTOR pvsd, FUNC_InterpretRights *procItr, void
 	TCHAR szOwnerRepr[BUFSIZ1]={}, szGroupRepr[BUFSIZ1]={};
 	const int BUF20=20; TCHAR szDACL[BUF20]={}, szSACL[BUF20]={};
 	vaDbgS(
-		_T("SD Dump on (0x%p), .Revision=%d, length=%d\r\n")
+		_T("SECURITY_DESCRIPTOR at address: 0x%p\r\n")
+		_T("  .Revision=%d, length=%d\r\n")
 		_T("  Control(flags) = %s\r\n")
 		_T("  OwnerSID = %s\r\n")
 		_T("  GroupSID = %s\r\n")
