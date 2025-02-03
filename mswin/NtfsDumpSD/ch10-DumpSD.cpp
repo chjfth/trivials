@@ -114,6 +114,20 @@ TCHAR * ACL2ReprShort(BOOL isPresent, PACL pAcl, TCHAR *buf, int buflen)
 	return nullptr; // Guard for future code-adjusting
 }
 
+bool Is_OBJCT_ACE_TYPE(BYTE acetype)
+{
+	if(acetype>=ACCESS_MIN_MS_OBJECT_ACE_TYPE && acetype<=ACCESS_MAX_MS_OBJECT_ACE_TYPE)
+		return true;
+
+	if( acetype==ACCESS_ALLOWED_CALLBACK_OBJECT_ACE_TYPE ||
+		acetype==ACCESS_DENIED_CALLBACK_OBJECT_ACE_TYPE ||
+		acetype==SYSTEM_AUDIT_CALLBACK_OBJECT_ACE_TYPE ||
+		acetype==SYSTEM_ALARM_CALLBACK_OBJECT_ACE_TYPE)
+		return true;
+
+	return false;
+}
+
 void CH10_DumpACL( PACL pACL, FUNC_InterpretRights *procItr, void *userctx )
 {
 	// Due to using ITCS(), we cannot use __try{} here.
@@ -134,13 +148,25 @@ void CH10_DumpACL( PACL pACL, FUNC_InterpretRights *procItr, void *userctx )
 
 	for (ULONG lIndex = 0;lIndex < aclSize.AceCount;lIndex++)
 	{
-		ACCESS_ALLOWED_ACE* pACE;
+		ACCESS_ALLOWED_ACE* pACE = nullptr;
+
 		if (!GetAce(pACL, lIndex, (PVOID*)&pACE))
 			return;
 
 		vaDbgS(TEXT("ACE #%d/%d :"), lIndex+1, aclSize.AceCount);
 
-		PSID pSID = PSIDFromPACE(pACE);
+		PSID pSID = nullptr;
+
+		if(!Is_OBJCT_ACE_TYPE(pACE->Header.AceType))
+		{
+			pSID = PSIDFromPACE(pACE);
+		}
+		else
+		{
+			ACCESS_ALLOWED_OBJECT_ACE* pObjACE = (ACCESS_ALLOWED_OBJECT_ACE*)pACE;
+			pSID = PSIDFromPACE(pObjACE);
+		}
+		
 		TCHAR szSidRepr[100] = {};
 		SID2Repr(pSID, szSidRepr, ARRAYSIZE(szSidRepr));
 		vaDbgS(TEXT("  ACE SID = %s"), szSidRepr);
