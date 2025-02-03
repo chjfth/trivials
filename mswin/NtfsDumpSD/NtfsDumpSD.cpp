@@ -10,9 +10,6 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
-#include <EnsureClnup_mswin.h>
-MakeCleanupPtrClass_winapi(Cec_LocalFree, HLOCAL, LocalFree, HLOCAL)
-
 #include "iversion.h"
 
 #include "../utils.h"
