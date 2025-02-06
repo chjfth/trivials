@@ -75,12 +75,16 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	HWND hedt = GetDlgItem(hdlg, IDC_EDIT1);
 	Edit_SetCueBannerText(hedt, _T("Edit cue banner"));
+	// or
+	//Edit_SetCueBannerTextFocused(hedt, _T("Edit cue banner"), TRUE);
 
 	HWND hcbx = GetDlgItem(hdlg, IDC_COMBO1);
 	ComboBox_SetCueBannerText(hcbx, _T("Combobox cue banner"));
 	ComboBox_AddString(hcbx, _T("Item 1"));
 	ComboBox_AddString(hcbx, _T("Item 2"));
 	ComboBox_AddString(hcbx, _T("Item 3"));
+
+//	ComboBox_SetItemHeight(hcbx, -1, 25); // This sets height of combobox's drawing area, ugly.
 
 	Dlg_EnableJULayout(hdlg);
 
