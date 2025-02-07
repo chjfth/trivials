@@ -39,10 +39,10 @@ TCHAR* InterpretRights(DWORD rights, void *userctx)
 	TCHAR *pbuf = new TCHAR[BufChars];
 	pbuf[0] = '\0';
 
-#define DUMP_ONE_BIT_PERLINE(bitname) \
-	if(rights & (bitname)) \
+#define DUMP_ONE_BIT_PERLINE(bitnames) \
+	if( (rights & (bitnames)) == bitnames ) \
 	_sntprintf_s(pbuf, BufChars, _TRUNCATE, _T("%s%*s (0x%08X) %s\r\n"), pbuf, indents, _T(""), \
-	(bitname), _T(#bitname));
+	(bitnames), _T(#bitnames));
 
 	ITR_st &ctx = *(ITR_st*)userctx;
 
@@ -81,6 +81,12 @@ TCHAR* InterpretRights(DWORD rights, void *userctx)
 		DUMP_ONE_BIT_PERLINE(FILE_WRITE_DATA);       // 0x02
 		DUMP_ONE_BIT_PERLINE(FILE_READ_DATA);        // 0x01
 	}
+
+	// Four composite right names:
+	DUMP_ONE_BIT_PERLINE(FILE_ALL_ACCESS);
+	DUMP_ONE_BIT_PERLINE(FILE_GENERIC_READ);
+	DUMP_ONE_BIT_PERLINE(FILE_GENERIC_WRITE);
+	DUMP_ONE_BIT_PERLINE(FILE_GENERIC_EXECUTE);
 
 	DWORD unknown_bits = rights & ~0xF01F01FF;
 	if(unknown_bits)

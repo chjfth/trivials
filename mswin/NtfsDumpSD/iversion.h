@@ -2,9 +2,9 @@
 #define __NtfsDumpSD_iversion_h_
 
 #define NtfsDumpSD_VMAJOR 1
-#define NtfsDumpSD_VMINOR 1
+#define NtfsDumpSD_VMINOR 2
 #define NtfsDumpSD_VPATCH 0
-#define NtfsDumpSD_VTAIL  1
+#define NtfsDumpSD_VTAIL  0
 
 #define NtfsDumpSDstr__(n) #n
 #define NtfsDumpSDstr(n) NtfsDumpSDstr__(n)
