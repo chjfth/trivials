@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    tLookupAccountSid_VMAJOR, tLookupAccountSid_VMINOR, tLookupAccountSid_VPATCH, tLookupAccountSid_VTAIL
+ProductVersion tLookupAccountSid_VMAJOR, tLookupAccountSid_VMINOR, tLookupAccountSid_VPATCH, tLookupAccountSid_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     tLookupAccountSid_NAME
+            VALUE "FileDescription", tLookupAccountSid_NAME
+            VALUE "FileVersion",    tLookupAccountSid_VMAJORs "." tLookupAccountSid_VMINORs "." tLookupAccountSid_VPATCHs
+            VALUE "ProductVersion",    tLookupAccountSid_VMAJORs "." tLookupAccountSid_VMINORs "." tLookupAccountSid_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , tLookupAccountSid_NAME ".exe"
+            VALUE "InternalName", tLookupAccountSid_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
