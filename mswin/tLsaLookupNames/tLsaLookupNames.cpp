@@ -35,9 +35,6 @@ MakeCleanupPtrClass_winapi(Cec_LsaClose, NTSTATUS, LsaClose, LSA_HANDLE)
 
 MakeCleanupPtrClass_winapi(Cec_LsaFreeMemory, NTSTATUS, LsaFreeMemory, PVOID)
 
-MakeCleanupPtrClass_winapi(Cec_LocalFree, HLOCAL, LocalFree, HLOCAL)
-
-MakeCleanupPtrClass_winapi(Cec_FreeSid, PVOID, FreeSid, PSID) // not used yet
 
 HINSTANCE g_hinstExe;
 
