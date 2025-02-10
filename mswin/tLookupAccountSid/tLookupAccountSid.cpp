@@ -28,8 +28,6 @@ struct DlgPrivate_st
 
 void debuginfo_SID() { SID nullsid = {}; } // let debugger know `SID` struct
 
-// todo: Test whether LookupAccoutSid returns different buffer sizes across each run.
-
 #define NAMECHARS_MAX 1024
 #define NumSigned TRUE
 
