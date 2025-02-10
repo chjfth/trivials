@@ -18,7 +18,7 @@
 #include <mswin/JULayout2.h>
 
 #include <EnsureClnup_mswin.h>
-#include <itc/InterpretConst.h>
+#include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
 
 using namespace itc;
@@ -47,7 +47,7 @@ void Fill_MySID(HWND hdlg)
 	if(!succ)
 	{
 		winerr = GetLastError();
-		vaAppendText_mled(hedit, _T("OpenProcessToken() winerr=%d"), winerr);
+		vaAppendText_mled(hedit, _T("OpenProcessToken() winerr=%s"), ITCSv(winerr, WinError));
 		return;
 	}
 
@@ -58,7 +58,7 @@ void Fill_MySID(HWND hdlg)
 		winerr = GetLastError();
 		if(winerr!=ERROR_INSUFFICIENT_BUFFER)
 		{
-			vaAppendText_mled(hedit, _T("GetTokenInformation() winerr=%d"), winerr);
+			vaAppendText_mled(hedit, _T("GetTokenInformation() winerr=%s"), ITCSv(winerr, WinError));
 			return;
 		}
 	}
@@ -72,7 +72,7 @@ void Fill_MySID(HWND hdlg)
 	Cec_LocalFree cec_sidtext = sidtext;
 	if(!succ)
 	{
-		vaAppendText_mled(hedit, _T("ConvertSidToStringSid() winerr=%d"), winerr);
+		vaAppendText_mled(hedit, _T("ConvertSidToStringSid() winerr=%s"), ITCSv(winerr, WinError));
 		return;
 	}
 
@@ -129,8 +129,8 @@ void Do_Query(HWND hdlg)
 	{
 		winerr = GetLastError();
 		vaSetWindowText(heo,
-			_T("ConvertStringSidToSid(\"%s\") failed with WinErr=%d"),
-			sidtext, winerr);
+			_T("ConvertStringSidToSid(\"%s\") failed with WinErr=%s"), 
+			sidtext, ITCSv(winerr, WinError));
 		return;
 	}
 
@@ -167,7 +167,7 @@ void Do_Query(HWND hdlg)
 	{
 		winerr = GetLastError();
 		vaSetWindowText(heo, 
-			_T("ERROR: LookupAccountSid() fail! WinErr=%d\r\n\r\n"), winerr);
+			_T("ERROR: LookupAccountSid() fail! WinErr=%s\r\n\r\n"), ITCSv(winerr, WinError));
 		
 		// Still show coName/cchReferencedDomainName output value,
 		// so that we can know how much buffer shall we prepare.
