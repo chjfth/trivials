@@ -59,7 +59,7 @@ void see_snprintf_s_TRUNCATE()
 void see_GetKeyNameText()
 {
 	RESET_OUTPUT;
-	LPARAM key = 0x000e0001; // Backspace
+	ULONG key = 0x000e0001; // Backspace
 	sret = GetKeyNameText(key, soutput, MAX_PATH);
 	eret = GetKeyNameText(key, eoutput, SMALL_Usersize);
 	winerr = GetLastError();

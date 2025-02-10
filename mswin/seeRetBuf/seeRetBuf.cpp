@@ -3,10 +3,6 @@
 // This program prints a CSV file summarizing each WinAPI's traits based on live system run.
 //
 // Author: Jimm Chen, 2021.10
-//
-// Compile the program with:
-//
-//    cl /DUNICODE /D_UNICODE seeRetBuf.cpp checkapis.cpp /link user32.lib psapi.lib userenv.lib gdi32.lib ole32.lib SetupAPI.lib
 
 #include <stdio.h>
 #include <Userenv.h>
@@ -15,6 +11,8 @@
 #include <tchar.h>
 
 #include "share.h"
+
+#define EXE_VERSION "1.0"
 
 enum 
 { 
@@ -75,7 +73,7 @@ struct ApiTrait_et
 
 BufSmallRet_et BufSmallRet_conclude(int user_size, int eret_size, const TCHAR *soutput)
 {
-	int total_size = _tcslen(soutput);
+	int total_size = (int)_tcslen(soutput);
 
 	if(eret_size==-1)
 		return BSR_Neg1;
@@ -145,7 +143,7 @@ BufEnoughRet_et BufEnoughRet_conclude(
 	const TCHAR *soutput // output buffer of success case
 	)
 {
-	int total_size = _tcslen(soutput);
+	int total_size = (int)_tcslen(soutput);
 
 	if(sret_size==total_size)
 		return ReturnT;
@@ -165,7 +163,7 @@ void vacat(
 	TCHAR (&userbuf)[bufchars],
 	const TCHAR *fmt, ...)
 {
-	int startlen = _tcslen(userbuf);
+	int startlen = (int)_tcslen(userbuf);
 
 	va_list args;
 	va_start(args, fmt);
@@ -202,9 +200,15 @@ void Add1Case(const TCHAR *apiname, const TCHAR *traits)
 }
 
 void ReportTraits(const TCHAR *apiname,
-	int user_size, int eret_size, DWORD winerr,
-	const TCHAR *eoutput, 
-	int sret_size, const TCHAR *soutput)
+	int user_size, // user input size, an "error" size (error means buffer too small)
+
+	int eret_size, // "error-case" ret-size, the size that can correct the error
+	DWORD winerr,
+	const TCHAR *eoutput, // "error-case" output, may contain partial outcome
+
+	int sret_size, // "success" ret-size, when user provides enough buffer
+	const TCHAR *soutput // "success" output, full outcome text.
+	)
 {
 	TCHAR tbuf[Traits_STRMAXLEN] = _T("");
 
@@ -282,6 +286,7 @@ int __cdecl CompareTraits(void *ctx, const void *t1, const void *t2)
 int _tmain(int argc, _TCHAR* argv[])
 {
 	setlocale(LC_ALL, ""); // only for printf Chinese chars purpose
+	Prn(_T("seeRetBuf,version %s\n"), _T(EXE_VERSION));
 
 	bool is_sort = false;
 

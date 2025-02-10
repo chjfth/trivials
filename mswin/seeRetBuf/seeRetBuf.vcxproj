@@ -35,6 +35,40 @@
       <Configuration>Release ANSI</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <!-- ARM64 -->
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug ANSI|ARM64">
+      <Configuration>Debug ANSI</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release ANSI|ARM64">
+      <Configuration>Release ANSI</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <!-- ARM64EC -->
+    <ProjectConfiguration Include="Debug|ARM64EC">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64EC">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug ANSI|ARM64EC">
+      <Configuration>Debug ANSI</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release ANSI|ARM64EC">
+      <Configuration>Release ANSI</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
 
   <!-- User project properties -->
@@ -42,12 +76,12 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20221114-0000-0000-0000-185103000001}</ProjectGuid>
     <ProjectName>seeRetBuf</ProjectName>
-     <TargetName>seeRetBuf</TargetName>
+     <TargetName>$(ProjectName>)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   
   <!-- Microsoft.Cpp.Default.props 
-  	For Linux .vcxproj, this should be after above "global" Properties. -->
+  	This should be after above "Global" Properties. (At least Linux .vcxproj demands this.) -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
   <!-- Debug or Release -->
@@ -66,6 +100,23 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   
+  <PropertyGroup>
+    <!-- Referring to $(DefaultPlatformToolset), so that this .vcxproj 
+      adapts automatically to lastest SDK on current Visual Studio version. 
+     
+      $(DefaultPlatformToolset) has such values:
+        empty  on VC2010
+        "v120" on VC2013
+        "v140" on VC2015
+        "v141" on VC2017
+        "v142" on VC2019
+        "v143" on VC2022
+      -->
+    <PlatformToolset Condition="$(DefaultPlatformToolset)!=''">$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+
+  <!---->
+
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -98,7 +149,7 @@
 
       <PreprocessorDefinitions>;;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
-      <AdditionalIncludeDirectories>.;;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,6 +177,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
+      <RandomizedBaseAddress Condition="!$(Platform.StartsWith('ARM64'))">false</RandomizedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
   <!-- 
@@ -159,7 +211,7 @@
 
   <!-- import VSPG start -->
   <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>$(SolutionDir)_VSPG\boots</VSPG_BootsDir_NoTBS>
+    <VSPG_BootsDir_NoTBS>..\..\_VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
