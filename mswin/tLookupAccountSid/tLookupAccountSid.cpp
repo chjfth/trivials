@@ -82,7 +82,7 @@ void Fill_MySID(HWND hdlg)
 		_T("\"SID to Query\" has been filled according to your current logon user.\r\n")
 		_T("Press LookupAccountSid button to query the SID for its name (maybe user-name or group-name).\r\n")
 		_T("\r\n")
-		_T("You can use assign a small buffer size and see how the API reacts.")
+		_T("You can assign a small buffer size and see how the API reacts.")
 		);
 }
 
@@ -106,13 +106,65 @@ void Dlg_InitUI(HWND hdlg)
 	SetDlgItemInt(hdlg, IDE_cchDomName, NAMECHARS_MAX, NumSigned);
 }
 
-void Print_IntValueError(HWND hedt, const TCHAR *what1, const TCHAR *what2)
+void Print_IntValueError(HWND hedt, const TCHAR *pnameBuffer, const TCHAR *pnameBuflen)
 {
-	vaSetWindowText(hedt,
-		_T("ERROR: %s must be a value between 0 ~ %d.\r\n")
-		_T("A special value -1 means passing NULL to %s.")
+	vaAppendText_mled(hedt,
+		_T("ERROR: Input value for %s invalid.\r\n") // 1
+		_T("Valids are:\r\n") 
+		_T("[A] Value between 0 ~ %d (example: 10). So %s is passed a non-NULL buffer pointer, and %s is passed 10.\r\n") // 2,3
+		_T("[B] Leave blank. Then %s=NULL and %s=0 .\r\n") // 4,5
+		_T("[C] A negative value(example: -10). Then %s=NULL, and %s=10 .\r\n") // 6,7
 		, 
-		what1, NAMECHARS_MAX, what2);
+		pnameBuflen, // 1
+		NAMECHARS_MAX, pnameBuffer, pnameBuflen, // 2,3
+		pnameBuffer, pnameBuflen, // 4,5
+		pnameBuffer, pnameBuflen // 6,7
+		);
+}
+
+static TCHAR *Set_BufPtrAndLen(TCHAR rawtext[], int *pretlen)
+{
+	// For case [B], blank input
+	if(rawtext[0]=='\0')
+	{
+		*pretlen = 0;
+		return NULL;
+	}
+
+	int num = _ttoi(rawtext);
+	if(num>=0)
+	{
+		// case [A]
+		*pretlen = num;
+		return rawtext;
+	}
+	else
+	{
+		// case [C]
+		*pretlen = -num;
+		return NULL;
+	}
+}
+
+static bool Check_InputValid(const TCHAR *pbuf, int buflen, 
+	HWND hedtMsg, const TCHAR *pnameBuffer, const TCHAR *pnameBuflen)
+{
+	if(buflen > NAMECHARS_MAX)
+	{
+		Print_IntValueError(hedtMsg, pnameBuffer, pnameBuflen);
+		return false;
+	}
+
+	if(pbuf==NULL)
+	{
+		// Explicitly tell the user: You provided "valid" but weird input.
+		vaAppendText_mled(hedtMsg,
+			_T("Input: %s=NULL, %s=%d\r\n"),
+			pnameBuffer, pnameBuflen, buflen
+			);
+	}
+
+	return true;
 }
 
 void Do_Query(HWND hdlg)
@@ -134,39 +186,33 @@ void Do_Query(HWND hdlg)
 		return;
 	}
 
-	int ciName = 0, ciDomName = 0;
-	BOOL isok = FALSE;
-	ciName = GetDlgItemInt(hdlg, IDE_cchName, &isok, NumSigned);
-	if(!isok || ciName>NAMECHARS_MAX)
-	{
-		Print_IntValueError(heo, _T("cchName"), _T("lpName"));
-		return;
-	}
+	vaSetWindowText(heo, _T("")); // clear output text
 
-	ciDomName = GetDlgItemInt(hdlg, IDE_cchDomName,&isok, NumSigned);
-	if(!isok || ciDomName>NAMECHARS_MAX)
-	{
-		Print_IntValueError(heo, _T("cchReferencedDomainName"), _T("lpReferencedDomainName"));
-		return;
-	}
-
-	DWORD coName = ciName, coDomName = ciDomName;
-	if(ciName<0)
-		coName = 0;
-	if(ciDomName<0)
-		coDomName = 0;
-	
 	TCHAR szName[NAMECHARS_MAX] = {}, szDomName[NAMECHARS_MAX] = {};
+	TCHAR *p1 = szName, *p2 = szDomName;
+	int n1 = 0, n2 = 0;
+
+	GetDlgItemText(hdlg, IDE_cchName, szName, NAMECHARS_MAX);
+	GetDlgItemText(hdlg, IDE_cchDomName, szDomName, NAMECHARS_MAX);
+
+	p1 = Set_BufPtrAndLen(szName, &n1);
+	p2 = Set_BufPtrAndLen(szDomName, &n2);
+
+	if(!Check_InputValid(p1, n1, heo, _T("lpName"), _T("cchName")))
+		return;
+	if(!Check_InputValid(p2, n2, heo, _T("lpReferencedDomainName"), _T("cchReferencedDomainName")))
+		return;
+
 	SID_NAME_USE sidtype = SidTypeInvalid;
 	DWORD succ_lookup = LookupAccountSid(NULL, psid, 
-		ciName<0    ? NULL : szName    , &coName,
-		ciDomName<0 ? NULL : szDomName , &coDomName,
+		p1, (DWORD*)&n1, // account-name
+		p2, (DWORD*)&n2, // domain-name
 		&sidtype);
 
 	if(!succ_lookup)
 	{
 		winerr = GetLastError();
-		vaSetWindowText(heo, 
+		vaAppendText_mled(heo, 
 			_T("ERROR: LookupAccountSid() fail! WinErr=%s\r\n\r\n"), ITCSv(winerr, WinError));
 		
 		// Still show coName/cchReferencedDomainName output value,
@@ -176,23 +222,23 @@ void Do_Query(HWND hdlg)
 			_T("cchName output: %d\r\n")
 			_T("cchReferencedDomainName output: %d\r\n")
 			,
-			coName,
-			coDomName);
+			n1,
+			n2);
 		return;
 	}
 	
 	//
 	// Success report:
 	//
-	vaSetWindowText(heo, _T(""));
 
 	vaAppendText_mled(heo, 
+		_T("Success.\r\n")
 		_T("cchName(%d TCHARs): %s\r\n")
 		_T("cchReferencedDomainName(%d TCHARs): %s\r\n")
 		_T("SID_NAME_USE: %s")
 		,
-		coName, szName,
-		coDomName, szDomName,
+		n1, szName,
+		n2, szDomName,
 		ITCSv(sidtype, SidTypeXXX));
 }
 
