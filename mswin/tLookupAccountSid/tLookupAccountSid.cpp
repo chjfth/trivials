@@ -31,7 +31,7 @@ void debuginfo_SID() { SID nullsid = {}; } // let debugger know `SID` struct
 // todo: Test whether LookupAccoutSid returns different buffer sizes across each run.
 
 #define NAMECHARS_MAX 1024
-#define NumUnsigned FALSE
+#define NumSigned TRUE
 
 void Fill_MySID(HWND hdlg)
 {
@@ -99,8 +99,17 @@ void Dlg_InitUI(HWND hdlg)
 {
 	Fill_MySID(hdlg);
 
-	SetDlgItemInt(hdlg, IDE_cchName,    NAMECHARS_MAX, NumUnsigned);
-	SetDlgItemInt(hdlg, IDE_cchDomName, NAMECHARS_MAX, NumUnsigned);
+	SetDlgItemInt(hdlg, IDE_cchName,    NAMECHARS_MAX, NumSigned);
+	SetDlgItemInt(hdlg, IDE_cchDomName, NAMECHARS_MAX, NumSigned);
+}
+
+void Print_IntValueError(HWND hedt, const TCHAR *what1, const TCHAR *what2)
+{
+	vaSetWindowText(hedt,
+		_T("ERROR: %s must be a value between 0 ~ %d.\r\n")
+		_T("A special value -1 means passing NULL to %s.")
+		, 
+		what1, NAMECHARS_MAX, what2);
 }
 
 void Do_Query(HWND hdlg)
@@ -122,31 +131,33 @@ void Do_Query(HWND hdlg)
 		return;
 	}
 
-	DWORD ciName = 0, ciDomName = 0;
+	int ciName = 0, ciDomName = 0;
 	BOOL isok = FALSE;
-	ciName = GetDlgItemInt(hdlg, IDE_cchName, &isok, NumUnsigned);
+	ciName = GetDlgItemInt(hdlg, IDE_cchName, &isok, NumSigned);
 	if(!isok || ciName>NAMECHARS_MAX)
 	{
-		vaSetWindowText(heo,
-			_T("ERROR: cchName must be a value between 0 ~ %d"), NAMECHARS_MAX);
+		Print_IntValueError(heo, _T("cchName"), _T("lpName"));
 		return;
 	}
 
-	ciDomName = GetDlgItemInt(hdlg, IDE_cchDomName,&isok, NumUnsigned);
+	ciDomName = GetDlgItemInt(hdlg, IDE_cchDomName,&isok, NumSigned);
 	if(!isok || ciDomName>NAMECHARS_MAX)
 	{
-		vaSetWindowText(heo,
-			_T("ERROR: cchReferencedDomainName must be a value between 0 ~ %d"), NAMECHARS_MAX);
+		Print_IntValueError(heo, _T("cchReferencedDomainName"), _T("lpReferencedDomainName"));
 		return;
 	}
 
 	DWORD coName = ciName, coDomName = ciDomName;
+	if(ciName<0)
+		coName = 0;
+	if(ciDomName<0)
+		coDomName = 0;
 	
 	TCHAR szName[NAMECHARS_MAX] = {}, szDomName[NAMECHARS_MAX] = {};
 	SID_NAME_USE sidtype = SidTypeInvalid;
 	DWORD succ_lookup = LookupAccountSid(NULL, psid, 
-		szName, &coName,
-		szDomName, &coDomName,
+		ciName<0    ? NULL : szName    , &coName,
+		ciDomName<0 ? NULL : szDomName , &coDomName,
 		&sidtype);
 
 	if(!succ_lookup)
@@ -155,7 +166,8 @@ void Do_Query(HWND hdlg)
 		vaSetWindowText(heo, 
 			_T("ERROR: LookupAccountSid() fail! WinErr=%d\r\n\r\n"), winerr);
 		
-		// Still show coName/cchReferencedDomainName output value.
+		// Still show coName/cchReferencedDomainName output value,
+		// so that we can know how much buffer shall we prepare.
 
 		vaAppendText_mled(heo, 
 			_T("cchName output: %d\r\n")
