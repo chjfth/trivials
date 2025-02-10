@@ -5,6 +5,9 @@
 #include <Sddl.h>
 #include <tchar.h>
 #include <stdio.h>
+
+#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+
 #include "resource.h"
 
 #include "iversion.h"
@@ -15,8 +18,10 @@
 #include <mswin/JULayout2.h>
 
 #include <EnsureClnup_mswin.h>
+#include <itc/InterpretConst.h>
+#include <mswin/winnt.itc.h>
 
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+using namespace itc;
 
 HINSTANCE g_hinstExe;
 
@@ -184,11 +189,11 @@ void Do_Query(HWND hdlg)
 	vaAppendText_mled(heo, 
 		_T("cchName(%d TCHARs): %s\r\n")
 		_T("cchReferencedDomainName(%d TCHARs): %s\r\n")
-		_T("SID_NAME_USE: %d")
+		_T("SID_NAME_USE: %s")
 		,
 		coName, szName,
 		coDomName, szDomName,
-		sidtype);
+		ITCSv(sidtype, SidTypeXXX));
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
