@@ -34,12 +34,17 @@ enum BufSmallRet_et // Ret trait when buffer is too small
 {
 	BSR_Neg1 = -1,
 	BSR_Zero = 0,
-	BSR_Usersize,
-	BSR_UsersizeLess1,
-	BSR_Total, // C99 snprintf behavior, not seen on winapi
-	BSR_TotalPlus1,
+	
+	BSR_Usersize = 1,      // API feedback: how many TCHARs are filled to user buffer(counting NUL)
+	
+	BSR_UsersizeLess1 = 2, // API feedback: how many TCHARs are filled to user buffer(not counting NUL)
+	
+	BSR_Total = 3,    // API feedback: how many TCHARs buffer required to correct the error(not counting NUL)
+		// -- This is C99 snprintf behavior, not seen on winapi
+	
+	BSR_TotalPlus1=4, // API feedback: how many TCHARs buffer required to correct the error(counting NUL)
 
-	BSR_BUG
+	BSR_BUG = 7
 };
 
 enum BufSmallFill_et // User buffer filling trait when buffer small
