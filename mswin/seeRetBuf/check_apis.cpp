@@ -23,9 +23,11 @@ int edge_len;
 int edge_ret;
 TCHAR edge_output[MAX_PATH];
 
-#define SMALL_Usersize 5   
+const int SMALL_Usersize = 5;
 // -- A small number suitable for most small-buflen API test cases.
 //    For a specific test case, you can use this or pick your own.
+//    If you pick your own, be sure to define your local var SMALL_Usersize so to
+//    override this global one. Example in see_GetSystemDefaultLocaleName().
 
 #define RESET_OUTPUT do { \
 	SetLastError(0); \
@@ -308,6 +310,40 @@ void see_GetLocaleInfo_0buf()
 	REPORT_API_TRAITS_s(_T("GetLocaleInfo(0buf)"));
 }
 
+void see_GetSystemDefaultLocaleName()
+{
+	RESET_OUTPUT;
+
+	sret = GetSystemDefaultLocaleName(soutput, MAX_PATH);
+	// -- "zh-CN", "en-US", "sr-Latn-XK" etc
+
+	const int SMALL_Usersize = 4;
+	eret = GetSystemDefaultLocaleName(eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetSystemDefaultLocaleName(edge_output, edge_len);
+
+	REPORT_API_TRAITS(GetSystemDefaultLocaleName);
+
+/*
+	This API format: GetSystemDefaultLocaleName(outbuf, buflen);
+
+	v1.2.0, This outputs:
+
+17,GetSystemDefaultLocaleName,Zero,122,No*,T+1,[WackyFill]
+
+	[WackyFill] explanation:
+
+	A typical output from GetSystemDefaultLocaleName() is "en-US" (5 chars), 
+	and we need to pass at least buflen=6 to make it success .
+
+	When we pass buflen=4 (or less), this API fills nothing into outbuf[]. But when 
+	we pass buflen=5 (still a buffer-too-small case), it fills "en-U\0" into outbuf[],
+	so I consider it a inconsistent behavior.
+*/
+}
+
 void see_FormatMessage()
 {
 	RESET_OUTPUT;
@@ -469,6 +505,7 @@ void check_apis()
 
 	see_GetLocaleInfo();
 	see_GetLocaleInfo_0buf();
+	see_GetSystemDefaultLocaleName();
 
 	see_FormatMessage();
 

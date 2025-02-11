@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.1.2"
+#define EXE_VERSION "1.2.0"
 
 enum 
 { 
@@ -110,10 +110,15 @@ BufSmallRet_et BufSmallRet_conclude(int small_input, int small_feedback, const T
 }
 
 BufSmallFill_et BufSmallFill_conclude(
-	int user_size, // user input buffer size
-	int eret_size, // returned buffer size on small buffer(e: error)
-	const TCHAR *ebuf, const TCHAR *sbuf)
+	int user_size, // user provided small-buflen
+	// int eret_size, // returned buffer size on small buffer(e: error)
+	const TCHAR *ebuf, // output buffer on small-buflen
+	const TCHAR *sbuf  // success buffer content(as comparison base)
+	)
 {
+	int total_len = STRLEN(sbuf);
+	assert(user_size<=total_len);
+
 	if(ebuf[0]==NULCHAR)
 		return BSF_Pure_NUL;
 
@@ -295,7 +300,7 @@ void ReportTraits(const TCHAR *apiname,
 		eret_size = small_buflen;
 	}
 
-	t.bs_fill = BufSmallFill_conclude(small_buflen, eret_size, eoutput, soutput);
+	t.bs_fill = BufSmallFill_conclude(small_buflen, eoutput, soutput);
 	switch(t.bs_fill)
 	{
 	case BSF_Pure_NUL:
@@ -336,10 +341,11 @@ void ReportTraits(const TCHAR *apiname,
 
 	if(edge_retbuf!=NULL)
 	{
-		// ==== Check edge case (check API bug) ====
+		// ==== Check edge case (check API buggy/inconsistency behavior) ====
 		// (1) BufSmallRet_et behavior should be consistent with small_buflen.
 		// (2) edge_retbuf[sret_size] must not be filled with NUL after API call. 
 		//     Note: ReportTraits's caller should have filled edge_retbuf[sret_size] with BADCHAR.
+		// (3) Whether smallbuf-fill behavior remains consistent.
 
 		TCHAR szEdgeBug[40] = {};
 
@@ -359,6 +365,15 @@ void ReportTraits(const TCHAR *apiname,
 
 		if(edge_retbuf[total_len]!=BADCHAR)
 			vacat(szEdgeBug, _T("[OverflowNUL]"));
+
+		BufSmallFill_et edgefill = BufSmallFill_conclude(total_len, edge_retbuf, soutput);
+		if(edgefill!=t.bs_fill)
+		{
+			vacat(szEdgeBug, _T("[WackyFill]"));
+			// -- See comments in see_GetSystemDefaultLocaleName()
+		}
+
+		///
 
 		if(szEdgeBug[0]=='\0')
 			vacat(szEdgeBug, _T("OK"));
