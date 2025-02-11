@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.2.0"
+#define EXE_VERSION "1.2.1"
 
 enum 
 { 
@@ -414,7 +414,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if(!is_sort)
 	{
-		Prn(_T("#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeBug\n"));
+		Prn(_T("#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeCaseBug\n"));
 
 		int i;
 		for(i=0; i<g_nowcase; i++)
@@ -429,7 +429,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		qsort_s(gar_apicases, g_nowcase, sizeof(ApiCase_st), CompareTraits, NULL);
 
-		Prn(_T("API#,Behavior#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeBug\n"));
+		Prn(_T("API#,Behavior#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeCaseBug\n"));
 
 		int behavior = 0, i;
 		const TCHAR *prev_traits = _T("");

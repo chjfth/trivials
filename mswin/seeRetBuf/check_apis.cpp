@@ -341,6 +341,9 @@ void see_GetSystemDefaultLocaleName()
 	When we pass buflen=4 (or less), this API fills nothing into outbuf[]. But when 
 	we pass buflen=5 (still a buffer-too-small case), it fills "en-U\0" into outbuf[],
 	so I consider it a inconsistent behavior.
+
+	By and large, this should not cause trouble to API user. 
+	But I have not come up a vivid word for this wacky behavior, so just call it a bug.
 */
 }
 
