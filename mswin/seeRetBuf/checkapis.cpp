@@ -19,20 +19,30 @@ static DWORD winerr = 0;
 TCHAR soutput[MAX_PATH];
 TCHAR eoutput[MAX_PATH];
 
-#define SMALL_Usersize 5
+int edge_len;
+int edge_ret;
+TCHAR edge_output[MAX_PATH];
+
+#define SMALL_Usersize 5   // a carefully chosen small number
 
 #define RESET_OUTPUT do { \
 	SetLastError(0); \
+	sret = eret = edge_ret = edge_len = FORGOT_INIT; \
 	Memset(soutput, BADCHAR, MAX_PATH); \
 	Memset(eoutput, BADCHAR, MAX_PATH); \
+	Memset(edge_output, BADCHAR, MAX_PATH); \
 } while(0)
 
 
 #define REPORT_API_TRAITS_s(apiname_s) do { \
-	ReportTraits( apiname_s, SMALL_Usersize, eret, winerr, eoutput, sret, soutput); \
+	ReportTraits( apiname_s, \
+		SMALL_Usersize, eret, winerr, eoutput, \
+		sret, soutput, \
+		edge_ret, edge_output ); \
 } while(0)
 
 #define REPORT_API_TRAITS(apiname) REPORT_API_TRAITS_s(_T(#apiname))
+
 
 void see_snprintf()
 {
@@ -42,6 +52,10 @@ void see_snprintf()
 	sret = _sntprintf_s(soutput, MAX_PATH,       _T("%s"), input);
 	eret = _sntprintf_s(eoutput, SMALL_Usersize, _T("%s"), input);
 	winerr = errno;
+
+	edge_len = STRLEN(soutput);
+	edge_ret = _sntprintf_s(edge_output, edge_len,  _T("%s"), input);
+
 	REPORT_API_TRAITS(_snprintf_s);
 }
 
@@ -53,6 +67,10 @@ void see_snprintf_s_TRUNCATE()
 	sret = _sntprintf_s(soutput, MAX_PATH,       _TRUNCATE, _T("%s"), input);
 	eret = _sntprintf_s(eoutput, SMALL_Usersize, _TRUNCATE, _T("%s"), input);
 	winerr = errno;
+
+	edge_len = STRLEN(soutput);
+	edge_ret = _sntprintf_s(edge_output, edge_len, _TRUNCATE, _T("%s"), input);
+	
 	REPORT_API_TRAITS_s(_T("_snprintf_s(_TRUNCATE)"));
 }
 
@@ -63,6 +81,10 @@ void see_GetKeyNameText()
 	sret = GetKeyNameText(key, soutput, MAX_PATH);
 	eret = GetKeyNameText(key, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetKeyNameText(key, edge_output, edge_len);
+
 	REPORT_API_TRAITS(GetKeyNameText);
 }
 
@@ -74,6 +96,10 @@ void see_GetClassName()
 	// -- #32769
 	eret = GetClassName(hwnd, eoutput, SMALL_Usersize); // T
 	winerr = GetLastError();
+	
+	edge_len = STRLEN(soutput);
+	edge_ret = GetClassName(hwnd, edge_output, edge_len);
+	
 	REPORT_API_TRAITS(GetClassName);
 }
 
@@ -83,9 +109,12 @@ void see_GetTextFace()
 	HDC hdc = GetDC(NULL);
 
 	sret = GetTextFace(hdc, MAX_PATH, soutput); // Usersize
-	// -- System
+	// -- "System"
 	eret = GetTextFace(hdc, SMALL_Usersize, eoutput); // T+1
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetTextFace(hdc, edge_len, edge_output);
 
 	REPORT_API_TRAITS(GetTextFace);
 
@@ -99,6 +128,10 @@ void see_GetModuleFileName()
 	// -- D:\gitw\trivials\mswin\seeRetBuf\Debug\seeRetBuf.exe
 	eret = GetModuleFileName(NULL, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetModuleFileName(NULL, edge_output, edge_len);
+
 	REPORT_API_TRAITS(GetModuleFileName);
 }
 
@@ -107,8 +140,12 @@ void see_GetModuleFileName_0buf()
 	RESET_OUTPUT;
 	sret = GetModuleFileName(NULL, soutput, MAX_PATH);
 	// -- D:\gitw\trivials\mswin\seeRetBuf\Debug\seeRetBuf.exe
-	eret = GetModuleFileName(NULL, NULL, 0);
+	eret = GetModuleFileName(NULL, NULL, 0);  // todo: 3rd param SMALL_Usersize ok? or crash?
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetModuleFileName(NULL, NULL, 0); // todo: try edge_len
+
 	REPORT_API_TRAITS_s(_T("GetModuleFileName(0buf)"));
 }
 
@@ -120,6 +157,10 @@ void see_GetProcessImageFileName()
 	// -- \Device\HarddiskVolume3\gitw\trivials\mswin\seeRetBuf\Debug\seeRetBuf.exe
 	eret = GetProcessImageFileName(GetCurrentProcess(), eoutput, SMALL_Usersize);
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetProcessImageFileName(GetCurrentProcess(), edge_output, edge_len);
+
 	REPORT_API_TRAITS(GetProcessImageFileName);
 }
 
@@ -130,6 +171,10 @@ void see_GetSystemDirectory()
 	// -- C:\Windows\system32
 	eret = GetSystemDirectory(eoutput, SMALL_Usersize); // T+1
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetSystemDirectory(edge_output, edge_len);
+
 	REPORT_API_TRAITS(GetSystemDirectory);
 }
 
@@ -140,6 +185,10 @@ void see_GetWindowsDirectory()
 	// -- C:\Windows
 	eret = GetWindowsDirectory(eoutput, SMALL_Usersize);
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetWindowsDirectory(edge_output, edge_len);
+
 	REPORT_API_TRAITS(GetWindowsDirectory);
 }
 
@@ -150,6 +199,10 @@ void see_GetCurrentDirectory()
 	// -- D:\gitw\trivials\mswin\seeRetBuf
 	eret = GetCurrentDirectory(SMALL_Usersize, eoutput); // T+1
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetCurrentDirectory(edge_len, edge_output);
+
 	REPORT_API_TRAITS(GetCurrentDirectory);
 }
 
@@ -160,6 +213,10 @@ void see_GetTempPath()
 	// -- C:\Users\win7evn\AppData\Local\Temp\ 
 	eret = GetTempPath(SMALL_Usersize, eoutput); // T+1
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetTempPath(edge_len, edge_output);
+
 	REPORT_API_TRAITS(GetTempPath);
 }
 
@@ -171,6 +228,10 @@ void see_GetEnvironmentVariable()
 	// -- \Users\win7evn
 	eret = GetEnvironmentVariable(envvar, eoutput, SMALL_Usersize); // T+1
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetEnvironmentVariable(envvar, edge_output, edge_len);
+
 	REPORT_API_TRAITS(GetEnvironmentVariable);
 }
 
@@ -180,10 +241,16 @@ void see_GetDefaultUserProfileDirectory()
 	sret = MAX_PATH;
 	BOOL succ1 = GetDefaultUserProfileDirectory(soutput, (LPDWORD)&sret);
 	// -- C:\Users\Default
+	
 	eret = SMALL_Usersize;
 	BOOL succ2 = GetDefaultUserProfileDirectory(eoutput, (LPDWORD)&eret); // T+1
 	// Windows bug: partial filling but missing NUL.
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = edge_len;
+	BOOL succ3 = GetDefaultUserProfileDirectory(edge_output, (LPDWORD)&eret);
+
 	REPORT_API_TRAITS(GetDefaultUserProfileDirectory);
 }
 
@@ -196,6 +263,10 @@ void see_GetLocaleInfo()
 	// -- MMMM d, yyyy
 	eret = GetLocaleInfo(lcid, lctype, eoutput, SMALL_Usersize); // 0
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetLocaleInfo(lcid, lctype, edge_output, edge_len);
+
 	REPORT_API_TRAITS(GetLocaleInfo);
 }
 
@@ -209,6 +280,11 @@ void see_GetLocaleInfo_0buf()
 	//	_tprintf(_T("LOCALE_SLONGDATE: %s\n"), soutput);
 	eret = GetLocaleInfo(lcid, lctype, eoutput, 0); // Usersize+1
 	winerr = GetLastError();
+
+	edge_len = 0;
+	edge_ret = 0; 
+	TCHAR *edge_output = NULL; // ignore edge case
+
 	REPORT_API_TRAITS_s(_T("GetLocaleInfo(0buf)"));
 }
 
@@ -228,6 +304,14 @@ void see_FormatMessage()
 		eoutput, SMALL_Usersize,
 		NULL);
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL,
+		sampleerr,
+		0, // LANGID
+		edge_output, edge_len,
+		NULL);
+
 	REPORT_API_TRAITS(FormatMessage);
 }
 
@@ -244,6 +328,10 @@ void see_StringFromGUID2()
 	// -- {20161110-5434-11D3-B890-00C04FAD5171}
 	eret = StringFromGUID2(myguid, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = StringFromGUID2(myguid, edge_output, edge_len);
+
 	REPORT_API_TRAITS(StringFromGUID2);
 }
 
@@ -256,6 +344,10 @@ void see_QueryDosDevice()
 
 	eret = QueryDosDevice(_T("C:"), eoutput, SMALL_Usersize);
 	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = QueryDosDevice(_T("C:"), edge_output, edge_len);
+
 	REPORT_API_TRAITS(QueryDosDevice);
 }
 
@@ -292,16 +384,24 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 	assert(succ);
 	sret = reqsize;
 	// -- PCIIDE\IDECHANNEL\4&2617AEAE&0&2
+	
 	reqsize = 0;
 	succ = SetupDiGetDeviceInstanceId(dis, &did, eoutput, SMALL_Usersize, &reqsize);
 	assert(!succ);
-	sret = reqsize;
+	eret = reqsize;
 	winerr = GetLastError();
+
+	reqsize = 0;
+	edge_len = STRLEN(soutput);
+	succ = SetupDiGetDeviceInstanceId(dis, &did, edge_output, edge_len, &reqsize);
+	assert(!succ);
+	edge_ret = reqsize;
 
 	REPORT_API_TRAITS(SetupDiGetDeviceInstanceId);
 
 	// Check CM_Get_Device_ID_Ex()
 	RESET_OUTPUT;
+	sret = eret = edge_ret = LEN_NO_REPORT;
 
 	CONFIGRET cmret = CM_Get_Device_ID(did.DevInst, soutput, MAX_PATH, 0);
 	// -- PCIIDE\IDECHANNEL\4&2617AEAE&0&2
@@ -311,6 +411,9 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 	
 	winerr = cmret; 
 	// -- CM_xxx does NOT report error code via GetLastError(), so we use cmret instead.
+
+	edge_len = STRLEN(soutput);
+	CM_Get_Device_ID(did.DevInst, edge_output, edge_len, 0);
 
 	REPORT_API_TRAITS(CM_Get_Device_ID);
 

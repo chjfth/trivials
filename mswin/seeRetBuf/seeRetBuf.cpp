@@ -2,7 +2,7 @@
 // especially when user buffer is too small.
 // This program prints a CSV file summarizing each WinAPI's traits based on live system run.
 //
-// Author: Jimm Chen, 2021.10
+// Author: Jimm Chen, 2021.10 ~ 2025.02
 
 #include <stdio.h>
 #include <Userenv.h>
@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.0"
+#define EXE_VERSION "1.1" // todo + debug output on each case
 
 enum 
 { 
@@ -68,34 +68,42 @@ enum BufEnoughRet_et // Ret trait when buffer enough
 	ReturnBug = 4,
 };
 
+enum EdgeBehavior_et // not used yet.
+{
+	Edge_OK = 0,
+	EdgeBug_FeedbackLen = 1,
+	EdgeBug_OverflowNUL = 2
+};
+
 struct ApiTrait_et
 {
 	BufSmallRet_et bs_ret;
 	DWORD bs_winerr;
 	BufSmallFill_et bs_fill;
 	BufEnoughRet_et good_ret;
+	EdgeBehavior_et edgecase;
 };
 
-BufSmallRet_et BufSmallRet_conclude(int user_size, int eret_size, const TCHAR *soutput)
+BufSmallRet_et BufSmallRet_conclude(int small_input, int small_feedback, const TCHAR *soutput)
 {
-	int total_size = (int)_tcslen(soutput);
+	int total_len = (int)_tcslen(soutput);
 
-	if(eret_size==-1)
+	if(small_feedback==-1)
 		return BSR_Neg1;
 
-	if(eret_size==total_size)
+	if(small_feedback==total_len)
 		return BSR_Total;
 	
-	if(eret_size==total_size+1)
+	if(small_feedback==total_len+1)
 		return BSR_TotalPlus1;
 
-	if(eret_size==user_size)
+	if(small_feedback==small_input)
 		return BSR_Usersize;
 
-	if(user_size>1 && eret_size==user_size-1)
+	if(small_input>1 && small_feedback==small_input-1)
 		return BSR_UsersizeLess1;
 
-	if(eret_size==BSR_Zero)
+	if(small_feedback==BSR_Zero)
 		return BSR_Zero;
 
 	return BSR_BUG;
@@ -205,47 +213,71 @@ void Add1Case(const TCHAR *apiname, const TCHAR *traits)
 }
 
 void ReportTraits(const TCHAR *apiname,
-	int user_size, // user input size, an "error" size (error means buffer too small)
+	int small_buflen, // user input small buflen, ie. an "error" size 
 
 	int eret_size, // "error-case" ret-size, the size that can correct the error
 	DWORD winerr,
 	const TCHAR *eoutput, // "error-case" output, may contain partial outcome
 
 	int sret_size, // "success" ret-size, when user provides enough buffer
-	const TCHAR *soutput // "success" output, full outcome text.
+	const TCHAR *soutput, // "success" output, full outcome text.
+
+	int edge_retsize, // "edge" means: user input buflen is exactly 'Total', no room for NUL
+	const TCHAR *edge_retbuf
 	)
 {
+	assert(eret_size!=FORGOT_INIT);
+	assert(sret_size!=FORGOT_INIT);
+	assert(edge_retsize!=FORGOT_INIT);
+
 	TCHAR tbuf[Traits_STRMAXLEN] = _T("");
 
 	ApiTrait_et t = {};
-	
-	t.bs_ret = BufSmallRet_conclude(user_size, eret_size, soutput);
-	switch(t.bs_ret)
+
+	// Check small-buffer len-feedback
+
+	if(eret_size!=LEN_NO_REPORT)
 	{
-	case BSR_Neg1: 
-		vacat(tbuf, _T("-1")); break;
-	case BSR_Zero: 
-		vacat(tbuf, _T("Zero")); break;
-	case BSR_Usersize: 
-		vacat(tbuf, _T("Usersize")); break;
-	case BSR_UsersizeLess1:
-		vacat(tbuf, _T("Usersize-1")); break;
-	case BSR_Total:
-		vacat(tbuf, _T("Total")); break;
-	case BSR_TotalPlus1:
-		vacat(tbuf, _T("Total+1")); break;
-	default:
-		vacat(tbuf, _T("[BUG]"));
+		t.bs_ret = BufSmallRet_conclude(small_buflen, eret_size, soutput);
+		switch(t.bs_ret)
+		{
+		case BSR_Neg1: 
+			vacat(tbuf, _T("-1")); break;
+		case BSR_Zero: 
+			vacat(tbuf, _T("Zero")); break;
+		case BSR_Usersize: 
+			vacat(tbuf, _T("Usersize")); break;
+		case BSR_UsersizeLess1:
+			vacat(tbuf, _T("Usersize-1")); break;
+		case BSR_Total:
+			vacat(tbuf, _T("Total")); break;
+		case BSR_TotalPlus1:
+			vacat(tbuf, _T("Total+1")); break;
+		default:
+			vacat(tbuf, _T("[BUG]"));
+		}
 	}
+	else
+		vacat(tbuf, _T("-"));
 	
 	vacat(tbuf, _T(","));
+
+	// WinError
 
 	t.bs_winerr = winerr;
 	vacat(tbuf, _T("%d"), t.bs_winerr);
 
 	vacat(tbuf, _T(","));
 
-	t.bs_fill = BufSmallFill_conclude(user_size, eret_size, eoutput, soutput);
+	// Check partial fill
+
+	if(eret_size==LEN_NO_REPORT)
+	{
+		// For cases like CM_Get_Device_ID()
+		eret_size = small_buflen;
+	}
+
+	t.bs_fill = BufSmallFill_conclude(small_buflen, eret_size, eoutput, soutput);
 	switch(t.bs_fill)
 	{
 	case BSF_Pure_NUL:
@@ -262,17 +294,62 @@ void ReportTraits(const TCHAR *apiname,
 	
 	vacat(tbuf, _T(","));
 
-	t.good_ret = BufEnoughRet_conclude(sret_size, soutput);
-	switch(t.good_ret)
+	// Check enough buffer len-feedback
+
+	if(sret_size!=LEN_NO_REPORT)
 	{
-	case ReturnT:
-		vacat(tbuf, _T("T")); break;
-	case ReturnTplus1:
-		vacat(tbuf, _T("T+1")); break;
-	case ReturnTplus2ormore:
-		vacat(tbuf, _T("T+2!")); break;
-	default:
-		vacat(tbuf, _T("[BUG]"));
+		t.good_ret = BufEnoughRet_conclude(sret_size, soutput);
+		switch(t.good_ret)
+		{
+		case ReturnT:
+			vacat(tbuf, _T("T")); break;
+		case ReturnTplus1:
+			vacat(tbuf, _T("T+1")); break;
+		case ReturnTplus2ormore:
+			vacat(tbuf, _T("T+2!")); break;
+		default:
+			vacat(tbuf, _T("[BUG]"));
+		}
+	}
+	else
+		vacat(tbuf, _T("-"));
+
+	vacat(tbuf, _T(","));
+
+	if(edge_retbuf!=NULL)
+	{
+		// ==== Check edge case (check API bug) ====
+		// (1) BufSmallRet_et behavior should be consistent with small_buflen.
+		// (2) edge_retbuf[sret_size] must not be filled with NUL after API call. 
+		//     Note: ReportTraits's caller should have filled edge_retbuf[sret_size] with BADCHAR.
+
+		TCHAR szEdgeBug[40] = {};
+
+		int total_len = STRLEN(soutput);
+
+		if(edge_retsize!=LEN_NO_REPORT)
+		{
+			BufSmallRet_et edgeret = BufSmallRet_conclude(total_len, edge_retsize, soutput);
+			if(edgeret!=t.bs_ret)
+			{
+				if(edgeret==BSR_Total && total_len==edge_retsize)
+					; // OK
+				else
+					vacat(szEdgeBug, _T("[FeedbackLen]"));
+			}
+		}
+
+		if(edge_retbuf[total_len]!=BADCHAR)
+			vacat(szEdgeBug, _T("[OverflowNUL]"));
+
+		if(szEdgeBug[0]=='\0')
+			vacat(szEdgeBug, _T("OK"));
+
+		vacat(tbuf, _T("%s"), szEdgeBug);
+	}
+	else
+	{
+		vacat(tbuf, _T("skip"));
 	}
 
 	Add1Case(apiname, tbuf);
@@ -304,7 +381,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if(!is_sort)
 	{
-		Prn(_T("#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet\n"));
+		Prn(_T("#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeBug\n"));
 
 		int i;
 		for(i=0; i<g_nowcase; i++)
@@ -319,7 +396,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		qsort_s(gar_apicases, g_nowcase, sizeof(ApiCase_st), CompareTraits, NULL);
 
-		Prn(_T("API#,Behavior#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet\n"));
+		Prn(_T("API#,Behavior#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeBug\n"));
 
 		int behavior = 0, i;
 		const TCHAR *prev_traits = _T("");
