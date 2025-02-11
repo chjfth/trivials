@@ -125,6 +125,20 @@ void see_GetClassName()
 	REPORT_API_TRAITS(GetClassName);
 }
 
+void see_GetWindowText_Explorer()
+{
+	RESET_OUTPUT;
+	HWND hwnd = GetShellWindow();
+	sret = GetWindowText(hwnd, soutput, MAX_PATH); // output "Program Manager"
+	eret = GetWindowText(hwnd, eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetWindowText(hwnd, edge_output, edge_len);
+
+	REPORT_API_TRAITS_s(_T("GetWindowText(Explorer)"));
+}
+
 void see_GetTextFace()
 {
 	RESET_OUTPUT;
@@ -186,6 +200,25 @@ void see_GetProcessImageFileName()
 	edge_ret = GetProcessImageFileName(GetCurrentProcess(), edge_output, edge_len);
 
 	REPORT_API_TRAITS(GetProcessImageFileName);
+}
+
+void see_QueryFullProcessImageName()
+{
+	RESET_OUTPUT;
+	HANDLE hself = GetCurrentProcess();
+	BOOL succ1=0, succ2=0, succ3=0;
+
+	sret = MAX_PATH;
+	succ1 = QueryFullProcessImageName(hself, 0, soutput, (DWORD*)&sret);
+	
+	eret = SMALL_Usersize;
+	succ2 = QueryFullProcessImageName(hself, 0, eoutput, (DWORD*)&eret);
+	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	succ3 = QueryFullProcessImageName(hself, 0, edge_output, (DWORD*)&(edge_ret=edge_len));
+
+	REPORT_API_TRAITS(QueryFullProcessImageName);
 }
 
 void see_GetSystemDirectory()
@@ -487,15 +520,17 @@ void check_apis()
 	see_snprintf_s_TRUNCATE();
 	see_snprintf_UserBuflenAsMaxfill();
 
-	see_GetKeyNameText();
 	see_GetClassName();
+	see_GetWindowText_Explorer();
 
+	see_GetKeyNameText();
 	see_GetTextFace();
 
 	see_GetModuleFileName();
 	see_GetModuleFileName_0buf();
 
 	see_GetProcessImageFileName();
+	see_QueryFullProcessImageName();
 
 	see_GetSystemDirectory();
 	see_GetWindowsDirectory();
