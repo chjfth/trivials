@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.3.0"
+#define EXE_VERSION "1.3.1"
 
 enum 
 { 
@@ -405,6 +405,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	setlocale(LC_ALL, ""); // only for printf Chinese chars purpose
 	Prn(_T("seeRetBuf,version %s\n"), _T(EXE_VERSION));
+	Prn(_T("WinVer: %s\n"), app_GetWindowsVersionStr3());
 
 	bool is_sort = false;
 

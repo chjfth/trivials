@@ -10,6 +10,8 @@
 #include <assert.h>
 #include <tchar.h>
 
+#include <mswin/dlptr_winapi.h>
+
 #include "share.h"
 
 int sret = 0; // success ret
@@ -202,21 +204,28 @@ void see_GetProcessImageFileName()
 	REPORT_API_TRAITS(GetProcessImageFileName);
 }
 
-void see_QueryFullProcessImageName()
+DEFINE_DLPTR_WINAPI("kernel32.dll", QueryFullProcessImageName)
+
+void see_QueryFullProcessImageName() // Vista+
 {
+	if(!dlptr_QueryFullProcessImageName) {
+		Prn(_T("QueryFullProcessImageName() not supported on WinXP.\n"));
+		return;
+	}
+
 	RESET_OUTPUT;
 	HANDLE hself = GetCurrentProcess();
 	BOOL succ1=0, succ2=0, succ3=0;
 
 	sret = MAX_PATH;
-	succ1 = QueryFullProcessImageName(hself, 0, soutput, (DWORD*)&sret);
+	succ1 = dlptr_QueryFullProcessImageName(hself, 0, soutput, (DWORD*)&sret);
 	
 	eret = SMALL_Usersize;
-	succ2 = QueryFullProcessImageName(hself, 0, eoutput, (DWORD*)&eret);
+	succ2 = dlptr_QueryFullProcessImageName(hself, 0, eoutput, (DWORD*)&eret);
 	winerr = GetLastError();
 
 	edge_len = STRLEN(soutput);
-	succ3 = QueryFullProcessImageName(hself, 0, edge_output, (DWORD*)&(edge_ret=edge_len));
+	succ3 = dlptr_QueryFullProcessImageName(hself, 0, edge_output, (DWORD*)&(edge_ret=edge_len));
 
 	REPORT_API_TRAITS(QueryFullProcessImageName);
 }
@@ -343,19 +352,26 @@ void see_GetLocaleInfo_0buf()
 	REPORT_API_TRAITS_s(_T("GetLocaleInfo(0buf)"));
 }
 
-void see_GetSystemDefaultLocaleName()
+DEFINE_DLPTR_WINAPI("kernel32.dll", GetSystemDefaultLocaleName)
+
+void see_GetSystemDefaultLocaleName() // Vista+
 {
+	if(!dlptr_GetSystemDefaultLocaleName) {
+		Prn(_T("GetSystemDefaultLocaleName() not supported on WinXP.\n"));
+		return;
+	}
+
 	RESET_OUTPUT;
 
-	sret = GetSystemDefaultLocaleName(soutput, MAX_PATH);
+	sret = dlptr_GetSystemDefaultLocaleName(soutput, MAX_PATH);
 	// -- "zh-CN", "en-US", "sr-Latn-XK" etc
 
 	const int SMALL_Usersize = 4;
-	eret = GetSystemDefaultLocaleName(eoutput, SMALL_Usersize);
+	eret = dlptr_GetSystemDefaultLocaleName(eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
 	edge_len = STRLEN(soutput);
-	edge_ret = GetSystemDefaultLocaleName(edge_output, edge_len);
+	edge_ret = dlptr_GetSystemDefaultLocaleName(edge_output, edge_len);
 
 	REPORT_API_TRAITS(GetSystemDefaultLocaleName);
 
