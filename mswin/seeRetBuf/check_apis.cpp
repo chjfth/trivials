@@ -260,6 +260,9 @@ void see_GetWindowsDirectory()
 
 void see_GetCurrentDirectory()
 {
+	const int SMALL_Usersize = 2; 
+	// We need to override this, bcz curdir can be as short as 3 chars, like "C:\"
+
 	RESET_OUTPUT;
 	sret = GetCurrentDirectory(MAX_PATH, soutput);
 	// -- D:\gitw\trivials\mswin\seeRetBuf
