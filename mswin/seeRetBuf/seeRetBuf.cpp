@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.2.2"
+#define EXE_VERSION "1.3.0"
 
 enum 
 { 
@@ -288,7 +288,10 @@ void ReportTraits(const TCHAR *apiname,
 	// WinError
 
 	t.bs_winerr = winerr;
-	vacat(tbuf, _T("%d"), t.bs_winerr);
+	if(winerr>0)
+		vacat(tbuf, _T("%d"), t.bs_winerr);
+	else
+		vacat(tbuf, _T("/"));
 
 	vacat(tbuf, _T(","));
 
