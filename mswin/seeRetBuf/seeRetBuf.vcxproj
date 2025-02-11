@@ -200,7 +200,7 @@
    -->
   <ItemGroup>
     <ClCompile Include="seeRetBuf.cpp" />
-    <ClCompile Include="checkapis.cpp" />
+    <ClCompile Include="check_apis.cpp" />
     <ClInclude Include="share.h" />
   </ItemGroup>
 

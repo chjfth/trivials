@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.1" // todo + debug output on each case
+#define EXE_VERSION "1.1.0" // todo + debug output on each case
 
 enum 
 { 
@@ -196,6 +196,22 @@ void Prn(const TCHAR *fmt, ...)
 	va_end(args);
 }
 
+void vaDbgOutput(const TCHAR *fmt, ...)
+{
+	TCHAR buf[4000] = {};
+	va_list args;
+	va_start(args, fmt);
+
+	_vsntprintf_s(buf, _TRUNCATE, fmt, args);
+
+	va_end(args);
+
+	_sntprintf_s(buf, _TRUNCATE, _T("%s\n"), buf);
+
+	OutputDebugString(buf);
+}
+
+
 void Add1Case(const TCHAR *apiname, const TCHAR *traits)
 {
 	int n = g_nowcase;
@@ -210,6 +226,8 @@ void Add1Case(const TCHAR *apiname, const TCHAR *traits)
 	_tcscpy_s(gar_apicases[n].traits, traits);
 
 	g_nowcase++;
+
+	vaDbgOutput(_T("#%d,%s,%s"), g_nowcase, apiname, traits);
 }
 
 void ReportTraits(const TCHAR *apiname,

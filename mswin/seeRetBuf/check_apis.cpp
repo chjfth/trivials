@@ -249,7 +249,7 @@ void see_GetDefaultUserProfileDirectory()
 
 	edge_len = STRLEN(soutput);
 	edge_ret = edge_len;
-	BOOL succ3 = GetDefaultUserProfileDirectory(edge_output, (LPDWORD)&eret);
+	BOOL succ3 = GetDefaultUserProfileDirectory(edge_output, (LPDWORD)&edge_ret);
 
 	REPORT_API_TRAITS(GetDefaultUserProfileDirectory);
 }
