@@ -44,19 +44,36 @@ TCHAR edge_output[MAX_PATH];
 #define REPORT_API_TRAITS(apiname) REPORT_API_TRAITS_s(_T(#apiname))
 
 
-void see_snprintf()
+void see_snprintf_UserBuflenAsMaxfill()
 {
+	// Note: This function tests the MSVCRT API:
+
+// 	int _sntprintf_s (
+// 		TCHAR *outbuf,
+// 		size_t buflen,
+// 		size_t maxfill,
+// 		const TCHAR *format,
+// 		...
+// 		)
+
+	// It is a bit unusual in that:
+	// The user-given buflen does NOT govern the valid buflen, but used as `maxfill`,
+	// So we can see this test reports [OverflowNUL] bug.
+	// We know that is not a MSVCRT bug, the result of outbuf[maxfill]='\0' is by design.
+	//
+	// I do it deliberately, just to demonstrate how such a "bug" is detected.
+
 	RESET_OUTPUT;
 	errno = 0; // Refer to `errno`, bcz _snprintf is CRT
 	const TCHAR *input = _T("0123456789");
-	sret = _sntprintf_s(soutput, MAX_PATH,       _T("%s"), input);
-	eret = _sntprintf_s(eoutput, SMALL_Usersize, _T("%s"), input);
+	sret = _sntprintf_s(soutput, ARRAYSIZE(soutput), MAX_PATH,       _T("%s"), input);
+	eret = _sntprintf_s(eoutput, ARRAYSIZE(eoutput), SMALL_Usersize, _T("%s"), input);
 	winerr = errno;
 
 	edge_len = STRLEN(soutput);
 	edge_ret = _sntprintf_s(edge_output, edge_len,  _T("%s"), input);
 
-	REPORT_API_TRAITS(_snprintf_s);
+	REPORT_API_TRAITS_s( _T("_snprintf_s(maxfill)") );
 }
 
 void see_snprintf_s_TRUNCATE()
@@ -423,8 +440,8 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 
 void check_apis()
 {
-	see_snprintf();
 	see_snprintf_s_TRUNCATE();
+	see_snprintf_UserBuflenAsMaxfill();
 
 	see_GetKeyNameText();
 	see_GetClassName();
