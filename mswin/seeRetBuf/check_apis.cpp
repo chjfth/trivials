@@ -400,8 +400,10 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 	succ = SetupDiGetDeviceInstanceId(dis, &did, soutput, MAX_PATH, &reqsize);
 	assert(succ);
 	sret = reqsize;
-	// -- PCIIDE\IDECHANNEL\4&2617AEAE&0&2
-	
+	// -- "PCIIDE\IDECHANNEL\4&2617AEAE&0&2"
+	//    "ROOT\LEGACY_TDX\0000" (on VirtualBox 6.1 VM)
+	//    etc
+
 	reqsize = 0;
 	succ = SetupDiGetDeviceInstanceId(dis, &did, eoutput, SMALL_Usersize, &reqsize);
 	assert(!succ);
