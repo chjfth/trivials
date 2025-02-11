@@ -23,7 +23,9 @@ int edge_len;
 int edge_ret;
 TCHAR edge_output[MAX_PATH];
 
-#define SMALL_Usersize 5   // a carefully chosen small number
+#define SMALL_Usersize 5   
+// -- A small number suitable for most small-buflen API test cases.
+//    For a specific test case, you can use this or pick your own.
 
 #define RESET_OUTPUT do { \
 	SetLastError(0); \
@@ -43,6 +45,7 @@ TCHAR edge_output[MAX_PATH];
 
 #define REPORT_API_TRAITS(apiname) REPORT_API_TRAITS_s(_T(#apiname))
 
+#define IGNORE_EDGE_CASE TCHAR *edge_output = NULL; edge_len = edge_ret = 0;
 
 void see_snprintf_UserBuflenAsMaxfill()
 {
@@ -157,11 +160,13 @@ void see_GetModuleFileName_0buf()
 	RESET_OUTPUT;
 	sret = GetModuleFileName(NULL, soutput, MAX_PATH);
 	// -- D:\gitw\trivials\mswin\seeRetBuf\Debug\seeRetBuf.exe
-	eret = GetModuleFileName(NULL, NULL, 0);  // todo: 3rd param SMALL_Usersize ok? or crash?
+	eret = GetModuleFileName(NULL, NULL, 0);  
+	// -- Note: whan 2nd-param is NULL, 3rd param cannot be a positive value,
+	// otherwise, the API will try to write into NULL address.
+
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetModuleFileName(NULL, NULL, 0); // todo: try edge_len
+	IGNORE_EDGE_CASE;
 
 	REPORT_API_TRAITS_s(_T("GetModuleFileName(0buf)"));
 }
@@ -298,9 +303,7 @@ void see_GetLocaleInfo_0buf()
 	eret = GetLocaleInfo(lcid, lctype, eoutput, 0); // Usersize+1
 	winerr = GetLastError();
 
-	edge_len = 0;
-	edge_ret = 0; 
-	TCHAR *edge_output = NULL; // ignore edge case
+	IGNORE_EDGE_CASE;
 
 	REPORT_API_TRAITS_s(_T("GetLocaleInfo(0buf)"));
 }
