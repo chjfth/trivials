@@ -51,6 +51,27 @@ const int SMALL_Usersize = 5;
 
 #define IGNORE_EDGE_CASE TCHAR *edge_output = NULL; edge_len = edge_ret = 0;
 
+#define PRN_NO_ANSI_VARIANT(apiname) do { \
+	printf("No ANSI variant: " #apiname "()\n"); \
+} while(0)
+
+#define CANNOT_RUN_ON_THIS_OS(apiname, osname) \
+	if(!dlptr_ ## apiname) { \
+		Prn(_T("Not supported on %s: %s()\n"), _T(osname), _T(#apiname)); \
+		return; \
+	}
+
+#define CANNOT_RUN_ON_WinXP(apiname)  CANNOT_RUN_ON_THIS_OS(apiname, "WinXP")
+// -- [2025-02-12] Don't use CANNOT_RUN_ON_WinXP(QueryFullProcessImageName), that would
+// cause resulting in code referring to dlptr_QueryFullProcessImageNameW , and that
+// dlptr_QueryFullProcessImageNameW symbol/function is NOT defined by dlptr_winapi.h .
+// Instead, write: CANNOT_RUN_ON_THIS_OS(QueryFullProcessImageName, "WinXP");
+
+#define OS_WINXP "WinXP"
+#define OS_WIN7 "Win7"
+
+//////////////////////////////////////////////////////////////////////////
+
 void see_snprintf_UserBuflenAsMaxfill()
 {
 	// Note: This function tests the MSVCRT API:
@@ -208,10 +229,7 @@ DEFINE_DLPTR_WINAPI("kernel32.dll", QueryFullProcessImageName)
 
 void see_QueryFullProcessImageName() // Vista+
 {
-	if(!dlptr_QueryFullProcessImageName) {
-		Prn(_T("QueryFullProcessImageName() not supported on WinXP.\n"));
-		return;
-	}
+	CANNOT_RUN_ON_THIS_OS(QueryFullProcessImageName, OS_WINXP);
 
 	RESET_OUTPUT;
 	HANDLE hself = GetCurrentProcess();
@@ -360,10 +378,7 @@ DEFINE_DLPTR_WINAPI("kernel32.dll", GetSystemDefaultLocaleName)
 void see_GetSystemDefaultLocaleName() // Vista+
 {
 #ifdef UNICODE
-	if(!dlptr_GetSystemDefaultLocaleName) {
-		Prn(_T("GetSystemDefaultLocaleName() not supported on WinXP.\n"));
-		return;
-	}
+	CANNOT_RUN_ON_THIS_OS(GetSystemDefaultLocaleName, OS_WINXP);
 
 	RESET_OUTPUT;
 
@@ -399,7 +414,7 @@ void see_GetSystemDefaultLocaleName() // Vista+
 	But I have not come up a vivid word for this wacky behavior, so just call it a bug.
 */
 #else
-	printf("GetSystemDefaultLocaleName() does NOT have ANSI variant.\n");
+	PRN_NO_ANSI_VARIANT(GetSystemDefaultLocaleName);
 #endif
 }
 
@@ -450,7 +465,7 @@ void see_StringFromGUID2()
 
 	REPORT_API_TRAITS(StringFromGUID2);
 #else
-	printf("StringFromGUID2() does NOT have ANSI variant.\n");
+	PRN_NO_ANSI_VARIANT(StringFromGUID2);
 #endif
 }
 
