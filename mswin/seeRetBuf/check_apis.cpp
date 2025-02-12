@@ -359,6 +359,7 @@ DEFINE_DLPTR_WINAPI("kernel32.dll", GetSystemDefaultLocaleName)
 
 void see_GetSystemDefaultLocaleName() // Vista+
 {
+#ifdef UNICODE
 	if(!dlptr_GetSystemDefaultLocaleName) {
 		Prn(_T("GetSystemDefaultLocaleName() not supported on WinXP.\n"));
 		return;
@@ -397,6 +398,9 @@ void see_GetSystemDefaultLocaleName() // Vista+
 	By and large, this should not cause trouble to API user. 
 	But I have not come up a vivid word for this wacky behavior, so just call it a bug.
 */
+#else
+	printf("GetSystemDefaultLocaleName() does NOT have ANSI variant.\n");
+#endif
 }
 
 void see_FormatMessage()
@@ -434,6 +438,7 @@ void see_StringFromGUID2()
 {
 	// Note: StringFromGUID2() has Unicode version only
 
+#ifdef UNICODE
 	RESET_OUTPUT;
 	sret = StringFromGUID2(myguid, soutput, MAX_PATH);
 	// -- {20161110-5434-11D3-B890-00C04FAD5171}
@@ -444,6 +449,9 @@ void see_StringFromGUID2()
 	edge_ret = StringFromGUID2(myguid, edge_output, edge_len);
 
 	REPORT_API_TRAITS(StringFromGUID2);
+#else
+	printf("StringFromGUID2() does NOT have ANSI variant.\n");
+#endif
 }
 
 void see_QueryDosDevice()
@@ -533,6 +541,22 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 	SetupDiDestroyDeviceInfoList(dis);
 }
 
+void see_GetICMProfile()
+{
+	RESET_OUTPUT;
+
+	HDC hdc = GetDC(NULL);
+	BOOL succ1 = GetICMProfile(hdc, (DWORD*)&(sret=MAX_PATH), soutput);
+	BOOL succ2 = GetICMProfile(hdc, (DWORD*)&(eret=SMALL_Usersize), eoutput);
+	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	BOOL succ3 = GetICMProfile(hdc, (DWORD*)&(edge_ret=edge_len), edge_output);
+
+	REPORT_API_TRAITS(GetICMProfile);
+
+	ReleaseDC(NULL, hdc);
+}
 
 void check_apis()
 {
@@ -569,6 +593,8 @@ void check_apis()
 	see_StringFromGUID2();
 
 	see_QueryDosDevice();
+
+	see_GetICMProfile();
 
 	see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID();
 }
