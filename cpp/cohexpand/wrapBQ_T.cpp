@@ -9,7 +9,7 @@
 #define cox_MAKE_STRING(asymbol) #asymbol
 #define coy_MAKE_STRING(s) cox_MAKE_STRING(s)
 
-#define WRAP_BQ(s) coy_MAKE_STRING(  [s]  )
+#define WRAP_BQ(s) coy_MAKE_STRING(  [s]  ) // space-chars around [s] will be stripped.
 
 int _tmain(int argc, TCHAR* argv[])
 {
