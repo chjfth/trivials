@@ -12,9 +12,12 @@ const char *s_greet = WRAP_BQ(greet);
 // For example:
 //		cl  /D greet="Hello world!" pristine1.cpp
 //		gcc -D greet='Hello world!' pristine1.cpp
+//
+// Output will be:
+//		Greet: [Hello world!]
 
 int main(int argc, char* argv[])
 {
-	printf("greet: %s\n", s_greet);
+	printf("Greet: %s\n", s_greet);
 	return 0;
 }

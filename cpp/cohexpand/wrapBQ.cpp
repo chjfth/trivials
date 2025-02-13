@@ -46,14 +46,14 @@ int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "");
 	
-	printf("[A]greet: %s\n", s_greet);
+	printf("[A]Greet: %s\n", s_greet);
 
 #ifdef _WIN32
-	wprintf(L"[w]greet: %s\n", sw_greet); // small %s for wide-string
+	wprintf(L"[w]Greet: %s\n", sw_greet); // MSVCRT: %s for wprintf's wide-string
 #else
 	// Reopen stdout in wide mode, Linux gcc requires this.
 	freopen(NULL, "w", stdout);
-	wprintf(L"[W]greet: %S\n", sw_greet); // big %s for wide-string
+	wprintf(L"[W]Greet: %ls\n", sw_greet);  // Glibc: %ls for wide-string
 #endif
 
 	return 0;
