@@ -1,7 +1,7 @@
 // Compare to wrapBQ_T.cpp, this version wraps with extra starting & ending space-chars,
 // implemented as WRAP_BSQ() macro.
 // Starting & ending Space-chars are defaultly stripped off from macro arguments,
-// so some special treatment is required. (still feeling weird)
+// so some special treatment is required. (still mysterious)
 
 #include <stdio.h>
 #include <tchar.h>
@@ -13,9 +13,9 @@
 #define NN
 #define WW NN NN
 
-#define WRAP_BS(s) [s]
+#define WRAP_BS(s) NN [s] WW
 
-#define WRAP_BSQ(s) coy_MAKE_STRING(NN WRAP_BS(s) WW)
+#define WRAP_BSQ(s) coy_MAKE_STRING(WRAP_BS(s))
 // -- Now we get " [greet] ".
 
 int _tmain(int argc, TCHAR* argv[])
