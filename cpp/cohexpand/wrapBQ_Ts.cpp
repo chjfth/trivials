@@ -3,8 +3,18 @@
 // Starting & ending Space-chars are defaultly stripped off from macro arguments,
 // so some special treatment is required. (still mysterious)
 
-#include <stdio.h>
+#ifdef _WIN32
 #include <tchar.h>
+#else
+// In order to test with non-Windows targeted compiler, we need some tweak.
+// I find out that gcc(eg 9.4) behaves differently than MSVC; gcc does not apply space wrapping.
+#define _T(x) x
+#define _tprintf printf
+#define _tmain main
+typedef char TCHAR;
+#endif
+
+#include <stdio.h>
 #include <locale.h>
 
 #define cox_MAKE_STRING(asymbol) #asymbol
