@@ -24,13 +24,14 @@ int main()
 }
 
 
-void test_other()
+void do_compare()
 {
-	const char *pwhoa = cox_MAKE_STRING( WRAP_B(greet) );
-	printf("whoa = %s\n", pwhoa);
-	// whoa = WRAP_B(greet)
+	const char *cox = cox_MAKE_STRING( WRAP_B(greet) );
+	printf("cox = %s\n", cox);
+	// cox = WRAP_B(greet)
 
-	const char *pgood = coy_MAKE_STRING( WRAP_B(greet) );
-	printf("good = %s\n", pgood);
-	// good = [greet]
+	const char *coy = coy_MAKE_STRING( WRAP_B(greet) );
+	printf("coy = %s\n", coy);
+	// coy = [greet]
 }
+
