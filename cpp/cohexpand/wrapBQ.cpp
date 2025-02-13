@@ -2,7 +2,27 @@
 #include <locale.h>
 #include <wchar.h>
 
-// This code can be compiled with MSVC and Linux-gcc.
+/*
+wrapBQ: wrap a given token with brackets and quotes.
+Input token:           greet
+WRAP_BQ macro output:  "[greet]"
+
+This code can be compiled with MSVC and Linux-gcc.
+
+Compile with MSVC:
+
+	cl.exe wrapBQ.cpp
+	cl.exe /D greet=Hello wrapBQ.cpp
+
+Compile with gcc:
+
+	gcc -D greet="How do    you do?" wrapBQ.cpp
+
+Example output:
+	$ ./a.out
+	[A]greet: [How do you do?]
+	[W]greet: [How do you do?]
+*/
 
 #define cox_MAKE_STRING(asymbol) #asymbol
 #define cox_MAKE_WSTRING(asymbol) L ## #asymbol
