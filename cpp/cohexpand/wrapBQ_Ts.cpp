@@ -33,7 +33,7 @@ typedef char TCHAR;
 
 #define WRAP_BSQ3(s) coy_MAKE_STRING(WRAP_BS3(s))  // We get "   [greet]   "
 
-int _tmain(int argc, TCHAR* argv[])
+int _tmain()
 {
 	setlocale(LC_ALL, "");
 

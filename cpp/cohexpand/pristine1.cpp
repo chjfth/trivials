@@ -16,8 +16,21 @@ const char *s_greet = WRAP_BQ(greet);
 // Output will be:
 //		Greet: [Hello world!]
 
-int main(int argc, char* argv[])
+int main()
 {
 	printf("Greet: %s\n", s_greet);
+
 	return 0;
+}
+
+
+void test_other()
+{
+	const char *pwhoa = cox_MAKE_STRING( WRAP_B(greet) );
+	printf("whoa = %s\n", pwhoa);
+	// whoa = WRAP_B(greet)
+
+	const char *pgood = coy_MAKE_STRING( WRAP_B(greet) );
+	printf("good = %s\n", pgood);
+	// good = [greet]
 }

@@ -18,7 +18,7 @@ const char *s_greet = WRAP_BQ(greet);
 const wchar_t *sw_greet = coy_MAKE_WIDE( WRAP_BQ(greet) );
 
 
-int main(int argc, char* argv[])
+int main()
 {
 	printf("[A]Greet: %s\n", s_greet);
 
