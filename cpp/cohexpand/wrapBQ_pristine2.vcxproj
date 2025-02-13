@@ -75,7 +75,7 @@
   
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20250213-0000-0000-0000-122108000001}</ProjectGuid>
-    <ProjectName>wrapBQ_prestine</ProjectName>
+    <ProjectName>wrapBQ_pristine2</ProjectName>
      <TargetName>$(ProjectName>)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
@@ -199,7 +199,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="wrapBQ_prestine.cpp" />
+    <ClCompile Include="wrapBQ_pristine2.cpp" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
