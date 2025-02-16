@@ -23,15 +23,23 @@ int main()
 	return 0;
 }
 
+// Below code is for preprocessing(/P) investigation. 
+// You can temporarily change your code to execute them if you will.
+
+#define coy_WRAP_BQ(s) cox_MAKE_STRING( WRAP_B(s) )
 
 void do_compare()
 {
 	const char *cox = cox_MAKE_STRING( WRAP_B(greet) );
 	printf("cox = %s\n", cox);
-	// cox = WRAP_B(greet)
+	// cox = WRAP_B(hello world)
 
 	const char *coy = coy_MAKE_STRING( WRAP_B(greet) );
 	printf("coy = %s\n", coy);
 	// coy = [greet]
+
+	const char *coz = coy_WRAP_BQ( greet ); // C99spec text vague!
+	printf("coz = %s\n", coz);
+	// coz = WRAP_B(hello world)
 }
 
