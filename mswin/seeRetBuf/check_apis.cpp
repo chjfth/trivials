@@ -653,6 +653,29 @@ void see_GetVolumePathNamesForVolumeName()
 	REPORT_API_TRAITS(GetVolumePathNamesForVolumeName);
 }
 
+void see_GetNumberFormat()
+{
+	RESET_OUTPUT;
+
+	const TCHAR *szinput = _T("123456789");
+	NUMBERFMT nf = {};
+	nf.NumDigits = 0;
+	nf.LeadingZero = FALSE;
+	nf.Grouping = 3;
+	nf.lpDecimalSep = TEXT(".");
+	nf.lpThousandSep = TEXT(",");
+	nf.NegativeOrder = 0;
+	
+	g_sret_len = GetNumberFormat(LOCALE_USER_DEFAULT, 0, szinput, &nf, soutput, MAX_PATH);
+	g_eret_len = GetNumberFormat(LOCALE_USER_DEFAULT, 0, szinput, &nf, eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetNumberFormat(LOCALE_USER_DEFAULT, 0, szinput, &nf, edge_output, g_edge_len);
+	
+	REPORT_API_TRAITS(GetNumberFormat);
+}
+
 
 void check_apis()
 {
@@ -682,6 +705,8 @@ void check_apis()
 
 	see_GetLocaleInfo();
 	see_GetLocaleInfo_0buf();
+	see_GetNumberFormat();
+
 	see_GetSystemDefaultLocaleName();
 
 	see_FormatMessage();
