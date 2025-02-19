@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.4.0"
+#define EXE_VERSION "1.4.1"
 
 enum 
 { 

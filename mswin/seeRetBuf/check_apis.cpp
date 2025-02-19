@@ -55,17 +55,15 @@ const int SMALL_Usersize = 5;
 	printf("No ANSI variant: " #apiname "()\n"); \
 } while(0)
 
-#define CANNOT_RUN_ON_THIS_OS(apiname, osname) \
-	if(!dlptr_ ## apiname) { \
+#define cox_CANNOT_RUN_ON_SOME_OS(apiname, dlptr_apiname, osname) \
+	if(!dlptr_apiname) { \
 		Prn(_T("Not supported on %s: %s()\n"), _T(osname), _T(#apiname)); \
 		return; \
 	}
 
-#define CANNOT_RUN_ON_WinXP(apiname)  CANNOT_RUN_ON_THIS_OS(apiname, "WinXP")
-// -- [2025-02-12] Don't use CANNOT_RUN_ON_WinXP(QueryFullProcessImageName), that would
-// cause resulting in code referring to dlptr_QueryFullProcessImageNameW , and that
-// dlptr_QueryFullProcessImageNameW symbol/function is NOT defined by dlptr_winapi.h .
-// Instead, write: CANNOT_RUN_ON_THIS_OS(QueryFullProcessImageName, "WinXP");
+#define CANNOT_RUN_ON_WinXP(apisymbol) cox_CANNOT_RUN_ON_SOME_OS(apisymbol, dlptr_ ## apisymbol, "WinXP")
+// -- [2025-02-19] Great. I found this solution after I have thoroughly grok the meaning of cohexpand.
+//    https://zhuanlan.zhihu.com/p/24638762557
 
 #define OS_WINXP "WinXP"
 #define OS_WIN7 "Win7"
@@ -229,7 +227,8 @@ DEFINE_DLPTR_WINAPI("kernel32.dll", QueryFullProcessImageName)
 
 void see_QueryFullProcessImageName() // Vista+
 {
-	CANNOT_RUN_ON_THIS_OS(QueryFullProcessImageName, OS_WINXP);
+	CANNOT_RUN_ON_WinXP(QueryFullProcessImageName);
+	//cox_CANNOT_RUN_ON_THIS_OS(QueryFullProcessImageName, OS_WINXP);
 
 	RESET_OUTPUT;
 	HANDLE hself = GetCurrentProcess();
@@ -378,7 +377,7 @@ DEFINE_DLPTR_WINAPI("kernel32.dll", GetSystemDefaultLocaleName)
 void see_GetSystemDefaultLocaleName() // Vista+
 {
 #ifdef UNICODE
-	CANNOT_RUN_ON_THIS_OS(GetSystemDefaultLocaleName, OS_WINXP);
+	CANNOT_RUN_ON_WinXP(GetSystemDefaultLocaleName, OS_WINXP);
 
 	RESET_OUTPUT;
 
