@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.4.2"
+#define EXE_VERSION "1.5.0"
 
 enum 
 { 
@@ -238,20 +238,20 @@ void Add1Case(const TCHAR *apiname, const TCHAR *traits)
 void ReportTraits(const TCHAR *apiname,
 	int small_buflen, // user input small buflen, ie. an "error" size 
 
-	int eret_size, // "error-case" ret-size, the size that can correct the error
+	int eret_len, // "error-case" ret-len, the size that may/could correct the error
 	DWORD winerr,
-	const TCHAR *eoutput, // "error-case" output, may contain partial outcome
+	const TCHAR *eoutput, // "error-case" output, may contain partial content
 
-	int sret_size, // "success" ret-size, when user provides enough buffer
+	int sret_len, // "success-case" ret-size, when user provides enough buffer
 	const TCHAR *soutput, // "success" output, full outcome text.
 
-	int edge_retsize, // "edge" means: user input buflen is exactly 'Total', no room for NUL
+	int edgeret_len, // "edge" means: user input buflen is exactly 'Total', no room for NUL
 	const TCHAR *edge_retbuf
 	)
 {
-	assert(eret_size!=FORGOT_INIT);
-	assert(sret_size!=FORGOT_INIT);
-	assert(edge_retsize!=FORGOT_INIT);
+	assert(eret_len!=FORGOT_INIT);
+	assert(sret_len!=FORGOT_INIT);
+	assert(edgeret_len!=FORGOT_INIT);
 
 	TCHAR tbuf[Traits_STRMAXLEN] = _T("");
 
@@ -259,9 +259,9 @@ void ReportTraits(const TCHAR *apiname,
 
 	// Check small-buffer len-feedback
 
-	if(eret_size!=LEN_NO_REPORT)
+	if(eret_len!=LEN_NO_REPORT)
 	{
-		t.bs_ret = BufSmallRet_conclude(small_buflen, eret_size, soutput);
+		t.bs_ret = BufSmallRet_conclude(small_buflen, eret_len, soutput);
 		switch(t.bs_ret)
 		{
 		case BSR_Neg1: 
@@ -297,10 +297,10 @@ void ReportTraits(const TCHAR *apiname,
 
 	// Check partial fill
 
-	if(eret_size==LEN_NO_REPORT)
+	if(eret_len==LEN_NO_REPORT)
 	{
 		// For cases like CM_Get_Device_ID()
-		eret_size = small_buflen;
+		eret_len = small_buflen;
 	}
 
 	t.bs_fill = BufSmallFill_conclude(small_buflen, eoutput, soutput);
@@ -322,9 +322,9 @@ void ReportTraits(const TCHAR *apiname,
 
 	// Check enough buffer len-feedback
 
-	if(sret_size!=LEN_NO_REPORT)
+	if(sret_len!=LEN_NO_REPORT)
 	{
-		t.good_ret = BufEnoughRet_conclude(sret_size, soutput);
+		t.good_ret = BufEnoughRet_conclude(sret_len, soutput);
 		switch(t.good_ret)
 		{
 		case ReturnT:
@@ -354,12 +354,12 @@ void ReportTraits(const TCHAR *apiname,
 
 		int total_len = STRLEN(soutput);
 
-		if(edge_retsize!=LEN_NO_REPORT)
+		if(edgeret_len!=LEN_NO_REPORT)
 		{
-			BufSmallRet_et edgeret = BufSmallRet_conclude(total_len, edge_retsize, soutput);
+			BufSmallRet_et edgeret = BufSmallRet_conclude(total_len, edgeret_len, soutput);
 			if(edgeret!=t.bs_ret)
 			{
-				if(edgeret==BSR_Total && total_len==edge_retsize)
+				if(edgeret==BSR_Total && total_len==edgeret_len)
 					; // OK
 				else
 					vacat(szEdgeBug, _T("[FeedbackLen]"));

@@ -15,15 +15,15 @@
 
 #include "share.h"
 
-int sret = 0; // success ret
-int eret = 0; // error ret
+int g_sret_len = 0; // success ret
+int g_eret_len = 0; // error ret
 static DWORD winerr = 0;
 
 TCHAR soutput[MAX_PATH];
 TCHAR eoutput[MAX_PATH];
 
-int edge_len;
-int edge_ret;
+int g_edge_len;
+int g_edgeret_len;
 TCHAR edge_output[MAX_PATH];
 
 const int SMALL_Usersize = 5;
@@ -34,7 +34,7 @@ const int SMALL_Usersize = 5;
 
 #define RESET_OUTPUT do { \
 	SetLastError(0); \
-	sret = eret = edge_ret = edge_len = FORGOT_INIT; \
+	g_sret_len = g_eret_len = g_edgeret_len = g_edge_len = FORGOT_INIT; \
 	Memset(soutput, BADCHAR, MAX_PATH); \
 	Memset(eoutput, BADCHAR, MAX_PATH); \
 	Memset(edge_output, BADCHAR, MAX_PATH); \
@@ -43,14 +43,14 @@ const int SMALL_Usersize = 5;
 
 #define REPORT_API_TRAITS_s(apiname_s) do { \
 	ReportTraits( apiname_s, \
-		SMALL_Usersize, eret, winerr, eoutput, \
-		sret, soutput, \
-		edge_ret, edge_output ); \
+		SMALL_Usersize, g_eret_len, winerr, eoutput, \
+		g_sret_len, soutput, \
+		g_edgeret_len, edge_output ); \
 } while(0)
 
 #define REPORT_API_TRAITS(apiname) REPORT_API_TRAITS_s(_T(#apiname))
 
-#define IGNORE_EDGE_CASE TCHAR *edge_output = NULL; edge_len = edge_ret = 0;
+#define IGNORE_EDGE_CASE TCHAR *edge_output = NULL; g_edgeret_len = g_edge_len = 0;
 
 #define PRN_NO_ANSI_VARIANT(apiname) do { \
 	printf("No ANSI variant: " #apiname "()\n"); \
@@ -93,12 +93,12 @@ void see_snprintf_UserBuflenAsMaxfill()
 	RESET_OUTPUT;
 	errno = 0; // Refer to `errno`, bcz _snprintf is CRT
 	const TCHAR *input = _T("0123456789");
-	sret = _sntprintf_s(soutput, ARRAYSIZE(soutput), MAX_PATH,       _T("%s"), input);
-	eret = _sntprintf_s(eoutput, ARRAYSIZE(eoutput), SMALL_Usersize, _T("%s"), input);
+	g_sret_len = _sntprintf_s(soutput, ARRAYSIZE(soutput), MAX_PATH,       _T("%s"), input);
+	g_eret_len = _sntprintf_s(eoutput, ARRAYSIZE(eoutput), SMALL_Usersize, _T("%s"), input);
 	winerr = errno;
 
-	edge_len = STRLEN(soutput);
-	edge_ret = _sntprintf_s(edge_output, edge_len,  _T("%s"), input);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = _sntprintf_s(edge_output, g_edge_len,  _T("%s"), input);
 
 	REPORT_API_TRAITS_s( _T("_snprintf_s(maxfill)") );
 }
@@ -108,12 +108,12 @@ void see_snprintf_s_TRUNCATE()
 	RESET_OUTPUT;
 	errno = 0; // Refer to `errno`, bcz _snprintf is CRT
 	const TCHAR *input = _T("0123456789");
-	sret = _sntprintf_s(soutput, MAX_PATH,       _TRUNCATE, _T("%s"), input);
-	eret = _sntprintf_s(eoutput, SMALL_Usersize, _TRUNCATE, _T("%s"), input);
+	g_sret_len = _sntprintf_s(soutput, MAX_PATH,       _TRUNCATE, _T("%s"), input);
+	g_eret_len = _sntprintf_s(eoutput, SMALL_Usersize, _TRUNCATE, _T("%s"), input);
 	winerr = errno;
 
-	edge_len = STRLEN(soutput);
-	edge_ret = _sntprintf_s(edge_output, edge_len, _TRUNCATE, _T("%s"), input);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = _sntprintf_s(edge_output, g_edge_len, _TRUNCATE, _T("%s"), input);
 	
 	REPORT_API_TRAITS_s(_T("_snprintf_s(_TRUNCATE)"));
 }
@@ -122,12 +122,12 @@ void see_GetKeyNameText()
 {
 	RESET_OUTPUT;
 	ULONG key = 0x000e0001; // Backspace
-	sret = GetKeyNameText(key, soutput, MAX_PATH);
-	eret = GetKeyNameText(key, eoutput, SMALL_Usersize);
+	g_sret_len = GetKeyNameText(key, soutput, MAX_PATH);
+	g_eret_len = GetKeyNameText(key, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetKeyNameText(key, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetKeyNameText(key, edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetKeyNameText);
 }
@@ -136,13 +136,13 @@ void see_GetClassName()
 {
 	RESET_OUTPUT;
 	HWND hwnd = GetDesktopWindow();
-	sret = GetClassName(hwnd, soutput, MAX_PATH); // Usersize-1
+	g_sret_len = GetClassName(hwnd, soutput, MAX_PATH); // Usersize-1
 	// -- #32769
-	eret = GetClassName(hwnd, eoutput, SMALL_Usersize); // T
+	g_eret_len = GetClassName(hwnd, eoutput, SMALL_Usersize); // T
 	winerr = GetLastError();
 	
-	edge_len = STRLEN(soutput);
-	edge_ret = GetClassName(hwnd, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetClassName(hwnd, edge_output, g_edge_len);
 	
 	REPORT_API_TRAITS(GetClassName);
 }
@@ -151,12 +151,12 @@ void see_GetWindowText_Explorer()
 {
 	RESET_OUTPUT;
 	HWND hwnd = GetShellWindow();
-	sret = GetWindowText(hwnd, soutput, MAX_PATH); // output "Program Manager"
-	eret = GetWindowText(hwnd, eoutput, SMALL_Usersize);
+	g_sret_len = GetWindowText(hwnd, soutput, MAX_PATH); // output "Program Manager"
+	g_eret_len = GetWindowText(hwnd, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetWindowText(hwnd, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetWindowText(hwnd, edge_output, g_edge_len);
 
 	REPORT_API_TRAITS_s(_T("GetWindowText(Explorer)"));
 }
@@ -166,13 +166,13 @@ void see_GetTextFace()
 	RESET_OUTPUT;
 	HDC hdc = GetDC(NULL);
 
-	sret = GetTextFace(hdc, MAX_PATH, soutput); // Usersize
+	g_sret_len = GetTextFace(hdc, MAX_PATH, soutput); // Usersize
 	// -- "System"
-	eret = GetTextFace(hdc, SMALL_Usersize, eoutput); // T+1
+	g_eret_len = GetTextFace(hdc, SMALL_Usersize, eoutput); // T+1
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetTextFace(hdc, edge_len, edge_output);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetTextFace(hdc, g_edge_len, edge_output);
 
 	REPORT_API_TRAITS(GetTextFace);
 
@@ -182,13 +182,13 @@ void see_GetTextFace()
 void see_GetModuleFileName()
 {
 	RESET_OUTPUT;
-	sret = GetModuleFileName(NULL, soutput, MAX_PATH);
+	g_sret_len = GetModuleFileName(NULL, soutput, MAX_PATH);
 	// -- D:\gitw\trivials\mswin\seeRetBuf\Debug\seeRetBuf.exe
-	eret = GetModuleFileName(NULL, eoutput, SMALL_Usersize);
+	g_eret_len = GetModuleFileName(NULL, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetModuleFileName(NULL, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetModuleFileName(NULL, edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetModuleFileName);
 }
@@ -196,9 +196,9 @@ void see_GetModuleFileName()
 void see_GetModuleFileName_0buf()
 {
 	RESET_OUTPUT;
-	sret = GetModuleFileName(NULL, soutput, MAX_PATH);
+	g_sret_len = GetModuleFileName(NULL, soutput, MAX_PATH);
 	// -- D:\gitw\trivials\mswin\seeRetBuf\Debug\seeRetBuf.exe
-	eret = GetModuleFileName(NULL, NULL, 0);  
+	g_eret_len = GetModuleFileName(NULL, NULL, 0);  
 	// -- Note: whan 2nd-param is NULL, 3rd param cannot be a positive value,
 	// otherwise, the API will try to write into NULL address.
 
@@ -213,13 +213,13 @@ void see_GetModuleFileName_0buf()
 void see_GetProcessImageFileName()
 {
 	RESET_OUTPUT;
-	sret = GetProcessImageFileName(GetCurrentProcess(), soutput, MAX_PATH);
+	g_sret_len = GetProcessImageFileName(GetCurrentProcess(), soutput, MAX_PATH);
 	// -- \Device\HarddiskVolume3\gitw\trivials\mswin\seeRetBuf\Debug\seeRetBuf.exe
-	eret = GetProcessImageFileName(GetCurrentProcess(), eoutput, SMALL_Usersize);
+	g_eret_len = GetProcessImageFileName(GetCurrentProcess(), eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetProcessImageFileName(GetCurrentProcess(), edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetProcessImageFileName(GetCurrentProcess(), edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetProcessImageFileName);
 }
@@ -235,15 +235,15 @@ void see_QueryFullProcessImageName() // Vista+
 	HANDLE hself = GetCurrentProcess();
 	BOOL succ1=0, succ2=0, succ3=0;
 
-	sret = MAX_PATH;
-	succ1 = dlptr_QueryFullProcessImageName(hself, 0, soutput, (DWORD*)&sret);
+	g_sret_len = MAX_PATH;
+	succ1 = dlptr_QueryFullProcessImageName(hself, 0, soutput, (DWORD*)&g_sret_len);
 	
-	eret = SMALL_Usersize;
-	succ2 = dlptr_QueryFullProcessImageName(hself, 0, eoutput, (DWORD*)&eret);
+	g_eret_len = SMALL_Usersize;
+	succ2 = dlptr_QueryFullProcessImageName(hself, 0, eoutput, (DWORD*)&g_eret_len);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	succ3 = dlptr_QueryFullProcessImageName(hself, 0, edge_output, (DWORD*)&(edge_ret=edge_len));
+	g_edge_len = STRLEN(soutput);
+	succ3 = dlptr_QueryFullProcessImageName(hself, 0, edge_output, (DWORD*)&(g_edgeret_len=g_edge_len));
 
 	REPORT_API_TRAITS(QueryFullProcessImageName);
 }
@@ -251,13 +251,13 @@ void see_QueryFullProcessImageName() // Vista+
 void see_GetSystemDirectory()
 {
 	RESET_OUTPUT;
-	sret = GetSystemDirectory(soutput, MAX_PATH);
+	g_sret_len = GetSystemDirectory(soutput, MAX_PATH);
 	// -- C:\Windows\system32
-	eret = GetSystemDirectory(eoutput, SMALL_Usersize); // T+1
+	g_eret_len = GetSystemDirectory(eoutput, SMALL_Usersize); // T+1
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetSystemDirectory(edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetSystemDirectory(edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetSystemDirectory);
 }
@@ -265,13 +265,13 @@ void see_GetSystemDirectory()
 void see_GetWindowsDirectory()
 {
 	RESET_OUTPUT;
-	sret = GetWindowsDirectory(soutput, MAX_PATH);
+	g_sret_len = GetWindowsDirectory(soutput, MAX_PATH);
 	// -- C:\Windows
-	eret = GetWindowsDirectory(eoutput, SMALL_Usersize);
+	g_eret_len = GetWindowsDirectory(eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetWindowsDirectory(edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetWindowsDirectory(edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetWindowsDirectory);
 }
@@ -282,13 +282,13 @@ void see_GetCurrentDirectory()
 	// We need to override this, bcz curdir can be as short as 3 chars, like "C:\"
 
 	RESET_OUTPUT;
-	sret = GetCurrentDirectory(MAX_PATH, soutput);
+	g_sret_len = GetCurrentDirectory(MAX_PATH, soutput);
 	// -- D:\gitw\trivials\mswin\seeRetBuf
-	eret = GetCurrentDirectory(SMALL_Usersize, eoutput); // T+1
+	g_eret_len = GetCurrentDirectory(SMALL_Usersize, eoutput); // T+1
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetCurrentDirectory(edge_len, edge_output);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetCurrentDirectory(g_edge_len, edge_output);
 
 	REPORT_API_TRAITS(GetCurrentDirectory);
 }
@@ -296,13 +296,13 @@ void see_GetCurrentDirectory()
 void see_GetTempPath()
 {
 	RESET_OUTPUT;
-	sret = GetTempPath(MAX_PATH, soutput);
+	g_sret_len = GetTempPath(MAX_PATH, soutput);
 	// -- C:\Users\win7evn\AppData\Local\Temp\ 
-	eret = GetTempPath(SMALL_Usersize, eoutput); // T+1
+	g_eret_len = GetTempPath(SMALL_Usersize, eoutput); // T+1
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetTempPath(edge_len, edge_output);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetTempPath(g_edge_len, edge_output);
 
 	REPORT_API_TRAITS(GetTempPath);
 }
@@ -311,13 +311,13 @@ void see_GetEnvironmentVariable()
 {
 	RESET_OUTPUT;
 	TCHAR *envvar = _T("HOMEPATH");
-	sret = GetEnvironmentVariable(envvar, soutput, MAX_PATH);
+	g_sret_len = GetEnvironmentVariable(envvar, soutput, MAX_PATH);
 	// -- \Users\win7evn
-	eret = GetEnvironmentVariable(envvar, eoutput, SMALL_Usersize); // T+1
+	g_eret_len = GetEnvironmentVariable(envvar, eoutput, SMALL_Usersize); // T+1
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetEnvironmentVariable(envvar, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetEnvironmentVariable(envvar, edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetEnvironmentVariable);
 }
@@ -325,18 +325,18 @@ void see_GetEnvironmentVariable()
 void see_GetDefaultUserProfileDirectory()
 {
 	RESET_OUTPUT;
-	sret = MAX_PATH;
-	BOOL succ1 = GetDefaultUserProfileDirectory(soutput, (LPDWORD)&sret);
+	g_sret_len = MAX_PATH;
+	BOOL succ1 = GetDefaultUserProfileDirectory(soutput, (LPDWORD)&g_sret_len);
 	// -- C:\Users\Default
 	
-	eret = SMALL_Usersize;
-	BOOL succ2 = GetDefaultUserProfileDirectory(eoutput, (LPDWORD)&eret); // T+1
+	g_eret_len = SMALL_Usersize;
+	BOOL succ2 = GetDefaultUserProfileDirectory(eoutput, (LPDWORD)&g_eret_len); // T+1
 	// Windows bug: partial filling but missing NUL.
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = edge_len;
-	BOOL succ3 = GetDefaultUserProfileDirectory(edge_output, (LPDWORD)&edge_ret);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = g_edge_len;
+	BOOL succ3 = GetDefaultUserProfileDirectory(edge_output, (LPDWORD)&g_edgeret_len);
 
 	REPORT_API_TRAITS(GetDefaultUserProfileDirectory);
 }
@@ -346,13 +346,13 @@ void see_GetLocaleInfo()
 	RESET_OUTPUT;
 	LCID lcid = LOCALE_USER_DEFAULT;
 	LCTYPE lctype = LOCALE_SLONGDATE;
-	sret = GetLocaleInfo(lcid, lctype, soutput, MAX_PATH);
+	g_sret_len = GetLocaleInfo(lcid, lctype, soutput, MAX_PATH);
 	// -- MMMM d, yyyy
-	eret = GetLocaleInfo(lcid, lctype, eoutput, SMALL_Usersize); // 0
+	g_eret_len = GetLocaleInfo(lcid, lctype, eoutput, SMALL_Usersize); // 0
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetLocaleInfo(lcid, lctype, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetLocaleInfo(lcid, lctype, edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetLocaleInfo);
 }
@@ -362,10 +362,10 @@ void see_GetLocaleInfo_0buf()
 	RESET_OUTPUT;
 	LCID lcid = LOCALE_USER_DEFAULT;
 	LCTYPE lctype = LOCALE_SLONGDATE;
-	sret = GetLocaleInfo(lcid, lctype, soutput, MAX_PATH);
+	g_sret_len = GetLocaleInfo(lcid, lctype, soutput, MAX_PATH);
 	// -- MMMM d, yyyy
 	//	_tprintf(_T("LOCALE_SLONGDATE: %s\n"), soutput);
-	eret = GetLocaleInfo(lcid, lctype, eoutput, 0); // Usersize+1
+	g_eret_len = GetLocaleInfo(lcid, lctype, eoutput, 0); // Usersize+1
 	winerr = GetLastError();
 
 	IGNORE_EDGE_CASE;
@@ -382,15 +382,15 @@ void see_GetSystemDefaultLocaleName() // Vista+
 
 	RESET_OUTPUT;
 
-	sret = dlptr_GetSystemDefaultLocaleName(soutput, MAX_PATH);
+	g_sret_len = dlptr_GetSystemDefaultLocaleName(soutput, MAX_PATH);
 	// -- "zh-CN", "en-US", "sr-Latn-XK" etc
 
 	const int SMALL_Usersize = 4;
-	eret = dlptr_GetSystemDefaultLocaleName(eoutput, SMALL_Usersize);
+	g_eret_len = dlptr_GetSystemDefaultLocaleName(eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = dlptr_GetSystemDefaultLocaleName(edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = dlptr_GetSystemDefaultLocaleName(edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetSystemDefaultLocaleName);
 
@@ -422,24 +422,24 @@ void see_FormatMessage()
 {
 	RESET_OUTPUT;
 	DWORD sampleerr = ERROR_FILE_NOT_FOUND;
-	sret = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, 
+	g_sret_len = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, 
 		sampleerr, 
 		0, // LANGID
 		soutput, MAX_PATH,
 		NULL);
 	// -- The system cannot find the file specified.
-	eret = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, 
+	g_eret_len = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, 
 		sampleerr, 
 		0, // LANGID
 		eoutput, SMALL_Usersize,
 		NULL);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL,
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL,
 		sampleerr,
 		0, // LANGID
-		edge_output, edge_len,
+		edge_output, g_edge_len,
 		NULL);
 
 	REPORT_API_TRAITS(FormatMessage);
@@ -455,13 +455,13 @@ void see_StringFromGUID2()
 
 #ifdef UNICODE
 	RESET_OUTPUT;
-	sret = StringFromGUID2(myguid, soutput, MAX_PATH);
+	g_sret_len = StringFromGUID2(myguid, soutput, MAX_PATH);
 	// -- {20161110-5434-11D3-B890-00C04FAD5171}
-	eret = StringFromGUID2(myguid, eoutput, SMALL_Usersize);
+	g_eret_len = StringFromGUID2(myguid, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = StringFromGUID2(myguid, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = StringFromGUID2(myguid, edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(StringFromGUID2);
 #else
@@ -473,14 +473,14 @@ void see_QueryDosDevice()
 {
 	RESET_OUTPUT;
 
-	sret = QueryDosDevice(_T("C:"), soutput, MAX_PATH);
+	g_sret_len = QueryDosDevice(_T("C:"), soutput, MAX_PATH);
 	// -- \Device\HarddiskVolume2
 
-	eret = QueryDosDevice(_T("C:"), eoutput, SMALL_Usersize);
+	g_eret_len = QueryDosDevice(_T("C:"), eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = QueryDosDevice(_T("C:"), edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = QueryDosDevice(_T("C:"), edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(QueryDosDevice);
 }
@@ -516,7 +516,7 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 	DWORD reqsize = 0;
 	succ = SetupDiGetDeviceInstanceId(dis, &did, soutput, MAX_PATH, &reqsize);
 	assert(succ);
-	sret = reqsize;
+	g_sret_len = reqsize;
 	// -- "PCIIDE\IDECHANNEL\4&2617AEAE&0&2"
 	//    "ROOT\LEGACY_TDX\0000" (on VirtualBox 6.1 VM)
 	//    etc
@@ -524,20 +524,20 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 	reqsize = 0;
 	succ = SetupDiGetDeviceInstanceId(dis, &did, eoutput, SMALL_Usersize, &reqsize);
 	assert(!succ);
-	eret = reqsize;
+	g_eret_len = reqsize;
 	winerr = GetLastError();
 
 	reqsize = 0;
-	edge_len = STRLEN(soutput);
-	succ = SetupDiGetDeviceInstanceId(dis, &did, edge_output, edge_len, &reqsize);
+	g_edge_len = STRLEN(soutput);
+	succ = SetupDiGetDeviceInstanceId(dis, &did, edge_output, g_edge_len, &reqsize);
 	assert(!succ);
-	edge_ret = reqsize;
+	g_edgeret_len = reqsize;
 
 	REPORT_API_TRAITS(SetupDiGetDeviceInstanceId);
 
 	// Check CM_Get_Device_ID_Ex()
 	RESET_OUTPUT;
-	sret = eret = edge_ret = LEN_NO_REPORT;
+	g_sret_len = g_eret_len = g_edgeret_len = LEN_NO_REPORT;
 
 	CONFIGRET cmret = CM_Get_Device_ID(did.DevInst, soutput, MAX_PATH, 0);
 	// -- PCIIDE\IDECHANNEL\4&2617AEAE&0&2
@@ -548,8 +548,8 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 	winerr = cmret; 
 	// -- CM_xxx does NOT report error code via GetLastError(), so we use cmret instead.
 
-	edge_len = STRLEN(soutput);
-	CM_Get_Device_ID(did.DevInst, edge_output, edge_len, 0);
+	g_edge_len = STRLEN(soutput);
+	CM_Get_Device_ID(did.DevInst, edge_output, g_edge_len, 0);
 
 	REPORT_API_TRAITS(CM_Get_Device_ID);
 
@@ -561,12 +561,12 @@ void see_GetICMProfile()
 	RESET_OUTPUT;
 
 	HDC hdc = GetDC(NULL);
-	BOOL succ1 = GetICMProfile(hdc, (DWORD*)&(sret=MAX_PATH), soutput);
-	BOOL succ2 = GetICMProfile(hdc, (DWORD*)&(eret=SMALL_Usersize), eoutput);
+	BOOL succ1 = GetICMProfile(hdc, (DWORD*)&(g_sret_len=MAX_PATH), soutput);
+	BOOL succ2 = GetICMProfile(hdc, (DWORD*)&(g_eret_len=SMALL_Usersize), eoutput);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	BOOL succ3 = GetICMProfile(hdc, (DWORD*)&(edge_ret=edge_len), edge_output);
+	g_edge_len = STRLEN(soutput);
+	BOOL succ3 = GetICMProfile(hdc, (DWORD*)&(g_edgeret_len=g_edge_len), edge_output);
 
 	REPORT_API_TRAITS(GetICMProfile);
 
@@ -582,12 +582,12 @@ void see_GetAtomName()
 	ATOM atom1 = AddAtom(_T("MyAtom1"));
 	Cec_DeleteAtom cec_atom1 = atom1;
 
-	sret = GetAtomName(atom1, soutput, MAX_PATH);
-	eret = GetAtomName(atom1, eoutput, SMALL_Usersize);
+	g_sret_len = GetAtomName(atom1, soutput, MAX_PATH);
+	g_eret_len = GetAtomName(atom1, eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
-	edge_len = STRLEN(soutput);
-	edge_ret = GetAtomName(atom1, edge_output, edge_len);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetAtomName(atom1, edge_output, g_edge_len);
 
 	REPORT_API_TRAITS(GetAtomName);
 }
