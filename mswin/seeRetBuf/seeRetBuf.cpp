@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.5.0"
+#define EXE_VERSION "1.6.0"
 
 enum 
 { 
@@ -43,6 +43,8 @@ enum BufSmallRet_et // Ret trait when buffer is too small
 		// -- This is C99 snprintf behavior, not seen on winapi
 	
 	BSR_TotalPlus1=4, // API feedback: how many TCHARs buffer required to correct the error(counting NUL)
+
+	BSR_TotalPlus2more = 5, // returns more than required
 
 	BSR_BUG = 7
 };
@@ -96,6 +98,9 @@ BufSmallRet_et BufSmallRet_conclude(int small_input, int small_feedback, const T
 	
 	if(small_feedback==total_len+1)
 		return BSR_TotalPlus1;
+
+	if(small_feedback>=total_len+2)
+		return BSR_TotalPlus2more;
 
 	if(small_feedback==small_input)
 		return BSR_Usersize;
@@ -276,6 +281,8 @@ void ReportTraits(const TCHAR *apiname,
 			vacat(tbuf, _T("Total")); break;
 		case BSR_TotalPlus1:
 			vacat(tbuf, _T("Total+1")); break;
+		case BSR_TotalPlus2more:
+			vacat(tbuf, _T("Total+2!")); break;
 		default:
 			vacat(tbuf, _T("[BUG]"));
 		}

@@ -40,6 +40,7 @@ const int SMALL_Usersize = 5;
 	Memset(edge_output, BADCHAR, MAX_PATH); \
 } while(0)
 
+#define MARK_LEN_NO_REPORT (g_sret_len = g_eret_len = g_edgeret_len = LEN_NO_REPORT)
 
 #define REPORT_API_TRAITS_s(apiname_s) do { \
 	ReportTraits( apiname_s, \
@@ -537,7 +538,7 @@ void see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID()
 
 	// Check CM_Get_Device_ID_Ex()
 	RESET_OUTPUT;
-	g_sret_len = g_eret_len = g_edgeret_len = LEN_NO_REPORT;
+	MARK_LEN_NO_REPORT;
 
 	CONFIGRET cmret = CM_Get_Device_ID(did.DevInst, soutput, MAX_PATH, 0);
 	// -- PCIIDE\IDECHANNEL\4&2617AEAE&0&2
@@ -592,6 +593,67 @@ void see_GetAtomName()
 	REPORT_API_TRAITS(GetAtomName);
 }
 
+MakeCleanupClass_winapi(Cec_FindVolumeClose, BOOL, FindVolumeClose, HANDLE, INVALID_HANDLE_VALUE)
+
+void see_FindFirstVolume()
+{
+	RESET_OUTPUT;
+	MARK_LEN_NO_REPORT;
+
+	Cec_FindVolumeClose h1 = FindFirstVolume(soutput, MAX_PATH);
+	// --      \\?\Volume{77952243-35b0-11ea-adc6-806e6f6e6963}\
+
+	Cec_FILEHANDLE h2 = FindFirstVolume(eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	Cec_FILEHANDLE h3 = FindFirstVolume(edge_output, g_edge_len);
+	
+	REPORT_API_TRAITS(FindFirstVolume);
+}
+
+void see_GetVolumePathNamesForVolumeName()
+{
+	TCHAR szVolname[250] = {};
+	Cec_FindVolumeClose hFindVolume = FindFirstVolume(szVolname, ARRAYSIZE(szVolname));
+	// --      \\?\Volume{77952243-35b0-11ea-adc6-806e6f6e6963}\
+
+	if(hFindVolume==INVALID_HANDLE_VALUE)
+	{
+		Prn(_T("Unexpect! FindFirstVolume() fails with winerr=%d\n"), GetLastError());
+		return;
+	}
+
+	RESET_OUTPUT;
+	const int SMALL_Usersize = 2; // bcz soutput[] may be as short as "D:\"
+
+	for(;;)
+	{
+		soutput[0] = '\0';
+		BOOL succ1 = GetVolumePathNamesForVolumeName(szVolname, soutput, MAX_PATH, (DWORD*)&g_sret_len);
+		assert(succ1);
+		if(soutput[0]!='\0')
+		{
+			// soutput[] may typically be "D:\"
+
+			BOOL succ2 = GetVolumePathNamesForVolumeName(szVolname, eoutput, SMALL_Usersize, (DWORD*)&g_eret_len);
+			winerr = GetLastError();
+
+			g_edge_len = STRLEN(soutput);
+			BOOL succ3 = GetVolumePathNamesForVolumeName(szVolname, edge_output, g_edge_len, (DWORD*)&g_edgeret_len);
+			break;
+		}
+
+		// Just got an un-mounted volume; Go on finding a mounted one.
+		BOOL succ4 = FindNextVolume(hFindVolume, szVolname, ARRAYSIZE(szVolname));
+		if(!succ4) // hopefully ERROR_NO_MORE_FILES 
+			break;
+	}
+
+	REPORT_API_TRAITS(GetVolumePathNamesForVolumeName);
+}
+
+
 void check_apis()
 {
 	see_snprintf_s_TRUNCATE();
@@ -633,4 +695,6 @@ void check_apis()
 	see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID();
 
 	see_GetAtomName();
+	see_FindFirstVolume();
+	see_GetVolumePathNamesForVolumeName();
 }
