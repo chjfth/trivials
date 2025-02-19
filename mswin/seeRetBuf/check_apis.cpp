@@ -11,6 +11,7 @@
 #include <tchar.h>
 
 #include <mswin/dlptr_winapi.h>
+#include <EnsureClnup_mswin.h>
 
 #include "share.h"
 
@@ -377,7 +378,7 @@ DEFINE_DLPTR_WINAPI("kernel32.dll", GetSystemDefaultLocaleName)
 void see_GetSystemDefaultLocaleName() // Vista+
 {
 #ifdef UNICODE
-	CANNOT_RUN_ON_WinXP(GetSystemDefaultLocaleName, OS_WINXP);
+	CANNOT_RUN_ON_WinXP(GetSystemDefaultLocaleName);
 
 	RESET_OUTPUT;
 
@@ -572,6 +573,25 @@ void see_GetICMProfile()
 	ReleaseDC(NULL, hdc);
 }
 
+MakeDelega_CleanupAny_winapi(Cec_DeleteAtom, ATOM, DeleteAtom, ATOM, 0)
+
+void see_GetAtomName()
+{
+	RESET_OUTPUT;
+
+	ATOM atom1 = AddAtom(_T("MyAtom1"));
+	Cec_DeleteAtom cec_atom1 = atom1;
+
+	sret = GetAtomName(atom1, soutput, MAX_PATH);
+	eret = GetAtomName(atom1, eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	edge_len = STRLEN(soutput);
+	edge_ret = GetAtomName(atom1, edge_output, edge_len);
+
+	REPORT_API_TRAITS(GetAtomName);
+}
+
 void check_apis()
 {
 	see_snprintf_s_TRUNCATE();
@@ -611,4 +631,6 @@ void check_apis()
 	see_GetICMProfile();
 
 	see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID();
+
+	see_GetAtomName();
 }
