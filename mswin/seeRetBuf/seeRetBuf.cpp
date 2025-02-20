@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.8.0"
+#define EXE_VERSION "1.8.1"
 
 enum 
 { 
@@ -274,6 +274,30 @@ void ReportTraits(const TCHAR *apiname,
 
 	ApiTrait_et t = {};
 
+	
+	// Check enough buffer len-feedback
+
+	if(sret_len!=LEN_NO_REPORT)
+	{
+		t.good_ret = BufEnoughRet_conclude(sret_len, soutput);
+		switch(t.good_ret)
+		{
+		case ReturnT:
+			vacat(tbuf, _T("T")); break;
+		case ReturnTplus1:
+			vacat(tbuf, _T("T+1")); break;
+		case ReturnTplus2ormore:
+			vacat(tbuf, _T("T+2!")); break;
+		default:
+			vacat(tbuf, TS_BUG);
+		}
+	}
+	else
+		vacat(tbuf, _T("-"));
+
+	vacat(tbuf, _T(","));
+
+
 	// Check small-buffer len-feedback
 
 	if(eret_len!=LEN_NO_REPORT)
@@ -304,7 +328,7 @@ void ReportTraits(const TCHAR *apiname,
 	
 	vacat(tbuf, _T(","));
 
-	// WinError
+	// Report WinError code
 
 	t.bs_winerr = winerr;
 	if(winerr>0)
@@ -346,27 +370,8 @@ void ReportTraits(const TCHAR *apiname,
 	
 	vacat(tbuf, _T(","));
 
-	// Check enough buffer len-feedback
-
-	if(sret_len!=LEN_NO_REPORT)
-	{
-		t.good_ret = BufEnoughRet_conclude(sret_len, soutput);
-		switch(t.good_ret)
-		{
-		case ReturnT:
-			vacat(tbuf, _T("T")); break;
-		case ReturnTplus1:
-			vacat(tbuf, _T("T+1")); break;
-		case ReturnTplus2ormore:
-			vacat(tbuf, _T("T+2!")); break;
-		default:
-			vacat(tbuf, TS_BUG);
-		}
-	}
-	else
-		vacat(tbuf, _T("-"));
-
-	vacat(tbuf, _T(","));
+	
+	// Edge case check ...
 
 	if(edge_retbuf!=NULL)
 	{
@@ -454,7 +459,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if(!is_sort)
 	{
-		Prn(_T("#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeCaseBug\n"));
+		Prn(_T("#,WinAPI,GoodRet,BufSmallRet,WinErr,BufSmallFill,EdgeCaseBug\n"));
 
 		int i;
 		for(i=0; i<g_nowcase; i++)
@@ -469,7 +474,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		qsort_s(gar_apicases, g_nowcase, sizeof(ApiCase_st), CompareTraits, NULL);
 
-		Prn(_T("API#,Behavior#,WinAPI,BufSmallRet,WinErr,BufSmallFill,GoodRet,EdgeCaseBug\n"));
+		Prn(_T("API#,Behavior#,WinAPI,GoodRet,BufSmallRet,WinErr,BufSmallFill,EdgeCaseBug\n"));
 
 		int behavior = 0, i;
 		const TCHAR *prev_traits = _T("");
