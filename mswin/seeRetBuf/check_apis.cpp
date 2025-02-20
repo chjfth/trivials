@@ -730,9 +730,11 @@ void see_GetComputerName()
 	const int SMALL_Usersize = 2; // to allow on computer name may be as short as 3
 
 	BOOL succ1 = GetComputerName(soutput, (DWORD*)&(g_sret_len=MAX_PATH));
-	if(g_sret_len)
+	if(g_sret_len<=SMALL_Usersize)
 	{
-
+		Prn(_T("I need GetComputerName() to return at least %d chars, yours is only %d chars: %s\n"),
+			SMALL_Usersize+1, g_sret_len, soutput);
+		return;
 	}
 
 	BOOL succ2 = GetComputerName(eoutput, (DWORD*)&(g_eret_len=SMALL_Usersize));
@@ -742,6 +744,29 @@ void see_GetComputerName()
 	BOOL succ3 = GetComputerName(edge_output, (DWORD*)&(g_edgeret_len=g_edge_len));
 
 	REPORT_API_TRAITS(GetComputerName);
+}
+
+void see_GetUserName()
+{
+	RESET_OUTPUT;
+
+	const int SMALL_Usersize = 2; // to allow on computer name may be as short as 3
+
+	BOOL succ1 = GetUserName(soutput, (DWORD*)&(g_sret_len=MAX_PATH));
+	if(g_sret_len<=SMALL_Usersize)
+	{
+		Prn(_T("I need GetUserName() to return at least %d chars, yours is only %d chars: %s\n"),
+			SMALL_Usersize+1, g_sret_len, soutput);
+		return;
+	}
+
+	BOOL succ2 = GetUserName(eoutput, (DWORD*)&(g_eret_len=SMALL_Usersize));
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	BOOL succ3 = GetUserName(edge_output, (DWORD*)&(g_edgeret_len=g_edge_len));
+
+	REPORT_API_TRAITS(GetUserName);
 }
 
 void check_apis()
@@ -799,4 +824,5 @@ void check_apis()
 	see_GetVolumePathNamesForVolumeName();
 
 	see_GetComputerName();
+	see_GetUserName();
 }

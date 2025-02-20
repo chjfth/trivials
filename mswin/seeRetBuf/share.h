@@ -15,7 +15,7 @@
 #endif
 
 #define TS_BUG _T("[BUG]")
-#define TS_WACKY_FILL   _T("[WackyFill]")     // API fills a wacky partial string.
+#define TS_WACKY_FILL   _T("[EdgeWackyFill]")  // Edge-case fill-style different than small-buf
 #define TS_OVERFLOW_NUL _T("[OverflowNUL]")
 
 #define TS_SMALL_BUFFER_OVERFLOW _T("[SMALLBUFFER-OVERFLOW]")// not found yet
