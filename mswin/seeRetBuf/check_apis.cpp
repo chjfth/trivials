@@ -682,16 +682,18 @@ void check_apis()
 	see_snprintf_s_TRUNCATE();
 	see_snprintf_UserBuflenAsMaxfill();
 
+	see_GetAtomName();
 	see_GetClassName();
 	see_GetWindowText_Explorer();
-
 	see_GetKeyNameText();
+
 	see_GetTextFace();
 
 	see_GetModuleFileName();
 	see_GetModuleFileName_0buf();
 
 	see_GetProcessImageFileName();
+
 	see_QueryFullProcessImageName();
 
 	see_GetSystemDirectory();
@@ -719,7 +721,6 @@ void check_apis()
 
 	see_SetupDiGetDeviceInstanceId_CM_Get_Device_ID();
 
-	see_GetAtomName();
 	see_FindFirstVolume();
 	see_GetVolumePathNamesForVolumeName();
 }
