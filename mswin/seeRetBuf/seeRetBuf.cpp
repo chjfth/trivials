@@ -12,12 +12,12 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.7.0"
+#define EXE_VERSION "1.8.0"
 
 enum 
 { 
 	MaxAPI = 100,
-	Traits_STRMAXLEN = 60,
+	Traits_STRMAXLEN = 120,
 };
 
 struct ApiCase_st
@@ -59,7 +59,7 @@ enum BufSmallFill_et // User buffer filling trait when buffer small
 	BSF_BUG
 };
 
-enum BufEnoughRet_et // Ret trait when buffer enough
+enum BufEnoughRet_et // Returned trait when buffer enough
 {
 	ReturnT = 0,      // Return exactly "total" size, the correct result's strlen().
 	                  // "Total"(T) does not count trailing NUL. 
@@ -118,11 +118,23 @@ BufSmallFill_et BufSmallFill_conclude(
 	int user_size, // user provided small-buflen
 	// int eret_size, // returned buffer size on small buffer(e: error)
 	const TCHAR *ebuf, // output buffer on small-buflen
-	const TCHAR *sbuf  // success buffer content(as comparison base)
+	const TCHAR *sbuf,  // success buffer content(as comparison base)
+	bool *pOverflowBug
 	)
 {
 	int total_len = STRLEN(sbuf);
 	assert(user_size<=total_len);
+
+	// Check whether beyond-buffer memory is tampered. If so, I find a Microsoft bug.
+	*pOverflowBug = false;
+	for(int i=user_size; i<MAX_PATH; i++)
+	{
+		if(ebuf[i]!=BADCHAR)
+		{
+			*pOverflowBug = true;
+			break;
+		}
+	}
 
 	if(ebuf[0]==NULCHAR)
 		return BSF_Pure_NUL;
@@ -310,7 +322,8 @@ void ReportTraits(const TCHAR *apiname,
 		eret_len = small_buflen;
 	}
 
-	t.bs_fill = BufSmallFill_conclude(small_buflen, eoutput, soutput);
+	bool isOverflowBug = false;
+	t.bs_fill = BufSmallFill_conclude(small_buflen, eoutput, soutput, &isOverflowBug);
 	switch(t.bs_fill)
 	{
 	case BSF_Pure_NUL:
@@ -322,8 +335,14 @@ void ReportTraits(const TCHAR *apiname,
 	case BSF_PartialNoNUL:
 		vacat(tbuf, _T("Yes*")); break;
 	default:
-		vacat(tbuf, _T("[BUG]"));
+		vacat(tbuf, TS_BUG);
 	}
+
+	bool isOverflowNUL = (eoutput[small_buflen]=='\0');
+	if(isOverflowNUL)
+		vacat(tbuf, TS_OVERFLOW_NUL);
+	else if(isOverflowBug)
+		vacat(tbuf, TS_SMALL_BUFFER_OVERFLOW);
 	
 	vacat(tbuf, _T(","));
 
@@ -341,7 +360,7 @@ void ReportTraits(const TCHAR *apiname,
 		case ReturnTplus2ormore:
 			vacat(tbuf, _T("T+2!")); break;
 		default:
-			vacat(tbuf, _T("[BUG]"));
+			vacat(tbuf, TS_BUG);
 		}
 	}
 	else
@@ -373,15 +392,18 @@ void ReportTraits(const TCHAR *apiname,
 			}
 		}
 
-		if(edge_retbuf[total_len]!=BADCHAR)
-			vacat(szEdgeBug, _T("[OverflowNUL]"));
-
-		BufSmallFill_et edgefill = BufSmallFill_conclude(total_len, edge_retbuf, soutput);
+		BufSmallFill_et edgefill = BufSmallFill_conclude(total_len, edge_retbuf, soutput, &isOverflowBug);
 		if(edgefill!=t.bs_fill)
 		{
-			vacat(szEdgeBug, _T("[WackyFill]"));
+			vacat(szEdgeBug, TS_WACKY_FILL);
 			// -- See comments in see_GetSystemDefaultLocaleName()
 		}
+
+		isOverflowNUL = (edge_retbuf[total_len]=='\0');
+		if(isOverflowNUL) 
+			vacat(szEdgeBug, TS_OVERFLOW_NUL);
+		else if(isOverflowBug)
+			vacat(szEdgeBug, TS_EDGE_BUFFER_OVERFLOW);
 
 		///
 

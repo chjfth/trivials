@@ -7,7 +7,19 @@
 #endif
 
 #define NULCHAR _T('\0')
+
+#ifdef UNICODE
+#define BADCHAR _T('\x203B') // the big asterisk. Don't use '\x2a2a' which causes debugger showing this WCHAR as a white box.
+#else
 #define BADCHAR _T('*')
+#endif
+
+#define TS_BUG _T("[BUG]")
+#define TS_WACKY_FILL   _T("[WackyFill]")     // API fills a wacky partial string.
+#define TS_OVERFLOW_NUL _T("[OverflowNUL]")
+
+#define TS_SMALL_BUFFER_OVERFLOW _T("[SMALLBUFFER-OVERFLOW]")// not found yet
+#define TS_EDGE_BUFFER_OVERFLOW  _T("[EDGEBUFFER-OVERFLOW]") // not found yet
 
 #define LEN_NO_REPORT (-2)  // some API does not report/feedback required buflen
 #define FORGOT_INIT (-4)

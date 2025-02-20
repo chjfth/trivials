@@ -676,7 +676,7 @@ void see_GetNumberFormat()
 	REPORT_API_TRAITS(GetNumberFormat);
 }
 
-#ifdef _UNICODE
+#ifdef UNICODE
 void see_MultiByteToWideChar()
 {
 	RESET_OUTPUT;
@@ -723,6 +723,26 @@ void see_LCMapString()
 	REPORT_API_TRAITS(LCMapString);
 }
 
+void see_GetComputerName()
+{
+	RESET_OUTPUT;
+
+	const int SMALL_Usersize = 2; // to allow on computer name may be as short as 3
+
+	BOOL succ1 = GetComputerName(soutput, (DWORD*)&(g_sret_len=MAX_PATH));
+	if(g_sret_len)
+	{
+
+	}
+
+	BOOL succ2 = GetComputerName(eoutput, (DWORD*)&(g_eret_len=SMALL_Usersize));
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	BOOL succ3 = GetComputerName(edge_output, (DWORD*)&(g_edgeret_len=g_edge_len));
+
+	REPORT_API_TRAITS(GetComputerName);
+}
 
 void check_apis()
 {
@@ -757,7 +777,7 @@ void check_apis()
 	see_LCMapString();
 	see_GetNumberFormat();
 
-#ifdef _UNICODE
+#ifdef UNICODE
 	see_MultiByteToWideChar();
 #else
 	see_WideCharToMultiByte();
@@ -778,4 +798,5 @@ void check_apis()
 	see_FindFirstVolume();
 	see_GetVolumePathNamesForVolumeName();
 
+	see_GetComputerName();
 }
