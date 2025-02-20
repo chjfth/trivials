@@ -14,6 +14,8 @@
 #define BADCHAR _T('*')
 #endif
 
+#define TS_OK   _T("OK")
+#define TS_SKIP _T("skip")
 #define TS_BUG _T("[BUG]")
 #define TS_WACKY_FILL   _T("[EdgeWackyFill]")  // Edge-case fill-style different than small-buf
 #define TS_OVERFLOW_NUL _T("[OverflowNUL]")

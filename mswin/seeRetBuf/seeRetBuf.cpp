@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.8.3"
+#define EXE_VERSION "1.8.4"
 
 enum 
 { 
@@ -413,13 +413,13 @@ void ReportTraits(const TCHAR *apiname,
 		///
 
 		if(szEdgeBug[0]=='\0')
-			vacat(szEdgeBug, _T("OK"));
+			vacat(szEdgeBug, TS_OK);
 
 		vacat(tbuf, _T("%s"), szEdgeBug);
 	}
 	else
 	{
-		vacat(tbuf, _T("skip"));
+		vacat(tbuf, TS_SKIP);
 	}
 
 	Add1Case(apiname, tbuf);

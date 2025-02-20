@@ -51,7 +51,7 @@ const int SMALL_Usersize = 5;
 
 #define REPORT_API_TRAITS(apiname) REPORT_API_TRAITS_s(_T(#apiname))
 
-#define IGNORE_EDGE_CASE TCHAR *edge_output = NULL; g_edgeret_len = g_edge_len = 0;
+#define SKIP_EDGE_CASE TCHAR *edge_output = NULL; g_edgeret_len = g_edge_len = 0;
 
 #define PRN_NO_ANSI_VARIANT(apiname) do { \
 	printf("No ANSI variant: " #apiname "()\n"); \
@@ -205,7 +205,7 @@ void see_GetModuleFileName_0buf()
 
 	winerr = GetLastError();
 
-	IGNORE_EDGE_CASE;
+	SKIP_EDGE_CASE;
 
 	REPORT_API_TRAITS_s(_T("GetModuleFileName(0buf)"));
 }
@@ -369,7 +369,7 @@ void see_GetLocaleInfo_0buf()
 	g_eret_len = GetLocaleInfo(lcid, lctype, eoutput, 0); // Usersize+1
 	winerr = GetLastError();
 
-	IGNORE_EDGE_CASE;
+	SKIP_EDGE_CASE;
 
 	REPORT_API_TRAITS_s(_T("GetLocaleInfo(0buf)"));
 }
@@ -769,6 +769,46 @@ void see_GetUserName()
 	REPORT_API_TRAITS(GetUserName);
 }
 
+
+void see_LookupAccountName()
+{
+	RESET_OUTPUT;
+
+	const int SMALL_Usersize = 2; // to allow on computer name may be as short as 3
+
+	// Note: this function check the return-buffer of LookupAccountName()'s
+	// ReferencedDomainName parameter, not Sid parameter, bcz SID is a binary struct.
+	// seeRetBuf investigate only Text output buffer.
+
+	TCHAR username[100] = {};
+	DWORD bsUsername = ARRAYSIZE(username);
+	GetUserName(username, &bsUsername);
+
+	BYTE sidbuffer[400] = {};
+	DWORD sidlen = sizeof(sidbuffer);
+	SID *psid = (SID*)sidbuffer;
+
+	SID_NAME_USE sidtype = SidTypeInvalid;
+	DWORD bsDomain = 0; // to receive domain-name bufsize
+	BOOL succ1 = LookupAccountName(NULL, username, psid, &sidlen, soutput, (DWORD*)&(g_sret_len=MAX_PATH), &sidtype);
+
+	if(g_sret_len<=SMALL_Usersize)
+	{
+		Prn(_T("I need LookupAccountName() to return at least %d chars domain-name, yours is only %d chars: %s\n"),
+			SMALL_Usersize+1, g_sret_len, soutput);
+		return;
+	}
+
+	BOOL succ2 = LookupAccountName(NULL, username, psid, &sidlen, eoutput, (DWORD*)&(g_eret_len=SMALL_Usersize), &sidtype);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	BOOL succ3 = LookupAccountName(NULL, username, psid, &sidlen, edge_output, (DWORD*)&(g_edgeret_len=g_edge_len), &sidtype);
+
+	REPORT_API_TRAITS(LookupAccountName);
+}
+
+
 void check_apis()
 {
 	see_snprintf_s_TRUNCATE();
@@ -825,4 +865,6 @@ void check_apis()
 
 	see_GetComputerName();
 	see_GetUserName();
+
+	see_LookupAccountName();
 }
