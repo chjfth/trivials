@@ -39,6 +39,7 @@ https://www.evernote.com/shard/s21/nl/2425275/6a06a3d1-d5f4-4af9-98f3-12ed3daff4
 https://www.evernote.com/shard/s21/nl/2425275/d6242fe6-13c8-44ed-adae-72896386a58b , BoundsChecker , DevPartner 除错套件
 https://www.evernote.com/shard/s21/nl/2425275/eeb1f9c1-9cbc-4b5a-a202-278c473f9896 , BPFTools2019 , BPF Performance Tools - by Brendan Gregg 读书笔记
 https://www.evernote.com/shard/s21/nl/2425275/9d0a4615-cafe-4764-89fd-10406db113bf , BSOD , Windows 蓝屏收集
+https://www.evernote.com/shard/s21/nl/2425275/3dbd1e3b-fac2-40d0-beed-dd7122cfd617 , C99spec , C language spece 1999
 https://www.evernote.com/shard/s21/nl/2425275/d6877baa-7257-4351-9885-bd7332299845 , Calibre , 超强电子书转换器
 https://www.evernote.com/shard/s21/nl/2425275/ade2d8f1-be74-43bc-895a-6781fe05565c , CCxx , C/C++
 https://www.evernote.com/shard/s21/nl/2425275/2c79ba4a-cfc1-447c-9ae3-968b7a615883 , CEnsureClnup , PSSA2000 中介绍的自动资源释放 C++ 模板库
@@ -64,7 +65,7 @@ https://www.evernote.com/shard/s21/nl/2425275/a65b50f2-6f89-4b17-bf11-5a526f9b91
 https://www.evernote.com/shard/s21/nl/2425275/af7b03f2-422c-4b00-bf45-eafb0b4807e7 , CMDXPARAM , Windows 系统: 三种参数拆解方法, 会得到不同的结果
 https://www.evernote.com/shard/s21/nl/2425275/c486c34f-9009-4979-bae1-ede28b823c68 , CodeColor , 关于代码着色
 https://www.evernote.com/shard/s21/nl/2425275/7249b299-a426-48c0-8a56-e5d2e977b039 , CodeQL , WHQL HLK 过程 用到的源代码静态分析软件
-https://www.evernote.com/shard/s21/nl/2425275/431cba60-f0b4-4223-9c05-b9c623425c25 , CodeSnip , 其他函数库/代码片段
+https://www.evernote.com/shard/s21/nl/2425275/431cba60-f0b4-4223-9c05-b9c623425c25 , CodeSnip , 收集: 有用的函数库/代码片段
 https://www.evernote.com/shard/s21/nl/2425275/befcb4c8-2c2c-49e7-b4c2-9b3abe02a6c4 , ComfyUI , 先进的 Stable Diffusion backend UI
 https://www.evernote.com/shard/s21/nl/2425275/4d921755-9917-4da4-b884-da7aa12f2e57 , CompAlgorithm , 计算机算法, Algorithm
 https://www.evernote.com/shard/s21/nl/2425275/7bc00923-4b65-41f4-8f6f-02d47a890720 , ConEmu , 
@@ -84,6 +85,7 @@ https://www.evernote.com/shard/s21/nl/2425275/58bdb796-2485-4520-b387-0d98f1d2a8
 https://www.evernote.com/shard/s21/nl/2425275/a424e311-76fe-4d09-9d6c-496a76b78aed , CUDAERR , CUDA 错误码场景收集
 https://www.evernote.com/shard/s21/nl/2425275/a84bf173-e375-45a9-9dfb-db435c29fd44 , CUDA , [CUDA] Nvidia CUDA SDK 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/b5ab35fa-2d84-446e-a7d2-41f0066fb304 , CURL , HTTP 超强命令行工具
+https://www.evernote.com/shard/s21/nl/2425275/a16f5dea-4e16-4e3b-978d-681d192e33d2 , CxxString , C++ 自己写过的零碎字符串函数
 https://www.evernote.com/shard/s21/nl/2425275/81a35fc0-fceb-41b1-90ac-da7c0114105e , DadFood , 老爹送吃的到公寓
 https://www.evernote.com/shard/s21/nl/2425275/f55c779b-d146-49d7-8b4f-ea23186d9a87 , DadHos.202308 , 2023.08 老爹冠心病住院
 https://www.evernote.com/shard/s21/nl/2425275/15dd3ba0-26cd-41d9-b2c4-a32070788e4a , DadMemo , 老爹
@@ -156,6 +158,7 @@ https://www.evernote.com/shard/s21/nl/2425275/33540000-5da8-40cb-b094-53d333fe48
 https://www.evernote.com/shard/s21/nl/2425275/0c9ce4db-9d60-49f4-a98d-e754a000d668 , FoxitCoedit , 让两台机器上的 Foxit Reader/Editor 能协同修改同一个 pdf 文件
 https://www.evernote.com/shard/s21/nl/2425275/c315679c-9b29-481f-af2c-009352c10002 , Foxit , Foxit PDF Reader/Editor
 https://www.evernote.com/shard/s21/nl/2425275/dbaa1143-2a37-4bf8-bb12-6c247b93bce4 , FPNUM , 收集： 有关浮点数
+https://www.evernote.com/shard/s21/nl/2425275/ec642d10-005b-4d45-b454-8c3ac8ed0de1 , FreeClipViewer , Free Clipboard Viewer, 很好的 Windows 剪贴板查看器
 https://www.evernote.com/shard/s21/nl/2425275/e514b880-4f2a-4b1b-95ae-889543441ba7 , GAFX8120 , AMD970+FX8120 台式机 , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/c4f3cb6f-f9ff-4a29-969e-931cb9679dfb , GBChj-P35W , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/1b3a13ad-93dc-473e-8e33-d324240139b4 , GCJ_LiveBdc , 2023.09 购买, 国产直播平民教程带AI换脸
@@ -267,7 +270,9 @@ https://www.evernote.com/shard/s21/nl/2425275/78ffee10-64f6-4cbb-8336-504fd2e9f0
 https://www.evernote.com/shard/s21/nl/2425275/a7f5797b-f464-41e7-9098-93f6d3286dd3 , MyNUCs , Intel NUC , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/e3afc836-01d6-42f6-af62-fecfe9154339 , MYPCS , My PCs - 收集帖 , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/c6dca407-074c-49ce-b797-2291325bea8b , MyPrg , 自写程序收集备忘
-https://www.evernote.com/shard/s21/nl/2425275/7d2bfa22-fe88-4074-86fe-2a087ee97258 , MySnip , 自写函数库/代码片段
+https://www.evernote.com/shard/s21/nl/2425275/7d2bfa22-fe88-4074-86fe-2a087ee97258 , MySnip_ByDate , 自写函数模块: 时间倒序
+https://www.evernote.com/shard/s21/nl/2425275/0adee52f-d8e3-453a-9ea2-3c958ef72c9a , MySnip_ByScene , 自写代码: 按场景分类
+https://www.evernote.com/shard/s21/nl/2425275/158b9fb1-4787-44c2-a83e-dbc39e7882d8 , MySnip_Encap , [MySnip_Encap] 我的精彩封装案例
 https://www.evernote.com/shard/s21/nl/2425275/9c137c2f-08c5-4429-86c8-88b2f3414a7c , N_m3u8DL , 2024 - 国人用 C# 写的开源 m3u8 视频文件下载器
 https://www.evernote.com/shard/s21/nl/2425275/7e033fd3-1797-4f26-8fb8-efac2b79af23 , NamedPipe , Windows Named-pipe API 收集帖
 https://www.evernote.com/shard/s21/nl/2425275/2626ae56-a0eb-4c2a-97ae-8c331e8f581e , Naming , 起名难题
@@ -350,6 +355,7 @@ https://www.evernote.com/shard/s21/nl/2425275/505f1815-9178-4923-b68b-323d36914f
 https://www.evernote.com/shard/s21/nl/2425275/5aa6c572-fab5-4aa6-9ecd-c60bc3f85095 , SDiffusion , Stable Diffusion 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/0c1b6a69-75b3-429a-a4b2-1694becbaf27 , SDWebuiForge , 第二代 SDWebUI, by lllyasviel
 https://www.evernote.com/shard/s21/nl/2425275/3b50c2cf-060a-4f79-822a-2e07803b0b9b , SDWebUI , Stable Diffusion WebUI 主题帖
+https://www.evernote.com/shard/s21/nl/2425275/f6ae8a1f-a647-4996-8e64-d595c7009b31 , seeRetBuf , WinAPI 短缓冲区探查程序
 https://www.evernote.com/shard/s21/nl/2425275/1863e49d-1936-4628-97e9-85fc75ca317e , SetupDi , WinDriver SetupDi 设备安装函数
 https://www.evernote.com/shard/s21/nl/2425275/d706877e-fbb2-4032-a4f5-5f51b36bc9db , SF3-2017 , 2017 购 Surface 3 平板电脑
 https://www.evernote.com/shard/s21/nl/2425275/b304498c-7298-4f4e-ad43-0451c69a1ec9 , SG5TB , [SG5TB] 在群升公寓用作 Read-only 数据盘的那颗 5TB 希捷叠瓦盘(SMR 硬盘)
@@ -408,6 +414,7 @@ https://www.evernote.com/shard/s21/nl/2425275/c49d7832-48ea-4d3c-a35b-eba73e1169
 https://www.evernote.com/shard/s21/nl/2425275/ca444b3b-65bb-4f5f-8ba2-1dc3a6124099 , UseSuse , SUSE Linux 日常使用
 https://www.evernote.com/shard/s21/nl/2425275/7c4171eb-f893-48c6-8958-ab836d9ea125 , UseUbuntu , Ubuntu Linux 日常使用
 https://www.evernote.com/shard/s21/nl/2425275/82db2908-ba28-48f4-a7f2-7cdb93372849 , UTF8ACP , 
+https://www.evernote.com/shard/s21/nl/2425275/34081a3f-31ec-46c3-9765-ec329c782246 , VcGccDiff , 收集 MSVC 和 gcc 的行为差异
 https://www.evernote.com/shard/s21/nl/2425275/61aadf62-3e78-4cb5-aedc-3cf6608a259c , Vcx64WalkStk , 调查与实验记录: MSVC x64 程序的 callstack 如何回溯
 https://www.evernote.com/shard/s21/nl/2425275/d43a0466-9fb2-4660-b4a1-2ac17f274355 , VecDraw , 矢量绘图软件
 https://www.evernote.com/shard/s21/nl/2425275/66a2acec-5d85-4be7-a714-f9d85fa11679 , VirtualBox , 

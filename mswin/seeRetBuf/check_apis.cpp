@@ -676,6 +676,53 @@ void see_GetNumberFormat()
 	REPORT_API_TRAITS(GetNumberFormat);
 }
 
+#ifdef _UNICODE
+void see_MultiByteToWideChar()
+{
+	RESET_OUTPUT;
+
+	const char szinput[] = "abcdefghijklmn";
+	g_sret_len = MultiByteToWideChar(CP_UTF8, 0, szinput, -1, soutput, MAX_PATH);
+	g_eret_len = MultiByteToWideChar(CP_UTF8, 0, szinput, -1, eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = MultiByteToWideChar(CP_UTF8, 0, szinput, -1, edge_output, g_edge_len);
+
+	REPORT_API_TRAITS_s(_T("MultiByteToWideChar(cbMultiByte=-1)"));
+}
+#else
+void see_WideCharToMultiByte()
+{
+	RESET_OUTPUT;
+
+	const WCHAR szinput[] = L"abcdefghijklmn";
+	g_sret_len = WideCharToMultiByte(CP_UTF8, 0, szinput, -1, soutput, MAX_PATH, NULL, NULL);
+	g_eret_len = WideCharToMultiByte(CP_UTF8, 0, szinput, -1, eoutput, SMALL_Usersize, NULL, NULL);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = WideCharToMultiByte(CP_UTF8, 0, szinput, -1, edge_output, g_edge_len, NULL, NULL);
+
+	REPORT_API_TRAITS_s(_T("WideCharToMultiByte(cchWideChar=-1)"));
+}
+#endif
+
+void see_LCMapString()
+{
+	RESET_OUTPUT;
+
+	const TCHAR szinput[] = _T("abcdefghijklmn");
+	g_sret_len = LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, szinput, ARRAYSIZE(szinput), soutput, MAX_PATH);
+	g_eret_len = LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, szinput, ARRAYSIZE(szinput), eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = LCMapString(LOCALE_USER_DEFAULT, LCMAP_UPPERCASE, szinput, ARRAYSIZE(szinput), edge_output, g_edge_len);
+
+	REPORT_API_TRAITS(LCMapString);
+}
+
 
 void check_apis()
 {
@@ -707,7 +754,14 @@ void check_apis()
 
 	see_GetLocaleInfo();
 	see_GetLocaleInfo_0buf();
+	see_LCMapString();
 	see_GetNumberFormat();
+
+#ifdef _UNICODE
+	see_MultiByteToWideChar();
+#else
+	see_WideCharToMultiByte();
+#endif // _DEBUG
 
 	see_GetSystemDefaultLocaleName();
 
@@ -723,4 +777,5 @@ void check_apis()
 
 	see_FindFirstVolume();
 	see_GetVolumePathNamesForVolumeName();
+
 }

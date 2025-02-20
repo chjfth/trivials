@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.6.2"
+#define EXE_VERSION "1.7.0"
 
 enum 
 { 
@@ -405,7 +405,14 @@ int __cdecl CompareTraits(void *ctx, const void *t1, const void *t2)
 {
 	ApiCase_st &c1 = *(ApiCase_st*)t1;
 	ApiCase_st &c2 = *(ApiCase_st*)t2;
-	return _tcscmp(c1.traits, c2.traits);
+	
+	int cmpret = _tcscmp(c1.traits, c2.traits);
+	if(cmpret==0)
+	{
+		// if Traits are same, we go on compare API-name
+		cmpret = _tcscmp(c1.apiname, c2.apiname);
+	}
+	return cmpret;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
