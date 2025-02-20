@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.8.1"
+#define EXE_VERSION "1.8.2"
 
 enum 
 { 
@@ -427,9 +427,11 @@ void ReportTraits(const TCHAR *apiname,
 
 //////////////////////////////////////////////////////////////////////////
 
+enum Sort_et { NoSort, DoSort, ReverseSort };
 
 int __cdecl CompareTraits(void *ctx, const void *t1, const void *t2)
 {
+	Sort_et howsort = *(Sort_et*)ctx;
 	ApiCase_st &c1 = *(ApiCase_st*)t1;
 	ApiCase_st &c2 = *(ApiCase_st*)t2;
 	
@@ -439,7 +441,7 @@ int __cdecl CompareTraits(void *ctx, const void *t1, const void *t2)
 		// if Traits are same, we go on compare API-name
 		cmpret = _tcscmp(c1.apiname, c2.apiname);
 	}
-	return cmpret;
+	return howsort==DoSort ? cmpret : -cmpret;
 }
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -448,16 +450,19 @@ int _tmain(int argc, _TCHAR* argv[])
 	Prn(_T("seeRetBuf,version %s\n"), _T(EXE_VERSION));
 	Prn(_T("WinVer: %s\n"), app_GetWindowsVersionStr3());
 
-	bool is_sort = false;
+	Sort_et howsort = NoSort;
 
-	if(argc>1 && _tcscmp(argv[1], _T("sort"))==0)
+	if(argc>1)
 	{
-		is_sort = true;
+		if( _tcscmp(argv[1], _T("sort"))==0 )
+			howsort = DoSort;
+		else if( _tcscmp(argv[1], _T("rsort"))==0 )
+			howsort = ReverseSort;
 	}
 
 	check_apis();
 
-	if(!is_sort)
+	if(howsort==NoSort)
 	{
 		Prn(_T("#,WinAPI,GoodRet,BufSmallRet,WinErr,BufSmallFill,EdgeCaseBug\n"));
 
@@ -472,7 +477,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	else
 	{
-		qsort_s(gar_apicases, g_nowcase, sizeof(ApiCase_st), CompareTraits, NULL);
+		qsort_s(gar_apicases, g_nowcase, sizeof(ApiCase_st), CompareTraits, &howsort);
 
 		Prn(_T("API#,Behavior#,WinAPI,GoodRet,BufSmallRet,WinErr,BufSmallFill,EdgeCaseBug\n"));
 
