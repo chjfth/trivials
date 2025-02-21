@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.8.4"
+#define EXE_VERSION "1.8.5"
 
 enum 
 { 
@@ -266,9 +266,12 @@ void ReportTraits(const TCHAR *apiname,
 	const TCHAR *edge_retbuf
 	)
 {
-	assert(eret_len!=FORGOT_INIT);
 	assert(sret_len!=FORGOT_INIT);
-	assert(edgeret_len!=FORGOT_INIT);
+
+	// assert(eret_len!=FORGOT_INIT);
+	// assert(edgeret_len!=FORGOT_INIT);
+	// -- Don't assert above two, so to detect small/edge-case WinAPI error.
+	//    We capture such error on WinXP GetVolumePathNamesForVolumeNameA .
 
 	TCHAR tbuf[Traits_STRMAXLEN] = _T("");
 
