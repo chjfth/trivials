@@ -12,7 +12,13 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.8.5"
+#define EXE_VERSION "1.8.6"
+
+#ifdef UNICODE
+#define UNICODE_OR_ANSI "Unicode"
+#else
+#define UNICODE_OR_ANSI "ANSI"
+#endif
 
 enum 
 { 
@@ -450,7 +456,7 @@ int __cdecl CompareTraits(void *ctx, const void *t1, const void *t2)
 int _tmain(int argc, _TCHAR* argv[])
 {
 	setlocale(LC_ALL, ""); // only for printf Chinese chars purpose
-	Prn(_T("seeRetBuf,version %s\n"), _T(EXE_VERSION));
+	Prn(_T("seeRetBuf,version %s (%s)\n"), _T(EXE_VERSION), _T(UNICODE_OR_ANSI));
 	Prn(_T("WinVer: %s\n"), app_GetWindowsVersionStr3());
 
 	Sort_et howsort = NoSort;
