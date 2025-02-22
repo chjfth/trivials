@@ -425,7 +425,8 @@ DWORD GetProcessIntegrityLevel()
 	// Integrity Level SIDs are in the form of S-1-16-0xXXXX. (e.g. 
 	// S-1-16-0x1000 stands for low integrity level SID). There is one and 
 	// only one subauthority.
-	dwIntegrityLevel = *GetSidSubAuthority(pTokenIL->Label.Sid, 0);
+	SID *psid = (SID*)pTokenIL->Label.Sid; // Chj: Have an 'SID*' var for easy debugging
+	dwIntegrityLevel = *GetSidSubAuthority(psid, 0);
 
 Cleanup:
 	// Centralized cleanup for all allocated resources.
