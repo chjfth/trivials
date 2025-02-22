@@ -12,7 +12,7 @@
 
 #include "share.h"
 
-#define EXE_VERSION "1.8.6"
+#define EXE_VERSION "1.9.0"
 
 #ifdef UNICODE
 #define UNICODE_OR_ANSI "Unicode"
