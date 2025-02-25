@@ -69,7 +69,8 @@ BOOL IsUserInAdminGroup()
 	OSVERSIONINFO osver = { sizeof(osver) };
 
 	// Open the primary access token of the process for query and duplicate.
-	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY | TOKEN_DUPLICATE, 
+	if (!OpenProcessToken(GetCurrentProcess(), 
+		TOKEN_QUERY | TOKEN_DUPLICATE, 
 		&hToken))
 	{
 		dwError = GetLastError();
@@ -115,6 +116,11 @@ BOOL IsUserInAdminGroup()
 	// CheckTokenMembership.
 	if (!hTokenToCheck)
 	{
+		// Chj memo: Three cases can we get here.
+		// 1. Run on WinXP
+		// 2. Run on Vista+ using a non-Admin user.
+		// 3. Run on Vista+ using already-elevated Admin-group user.
+
 		if (!DuplicateToken(hToken, SecurityIdentification, &hTokenToCheck))
 		{
 			dwError = GetLastError();
@@ -123,10 +129,10 @@ BOOL IsUserInAdminGroup()
 	}
 
 	// Create the SID corresponding to the Administrators group.
-	BYTE adminSID[SECURITY_MAX_SID_SIZE];
+	BYTE adminSID[SECURITY_MAX_SID_SIZE] = {};
+	SID *psid = (SID*)adminSID; // debug
 	cbSize = sizeof(adminSID);
-	if (!CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, &adminSID,  
-		&cbSize))
+	if (!CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, &adminSID, &cbSize))
 	{
 		dwError = GetLastError();
 		goto Cleanup;
@@ -207,11 +213,13 @@ BOOL IsRunAsAdmin()
 		SECURITY_BUILTIN_DOMAIN_RID, 
 		DOMAIN_ALIAS_RID_ADMINS, 
 		0, 0, 0, 0, 0, 0, 
-		&pAdministratorsGroup))
+		&pAdministratorsGroup)) // Chj: same as CreateWellKnownSid(WinBuiltinAdministratorsSid, ...)
 	{
 		dwError = GetLastError();
 		goto Cleanup;
 	}
+
+	SID *psid = (SID*)pAdministratorsGroup; // debug
 
 	// Determine whether the SID of administrators group is enabled in 
 	// the primary access token of the process.
@@ -246,8 +254,10 @@ Cleanup:
 //   process. It dictates whether the process is elevated or not. Token 
 //   elevation is only available on Windows Vista and newer operating 
 //   systems, thus IsProcessElevated throws a C++ exception if it is called 
-//   on systems prior to Windows Vista. It is not appropriate to use this 
-//   function to determine whether a process is run as administrator.
+//   on systems prior to Windows Vista. 
+//
+//   It is NOT appropriate to use this function to determine whether a process 
+//   is run as administrator. --[2025-02-25] Chj: wrong comment? I think it appropriate.
 //
 //   RETURN VALUE: Returns TRUE if the process is elevated. Returns FALSE if 
 //   it is not.
