@@ -276,6 +276,12 @@ Cleanup:
 //   process is elevated based on elevation type. Instead, we should use 
 //   TokenElevation.
 //
+//   [2025-02-25] Chj memo: Shit! The above paragraph is WRONG!
+//   I tried on Win7, TokenElevationType's behavior remains consistent whether(in
+//   UserAccountControlSettings.exe UI) I set it to Default Notify or Never Notify.
+//   And it is ridiculous to have that comment paragraph here, bcz TokenElevationType
+//   is used in this program's IsUserInAdminGroup(), not in IsProcessElevated().
+//
 //   EXAMPLE CALL:
 //     try 
 //     {
