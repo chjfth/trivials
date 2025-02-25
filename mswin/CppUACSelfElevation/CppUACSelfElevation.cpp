@@ -601,61 +601,61 @@ BOOL OnInitDialog(HWND hWnd, HWND hwndFocus, LPARAM lParam)
 void OnCommand(HWND hWnd, int id, HWND hwndCtl, UINT codeNotify)
 {
 	switch (id)
-	{
+	{{
 	case IDC_BUTTON_ELEVATE:
+	{
+		// Check the current process's "run as administrator" status.
+		BOOL fIsRunAsAdmin;
+		try
 		{
-			// Check the current process's "run as administrator" status.
-			BOOL fIsRunAsAdmin;
-			try
-			{
-				fIsRunAsAdmin = IsRunAsAdmin();
-			}
-			catch (DWORD dwError)
-			{
-				ReportError(L"IsRunAsAdmin", dwError);
-				break;
-			}
+			fIsRunAsAdmin = IsRunAsAdmin();
+		}
+		catch (DWORD dwError)
+		{
+			ReportError(L"IsRunAsAdmin", dwError);
+			break;
+		}
 
-			// Elevate the process if it is not run as administrator.
-			if (!fIsRunAsAdmin)
+		// Elevate the process if it is not run as administrator.
+		if (!fIsRunAsAdmin)
+		{
+			wchar_t szPath[MAX_PATH];
+			if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath)))
 			{
-				wchar_t szPath[MAX_PATH];
-				if (GetModuleFileName(NULL, szPath, ARRAYSIZE(szPath)))
+				// Launch itself as administrator.
+				SHELLEXECUTEINFO sei = { sizeof(sei) };
+				sei.lpVerb = L"runas";
+				sei.lpFile = szPath;
+				sei.hwnd = hWnd;
+				sei.nShow = SW_NORMAL;
+
+				if (!ShellExecuteEx(&sei))
 				{
-					// Launch itself as administrator.
-					SHELLEXECUTEINFO sei = { sizeof(sei) };
-					sei.lpVerb = L"runas";
-					sei.lpFile = szPath;
-					sei.hwnd = hWnd;
-					sei.nShow = SW_NORMAL;
-
-					if (!ShellExecuteEx(&sei))
+					DWORD dwError = GetLastError();
+					if (dwError == ERROR_CANCELLED)
 					{
-						DWORD dwError = GetLastError();
-						if (dwError == ERROR_CANCELLED)
-						{
-							// The user refused the elevation.
-							// Do nothing ...
-						}
-					}
-					else
-					{
-						EndDialog(hWnd, TRUE);  // Quit itself
+						// The user refused the elevation.
+						// Do nothing ...
 					}
 				}
-			}
-			else
-			{
-				MessageBox(hWnd, L"The process is running as administrator", L"UAC", MB_OK);
+				else
+				{
+					EndDialog(hWnd, TRUE);  // Quit itself
+				}
 			}
 		}
+		else
+		{
+			MessageBox(hWnd, L"The process is running as administrator", L"UAC", MB_OK);
+		}
 		break;
+	}
 
 	case IDOK:
 	case IDCANCEL:
 		EndDialog(hWnd, 0);
 		break;
-	}
+	}}
 }
 
 
