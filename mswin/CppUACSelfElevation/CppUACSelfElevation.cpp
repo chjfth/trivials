@@ -359,7 +359,7 @@ Cleanup:
 //
 //     SECURITY_MANDATORY_LOW_RID (SID: S-1-16-0x1000)
 //     Means low integrity level. It is used by Protected Mode Internet 
-//     Explorer. Blocks write acess to most objects (such as files and 
+//     Explorer. Blocks write access to most objects (such as files and 
 //     registry keys) on the system. 
 //
 //     SECURITY_MANDATORY_MEDIUM_RID (SID: S-1-16-0x2000)
