@@ -144,7 +144,7 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 
 		_sntprintf_s(textbuf, _TRUNCATE, _T("%s[#%d] %.*s\r\n"), textbuf, 
 			i, 
-			arus[i].Length/sizeof(TCHAR), arus[i].Buffer);
+			int(arus[i].Length/sizeof(TCHAR)), arus[i].Buffer);
 
 		if(xsid.Use==SidTypeUnknown || xsid.Use==SidTypeInvalid)
 		{
@@ -186,7 +186,7 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 		
 		_sntprintf_s(textbuf, _TRUNCATE, _T("%s[#%d] %.*s\r\n"), textbuf,
 			i,
-			us.Length/sizeof(TCHAR), us.Buffer);
+			int(us.Length/sizeof(TCHAR)), us.Buffer);
 
 		TCHAR *pSidText = NULL;
 		ConvertSidToStringSid(xDomain.Sid, &pSidText);
