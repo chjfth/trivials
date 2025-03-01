@@ -3,8 +3,8 @@
 
 #define julNestedGroupbox_VMAJOR 1
 #define julNestedGroupbox_VMINOR 0
-#define julNestedGroupbox_VPATCH 0
-#define julNestedGroupbox_VTAIL  1
+#define julNestedGroupbox_VPATCH 1
+#define julNestedGroupbox_VTAIL  0
 
 #define julNestedGroupboxstr__(n) #n
 #define julNestedGroupboxstr(n) julNestedGroupboxstr__(n)

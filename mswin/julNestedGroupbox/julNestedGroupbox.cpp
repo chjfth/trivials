@@ -73,6 +73,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		julNestedGroupbox_VMAJOR, julNestedGroupbox_VMINOR, julNestedGroupbox_VPATCH);
 	SetDlgItemText(hdlg, IDC_LABEL1, textbuf);
 	
+	prdata->mystr = _T("Note: Groupbox1 has a nested Groupbox2.");
 	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata->mystr);
 
 	Dlg_EnableJULayout(hdlg);
