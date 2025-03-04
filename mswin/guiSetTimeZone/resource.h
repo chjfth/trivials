@@ -4,15 +4,16 @@
 //
 #define IDI_WINMAIN                     100
 #define IDD_WINMAIN                     101
-#define IDC_LABEL1                      1000
 #define IDS_TimezoneName                1000
 #define IDC_EDIT_LOGMSG                 1001
-#define IDC_BUTTON1                     1002
 #define IDB_EXECUTE                     1002
-#define IDC_EDIT1                       1003
-#define IDC_STATIC                      1004
-#define IDC_EDIT2                       1005
-#define IDS_NewTZName                   -1
+#define IDE_NewTZName                   1003
+#define IDE_NewTZBiasMinutes            1004
+#define IDCHK_SeSystemtime              1006
+#define IDCHK_SeTimeZone                1007
+#define IDC_BUTTON1                     1008
+#define IDB_Refresh                     1008
+#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
@@ -20,7 +21,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_CONTROL_VALUE         1009
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

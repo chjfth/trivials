@@ -1,5 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <Psapi.h>
 #include <windowsx.h>
 #include <assert.h>
 #include <stdio.h>
@@ -115,8 +116,15 @@ void vaDbgS(const TCHAR *fmt, ...)
 
 int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...)
 {
+	TCHAR szModuleName[40] = {};
+
 	va_list args;
 	va_start(args, szfmt);
+
+	if(!szTitle) {
+		GetModuleBaseName(GetCurrentProcess(), NULL, szModuleName, ARRAYSIZE(szModuleName));
+		szTitle = szModuleName;
+	}
 
 	TCHAR msgtext[4000] = {};
 	_vsntprintf_s(msgtext, _TRUNCATE, szfmt, args);
@@ -141,16 +149,19 @@ BOOL vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...)
 	return succ;
 }
 
-BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
+BOOL vlSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, va_list args)
 {
 	TCHAR tbuf[64000] = {};
+	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
+	BOOL succ = SetDlgItemText(hwnd, nIDDlgItem, tbuf);
+	return succ;	
+}
+
+BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
+{
 	va_list args;
 	va_start(args, szfmt);
-
-	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
-
-	BOOL succ = SetDlgItemText(hwnd, nIDDlgItem, tbuf);
-
+	BOOL succ = vlSetDlgItemText(hwnd, nIDDlgItem, szfmt, args);
 	va_end(args);
 	return succ;
 }

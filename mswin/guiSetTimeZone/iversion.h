@@ -3,8 +3,8 @@
 
 #define guiSetTimeZone_VMAJOR 1
 #define guiSetTimeZone_VMINOR 0
-#define guiSetTimeZone_VPATCH 0
-#define guiSetTimeZone_VTAIL  1
+#define guiSetTimeZone_VPATCH 1
+#define guiSetTimeZone_VTAIL  0
 
 #define guiSetTimeZonestr__(n) #n
 #define guiSetTimeZonestr(n) guiSetTimeZonestr__(n)

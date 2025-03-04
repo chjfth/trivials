@@ -21,6 +21,8 @@ void vaDbgS(const TCHAR *fmt, ...);
 int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...);
 
 BOOL vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...);
+
+BOOL vlSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, va_list args);
 BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...);
 
 void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...);

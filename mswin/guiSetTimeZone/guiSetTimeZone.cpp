@@ -13,6 +13,10 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <mswin/WinError.itc.h>
+
+#include <EnsureClnup_mswin.h>
+
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 HINSTANCE g_hinstExe;
@@ -23,7 +27,7 @@ struct DlgPrivate_st
 	int clicks;
 };
 
-enum TZI_ret // Timezone Catogery
+enum TZI_ret // Timezone Category
 {
 	TzrInvalid = TIME_ZONE_ID_INVALID,   // -1
 	TzrUnknown = TIME_ZONE_ID_UNKNOWN,   // 0
@@ -31,28 +35,169 @@ enum TZI_ret // Timezone Catogery
 	TzrDaylight = TIME_ZONE_ID_DAYLIGHT, // 2
 };
 
-void test1(HWND hdlg)
+static void showmsg(HWND hdlg, const TCHAR *szfmt, ...)
 {
+	va_list args;
+	va_start(args, szfmt);
+	vlSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, szfmt, args);
+	va_end(args);
+}
+
+/*
+LUID getPrivilegeLuid(const TCHAR *privname)
+{
+	LUID luid = {};
+	BOOL succ = LookupPrivilegeValue(NULL, privname, &luid);
+	return luid;
+}
+*/
+
+bool guiRefresh(HWND hdlg)
+{
+	showmsg(hdlg, _T(""));
+
 	TIME_ZONE_INFORMATION tzi = {};
 	TZI_ret tzr = (TZI_ret)GetTimeZoneInformation(&tzi);
+	if(tzr==TzrInvalid)
+	{
+		showmsg(hdlg, _T("Unexpect! GetTimeZoneInformation() fail. WinErr=%s."), ITCS_WinError);
+		return false;
+	}
+
+	vaSetDlgItemText(hdlg, IDS_TimezoneName, _T("Timezone name: %s"), tzi.StandardName);
+
+	TCHAR szNewTzname[200] = {};
+	GetDlgItemText(hdlg, IDE_NewTZName, szNewTzname, ARRAYSIZE(szNewTzname));
+	if(!szNewTzname[0])
+		vaSetDlgItemText(hdlg, IDE_NewTZName, _T("%s"), tzi.StandardName);
+
+	vaSetDlgItemText(hdlg, IDE_NewTZBiasMinutes, _T("%d"), tzi.Bias);
+
+	// Check token privileges 
+	HANDLE hToken = NULL;
+	BOOL succ = OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken);
+	if(!succ) {
+		showmsg(hdlg, _T("Unexpect! OpenProcessToken() fail. WinErr=%s."), ITCS_WinError);
+		return false;
+	}
+	CEC_PTRHANDLE cec_hToken = hToken;
+
+	PRIVILEGE_SET privset = {1, PRIVILEGE_SET_ALL_NECESSARY};
+	
+	BOOL enPrivSystime = 0;
+	LookupPrivilegeValue(NULL, SE_SYSTEMTIME_NAME, &privset.Privilege[0].Luid);
+	succ = PrivilegeCheck(hToken, &privset, &enPrivSystime);
+
+	BOOL enPrivTimezone = 0;
+	LookupPrivilegeValue(NULL, SE_TIME_ZONE_NAME, &privset.Privilege[0].Luid);
+	succ = PrivilegeCheck(hToken, &privset, &enPrivTimezone);
+
+	CheckDlgButton(hdlg, IDCHK_SeSystemtime, enPrivSystime);
+	CheckDlgButton(hdlg, IDCHK_SeTimeZone, enPrivTimezone);
+
+	return true;
+}
+
+bool adjustMyTokenPrivilege(HWND hdlg, const TCHAR *privname, BOOL isEnable)
+{
+	HANDLE hToken = NULL;
+	BOOL succ = OpenProcessToken(GetCurrentProcess(), 
+		TOKEN_QUERY|TOKEN_ADJUST_PRIVILEGES, &hToken);
+	if(!succ) {
+		showmsg(hdlg, _T("Unexpect! OpenProcessToken() fail. WinErr=%s."), ITCS_WinError);
+		return false;
+	}
+	CEC_PTRHANDLE cec_hToken = hToken;
+
+	TOKEN_PRIVILEGES tp = {1}; // count=1
+	succ = LookupPrivilegeValue(NULL, privname, &tp.Privileges[0].Luid);
+	if(!succ) {
+		showmsg(hdlg, _T("%s is not supported on this system."), privname);
+		return false;
+	}
+
+	if(isEnable)
+		tp.Privileges[0].Attributes |= SE_PRIVILEGE_ENABLED;
+	else
+		tp.Privileges[0].Attributes &= ~SE_PRIVILEGE_ENABLED;
+
+	AdjustTokenPrivileges(hToken, FALSE, &tp, sizeof(tp), NULL, NULL);
+	DWORD winerr = GetLastError(); // AdjustTokenPrivileges() returning TRUE means nothing.
+	if(winerr) {
+		// If cannot enable the privilege, we get WinErr=1300(ERROR_NOT_ALL_ASSIGNED).
+		showmsg(hdlg, _T("AdjustTokenPrivileges() fail. WinErr=%s."), ITCS_WinError);
+		return false;
+	}
+
+	return true;
+}
+
+void executeSetTimezone(HWND hdlg)
+{
+	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T(""));
+
+	TIME_ZONE_INFORMATION tzi = {};
+	TZI_ret tzr = (TZI_ret)GetTimeZoneInformation(&tzi);
+	if(tzr==TzrInvalid)
+	{
+		showmsg(hdlg, _T("Unexpect! GetTimeZoneInformation() fail. WinErr=%d."), GetLastError());
+		return;
+	}
+
+	BOOL isok = 0;
+	LONG biasMinutes = GetDlgItemInt(hdlg, IDE_NewTZBiasMinutes, &isok, TRUE);
+	if(!isok)
+	{
+		showmsg(hdlg, _T("Invalid input of Bias minutes. Must be a positive or negative integer."));
+		return;
+	}
+
+	tzi.Bias = biasMinutes;
+	GetDlgItemText(hdlg, IDE_NewTZName, tzi.StandardName, ARRAYSIZE(tzi.StandardName));
+
+	BOOL succ = SetTimeZoneInformation(&tzi);
+	if(succ)
+	{
+		vaMsgBox(hdlg, MB_OK, NULL, _T("SetTimeZoneInformation success."));
+		guiRefresh(hdlg);
+	}
+	else
+	{
+		showmsg(hdlg, _T("SetTimeZoneInformation fail. WinErr=%s"), ITCS_WinError);
+	}
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR textbuf[200];
 
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDB_Refresh:
 	{
-		test1(hdlg);
-
-		++(prdata->clicks);
-		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
-		SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, textbuf);
-
-		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
+		guiRefresh(hdlg);
+		break;
+	}
+	case IDB_EXECUTE:
+	{
+		executeSetTimezone(hdlg);
+		break;
+	}
+	case IDCHK_SeSystemtime:
+	{
+		BOOL isChecked = Button_GetCheck(GetDlgItem(hdlg, IDCHK_SeSystemtime));
+		bool succ = adjustMyTokenPrivilege(hdlg, SE_SYSTEMTIME_NAME, !isChecked);
+//		bool succ = adjustMyTokenPrivilege(hdlg, SE_LOCK_MEMORY_NAME, !isChecked);
+		if(succ)
+			guiRefresh(hdlg);
+		break;
+	}
+	case IDCHK_SeTimeZone:
+	{
+		BOOL isChecked = Button_GetCheck(GetDlgItem(hdlg, IDCHK_SeTimeZone));
+		bool succ = adjustMyTokenPrivilege(hdlg, SE_TIME_ZONE_NAME, !isChecked);
+		if(succ)
+			guiRefresh(hdlg);
 		break;
 	}
 	case IDOK:
@@ -68,9 +213,9 @@ static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
-	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
-	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+// 	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
+// 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
+// 	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
@@ -82,16 +227,20 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 	
-	TCHAR textbuf[200];
-	_sntprintf_s(textbuf, _TRUNCATE, _T("version: %d.%d.%d"), 
-		guiSetTimeZone_VMAJOR, guiSetTimeZone_VMINOR, guiSetTimeZone_VPATCH);
-	SetDlgItemText(hdlg, IDC_LABEL1, textbuf);
 	
-	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata->mystr);
-
+	vaSetWindowText(hdlg, _T("guiSetTimeZone v%d.%d.%d"), 
+		guiSetTimeZone_VMAJOR, guiSetTimeZone_VMINOR, guiSetTimeZone_VPATCH);
+	
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	if( guiRefresh(hdlg) )
+	{
+		showmsg(hdlg, 
+			_T("Lab note: In order to make SetTimeZoneInformation success, ")
+			_T("you need to manually enable SeSystemtimePrivilege or SeTimeZonePrivilege."));
+	}
+
+	SetFocus(GetDlgItem(hdlg, IDB_EXECUTE));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 

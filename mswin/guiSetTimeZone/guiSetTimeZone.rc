@@ -38,19 +38,23 @@ IDI_WINMAIN             ICON                    "guiSetTimeZone.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 256, 116
+IDD_WINMAIN DIALOGEX 0, 0, 257, 153
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "guiSetTimeZone"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Timezone name:",IDS_TimezoneName,4,4,245,12,SS_CENTERIMAGE
-    EDITTEXT        IDC_EDIT_LOGMSG,4,62,248,34,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "&Execute",IDB_EXECUTE,104,98,50,14
-    LTEXT           "New timezone name:",IDS_NewTZName,4,25,68,8
-    EDITTEXT        IDC_EDIT1,75,24,174,14,ES_AUTOHSCROLL
-    LTEXT           "New timezone set to:",IDS_NewTZName,4,44,69,8
-    EDITTEXT        IDC_EDIT2,75,42,40,14,ES_AUTOHSCROLL
-    LTEXT           "minutes ahead of UTC.",IDS_NewTZName,123,44,74,8
+    LTEXT           "New timezone name:",IDC_STATIC,4,22,68,8
+    EDITTEXT        IDE_NewTZName,75,21,174,14,ES_AUTOHSCROLL
+    LTEXT           "New timezone set to:",IDC_STATIC,4,41,69,8
+    EDITTEXT        IDE_NewTZBiasMinutes,75,39,30,14,ES_AUTOHSCROLL
+    LTEXT           "minutes behind of UTC.",IDC_STATIC,109,41,99,8
+    EDITTEXT        IDC_EDIT_LOGMSG,4,98,249,34,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "&SetTimeZoneInformation",IDB_EXECUTE,156,135,97,14
+    GROUPBOX        "Current privileges (click to toggle)",IDC_STATIC,4,56,249,39
+    CHECKBOX        "SeSystemtimePrivilege (WinXP needs this to be turned on)",IDCHK_SeSystemtime,12,68,201,10
+    CHECKBOX        "SeTimeZonePrivilege (Vista+ turning on this is enough)",IDCHK_SeTimeZone,12,81,190,10
+    PUSHBUTTON      "&Refresh",IDB_Refresh,4,135,50,14
 END
 
 
@@ -65,9 +69,9 @@ BEGIN
     IDD_WINMAIN, DIALOG
     BEGIN
         LEFTMARGIN, 4
-        RIGHTMARGIN, 252
+        RIGHTMARGIN, 253
         TOPMARGIN, 4
-        BOTTOMMARGIN, 112
+        BOTTOMMARGIN, 149
     END
 END
 #endif    // APSTUDIO_INVOKED
