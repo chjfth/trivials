@@ -23,6 +23,19 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+enum TZI_ret // Timezone Catogery
+{
+	TzrInvalid = TIME_ZONE_ID_INVALID,   // -1
+	TzrUnknown = TIME_ZONE_ID_UNKNOWN,   // 0
+	TzrStandard = TIME_ZONE_ID_STANDARD, // 1
+	TzrDaylight = TIME_ZONE_ID_DAYLIGHT, // 2
+};
+
+void test1(HWND hdlg)
+{
+	TIME_ZONE_INFORMATION tzi = {};
+	TZI_ret tzr = (TZI_ret)GetTimeZoneInformation(&tzi);
+}
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
@@ -33,6 +46,8 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{{
 	case IDC_BUTTON1:
 	{
+		test1(hdlg);
+
 		++(prdata->clicks);
 		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
 		SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, textbuf);
