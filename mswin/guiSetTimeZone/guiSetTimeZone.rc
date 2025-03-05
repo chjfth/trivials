@@ -38,7 +38,7 @@ IDI_WINMAIN             ICON                    "guiSetTimeZone.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 257, 153
+IDD_WINMAIN DIALOGEX 0, 0, 257, 162
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "guiSetTimeZone"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
@@ -52,9 +52,9 @@ BEGIN
     GROUPBOX        "Current privileges (click to toggle)",IDC_STATIC,4,56,249,39
     CHECKBOX        "SeSystemtimePrivilege (WinXP+ has this, but meaningless)",IDCHK_SeSystemtime,12,68,203,10
     CHECKBOX        "SeTimeZonePrivilege (Win8/7/Vista needs this to be turned on)",IDCHK_SeTimeZone,12,81,216,10
-    EDITTEXT        IDC_EDIT_LOGMSG,4,98,249,34,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "&Refresh",IDB_Refresh,4,135,50,14
-    PUSHBUTTON      "&SetTimeZoneInformation",IDB_EXECUTE,156,135,97,14
+    EDITTEXT        IDC_EDIT_LOGMSG,4,98,249,45,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "&Refresh",IDB_Refresh,4,144,50,14
+    PUSHBUTTON      "&SetTimeZoneInformation",IDB_EXECUTE,156,144,97,14
 END
 
 
@@ -71,7 +71,7 @@ BEGIN
         LEFTMARGIN, 4
         RIGHTMARGIN, 253
         TOPMARGIN, 4
-        BOTTOMMARGIN, 149
+        BOTTOMMARGIN, 158
     END
 END
 #endif    // APSTUDIO_INVOKED

@@ -21,12 +21,6 @@
 
 HINSTANCE g_hinstExe;
 
-struct DlgPrivate_st
-{
-	const TCHAR *mystr;
-	int clicks;
-};
-
 enum TZI_ret // Timezone Category
 {
 	TzrInvalid = TIME_ZONE_ID_INVALID,   // -1
@@ -42,15 +36,6 @@ static void showmsg(HWND hdlg, const TCHAR *szfmt, ...)
 	vlSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, szfmt, args);
 	va_end(args);
 }
-
-/*
-LUID getPrivilegeLuid(const TCHAR *privname)
-{
-	LUID luid = {};
-	BOOL succ = LookupPrivilegeValue(NULL, privname, &luid);
-	return luid;
-}
-*/
 
 bool guiRefresh(HWND hdlg)
 {
@@ -169,8 +154,6 @@ void executeSetTimezone(HWND hdlg)
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
-	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-
 	switch (id) 
 	{{
 	case IDB_Refresh:
@@ -223,10 +206,6 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 {
 	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
 
-	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
-	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
-	
-	
 	vaSetWindowText(hdlg, _T("guiSetTimeZone v%d.%d.%d"), 
 		guiSetTimeZone_VMAJOR, guiSetTimeZone_VMINOR, guiSetTimeZone_VPATCH);
 	
@@ -235,8 +214,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	if( guiRefresh(hdlg) )
 	{
 		showmsg(hdlg, 
-			_T("Lab note: In order to make SetTimeZoneInformation success, ")
-			_T("you need to manually enable SeSystemtimePrivilege or SeTimeZonePrivilege."));
+			_T("Lab note: In order to make SetTimeZoneInformation success,\r\n")
+			_T("* On Win8/7/Vista, enable SeTimeZonePrivilege above.\r\n")
+			_T("* On WinXP, manually enable write access to regkey [HKLM\\SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation].")
+			);
 	}
 
 	SetFocus(GetDlgItem(hdlg, IDB_EXECUTE));
@@ -263,8 +244,7 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
-	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
-	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, (LPARAM)&dlgdata);
+	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, NULL);
 
 	return 0;
 }
