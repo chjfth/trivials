@@ -2,8 +2,8 @@
 #define __tLsaLookupNames_iversion_h_
 
 #define tLsaLookupNames_VMAJOR 1
-#define tLsaLookupNames_VMINOR 2
-#define tLsaLookupNames_VPATCH 1
+#define tLsaLookupNames_VMINOR 3
+#define tLsaLookupNames_VPATCH 0
 #define tLsaLookupNames_VTAIL  0
 
 #define tLsaLookupNamesstr__(n) #n

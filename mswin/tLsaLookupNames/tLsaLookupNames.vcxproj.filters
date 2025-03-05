@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="tLsaLookupNames.cpp" />
+    <ClCompile Include="..\utils.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="iversion.h" />
+    <ClInclude Include="..\utils.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tLsaLookupNames.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tLsaLookupNames.ico" />
+    <None Include="_iversion.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="chjutils">
+      <UniqueIdentifier>{515ac882-abbf-4132-b410-a641bad6a423}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

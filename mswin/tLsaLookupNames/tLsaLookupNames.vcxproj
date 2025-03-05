@@ -153,7 +153,7 @@
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
 
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../../__chjcxx/common-include/include;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -164,7 +164,7 @@
       <AdditionalLibraryDirectories>;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'"  >;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ComCtl32.Lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Psapi.lib;ComCtl32.Lib;;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
  
     <!-- Better build.log file naming -->
@@ -212,6 +212,8 @@
   <ItemGroup>
     <ClCompile Include="tLsaLookupNames.cpp" />
     <ClCompile Include="..\utils.cpp" />
+    <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tLsaLookupNames.rc" />
@@ -224,6 +226,9 @@
     <ClInclude Include="iversion.h" />
     <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
+    <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
   </ItemGroup>
  
   <!-- MSBuild system stock Cpp.targets -->

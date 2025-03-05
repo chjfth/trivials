@@ -19,6 +19,9 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <mswin/WinError.itc.h>
+using namespace itc;
+
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 
@@ -91,8 +94,8 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 
 	DWORD winerr = LsaNtStatusToWinError(ntserr);
 	if (winerr != ERROR_SUCCESS){
-		vaMsgBox(hdlg, MB_OK|MB_ICONWARNING, _T("Error"),
-			_T("LsaOpenPolicy() fail. ntserr=0x%X, WinErr=%d\n"), ntserr, winerr);
+		vaMsgBox(hdlg, MB_OK|MB_ICONWARNING, NULL_TITLE,
+			_T("LsaOpenPolicy() fail. ntserr=0x%X, WinErr=%s\n"), ntserr, ITCSv(winerr, WinError));
 		return false;
 	}
 
@@ -121,11 +124,11 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 		winerr = LsaNtStatusToWinError(ntserr);
 
 		if(winerr==ERROR_NONE_MAPPED) {
-			vaMsgBox(hdlg, MB_OK|MB_ICONWARNING, _T("Error"),
-				_T("WinErr=%d, No input names queried success."), winerr);
+			vaMsgBox(hdlg, MB_OK|MB_ICONWARNING, NULL_TITLE,
+				_T("WinErr=%d (ERROR_NONE_MAPPED), No input names queried success."), winerr);
 		} else {
-			vaMsgBox(hdlg, MB_OK|MB_ICONWARNING, _T("Error"),
-				_T("LsaLookupNames2() error. ntserr=0x%X, winerr=%d\n"), ntserr, winerr);
+			vaMsgBox(hdlg, MB_OK|MB_ICONWARNING, NULL_TITLE,
+				_T("LsaLookupNames2() error. ntserr=0x%X, winerr=%s\n"), ntserr, ITCSv(winerr, WinError));
 		}
 		return false;
 	}
@@ -162,7 +165,7 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 
 		TCHAR *pSidText = NULL;
 		ConvertSidToStringSid(xsid.Sid, &pSidText);
-		Cec_LocalFree cec_sidtext = pSidText;
+		CEC_LocalFree cec_sidtext = pSidText;
 	
 		_sntprintf_s(textbuf, _TRUNCATE, _T("%sSID=%s\r\n"), textbuf,
 			pSidText);
@@ -190,7 +193,7 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 
 		TCHAR *pSidText = NULL;
 		ConvertSidToStringSid(xDomain.Sid, &pSidText);
-		Cec_LocalFree cec_sidtext = pSidText;
+		CEC_LocalFree cec_sidtext = pSidText;
 
 		_sntprintf_s(textbuf, _TRUNCATE, _T("%sSID=%s\r\n"), textbuf,
 			pSidText);

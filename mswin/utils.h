@@ -19,6 +19,7 @@ void vaDbgTs(const TCHAR *fmt, ...);
 void vaDbgS(const TCHAR *fmt, ...);
 
 int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...);
+#define NULL_TITLE NULL // use for szTitle param
 
 BOOL vaSetWindowText(HWND hwnd, const TCHAR *szfmt, ...);
 
