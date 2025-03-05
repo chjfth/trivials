@@ -187,7 +187,6 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		BOOL isChecked = Button_GetCheck(GetDlgItem(hdlg, IDCHK_SeSystemtime));
 		bool succ = adjustMyTokenPrivilege(hdlg, SE_SYSTEMTIME_NAME, !isChecked);
-//		bool succ = adjustMyTokenPrivilege(hdlg, SE_LOCK_MEMORY_NAME, !isChecked);
 		if(succ)
 			guiRefresh(hdlg);
 		break;
@@ -211,11 +210,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 static void Dlg_EnableJULayout(HWND hdlg)
 {
-	JULayout *jul = JULayout::EnableJULayout(hdlg);
+	JULayout *jul = JULayout::EnableJULayout(hdlg, 0,0, 0,1000);
 
-// 	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
-// 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-// 	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+ 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
+ 	jul->AnchorControl(0,100, 0,100, IDB_Refresh);
+ 	jul->AnchorControl(100,100, 100,100, IDB_EXECUTE);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }

@@ -49,12 +49,12 @@ BEGIN
     LTEXT           "New timezone set to:",IDC_STATIC,4,41,69,8
     EDITTEXT        IDE_NewTZBiasMinutes,75,39,30,14,ES_AUTOHSCROLL
     LTEXT           "minutes behind of UTC.",IDC_STATIC,109,41,99,8
-    EDITTEXT        IDC_EDIT_LOGMSG,4,98,249,34,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "&SetTimeZoneInformation",IDB_EXECUTE,156,135,97,14
     GROUPBOX        "Current privileges (click to toggle)",IDC_STATIC,4,56,249,39
     CHECKBOX        "SeSystemtimePrivilege (WinXP needs this to be turned on)",IDCHK_SeSystemtime,12,68,201,10
     CHECKBOX        "SeTimeZonePrivilege (Vista+ turning on this is enough)",IDCHK_SeTimeZone,12,81,190,10
+    EDITTEXT        IDC_EDIT_LOGMSG,4,98,249,34,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
     PUSHBUTTON      "&Refresh",IDB_Refresh,4,135,50,14
+    PUSHBUTTON      "&SetTimeZoneInformation",IDB_EXECUTE,156,135,97,14
 END
 
 
