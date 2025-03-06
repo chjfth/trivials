@@ -214,11 +214,9 @@
 
   <ItemGroup>
     <ClCompile Include="CreateProcessOnto.cpp" />
-    <ClCompile Include="utils.cpp" />
-<!--
+    <ClCompile Include="..\utils.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
--->
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CreateProcessOnto.rc" />
@@ -229,14 +227,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iversion.h" />
-    <ClInclude Include="utils.h" />
+    <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="JULayout2.h" />
-<!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
--->
   </ItemGroup>
  
   <!-- MSBuild system stock Cpp.targets -->
@@ -246,7 +241,7 @@
  
   <!-- import VSPG start -->
   <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>$(SolutionDir)_VSPG\boots</VSPG_BootsDir_NoTBS>
+    <VSPG_BootsDir_NoTBS>..\..\__VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>

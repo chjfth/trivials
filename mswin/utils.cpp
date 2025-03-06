@@ -166,12 +166,9 @@ BOOL vaSetDlgItemText(HWND hwnd, int nIDDlgItem, const TCHAR *szfmt, ...)
 	return succ;
 }
 
-void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
+void vlAppendText_mled(HWND hedit, const TCHAR *szfmt, va_list args)
 {
 	TCHAR tbuf[64000] = {};
-	va_list args;
-	va_start(args, szfmt);
-
 	_vsntprintf_s(tbuf, _TRUNCATE, szfmt, args);
 
 	int pos = GetWindowTextLength (hedit);
@@ -182,7 +179,13 @@ void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
 
 	Edit_SetSel(hedit, pos, pos);
 	Edit_ReplaceSel(hedit, tbuf);
+}
 
+void vaAppendText_mled(HWND hedit, const TCHAR *szfmt, ...)
+{
+	va_list args;
+	va_start(args, szfmt);
+	vlAppendText_mled(hedit, szfmt, args);
 	va_end(args);
 }
 
