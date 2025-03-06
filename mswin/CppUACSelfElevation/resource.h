@@ -9,6 +9,7 @@
 #define IDC_STATIC_ISRUNASADMIN         1002
 #define IDC_STATIC_ISELEVATED           1003
 #define IDC_STATIC_IL                   1004
+#define IDC_STATIC_IsUserAnAdmin        1005
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

@@ -22,6 +22,7 @@ WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <stdio.h>
 #include <windows.h>
 #include <windowsx.h>
+#include <Shlobj.h> // for IsUserAnAdmin()
 #include <strsafe.h>
 #include <shlobj.h>
 #include "Resource.h"
@@ -604,6 +605,10 @@ BOOL OnInitDialog(HWND hWnd, HWND hwndFocus, LPARAM lParam)
 		SetWindowText(hIsElevatedLabel, L"N/A");
 		SetWindowText(hILLabel, L"N/A");
 	}
+
+	// [2025-03-06] Chj: Check IsUserAnAdmin()
+	BOOL isUserAnAdmin = IsUserAnAdmin();
+	SetDlgItemText(hWnd, IDC_STATIC_IsUserAnAdmin, isUserAnAdmin?L"TRUE":L"FALSE");
 
 	return TRUE;
 }
