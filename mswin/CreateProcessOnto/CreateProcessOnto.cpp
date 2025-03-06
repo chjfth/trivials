@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <ShlObj.h>
+#include <Winternl.h> // for NtQueryInformationProcess()
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -16,6 +17,7 @@
 
 #include <EnsureClnup_mswin.h>
 #include <mswin/WinError.itc.h>
+#include <mswin/dlptr_winapi.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -46,18 +48,51 @@ static void appendmsg(HWND hdlg, const TCHAR *szfmt, ...)
 
 //MakeDelega_CleanupPtr_winapi(Cec_DeleteProcThreadAttributeList, void, DeleteProcThreadAttributeList, LPPROC_THREAD_ATTRIBUTE_LIST)
 
-void test_CreateProcessAsUser(HWND hdlg, DWORD pid, TCHAR *exepath)
+struct real_PROCESS_BASIC_INFORMATION // told by GPT4o
+{
+	PVOID Reserved1;
+	PVOID PebBaseAddress;
+	PVOID Reserved2[2];
+	ULONG_PTR UniqueProcessId;
+	ULONG_PTR InheritedFromUniqueProcessId; // (undoc) Parent PID
+};
+
+DEFINE_DLPTR_WINAPI("ntdll.dll", NtQueryInformationProcess)
+
+DWORD util_GetParentProcessID(DWORD pid) 
+{
+	if(!dlptr_NtQueryInformationProcess)
+		return 0;
+
+	DWORD parentPID = 0;
+
+	HANDLE hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+	if (hProcess) {
+		real_PROCESS_BASIC_INFORMATION pbi = {};
+		ULONG len;
+		if (dlptr_NtQueryInformationProcess(hProcess, ProcessBasicInformation, 
+			(PROCESS_BASIC_INFORMATION*)&pbi, sizeof(pbi), &len) == 0) 
+		{
+			parentPID = (DWORD)pbi.InheritedFromUniqueProcessId;
+		}
+		CloseHandle(hProcess);
+	}
+
+	return parentPID;
+}
+
+void test_CreateProcessAsUser(HWND hdlg, DWORD onto_pid, TCHAR *exepath)
 {
 	showmsg(hdlg, _T(""));
 
-	HANDLE hProcess = OpenProcess(PROCESS_CREATE_PROCESS, FALSE, pid);
+	HANDLE hProcess = OpenProcess(PROCESS_CREATE_PROCESS, FALSE, onto_pid);
 	CEC_PTRHANDLE cec_hProcess = hProcess;
 	if(!hProcess) {
-		appendmsg(hdlg, _T("OpenProcess(pid=%d) fail, WinErr=%s"), pid, ITCS_WinError);
+		appendmsg(hdlg, _T("OpenProcess(pid=%d) fail, WinErr=%s"), onto_pid, ITCS_WinError);
 		return;
 	}
 
-	appendmsg(hdlg, _T("OpenProcess(pid=%d) with PROCESS_CREATE_THREAD, hProcess=0x%X.\r\n"), pid, PtrToUint(hProcess));
+	appendmsg(hdlg, _T("OpenProcess(pid=%d) with PROCESS_CREATE_THREAD, hProcess=0x%X.\r\n"), onto_pid, PtrToUint(hProcess));
 
 	SIZE_T dsize = 0;
 	InitializeProcThreadAttributeList(NULL, 1, 0, &dsize); // get sizex
@@ -103,9 +138,16 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pid, TCHAR *exepath)
 		appendmsg(hdlg, _T("CreateProcess() fail, WinErr=%s"), ITCS_WinError);
 	}
 
-	DeleteProcThreadAttributeList(siex.lpAttributeList); // M$ requires this cleaning
+	// Verify process parent-child relation ship.
 
-	//	OpenProcessToken();
+	DWORD ppid = util_GetParentProcessID(pi.dwProcessId);
+	if(ppid==onto_pid) {
+		appendmsg(hdlg, _T("Verify OK. New process's parent is PID %d.\r\n"), onto_pid);
+	} else {
+		appendmsg(hdlg, _T("PANIC! New process's parent is NOT PID %d, it reports %d.\r\n"), onto_pid, ppid);
+	}
+
+	DeleteProcThreadAttributeList(siex.lpAttributeList); // M$ requires this cleaning
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
@@ -151,13 +193,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 	
-//	TCHAR textbuf[200];
-//	_sntprintf_s(textbuf, _TRUNCATE, _T("version: %d.%d.%d"), 
-//		CreateProcessOnto_VMAJOR, CreateProcessOnto_VMINOR, CreateProcessOnto_VPATCH);
-	
-//	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata->mystr);
-
-	vaSetWindowText(hdlg, _T("CreateProcessOnto %s"), IsUserAnAdmin()?_T("(RunAsAdmin)"):_T(""));
+	vaSetWindowText(hdlg, _T("CreateProcessOnto v%d.%d.%d %s"), 
+		CreateProcessOnto_VMAJOR, CreateProcessOnto_VMINOR, CreateProcessOnto_VPATCH,
+		IsUserAnAdmin()?_T("(RunAsAdmin)"):_T("")
+		);
 
 	showmsg(hdlg, 
 		_T("This program creates a child-process(C) onto an existing parent process(B).\r\n")

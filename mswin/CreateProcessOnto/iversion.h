@@ -3,8 +3,8 @@
 
 #define CreateProcessOnto_VMAJOR 1
 #define CreateProcessOnto_VMINOR 0
-#define CreateProcessOnto_VPATCH 0
-#define CreateProcessOnto_VTAIL  1
+#define CreateProcessOnto_VPATCH 1
+#define CreateProcessOnto_VTAIL  0
 
 #define CreateProcessOntostr__(n) #n
 #define CreateProcessOntostr(n) CreateProcessOntostr__(n)
