@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    CreateProcessOnto_VMAJOR, CreateProcessOnto_VMINOR, CreateProcessOnto_VPATCH, CreateProcessOnto_VTAIL
+ProductVersion CreateProcessOnto_VMAJOR, CreateProcessOnto_VMINOR, CreateProcessOnto_VPATCH, CreateProcessOnto_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     CreateProcessOnto_NAME
+            VALUE "FileDescription", CreateProcessOnto_NAME
+            VALUE "FileVersion",    CreateProcessOnto_VMAJORs "." CreateProcessOnto_VMINORs "." CreateProcessOnto_VPATCHs
+            VALUE "ProductVersion",    CreateProcessOnto_VMAJORs "." CreateProcessOnto_VMINORs "." CreateProcessOnto_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , CreateProcessOnto_NAME ".exe"
+            VALUE "InternalName", CreateProcessOnto_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
