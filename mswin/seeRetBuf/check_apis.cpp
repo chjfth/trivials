@@ -180,7 +180,7 @@ void see_GetTextFace()
 	ReleaseDC(NULL, hdc);
 }
 
-void see_GetModuleFileName()
+void see_GetModuleFileName() // from Kernel32.dll
 {
 	RESET_OUTPUT;
 	g_sret_len = GetModuleFileName(NULL, soutput, MAX_PATH);
@@ -210,6 +210,37 @@ void see_GetModuleFileName_0buf()
 	REPORT_API_TRAITS_s(_T("GetModuleFileName(0buf)"));
 }
 
+void see_GetModuleFileNameEx() // from Psapi.dll
+{
+	HANDLE hself = GetCurrentProcess();
+
+	RESET_OUTPUT;
+	g_sret_len = GetModuleFileNameEx(hself, NULL, soutput, MAX_PATH);
+	// -- D:\gitw\trivials\mswin\seeRetBuf\bin-v100\x64\Debug\seeRetBuf.exe
+	g_eret_len = GetModuleFileNameEx(hself, NULL, eoutput,SMALL_Usersize);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetModuleFileNameEx(hself, NULL, edge_output, g_edge_len);
+
+	REPORT_API_TRAITS(GetModuleFileNameEx);
+}
+
+void see_GetModuleBaseName() // from Psapi.dll
+{
+	HANDLE hself = GetCurrentProcess();
+
+	RESET_OUTPUT;
+	g_sret_len = GetModuleBaseName(hself, NULL, soutput, MAX_PATH);
+	// -- D:\gitw\trivials\mswin\seeRetBuf\bin-v100\x64\Debug\seeRetBuf.exe
+	g_eret_len = GetModuleBaseName(hself, NULL, eoutput,SMALL_Usersize);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = GetModuleBaseName(hself, NULL, edge_output, g_edge_len);
+
+	REPORT_API_TRAITS(GetModuleBaseName);
+}
 
 void see_GetProcessImageFileName()
 {
@@ -603,11 +634,11 @@ void see_FindFirstVolume()
 	Cec_FindVolumeClose h1 = FindFirstVolume(soutput, MAX_PATH);
 	// --      \\?\Volume{77952243-35b0-11ea-adc6-806e6f6e6963}\
 
-	Cec_FILEHANDLE h2 = FindFirstVolume(eoutput, SMALL_Usersize);
+	CEC_FILEHANDLE h2 = FindFirstVolume(eoutput, SMALL_Usersize);
 	winerr = GetLastError();
 
 	g_edge_len = STRLEN(soutput);
-	Cec_FILEHANDLE h3 = FindFirstVolume(edge_output, g_edge_len);
+	CEC_FILEHANDLE h3 = FindFirstVolume(edge_output, g_edge_len);
 	
 	REPORT_API_TRAITS(FindFirstVolume);
 }
@@ -823,6 +854,9 @@ void check_apis()
 
 	see_GetModuleFileName();
 	see_GetModuleFileName_0buf();
+
+	see_GetModuleFileNameEx();
+	see_GetModuleBaseName();
 
 	see_GetProcessImageFileName();
 
