@@ -5,9 +5,12 @@
 #define IDI_WINMAIN                     100
 #define IDD_WINMAIN                     101
 #define IDC_EDIT_LOGMSG                 1001
-#define IDC_BUTTON1                     1002
+#define IDB_CreateProcess               1002
 #define IDE_ProcessID                   1003
 #define IDE_ExePath                     1005
+#define IDB_GetAFileHandle              1006
+#define IDC_STATIC                      -1
+#define IDS_MyPID                       -1
 
 // Next default values for new objects
 // 

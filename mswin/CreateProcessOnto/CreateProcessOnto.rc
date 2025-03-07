@@ -38,17 +38,20 @@ IDI_WINMAIN             ICON                    "CreateProcessOnto.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 291, 117
+IDD_WINMAIN DIALOGEX 0, 0, 291, 132
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "CreateProcessOnto"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Parent process's PID:",-1,4,4,83,12,SS_CENTERIMAGE
-    EDITTEXT        IDE_ProcessID,90,4,52,14,ES_AUTOHSCROLL
-    LTEXT           "Child process's exe path:",-1,4,20,81,12,SS_CENTERIMAGE
-    EDITTEXT        IDE_ExePath,90,20,197,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_LOGMSG,4,36,283,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "&Execute",IDC_BUTTON1,120,99,50,14
+    LTEXT           "(A) this program's PID",IDS_MyPID,4,4,126,8
+    LTEXT           "(B) Parent process's PID:",IDS_MyPID,4,18,83,12,SS_CENTERIMAGE
+    EDITTEXT        IDE_ProcessID,102,18,45,14,ES_AUTOHSCROLL
+    LTEXT           "(C) Child process's exe path:",IDS_MyPID,4,34,94,12,SS_CENTERIMAGE
+    EDITTEXT        IDE_ExePath,102,34,185,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_LOGMSG,4,50,283,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "&CreateProcess",IDB_CreateProcess,220,113,67,14
+    PUSHBUTTON      "&Get a file handle",IDB_GetAFileHandle,4,113,67,14
+    LTEXT           "(type in an exising PID, to act as parent)",IDS_MyPID,150,18,137,12,SS_CENTERIMAGE
 END
 
 
@@ -65,7 +68,7 @@ BEGIN
         LEFTMARGIN, 4
         RIGHTMARGIN, 287
         TOPMARGIN, 4
-        BOTTOMMARGIN, 112
+        BOTTOMMARGIN, 127
     END
 END
 #endif    // APSTUDIO_INVOKED

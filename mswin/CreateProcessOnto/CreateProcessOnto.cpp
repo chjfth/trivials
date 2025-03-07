@@ -1,7 +1,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
-#include <ShlObj.h>
+#include <ShlObj.h>   // for IsUserAnAdmin
+#include <Psapi.h>    // for GetModuleBaseName()
 #include <Winternl.h> // for NtQueryInformationProcess()
 #include <CommCtrl.h>
 #include <tchar.h>
@@ -48,6 +49,61 @@ static void appendmsg(HWND hdlg, const TCHAR *szfmt, ...)
 
 //MakeDelega_CleanupPtr_winapi(Cec_DeleteProcThreadAttributeList, void, DeleteProcThreadAttributeList, LPPROC_THREAD_ATTRIBUTE_LIST)
 
+void get_AFileHandle(HWND hdlg)
+{
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+
+	TCHAR szFilename[MAX_PATH] = {};
+	GetModuleBaseName(GetCurrentProcess(), NULL, szFilename, ARRAYSIZE(szFilename));
+	_sntprintf_s(szFilename, _TRUNCATE, _T("%s.txt"), szFilename);
+
+	int shareMode = FILE_SHARE_READ|FILE_SHARE_WRITE;
+	int createFlags = CREATE_ALWAYS;
+
+	SECURITY_ATTRIBUTES sa = {sizeof(sa), NULL, TRUE}; // let it inheritable
+
+	HANDLE hfile = CreateFile(szFilename,
+		GENERIC_READ|GENERIC_WRITE,
+		shareMode, // FILE_SHARE_READ(1), FILE_SHARE_WRITE(2)
+		&sa, // security attribute
+		createFlags, // dwCreationDisposition
+		0, // FILE_FLAG_OVERLAPPED,
+		NULL);
+
+	if(hfile==INVALID_HANDLE_VALUE)
+	{
+		DWORD winerr = GetLastError();
+		const int bufsize = 400;
+		TCHAR szWinErr[bufsize];
+
+		DWORD retchars = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, winerr, 
+			0, // LANGID
+			szWinErr, bufsize,
+			NULL); // A trailing \r\n has been filled.
+		if(retchars>0) {
+			appendmsg(hdlg, _T("CreateFile(\"%s\") fail, WinErr=%u: %s\r\n"), 
+				szFilename, winerr, szWinErr);
+		}
+		return;
+	}
+	else
+	{
+		appendmsg(hdlg, _T("CreateFile(\"%s\") success. Handle=0x%X\r\n"), 
+			szFilename, PtrToUint(hfile));
+
+		// Write a string to the file.
+		SYSTEMTIME st = {};
+		GetLocalTime(&st);
+		char atext[100] = {};
+		_snprintf_s(atext, _TRUNCATE, "%04d-%02d-%02d_%02d:%02d:%02d.%03d",
+			st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+		int nbytes = (int)strlen(atext);
+		DWORD nbytesWrtn = 0;
+		WriteFile(hfile, atext, nbytes, &nbytesWrtn, NULL);
+	}
+}
+
+
 struct real_PROCESS_BASIC_INFORMATION // told by GPT4o
 {
 	PVOID Reserved1;
@@ -83,7 +139,7 @@ DWORD util_GetParentProcessID(DWORD pid)
 
 void test_CreateProcessAsUser(HWND hdlg, DWORD onto_pid, TCHAR *exepath)
 {
-	showmsg(hdlg, _T(""));
+//	showmsg(hdlg, _T(""));
 
 	HANDLE hProcess = OpenProcess(PROCESS_CREATE_PROCESS, FALSE, onto_pid);
 	CEC_PTRHANDLE cec_hProcess = hProcess;
@@ -123,7 +179,7 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD onto_pid, TCHAR *exepath)
 		exepath, 
 		NULL, // new process security-attributes
 		NULL, // new thread security-attributes
-		FALSE, //  bInheritHandles
+		TRUE, //  bInheritHandles
 		EXTENDED_STARTUPINFO_PRESENT, // dwCreationFlags,
 		NULL, // lpEnvironment,
 		NULL, // lpCurrentDirectory,
@@ -156,7 +212,12 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDB_GetAFileHandle:
+	{
+		get_AFileHandle(hdlg);
+		break;
+	}
+	case IDB_CreateProcess:
 	{
 		TCHAR exepath[MAX_PATH] = {};
 		DWORD pid = 0; // 0 for self
@@ -181,7 +242,8 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 	jul->AnchorControl(0,0, 100,0, IDE_ExePath);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+	jul->AnchorControl(0,100, 0,100, IDB_GetAFileHandle);
+	jul->AnchorControl(100,100, 100,100, IDB_CreateProcess);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
@@ -198,8 +260,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		IsUserAnAdmin()?_T("(RunAsAdmin)"):_T("")
 		);
 
+	vaSetDlgItemText(hdlg, IDS_MyPID, _T("(A) This program's PID: %d"), GetCurrentProcessId());
+
 	showmsg(hdlg, 
-		_T("This program creates a child-process(C) onto an existing parent process(B).\r\n")
+		_T("This program(A) creates a child-process(C) onto an existing parent process(B).\r\n")
 		_T("\r\n")
 		_T("This feature is available on Windows Vista+.\r\n")
 		);
@@ -210,7 +274,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDB_CreateProcess));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
