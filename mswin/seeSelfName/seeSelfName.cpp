@@ -7,10 +7,10 @@
 #include "resource.h"
 #include "iversion.h"
 
-#include "CmnHdr-Jeffrey.h"
+#include "../utils.h"
 
 #define JULAYOUT_IMPL
-#include "jul2.h"
+#include <mswin/JULayout2.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -32,6 +32,15 @@ const TCHAR *GatherInfo(const TCHAR *pszWinMainCmdline)
 	_sntprintf_s(s_info, _TRUNCATE, 
 		_T("%s")
 		_T("GetModuleFileName(): %d chars\r\n")
+		_T("%s\r\n\r\n")
+		, s_info, _tcslen(obuf), obuf);
+
+	HANDLE hSelfProcess = GetCurrentProcess();
+	GetModuleFileNameEx(hSelfProcess, NULL, obuf, MAX_PATH);
+	//
+	_sntprintf_s(s_info, _TRUNCATE,
+		_T("%s")
+		_T("GetModuleFileNameEx(): %d chars\r\n")
 		_T("%s\r\n\r\n")
 		, s_info, _tcslen(obuf), obuf);
 
@@ -84,7 +93,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	
-	chSETDLGICONS(hdlg, IDI_WINMAIN);
+	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
 
 	TCHAR textbuf[200];
 	_sntprintf_s(textbuf, _TRUNCATE, _T("version: %d.%d.%d"), 
@@ -121,8 +130,8 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	switch (uMsg) 
 	{
-		chHANDLE_DLGMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
-		chHANDLE_DLGMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
+		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
 	}
 	return FALSE;
 }

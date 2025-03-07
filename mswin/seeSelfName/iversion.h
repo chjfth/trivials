@@ -3,9 +3,9 @@
 
 
 #define seeSelfName_VMAJOR 1
-#define seeSelfName_VMINOR 0
+#define seeSelfName_VMINOR 1
 #define seeSelfName_VPATCH 0
-#define seeSelfName_VTAIL  1
+#define seeSelfName_VTAIL  0
 
 #define seeSelfNamestr__(n) #n
 #define seeSelfNamestr(n) seeSelfNamestr__(n)
