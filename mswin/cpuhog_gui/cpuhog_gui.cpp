@@ -13,9 +13,9 @@
 #include "cpuhog.h"
 
 #define JULAYOUT_IMPL
-#include "JULayout2.h"
+#include <mswin/JULayout2.h>
 
-#define VERSION "1.0"
+#define VERSION "1.1"
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 

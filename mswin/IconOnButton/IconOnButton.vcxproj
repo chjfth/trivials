@@ -35,19 +35,53 @@
       <Configuration>Release ANSI</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <!-- ARM64 -->
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug ANSI|ARM64">
+      <Configuration>Debug ANSI</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release ANSI|ARM64">
+      <Configuration>Release ANSI</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <!-- ARM64EC -->
+    <ProjectConfiguration Include="Debug|ARM64EC">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64EC">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug ANSI|ARM64EC">
+      <Configuration>Debug ANSI</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release ANSI|ARM64EC">
+      <Configuration>Release ANSI</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
 
   <!-- User project properties -->
 
   <PropertyGroup Label="Configuration">
-    <ProjectGuid>{20230110-0000-0000-0000-153524000001}</ProjectGuid>
+    <ProjectGuid>{20250319-0000-0000-0000-220618000001}</ProjectGuid>
     <ProjectName>IconOnButton</ProjectName>
-    <TargetName>IconOnButton</TargetName>
+     <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
 
   <!-- Microsoft.Cpp.Default.props 
-  	For Linux .vcxproj, this should be after above "global" Properties. -->
+  	This should be after above "Global" Properties. (At least Linux .vcxproj demands this.) -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
   <!-- Debug or Release -->
@@ -66,6 +100,21 @@
   </PropertyGroup>
   <PropertyGroup Condition=" $(Configuration.Contains('ANSI'))" Label="Configuration">
     <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Referring to $(DefaultPlatformToolset), so that this .vcxproj 
+      adapts automatically to lastest SDK on current Visual Studio version. 
+     
+      $(DefaultPlatformToolset) has such values:
+        empty  on VC2010
+        "v120" on VC2013
+        "v140" on VC2015
+        "v141" on VC2017
+        "v142" on VC2019
+        "v143" on VC2022
+      -->
+    <PlatformToolset Condition="$(DefaultPlatformToolset)!=''">$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
 
   <!---->
@@ -91,17 +140,21 @@
   -->
 
   <ItemDefinitionGroup>
- 
+
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDataBase</DebugInformationFormat>
+
       <!-- Note: $(TargetPath) cannot receive a value in <PropertyGroup>, so it has to be in ItemDefinitionGroup. -->
+
       <!-- LIB's .pdb is final-pdb at compile stage, we want to see whole original xxx.lib name in PDB filename. -->
       <ProgramDataBaseFileName Condition="'$(TargetExt)'=='.lib' ">$(TargetPath).pdb</ProgramDataBaseFileName>
       <!-- EXE/DLL's .pdb is truly intermediate, so we put it in $(IntDir), with some fancy file-naming -->
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
+
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+
+      <AdditionalIncludeDirectories>.;..;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -110,9 +163,11 @@
       <ImportLibrary>$(OutDir)$(TargetName)--imp.lib</ImportLibrary>
       <GenerateMapFile>true</GenerateMapFile>
       <AdditionalLibraryDirectories>;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>ComCtl32.Lib;;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'"  >;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+
+      <AdditionalDependencies>Psapi.lib;ComCtl32.Lib;;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
  
     <!-- Better build.log file naming -->
@@ -125,6 +180,7 @@
   <!-- 
   	Compiler Behavior Settings : Debug 
   -->
+
   <ItemDefinitionGroup Condition=" $(Configuration.StartsWith('Debug'))">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -132,13 +188,15 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
+      <RandomizedBaseAddress Condition="!$(Platform.StartsWith('ARM64'))">false</RandomizedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
- 
+
   <!-- 
   	Compiler Behavior Settings : Release 
   -->
-  <ItemDefinitionGroup Condition="!$(Configuration.StartsWith('Debug'))">
+
+  <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Release'))">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -149,24 +207,35 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
- 
+
   <!-- 
     Source file list:
    -->
- 
+
   <ItemGroup>
     <ClCompile Include="IconOnButton.cpp" />
+    <ClCompile Include="..\utils.cpp" />
+<!--
+    <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
+-->
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="IconOnButton.rc" />
-    <ResourceCompile Include="iversion.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="IconOnButton1.ico" />
+    <None Include="IconOnButton.ico" />
+    <None Include="_iversion.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="JULayout2.h" />
+    <ClInclude Include="iversion.h" />
+    <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
+<!-- 
+    <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
+    <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
+-->
   </ItemGroup>
  
   <!-- MSBuild system stock Cpp.targets -->
