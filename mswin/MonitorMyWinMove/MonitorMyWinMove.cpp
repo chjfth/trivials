@@ -7,10 +7,10 @@
 #include "resource.h"
 #include "iversion.h"
 
-#include "utils.h"
+#include "../utils.h"
 
 #define JULAYOUT_IMPL
-#include "JULayout2.h"
+#include <mswin/JULayout2.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -40,8 +40,9 @@ void PrintMyPosition(HWND hdlg)
 
 	RECT rwin = {};
 	GetWindowRect(hdlg,	&rwin);
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
 
-	vaSetDlgItemText(hdlg, IDC_EDIT1, 
+	vaAppendText_mled(hedit, 
 		_T("Now position: X=%d, Y=%d, size=(%d, %d)\r\n"), 
 		rwin.left, rwin.top, (rwin.right-rwin.left), (rwin.bottom-rwin.top) );
 
@@ -87,7 +88,9 @@ void Dlg_OnMove(HWND hdlg, int x, int y)
 	RECT &rwin = prdata->rwin;
 	GetWindowRect(hdlg,	&rwin);
 
-	vaSetDlgItemText(hdlg, IDC_EDIT1, 
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
+
+	vaAppendText_mled(hedit, 
 		_T("[#%d][%s] Move: X=%d, Y=%d\r\n"), 
 		prdata->count, NowtimeStr(timebuf, ARRAYSIZE(timebuf)),
 		rwin.left, rwin.top);
@@ -103,7 +106,9 @@ void Dlg_OnSize(HWND hdlg, UINT state, int cx, int cy)
 	RECT &rwin = prdata->rwin;
 	GetWindowRect(hdlg,	&rwin);
 
-	vaSetDlgItemText(hdlg, IDC_EDIT1, 
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
+
+	vaAppendText_mled(hedit, 
 		_T("[#%d][%s] Size: (%d, %d)\r\n"), 
 		prdata->count, NowtimeStr(timebuf, ARRAYSIZE(timebuf)),
 		rwin.right-rwin.left, rwin.bottom-rwin.top);
@@ -122,7 +127,7 @@ void Dlg_OnTimer(HWND hdlg, UINT id)
 	if(!EqualRect(&rwin, &prdata->rwin))
 	{
 		HWND hedit = GetDlgItem(hdlg, IDC_EDIT1);
-		vaSetDlgItemText(hdlg, IDC_EDIT1, 
+		vaAppendText_mled(hedit, 
 			_T("PANIC: Window-position changed to: X=%d, Y=%d, size=(%d, %d)\r\n"), 
 			rwin.left, rwin.top, rwin.right-rwin.left, rwin.bottom-rwin.top);
 
