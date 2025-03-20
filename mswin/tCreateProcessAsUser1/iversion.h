@@ -3,7 +3,7 @@
 
 #define CreateProcessAsUser1_VMAJOR 1
 #define CreateProcessAsUser1_VMINOR 0
-#define CreateProcessAsUser1_VPATCH 1
+#define CreateProcessAsUser1_VPATCH 2
 #define CreateProcessAsUser1_VTAIL  0
 
 #define CreateProcessAsUser1str__(n) #n

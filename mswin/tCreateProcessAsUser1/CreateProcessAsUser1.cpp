@@ -91,13 +91,15 @@ void dump_TokenPrivileges(HWND hdlg, HANDLE hToken)
 		DWORD ccname = ARRAYSIZE(szname);
 		LookupPrivilegeName(NULL, &luid, szname, &ccname);
 
-		appendmsg(hdlg, _T("  [#%d] $%d , %s (%s)"), 
+		appendmsg(hdlg, _T("  [#%d] Luid=%d , %s (%s)"), 
 			i+1,
 			luid.LowPart, 
 			szname,
 			(ptp->Privileges[i].Attributes & SE_PRIVILEGE_ENABLED) ? _T("Enabled") : _T("-")
 			);
 	}
+
+	appendmsg(hdlg, _T("")); // add a new line
 }
 
 void test_CreateProcessAsUser(HWND hdlg, DWORD pid, TCHAR *exepath)
@@ -111,7 +113,7 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pid, TCHAR *exepath)
 		return;
 	}
 
-	appendmsg(hdlg, _T("OpenProcess(pid=%d) with PROCESS_CREATE_THREAD, hProcess=0x%X."), pid, PtrToUint(hProcess));
+	appendmsg(hdlg, _T("OpenProcess(pid=%d) with PROCESS_QUERY_INFORMATION, hProcess=0x%X."), pid, PtrToUint(hProcess));
 
 	HANDLE hToken = NULL;
 	DWORD reqAccess = TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY;
