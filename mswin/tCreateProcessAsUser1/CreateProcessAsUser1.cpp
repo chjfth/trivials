@@ -191,7 +191,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 	
-	vaSetWindowText(hdlg, _T("CreateProcessAsUser %s"), IsUserAnAdmin()?_T("(RunAsAdmin)"):_T(""));
+	vaSetWindowText(hdlg, _T("tCreateProcessAsUser1 v%d.%d.%d %s"), 
+		CreateProcessAsUser1_VMAJOR, CreateProcessAsUser1_VMINOR, CreateProcessAsUser1_VPATCH,
+		IsUserAnAdmin()?_T("(RunAsAdmin)"):_T("")
+		);
 
 	DWORD pidself = GetCurrentProcessId();
 	SetDlgItemInt(hdlg, IDE_ProcessID, pidself, TRUE);
