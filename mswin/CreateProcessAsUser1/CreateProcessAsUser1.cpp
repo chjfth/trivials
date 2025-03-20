@@ -14,6 +14,9 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#define JAUTOBUF_IMPL
+#include <JAutoBuf.h>
+
 #include <EnsureClnup_mswin.h>
 
 #include <mswin/WinError.itc.h>
@@ -28,6 +31,15 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+inline bool Is_LessBuffer(DWORD winerr)
+{
+	if( winerr==ERROR_INSUFFICIENT_BUFFER ||
+		winerr==ERROR_MORE_DATA ||
+		winerr==ERROR_BUFFER_OVERFLOW)
+		return true;
+	else
+		return false;
+}
 
 static void showmsg(HWND hdlg, const TCHAR *szfmt, ...)
 {
@@ -49,6 +61,44 @@ static void appendmsg(HWND hdlg, const TCHAR *szfmt, ...)
 }
 
 //MakeDelega_CleanupPtr_winapi(Cec_DeleteProcThreadAttributeList, void, DeleteProcThreadAttributeList, LPPROC_THREAD_ATTRIBUTE_LIST)
+
+void dump_TokenPrivileges(HWND hdlg, HANDLE hToken)
+{
+	BOOL succ = 0;
+	DWORD winerr = 0;
+	Jautobuf jbTokenPrivs;
+	do {
+		succ = GetTokenInformation(hToken, TokenPrivileges, 
+			jbTokenPrivs, jbTokenPrivs, jbTokenPrivs);
+		winerr = GetLastError();
+	} while(!succ && Is_LessBuffer(winerr));
+
+	if(!succ) {
+		appendmsg(hdlg, _T("GetTokenInformation() fails, WinErr=%s."), ITCS_WinError);
+		return;
+	}
+
+	PTOKEN_PRIVILEGES ptp = (PTOKEN_PRIVILEGES)jbTokenPrivs.Bufptr();
+
+	int privcount = ptp->PrivilegeCount;
+
+	appendmsg(hdlg, _T("This Token holds %d privileges:"), privcount);
+
+	for(int i=0; i<privcount; i++) 
+	{
+		LUID luid = ptp->Privileges[i].Luid;
+		TCHAR szname[200] = {};
+		DWORD ccname = ARRAYSIZE(szname);
+		LookupPrivilegeName(NULL, &luid, szname, &ccname);
+
+		appendmsg(hdlg, _T("  [#%d] $%d , %s (%s)"), 
+			i+1,
+			luid.LowPart, 
+			szname,
+			(ptp->Privileges[i].Attributes & SE_PRIVILEGE_ENABLED) ? _T("Enabled") : _T("-")
+			);
+	}
+}
 
 void test_CreateProcessAsUser(HWND hdlg, DWORD pid, TCHAR *exepath)
 {
@@ -74,6 +124,8 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pid, TCHAR *exepath)
 		appendmsg(hdlg, _T("OpenProcessToken() fail, WinErr=%s."), ITCS_WinError);
 		return;
 	}
+
+	dump_TokenPrivileges(hdlg, hToken);
 
 	STARTUPINFO si = {sizeof(si)};
 	PROCESS_INFORMATION pi = {};
