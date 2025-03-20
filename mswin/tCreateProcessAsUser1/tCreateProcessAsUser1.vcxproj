@@ -75,7 +75,7 @@
 
   <PropertyGroup Label="Configuration">
     <ProjectGuid>{20250306-0000-0000-0000-175148000001}</ProjectGuid>
-    <ProjectName>CreateProcessAsUser1</ProjectName>
+    <ProjectName>tCreateProcessAsUser1</ProjectName>
      <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
