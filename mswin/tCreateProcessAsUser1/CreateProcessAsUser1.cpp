@@ -3,6 +3,7 @@
 #include <windowsx.h>
 #include <ShlObj.h>
 #include <CommCtrl.h>
+#include <winternl.h> // for NtQueryObject
 #include <tchar.h>
 #include <stdio.h>
 #include "resource.h"
@@ -16,6 +17,8 @@
 
 #define JAUTOBUF_IMPL
 #include <JAutoBuf.h>
+
+#include <mswin/dlptr_winapi.h>
 
 #include <EnsureClnup_mswin.h>
 
@@ -62,6 +65,24 @@ static void appendmsg(HWND hdlg, const TCHAR *szfmt, ...)
 
 //MakeDelega_CleanupPtr_winapi(Cec_DeleteProcThreadAttributeList, void, DeleteProcThreadAttributeList, LPPROC_THREAD_ATTRIBUTE_LIST)
 
+
+DEFINE_DLPTR_WINAPI("ntdll.dll", NtQueryObject)
+
+DWORD get_AccessMaskGrantedToMe(HANDLE hkobj)
+{
+	// provided by GPT4o.
+	// Given a kernel object handle(hkobj), return the access bits that is granted
+	// to the calling process.
+
+	PUBLIC_OBJECT_BASIC_INFORMATION obi = {};
+	DWORD retlen = 0;
+	NTSTATUS ntserr = dlptr_NtQueryObject(hkobj, ObjectBasicInformation, &obi, sizeof(obi), &retlen);
+	if(!ntserr)
+		return obi.GrantedAccess;
+	else
+		return -1;
+}
+
 bool list_TokenPrivileges(HWND hdlg, HANDLE hToken)
 {
 	BOOL succ = 0;
@@ -99,23 +120,30 @@ bool list_TokenPrivileges(HWND hdlg, HANDLE hToken)
 			);
 	}
 
-	appendmsg(hdlg, _T("")); // add a new line
+	appendmsg(hdlg, _T("")); // new line
 	return true;
 }
 
 bool dump_ProcessTokenInfo(HWND hdlg, HANDLE hProcess)
 {
 	HANDLE hToken = NULL;
-	BOOL succ = OpenProcessToken(hProcess, TOKEN_QUERY, &hToken);
+	DWORD reqAccess = TOKEN_QUERY;
+	BOOL Succ = OpenProcessToken(hProcess, reqAccess, &hToken);
 	CEC_PTRHANDLE cec_hToken = hToken;
-	if(succ) {
+	if(Succ) {
 //		appendmsg(hdlg, _T("OpenProcessToken() success. hToken=0x%X."), PtrToUint(hToken));
 	} else {
 		appendmsg(hdlg, _T("OpenProcessToken() fail, WinErr=%s."), ITCS_WinError);
 		return false;
 	}
 
-	return list_TokenPrivileges(hdlg, hToken);
+	bool succ = list_TokenPrivileges(hdlg, hToken);
+	if(!succ)
+		return false; 
+
+	DWORD grantedAccess = get_AccessMaskGrantedToMe(hToken);
+	assert(grantedAccess==reqAccess);
+	return true;
 }
 
 void test_CreateProcessAsUser(HWND hdlg, DWORD pidAlien, TCHAR *exepath)
@@ -138,12 +166,13 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pidAlien, TCHAR *exepath)
 		return;
 	}
 
-	appendmsg(hdlg, _T("")); // add a new line
+	appendmsg(hdlg, _T("")); // new line
 
 	appendmsg(hdlg, _T("====Alien PID is %d, dumping alien process Token privileges===="), pidAlien);
 	if(pidAlien==pidMy)
 	{
 		appendmsg(hdlg, _T("(Omit, same as my PID)"));
+		appendmsg(hdlg, _T(""));
 	}
 	else
 	{
@@ -164,6 +193,9 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pidAlien, TCHAR *exepath)
 		appendmsg(hdlg, _T("OpenProcessToken() alien fail, WinErr=%s."), ITCS_WinError);
 		return;
 	}
+
+	DWORD grantedAccess = get_AccessMaskGrantedToMe(hToken);
+	assert(grantedAccess==reqAccess);
 
 	STARTUPINFO si = {sizeof(si)};
 	PROCESS_INFORMATION pi = {};
