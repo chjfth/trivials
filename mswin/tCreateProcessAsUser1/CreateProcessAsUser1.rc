@@ -43,12 +43,13 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SY
 CAPTION "CreateProcessAsUser1"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "New process EXE path:",-1,4,20,79,12,SS_CENTERIMAGE
+    LTEXT           "New process EXE path:",IDC_STATIC,4,20,79,12,SS_CENTERIMAGE
     EDITTEXT        IDC_EDIT_LOGMSG,4,36,283,60,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
     DEFPUSHBUTTON   "&Execute CreateProcessAsUser",IDC_BUTTON1,87,99,109,14
     EDITTEXT        IDE_ExePath,89,20,198,14,ES_AUTOHSCROLL
-    LTEXT           "OpenProcessToken on this PID:",-1,4,4,106,12,SS_CENTERIMAGE
-    EDITTEXT        IDE_ProcessID,109,4,52,14,ES_AUTOHSCROLL
+    LTEXT           "Alien process PID:",IDC_STATIC,4,4,78,12,SS_CENTERIMAGE
+    EDITTEXT        IDE_ProcessID,89,4,52,14,ES_AUTOHSCROLL
+    LTEXT           "(will create process as this PID's user)",IDC_STATIC,150,8,122,8
 END
 
 

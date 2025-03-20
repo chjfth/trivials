@@ -8,6 +8,7 @@
 #define IDC_BUTTON1                     1002
 #define IDE_ExePath                     1003
 #define IDE_ProcessID                   1005
+#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
