@@ -148,7 +148,7 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD onto_pid, TCHAR *exepath)
 		return;
 	}
 
-	appendmsg(hdlg, _T("OpenProcess(pid=%d) with PROCESS_CREATE_THREAD, hProcess=0x%X.\r\n"), onto_pid, PtrToUint(hProcess));
+	appendmsg(hdlg, _T("OpenProcess(pid=%d) with PROCESS_CREATE_PROCESS, hProcess=0x%X.\r\n"), onto_pid, PtrToUint(hProcess));
 
 	SIZE_T dsize = 0;
 	InitializeProcThreadAttributeList(NULL, 1, 0, &dsize); // get sizex
