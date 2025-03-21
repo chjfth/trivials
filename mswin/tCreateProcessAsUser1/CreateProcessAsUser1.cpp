@@ -146,37 +146,37 @@ bool dump_ProcessTokenInfo(HWND hdlg, HANDLE hProcess)
 	return true;
 }
 
-void test_CreateProcessAsUser(HWND hdlg, DWORD pidAlien, TCHAR *exepath)
+void test_CreateProcessAsUser(HWND hdlg, DWORD pidCarrier, TCHAR *exepath)
 {
 	DWORD pidMy = GetCurrentProcessId();
 
 	appendmsg(hdlg, _T("====My PID is %d, dumping my process Token privileges===="), pidMy);
 	dump_ProcessTokenInfo(hdlg, GetCurrentProcess());
 
-	// Grab a handle of the alien process.
+	// Grab a handle of the carrier process.
 
-	HANDLE hProcessAlien = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pidAlien);
-	CEC_PTRHANDLE cec_hProcess = hProcessAlien;
-	if(hProcessAlien) 	{
+	HANDLE hProcessCarrier = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pidCarrier);
+	CEC_PTRHANDLE cec_hProcess = hProcessCarrier;
+	if(hProcessCarrier) 	{
 		appendmsg(hdlg, _T("OpenProcess(pid=%d) with PROCESS_QUERY_INFORMATION, hProcess=0x%X."), 
-			pidAlien, PtrToUint(hProcessAlien));
+			pidCarrier, PtrToUint(hProcessCarrier));
 	}
 	else {
-		appendmsg(hdlg, _T("OpenProcess() on alien-PID fail, WinErr=%s."), ITCS_WinError);
+		appendmsg(hdlg, _T("OpenProcess() on carrier-PID fail, WinErr=%s."), ITCS_WinError);
 		return;
 	}
 
 	appendmsg(hdlg, _T("")); // new line
 
-	appendmsg(hdlg, _T("====Alien PID is %d, dumping alien process Token privileges===="), pidAlien);
-	if(pidAlien==pidMy)
+	appendmsg(hdlg, _T("====Carrier PID is %d, dumping carrier process Token privileges===="), pidCarrier);
+	if(pidCarrier==pidMy)
 	{
 		appendmsg(hdlg, _T("(Omit, same as my PID)"));
 		appendmsg(hdlg, _T(""));
 	}
 	else
 	{
-		bool succ = dump_ProcessTokenInfo(hdlg, hProcessAlien);
+		bool succ = dump_ProcessTokenInfo(hdlg, hProcessCarrier);
 		if(!succ)
 			return;
 	}
@@ -185,12 +185,12 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pidAlien, TCHAR *exepath)
 	HANDLE hToken = NULL;
 	DWORD reqAccess = TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY;
 
-	BOOL Succ = OpenProcessToken(hProcessAlien, reqAccess, &hToken);
+	BOOL Succ = OpenProcessToken(hProcessCarrier, reqAccess, &hToken);
 	CEC_PTRHANDLE cec_hToken = hToken;
 	if(Succ) {
-		appendmsg(hdlg, _T("OpenProcessToken() alien success. hToken=0x%X."), PtrToUint(hToken));
+		appendmsg(hdlg, _T("OpenProcessToken() carrier success. hToken=0x%X."), PtrToUint(hToken));
 	} else {
-		appendmsg(hdlg, _T("OpenProcessToken() alien fail, WinErr=%s."), ITCS_WinError);
+		appendmsg(hdlg, _T("OpenProcessToken() carrier fail, WinErr=%s."), ITCS_WinError);
 		return;
 	}
 
