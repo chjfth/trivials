@@ -52,13 +52,17 @@ static void showmsg(HWND hdlg, const TCHAR *szfmt, ...)
 	va_end(args);
 }
 
-static void appendmsg(HWND hdlg, const TCHAR *szfmt, ...)
+static void appendmsg(HWND hdlg, const TCHAR *szfmt=nullptr, ...)
 {
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-	va_list args;
-	va_start(args, szfmt);
-	vlAppendText_mled(hedit, szfmt, args);
-	va_end(args);
+
+	if(szfmt)
+	{
+		va_list args;
+		va_start(args, szfmt);
+		vlAppendText_mled(hedit, szfmt, args);
+		va_end(args);
+	}
 
 	vaAppendText_mled(hedit, _T("\r\n"));
 }
@@ -120,7 +124,7 @@ bool list_TokenPrivileges(HWND hdlg, HANDLE hToken)
 			);
 	}
 
-	appendmsg(hdlg, _T("")); // new line
+	appendmsg(hdlg); // new line
 	return true;
 }
 
@@ -146,6 +150,14 @@ bool dump_ProcessTokenInfo(HWND hdlg, HANDLE hProcess)
 	return true;
 }
 
+#if _WIN32_WINNT >= 0x0A00
+// Win10+ SDK is available, do nothing here.
+#else
+// Using an older WinSDK, eg Win7 SDK(VC2010), so we need to declare CompareObjectHandles
+BOOL WINAPI CompareObjectHandles(HANDLE hFirstObjectHandle,	HANDLE hSecondObjectHandle);
+#endif
+DEFINE_DLPTR_WINAPI("KernelBase.dll", CompareObjectHandles) // Win10+
+
 void test_CreateProcessAsUser(HWND hdlg, DWORD pidCarrier, TCHAR *exepath)
 {
 	DWORD pidMy = GetCurrentProcessId();
@@ -166,7 +178,7 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pidCarrier, TCHAR *exepath)
 		return;
 	}
 
-	appendmsg(hdlg, _T("")); // new line
+	appendmsg(hdlg); // new line
 
 	appendmsg(hdlg, _T("====Carrier PID is %d, dumping carrier process Token privileges===="), pidCarrier);
 	if(pidCarrier==pidMy)
@@ -182,24 +194,40 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pidCarrier, TCHAR *exepath)
 	}
 
 
-	HANDLE hToken = NULL;
 	DWORD reqAccess = TOKEN_QUERY | TOKEN_DUPLICATE | TOKEN_ASSIGN_PRIMARY;
 
-	BOOL Succ = OpenProcessToken(hProcessCarrier, reqAccess, &hToken);
-	CEC_PTRHANDLE cec_hToken = hToken;
+	HANDLE hTokenCarrier = NULL;
+	BOOL Succ = OpenProcessToken(hProcessCarrier, reqAccess, &hTokenCarrier);
+	CEC_PTRHANDLE cec_hTokenCarrier = hTokenCarrier;
 	if(Succ) {
-		appendmsg(hdlg, _T("OpenProcessToken() carrier success. hToken=0x%X."), PtrToUint(hToken));
+		appendmsg(hdlg, _T("OpenProcessToken() carrier success. hToken=0x%X."), PtrToUint(hTokenCarrier));
 	} else {
 		appendmsg(hdlg, _T("OpenProcessToken() carrier fail, WinErr=%s."), ITCS_WinError);
 		return;
 	}
 
-	DWORD grantedAccess = get_AccessMaskGrantedToMe(hToken);
+	DWORD grantedAccess = get_AccessMaskGrantedToMe(hTokenCarrier);
 	assert(grantedAccess==reqAccess);
+
+#if 1 // Debugging purpose:
+	HANDLE hTokenMy = NULL;
+	OpenProcessToken(GetCurrentProcess(), reqAccess, &hTokenMy);
+	CEC_PTRHANDLE cec_hTokenMy = hTokenMy;
+
+	if(dlptr_CompareObjectHandles) 
+	{
+		if(dlptr_CompareObjectHandles(hTokenMy, hTokenCarrier))
+			appendmsg(hdlg, _T("My-token and Carrier-token are the same."));
+		else 
+			appendmsg(hdlg, _T("My-token and Carrier-token are different."));
+	}
+#endif
+
+	appendmsg(hdlg); // new line
 
 	STARTUPINFO si = {sizeof(si)};
 	PROCESS_INFORMATION pi = {};
-	Succ =  CreateProcessAsUser(hToken,
+	Succ =  CreateProcessAsUser(hTokenCarrier,
 		NULL, exepath, 
 		NULL, // new process security-attributes
 		NULL, // new thread security-attributes
