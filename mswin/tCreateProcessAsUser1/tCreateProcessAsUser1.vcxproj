@@ -213,7 +213,7 @@
    -->
 
   <ItemGroup>
-    <ClCompile Include="CreateProcessAsUser1.cpp" />
+    <ClCompile Include="tCreateProcessAsUser1.cpp" />
     <ClCompile Include="..\utils.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
