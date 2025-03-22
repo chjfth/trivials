@@ -23,6 +23,7 @@
 #include <EnsureClnup_mswin.h>
 
 #include <mswin/WinError.itc.h>
+#include <mswin/winnt.itc.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -150,6 +151,42 @@ bool dump_ProcessTokenInfo(HWND hdlg, HANDLE hProcess)
 	return true;
 }
 
+
+
+void test_token_MAXIMUM_ALLOWED(HWND hdlg, HANDLE hMyProcess, HANDLE hCarrierProcess)
+{
+	HANDLE hMyToken = NULL, hCarrierToken = NULL;
+	BOOL Succ = 0;
+	
+	Succ = OpenProcessToken(hMyProcess, MAXIMUM_ALLOWED, &hMyToken);
+	CEC_PTRHANDLE cec_hMyToken = hMyToken;
+	if(Succ) {
+		DWORD accessToMyToken = get_AccessMaskGrantedToMe(hMyToken);
+		appendmsg(hdlg, 
+			_T("MAXIMUM_ALLOWED access bits to my-token: 0x%08X, %s"),
+			accessToMyToken,
+			ITCSv(accessToMyToken, itc::TokenRights)
+			);
+	}
+	else {
+		appendmsg(hdlg, _T("Unexpect! OpenProcessToken(hMyProcess, MAXIMUM_ALLOWED, ...) failed with winerr=%s"), ITCS_WinError);
+	}
+
+	Succ = OpenProcessToken(hCarrierProcess, MAXIMUM_ALLOWED, &hCarrierToken);
+	CEC_PTRHANDLE cec_hCarrierToken = hCarrierToken;
+	if(Succ) {
+		DWORD accessToCarrierToken = get_AccessMaskGrantedToMe(hCarrierToken);
+		appendmsg(hdlg,
+			_T("MAXIMUM_ALLOWED access bits to carrier-token: 0x%08X, %s"),
+			accessToCarrierToken,
+			ITCSv(accessToCarrierToken, itc::TokenRights)
+			);
+	}
+	else {
+		appendmsg(hdlg, _T("Unexpect! OpenProcessToken(hCarrierProcess, MAXIMUM_ALLOWED, ...) failed with winerr=%s"), ITCS_WinError);
+	}
+}
+
 #if _WIN32_WINNT >= 0x0A00
 // Win10+ SDK is available, do nothing here.
 #else
@@ -221,6 +258,8 @@ void test_CreateProcessAsUser(HWND hdlg, DWORD pidCarrier, TCHAR *exepath)
 		else 
 			appendmsg(hdlg, _T("My-token and Carrier-token are different."));
 	}
+
+	test_token_MAXIMUM_ALLOWED(hdlg, GetCurrentProcess(), hProcessCarrier);
 #endif
 
 	appendmsg(hdlg); // new line
