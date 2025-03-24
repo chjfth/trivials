@@ -13,6 +13,7 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinBase.itc.h>
 using namespace itc;
@@ -21,12 +22,12 @@ using namespace itc;
 
 HINSTANCE g_hinstExe;
 
+const int MaxPath = 32768;
+
 struct DlgPrivate_st
 {
-//	const TCHAR *mystr;
-//	int clicks;
-
 	bool isInitialized;
+	HANDLE hFile;
 };
 
 struct ObjtypeToItc_st
@@ -46,8 +47,7 @@ void Cf_SetDefaultParams(HWND hdlg)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 
-	const int MaxPath = 32768;
-	TCHAR tbuf[MaxPath] = _T("");
+	TCHAR tbuf[20] = _T("");
 	
 	SetDlgItemText(hdlg, IDE_lpFileName, _T("NewFile1.txt"));
 	
@@ -121,6 +121,80 @@ void Cf_InterpretParams(HWND hdlg)
 	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwFlagsAndAttributes, itc::dwFlagsAndAttributes));
 }
 
+static void enable_DlgItem(HWND hdlg, UINT idUic, bool enable)
+{
+	HWND huic = GetDlgItem(hdlg, idUic);
+	assert(huic);
+
+	EnableWindow(huic, enable);
+}
+
+void do_CreateFile(HWND hdlg)
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	assert(prdata->hFile==NULL);
+
+	HWND helog = GetDlgItem(hdlg, IDE_LogMsg);
+	SetWindowText(helog, _T(""));
+
+	TCHAR openpath[MaxPath] = _T("");
+	GetDlgItemText(hdlg, IDE_lpFileName, openpath, ARRAYSIZE(openpath));
+
+	DWORD dwDesiredAccess = get_EditboxValue(hdlg, IDE_dwDesiredAccess);
+	DWORD dwShareMode = get_EditboxValue(hdlg, IDE_dwShareMode);
+	DWORD dwCreationDisposition = get_EditboxValue(hdlg, IDE_dwCreationDisposition);
+	DWORD dwFlagsAndAttributes = get_EditboxValue(hdlg, IDE_dwFlagsAndAttributes);
+
+	SetLastError(0); 
+
+	HANDLE hfile = CreateFile(openpath, dwDesiredAccess, dwShareMode, 
+		NULL, // security-attributes
+		dwCreationDisposition,
+		dwFlagsAndAttributes,
+		NULL);
+	DWORD winerr = GetLastError();
+	if(hfile==INVALID_HANDLE_VALUE)
+	{
+		vaAppendText_mled(helog, _T("CreateFile() fail, WinErr=%s"), ITCSv(winerr, WinError));
+		return;
+	}
+
+	prdata->hFile = hfile;
+
+	vaAppendText_mled(helog, _T("CreateFile() success. Handle=0x%X.\r\n"), hfile);
+	if(winerr)
+	{
+		// When CREAT_ALWAYS, CreateFile can succeed with GetLastError()=ERROR_ALREADY_EXISTS .
+		vaAppendText_mled(helog, _T("GetLastError()=%s.\r\n"), ITCSv(winerr, WinError));
+	}
+
+	enable_DlgItem(hdlg, IDB_CreateFile, false);
+	enable_DlgItem(hdlg, IDB_CloseHandle, true);
+}
+
+void do_CloseFile(HWND hdlg)
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	assert(prdata->hFile!=NULL);
+
+	HWND helog = GetDlgItem(hdlg, IDE_LogMsg);
+
+	BOOL Succ = CloseHandle(prdata->hFile);
+	if(Succ)
+		vaSetWindowText(helog, _T("CloseHandle(0x%X) success."), prdata->hFile);
+	else {
+		vaSetWindowText(helog, _T("Unexpect! CloseHandle(0x%X) fail, WinErr=%s"),
+			prdata->hFile, ITCS_WinError);
+
+		return;
+	}
+
+	prdata->hFile = NULL;
+
+	enable_DlgItem(hdlg, IDB_CreateFile, true);
+	enable_DlgItem(hdlg, IDB_CloseHandle, false);
+}
+
 void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -135,12 +209,18 @@ void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify)
 		return;
 	}
 
+	//////////////////////
+
 	switch (idCtrl) 
 	{{
 	case IDB_CreateFile:
-		{
-			break;
-		}
+		do_CreateFile(hdlg);
+		break;
+
+	case IDB_CloseHandle:
+		do_CloseFile(hdlg);
+		break;
+
 	case IDOK:
 	case IDCANCEL:
 		{
@@ -193,6 +273,9 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	Cf_SetDefaultParams(hdlg);
 	Cf_InterpretParams(hdlg);
+
+	enable_DlgItem(hdlg, IDB_CreateFile, true);
+	enable_DlgItem(hdlg, IDB_CloseHandle, false);
 
 	SetFocus(GetDlgItem(hdlg, IDB_CreateFile));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
