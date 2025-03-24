@@ -1,0 +1,127 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_WINMAIN             ICON                    "SimpleCreateFile.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WINMAIN DIALOGEX 0, 0, 257, 223
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "SimpleCreateFile"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "CreateFile parameters:",IDC_STATIC,4,4,109,12,SS_CENTERIMAGE
+    LTEXT           "lpFileName:",IDC_STATIC,4,23,38,8,SS_CENTERIMAGE
+    LTEXT           "dwDesiredAccess:",IDC_STATIC,4,40,59,8,SS_CENTERIMAGE
+    COMBOBOX        IDCB_ObjectType,178,38,64,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "dwShareMode:",IDC_STATIC,4,55,49,8,SS_CENTERIMAGE
+    LTEXT           "dwCreationDisposition:",IDC_STATIC,4,73,74,8,SS_CENTERIMAGE
+    LTEXT           "dwFlagsAndAttributes:",IDC_STATIC,4,87,74,8,SS_CENTERIMAGE
+    EDITTEXT        IDE_lpFileName,47,20,206,13,ES_AUTOHSCROLL
+    EDITTEXT        IDE_dwDesiredAccess,83,38,69,13,ES_AUTOHSCROLL
+    EDITTEXT        IDE_dwShareMode,83,55,69,13,ES_AUTOHSCROLL
+    EDITTEXT        IDE_dwCreationDisposition,83,69,69,13,ES_AUTOHSCROLL
+    EDITTEXT        IDE_dwFlagsAndAttributes,83,86,69,13,ES_AUTOHSCROLL
+    EDITTEXT        IDE_Interpret,4,106,249,49,ES_MULTILINE | ES_READONLY | WS_VSCROLL
+    EDITTEXT        IDE_LogMsg,4,157,249,31,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+    DEFPUSHBUTTON   "&CreateFile",IDB_CreateFile,4,205,50,14
+    PUSHBUTTON      "&CloseHandle",IDB_CloseHandle,59,205,50,14
+    LTEXT           "as a:",IDC_STATIC,159,41,17,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_WINMAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 253
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 219
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#include ""_iversion.rc""\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include "_iversion.rc"
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
