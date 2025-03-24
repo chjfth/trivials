@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    ComboboxWideDrop_VMAJOR, ComboboxWideDrop_VMINOR, ComboboxWideDrop_VPATCH, ComboboxWideDrop_VTAIL
+ProductVersion ComboboxWideDrop_VMAJOR, ComboboxWideDrop_VMINOR, ComboboxWideDrop_VPATCH, ComboboxWideDrop_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     ComboboxWideDrop_NAME
+            VALUE "FileDescription", ComboboxWideDrop_NAME
+            VALUE "FileVersion",    ComboboxWideDrop_VMAJORs "." ComboboxWideDrop_VMINORs "." ComboboxWideDrop_VPATCHs
+            VALUE "ProductVersion",    ComboboxWideDrop_VMAJORs "." ComboboxWideDrop_VMINORs "." ComboboxWideDrop_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , ComboboxWideDrop_NAME ".exe"
+            VALUE "InternalName", ComboboxWideDrop_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
