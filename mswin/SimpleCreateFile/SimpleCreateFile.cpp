@@ -16,6 +16,7 @@
 #include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinBase.itc.h>
+#include <mswin/winuser.itc.h>
 using namespace itc;
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -195,6 +196,54 @@ void do_CloseFile(HWND hdlg)
 	enable_DlgItem(hdlg, IDB_CloseHandle, false);
 }
 
+
+struct EnumChildWnd_st {
+	HWND hdlg;
+	int idx;
+};
+
+BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lParam)
+{
+	EnumChildWnd_st &ecw = *(EnumChildWnd_st*)lParam;
+
+	TCHAR szClassname[80] ={};
+	GetClassName(hwnd, szClassname, ARRAYSIZE(szClassname));
+	TCHAR szWintitle[200] = {};
+	GetWindowText(hwnd, szWintitle, ARRAYSIZE(szWintitle));
+
+	if(_tcscmp(szClassname, _T("ComboLBox"))==0)
+	{
+		RECT rc = {};
+		GetWindowRect(hwnd, &rc);
+
+		DWORD ws = GetWindowStyle(hwnd);
+		HWND hOwner = GetAncestor(hwnd, GA_ROOTOWNER);
+
+		vaDbgTs(_T("  [#%d] 0x%X , classname=%s '%s' X=%d,Y=%d w=%d,h=%d (%s) Owner=0x%X"), 
+			ecw.idx, hwnd, szClassname, szWintitle,
+			rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top,
+			ws&WS_VISIBLE ? _T("vis") : _T("hid"),
+			hOwner
+			);
+	}
+
+	ecw.idx++;
+
+	return TRUE;
+};
+
+
+void do_ComboboxIniList(HWND hdlg, HWND hcbx, UINT codeNotify)
+{
+	vaDbgTs(_T("Combobox: %s"), ITCSv(codeNotify, CBN_xxx_ComboBox));
+
+	EnumChildWnd_st ecw = {hdlg};
+	
+	EnumChildWindows(
+		NULL, // hcbx
+		EnumChildProc, (LPARAM)&ecw);
+}
+
 void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -221,6 +270,10 @@ void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify)
 		do_CloseFile(hdlg);
 		break;
 
+	case IDCB_IniList:
+		do_ComboboxIniList(hdlg, hwndCtl, codeNotify);
+		break;
+
 	case IDOK:
 	case IDCANCEL:
 		{
@@ -234,14 +287,6 @@ BOOL Dlg_OnNotify(HWND hdlg, int idCtrl, LPNMHDR pnmhdr)
 {
 	UINT noticode = pnmhdr->code;
 
-	if(noticode==EN_CHANGE || noticode==CBN_SELCHANGE) // wrong using EN_CHANGE
-	{
-		if(idCtrl!=IDE_LogMsg)
-		{
-			Cf_InterpretParams(hdlg);
-		}
-	}
-
 	return 0;
 }
 
@@ -253,10 +298,13 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	jul->AnchorControl(0,0, 100,0, IDE_lpFileName);
 	jul->AnchorControl(0,0, 100,100, IDE_Interpret);
 	jul->AnchorControl(0,100, 100,100, IDE_LogMsg);
+	
 	jul->AnchorControl(0,100, 0,100, IDB_CreateFile);
 	jul->AnchorControl(0,100, 0,100, IDB_CloseHandle);
-
-	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
+	
+	jul->AnchorControl(0,100, 100,100, IDCB_IniList);
+	jul->AnchorControl(100,100, 100,100, IDB_Load);
+	jul->AnchorControl(100,100, 100,100, IDB_Save);
 }
 
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
@@ -276,6 +324,12 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	enable_DlgItem(hdlg, IDB_CreateFile, true);
 	enable_DlgItem(hdlg, IDB_CloseHandle, false);
+
+	HWND hcbx = GetDlgItem(hdlg, IDCB_IniList);
+//	ComboBox_SetCueBannerText(hcbx, _T("Drop INI file here to load.")); // later
+
+	ComboBox_AddString(hcbx, _T("Item one"));
+	ComboBox_AddString(hcbx, _T("BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)"));
 
 	SetFocus(GetDlgItem(hdlg, IDB_CreateFile));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
