@@ -13,22 +13,6 @@
 
 #define logmsg vaDbgTs
 
-/*
-void logmsg(const TCHAR *fmt, ...)
-{
-	assert(g_hedtLogmsg);
-
-	va_list args;
-	va_start(args, fmt);
-
-	vlAppendText_mled(g_hedtLogmsg, smt, args);
-
-	va_end(args);
-
-	vaAppendText_mled(g_hedtLogmsg, _T("\r\n"));
-}
-*/
-
 #include <mswin/winuser.itc.h>
 using namespace itc;
 
@@ -38,7 +22,7 @@ void logmsg(const TCHAR *fmt, ...)
 {
 }
 
-#define ITCSv(...) 
+#define ITCSv(...) 0
 
 #endif
 
@@ -168,6 +152,12 @@ void do_AdjustClbWidth(HWND hcbx, HWND hComboLBox, int clb_old_width)
 	if(!hdc)
 		return;
 
+	// Determine whether hComboLBox has a vertical scrollbar, if so, it counts to extra width.
+	DWORD ws = GetWindowStyle(hComboLBox);
+	int scrollbar_width = (ws & WS_VSCROLL) ? GetSystemMetrics(SM_CXVSCROLL) : 0;
+
+	// Use hComboLBox's current Font to determine droplist text width.
+
 	HFONT hfontUse = GetWindowFont(hComboLBox);
 	HFONT hfontOld = SelectFont(hdc, hfontUse);
 
@@ -190,13 +180,13 @@ void do_AdjustClbWidth(HWND hcbx, HWND hComboLBox, int clb_old_width)
 
 		logmsg(_T("  [Combobox item #%d] pixel width: %d"), i, size.cx);
 
-		clb_new_width = _MAX_(clb_new_width, size.cx + ClbExtraWidth);
+		clb_new_width = _MAX_(clb_new_width, size.cx + scrollbar_width + ClbExtraWidth);
 	}
 
 	SelectFont(hdc, hfontOld);
 	ReleaseDC(hComboLBox, hdc);
 
-	logmsg(_T("  ComboLBox ideal pixel width: %d"), clb_new_width);
+	logmsg(_T("  ComboLBox text width max pixels: %d"), clb_new_width);
 
 	// Now actually change ComboLBox window size
 	RECT rc = {};

@@ -19,32 +19,23 @@
 
 HINSTANCE g_hinstExe;
 
-struct DlgPrivate_st
-{
-	const TCHAR *mystr;
-	int clicks;
-};
-
-
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
-	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR textbuf[200];
-
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDB_AddTextToCombo:
 	{
-		++(prdata->clicks);
-		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
-		SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, textbuf);
-
-		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
+		TCHAR tbuf[4000] = {};
+		GetDlgItemText(hdlg, IDE_NewText, tbuf, ARRAYSIZE(tbuf));
+		HWND hcbx = GetDlgItem(hdlg, IDC_COMBO1);
+		ComboBox_AddString(hcbx, tbuf);
 		break;
 	}
 	case IDOK:
 	case IDCANCEL:
 	{
+		Dlgbox_DisableComboboxWideDrop(hdlg);
+
 		EndDialog(hdlg, id);
 		break;
 	}
@@ -57,13 +48,25 @@ void init_ComboboxList(HWND hdlg)
 	ComboBox_AddString(hcbx, _T("ABC"));
 	ComboBox_AddString(hcbx, _T("0123456789"));
 	ComboBox_AddString(hcbx, _T("The Quick Brown Fox Jumps Over the Lazy Dog."));
-
-// 	TCHAR szClassname[80] = {};
-// 	GetClassName(hcbx, szClassname, 80);
-// 
+	ComboBox_SetCurSel(hcbx, 0);
 
 	HWND hedit = GetDlgItem(hdlg, IDE_NewText);
 	Edit_SetCueBannerText(hedit, _T("Type a long sentence and add it to the combobox."));
+
+	TCHAR longtext[] = _T("01234567890 ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz");
+	const int textlen = ARRAYSIZE(longtext)-1;
+
+	hcbx = GetDlgItem(hdlg, IDC_COMBO2);
+	for(int i=0; i<textlen; i++)
+	{
+		TCHAR c = longtext[i+1];
+		longtext[i+1] = '\0';
+
+		ComboBox_AddString(hcbx, longtext);
+
+		longtext[i+1] = c;
+	}
+	ComboBox_SetCurSel(hcbx, textlen-1); // select final item
 }
 
 
@@ -73,31 +76,28 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 	jul->AnchorControl(0,0, 100,0, IDC_COMBO1);
 	jul->AnchorControl(0,0, 100,0, IDE_NewText);
-	jul->AnchorControl(100,0, 100,0, IDB_AddTextCombo);
+	jul->AnchorControl(100,0, 100,0, IDB_AddTextToCombo);
+
+	jul->AnchorControl(0,0, 100,0, IDC_COMBO2);
 
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-
-	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
 
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
 	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
 
-	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
-	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
-	
 	vaSetWindowText(hdlg, _T("ComboboxWideDrop v%d.%d.%d"), 
 		ComboboxWideDrop_VMAJOR, ComboboxWideDrop_VMINOR, ComboboxWideDrop_VPATCH);
 	
-	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata->mystr);
+	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
+		_T("With the help of Dlgbox_EnableComboboxWideDrop(), combobox dropdown adjusts it width automatically according to item text length within."));
 
 	Dlg_EnableJULayout(hdlg);
 
 	init_ComboboxList(hdlg);
 	Dlgbox_EnableComboboxWideDrop(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
@@ -121,8 +121,7 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
-	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
-	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, (LPARAM)&dlgdata);
+	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, NULL);
 
 	return 0;
 }
