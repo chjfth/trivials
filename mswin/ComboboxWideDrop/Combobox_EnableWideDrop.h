@@ -16,7 +16,7 @@ enum DlgboxCbw_err
 	DlgboxCbw_ChainMoved = 11,
 };
 
-DlgboxCbw_err Dlgbox_EnableComboboxWideDrop(HWND hcbx);
+DlgboxCbw_err Dlgbox_EnableComboboxWideDrop(HWND hdlg);
 
-DlgboxCbw_err Dlgbox_DisableComboboxWideDrop(HWND hcbx);
+DlgboxCbw_err Dlgbox_DisableComboboxWideDrop(HWND hdlg);
 

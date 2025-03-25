@@ -124,7 +124,8 @@ static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM ctx)
 	return TRUE;
 };
 
-void CALLBACK TimerProc_ProbeComboLBox(HWND hdlg, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+static void CALLBACK TimerProc_ProbeComboLBox(
+	HWND hdlg, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 static void worki_StartTimer(HWND hdlg, HWND hcbx, CbxWideDrop_st &worki)
 {
