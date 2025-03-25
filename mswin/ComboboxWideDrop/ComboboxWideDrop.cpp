@@ -28,14 +28,26 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		TCHAR tbuf[4000] = {};
 		GetDlgItemText(hdlg, IDE_NewText, tbuf, ARRAYSIZE(tbuf));
 		HWND hcbx = GetDlgItem(hdlg, IDC_COMBO1);
-		ComboBox_AddString(hcbx, tbuf);
+
+		if(tbuf[0])
+			ComboBox_AddString(hcbx, tbuf);
+		else
+			vaMsgBox(hdlg, MB_OK, NULL, _T("Empty text, nothing to do."));
+		break;
+	}
+	case IDCK_EnableWideDrop:
+	{
+		HWND hckb = GetDlgItem(hdlg, IDCK_EnableWideDrop);
+		BOOL isChk = Button_GetCheck(hckb);
+		if(isChk)
+			Dlgbox_EnableComboboxWideDrop(hdlg);
+		else
+			Dlgbox_DisableComboboxWideDrop(hdlg);
 		break;
 	}
 	case IDOK:
 	case IDCANCEL:
 	{
-		Dlgbox_DisableComboboxWideDrop(hdlg);
-
 		EndDialog(hdlg, id);
 		break;
 	}
@@ -96,7 +108,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	Dlg_EnableJULayout(hdlg);
 
 	init_ComboboxList(hdlg);
-	Dlgbox_EnableComboboxWideDrop(hdlg);
+	
+	SNDMSG(GetDlgItem(hdlg, IDCK_EnableWideDrop), BM_CLICK, 0, 0);
 
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
