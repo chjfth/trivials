@@ -1,8 +1,22 @@
 #pragma once
 #include <windows.h>
 
-bool Dlgbox_EnableComboboxWideDrop(HWND hcbx);
+enum DlgboxCbw_err 
+{
+	DlgboxCbw_Succ = 0,
 
-bool Dlgbox_DisableComboboxWideDrop(HWND hcbx);
+	// Error on enable
+	DlgboxCbw_Unknown = 1,
+	DlgboxCbw_NoMem = 2,
+	DlgboxCbw_AlreadyEnabled = 3,
+	DlgboxCbw_SetProp = 4, // WinAPI SetProp() error
 
-// extern HWND g_hedtLogmsg;
+	// Error on disable
+	DlgboxCbw_NotEnabledYet = 10,
+	DlgboxCbw_ChainMoved = 11,
+};
+
+DlgboxCbw_err Dlgbox_EnableComboboxWideDrop(HWND hcbx);
+
+DlgboxCbw_err Dlgbox_DisableComboboxWideDrop(HWND hcbx);
+

@@ -283,41 +283,45 @@ Dlg_WndProc_EnableCbxWideDrop(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 	return CallWindowProc(oldWndProc, hdlg, uMsg, wParam, lParam);
 }
 
-bool Dlgbox_EnableComboboxWideDrop(HWND hdlg)
-
+DlgboxCbw_err Dlgbox_EnableComboboxWideDrop(HWND hdlg)
 {
-	CbxWideDrop_st *myprop = new CbxWideDrop_st(nullptr);
+	WNDPROC currentWndProc = (WNDPROC)GetWindowLongPtr(hdlg, GWLP_WNDPROC);
+	CbxWideDrop_st *myprop = (CbxWideDrop_st*)GetProp(hdlg, CbxEnableWideDrop_PROP_STR);
+	if(myprop)
+		return DlgboxCbw_AlreadyEnabled;
+
+	myprop = new CbxWideDrop_st(nullptr);
 	if(!myprop)
-		return false; // no mem
+		return DlgboxCbw_NoMem;
 
 	WNDPROC oldWndProc = SubclassWindow(hdlg, Dlg_WndProc_EnableCbxWideDrop);
 	myprop->wndproc_was = oldWndProc;
 
 	BOOL succ = SetProp(hdlg, CbxEnableWideDrop_PROP_STR, myprop); // Store custom props into hcbx.
 	if(succ)
-		return true;
+	{
+		return DlgboxCbw_Succ;
+	}
 	else
 	{	// restore old state
 		SubclassWindow(hdlg, oldWndProc);
 		delete myprop;
-		return false;
+		return DlgboxCbw_SetProp;
 	}
-
-	return true;
 }
 
-bool Dlgbox_DisableComboboxWideDrop(HWND hdlg)
+DlgboxCbw_err Dlgbox_DisableComboboxWideDrop(HWND hdlg)
 {
 	WNDPROC currentWndProc = (WNDPROC)GetWindowLongPtr(hdlg, GWLP_WNDPROC);
 	CbxWideDrop_st *myprop = (CbxWideDrop_st*)GetProp(hdlg, CbxEnableWideDrop_PROP_STR);
 
 	if(!myprop)
-		return false;
+		return DlgboxCbw_NotEnabledYet;
 
 	if(currentWndProc != Dlg_WndProc_EnableCbxWideDrop)
 	{
 		// Someone else has further subclassed this hEdit, so we should not unsubclass it.
-		return false;
+		return 	DlgboxCbw_ChainMoved;
 	}
 
 	assert(myprop->hexmagic==HEXMAGIC);
@@ -332,6 +336,6 @@ bool Dlgbox_DisableComboboxWideDrop(HWND hdlg)
 	// Destroy our custom prop storage
 	delete myprop;
 
-	return true;
+	return DlgboxCbw_Succ;
 }
 

@@ -32,17 +32,40 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(tbuf[0])
 			ComboBox_AddString(hcbx, tbuf);
 		else
+		{
+			const int cycles = 123000;
+			
+			HWND hemsg = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+			vaSetWindowText(hemsg, _T("Testing API %d cycles..."), cycles);
+			UpdateWindow(hemsg);
+
+			for(int i=0; i<cycles; i++) // mem leak test
+			{
+				DlgboxCbw_err e1 = Dlgbox_EnableComboboxWideDrop(hdlg);
+				DlgboxCbw_err e2 = Dlgbox_DisableComboboxWideDrop(hdlg);
+			}
+			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Testing API %d cycles done."));
+
 			vaMsgBox(hdlg, MB_OK, NULL, _T("Empty text, nothing to do."));
+		}
 		break;
 	}
 	case IDCK_EnableWideDrop:
 	{
 		HWND hckb = GetDlgItem(hdlg, IDCK_EnableWideDrop);
 		BOOL isChk = Button_GetCheck(hckb);
-		if(isChk)
-			Dlgbox_EnableComboboxWideDrop(hdlg);
+		if(!isChk)
+		{
+			DlgboxCbw_err err = Dlgbox_EnableComboboxWideDrop(hdlg);
+			if(!err || err==DlgboxCbw_AlreadyEnabled)
+				Button_SetCheck(hckb, TRUE);
+		}
 		else
-			Dlgbox_DisableComboboxWideDrop(hdlg);
+		{
+			DlgboxCbw_err err = Dlgbox_DisableComboboxWideDrop(hdlg);
+			if(!err || err!=DlgboxCbw_ChainMoved)
+				Button_SetCheck(hckb, FALSE);
+		}
 		break;
 	}
 	case IDOK:
