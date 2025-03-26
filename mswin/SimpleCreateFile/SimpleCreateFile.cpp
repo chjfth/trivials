@@ -1,7 +1,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <windowsx.h>
+#include <ShellAPI.h>
 #include <CommCtrl.h>
+#include <windowsx.h> // should be after ShellAPI.h to see _INC_SHELLAPI
 #include <tchar.h>
 #include <stdio.h>
 #include "resource.h"
@@ -408,6 +409,29 @@ void do_LoadIni_ButtonClick(HWND hdlg)
 	do_LoadIni(hdlg, inipath);
 }
 
+void Dlg_OnDropFiles(HWND hdlg, HDROP hdrop)
+{
+	TCHAR inipath[MAX_PATH] = {};
+	UINT pathlen = DragQueryFile(hdrop, 0, inipath, ARRAYSIZE(inipath));
+	DragFinish(hdrop);
+
+	if(_tcsicmp(inipath+pathlen-4, _T(".ini"))!=0)
+	{
+		vaMsgBox(hdlg, MB_OK|MB_ICONWARNING, NULL,
+			_T("The dropped file is not an INI file. I'll do nothing."));
+		return;
+	}
+
+	HWND hcbx = GetDlgItem(hdlg, IDCB_IniList);
+
+	if(! Is_StringInCombobox(hcbx, inipath))
+		ComboBox_AddString(hcbx, inipath);
+
+	ComboBox_SetText(hcbx, inipath);
+	do_LoadIni_ButtonClick(hdlg);
+}
+
+
 void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -451,14 +475,6 @@ void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify)
 	}}
 }
 
-BOOL Dlg_OnNotify(HWND hdlg, int idCtrl, LPNMHDR pnmhdr) 
-{
-	UINT noticode = pnmhdr->code;
-
-	return 0;
-}
-
-
 static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
@@ -494,7 +510,11 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	enable_DlgItem(hdlg, IDB_CloseHandle, false);
 
 	HWND hcbx = GetDlgItem(hdlg, IDCB_IniList);
-//	ComboBox_SetCueBannerText(hcbx, _T("Drop INI file here to load.")); // later
+//	ComboBox_SetCueBannerText(hcbx, _T("Drop INI file here to load."));
+	SetDlgItemText(hdlg, IDE_LogMsg, 
+		_T("Hint: You can save CreateFile parameters to a INI file then load it later.\r\n")
+		_T("You can load an INI file by dragging it here.")
+		);
 
 	TCHAR szDefaultIni[MAX_PATH] = {};
 	_sntprintf_s(szDefaultIni, _TRUNCATE, _T("%s.ini"), GetExeStemname());
@@ -502,6 +522,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	ComboBox_SetText(hcbx, szDefaultIni);
 
 	Dlgbox_EnableComboboxWideDrop(hdlg);
+
+	DragAcceptFiles(hdlg, TRUE);
 
 	SetFocus(GetDlgItem(hdlg, IDB_CreateFile));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
@@ -513,7 +535,7 @@ INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
-//		HANDLE_dlgMSG(hdlg, WM_NOTIFY,        Dlg_OnNotify);
+		HANDLE_dlgMSG(hdlg, WM_DROPFILES,     Dlg_OnDropFiles);
 	}
 	return FALSE;
 }
