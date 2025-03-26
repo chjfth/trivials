@@ -18,6 +18,9 @@ void vaDbgTs(const TCHAR *fmt, ...);
 
 void vaDbgS(const TCHAR *fmt, ...);
 
+const TCHAR *GetExeFilename(); // the exe filename with .exe suffix
+const TCHAR *GetExeStemname(); // the exe filename without .exe suffix
+
 int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...);
 #define NULL_TITLE NULL // use for szTitle param
 

@@ -10,20 +10,30 @@
 
 #include "utils.h"
 
-#define JULAYOUT_IMPL
-#include <mswin/JULayout2.h>
-
 #include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinBase.itc.h>
 #include <mswin/winuser.itc.h>
 using namespace itc;
 
+#include <EnsureClnup_mswin.h>
+
+#define JAUTOBUF_IMPL
+#include <JAutoBuf.h>
+typedef JAutoBuf<TCHAR, sizeof(TCHAR), 1> AutoTCHARs;
+
+#define JULAYOUT_IMPL
+#include <mswin/JULayout2.h>
+
+#define Combobox_EnableWideDrop_IMPL
+#include <mswin/Combobox_EnableWideDrop.h>
+
+
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 HINSTANCE g_hinstExe;
 
-const int MaxPath = 32768;
+const int MaxPathBig = 32768;
 
 struct DlgPrivate_st
 {
@@ -119,7 +129,7 @@ void Cf_InterpretParams(HWND hdlg)
 
 	DWORD dwFlagsAndAttributes = get_EditboxValue(hdlg, IDE_dwFlagsAndAttributes);
 	vaAppendText_mled(hemsg, _T("dwFlagsAndAttributes=0x%X\r\n"), dwFlagsAndAttributes);
-	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwFlagsAndAttributes, itc::dwFlagsAndAttributes));
+	vaAppendText_mled(hemsg, _T("%s"), ITCSv(dwFlagsAndAttributes, itc::dwFlagsAndAttributes));
 }
 
 static void enable_DlgItem(HWND hdlg, UINT idUic, bool enable)
@@ -138,7 +148,7 @@ void do_CreateFile(HWND hdlg)
 	HWND helog = GetDlgItem(hdlg, IDE_LogMsg);
 	SetWindowText(helog, _T(""));
 
-	TCHAR openpath[MaxPath] = _T("");
+	TCHAR openpath[MaxPathBig] = _T("");
 	GetDlgItemText(hdlg, IDE_lpFileName, openpath, ARRAYSIZE(openpath));
 
 	DWORD dwDesiredAccess = get_EditboxValue(hdlg, IDE_dwDesiredAccess);
@@ -196,52 +206,179 @@ void do_CloseFile(HWND hdlg)
 	enable_DlgItem(hdlg, IDB_CloseHandle, false);
 }
 
-
-struct EnumChildWnd_st {
-	HWND hdlg;
-	int idx;
-};
-
-BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lParam)
+bool Is_FileExist(const TCHAR *filepath)
 {
-	EnumChildWnd_st &ecw = *(EnumChildWnd_st*)lParam;
+	DWORD attr = GetFileAttributes(filepath);
+	if(attr!=INVALID_FILE_ATTRIBUTES && !(attr&FILE_ATTRIBUTE_DIRECTORY))
+		return true;
+	else 
+		return false;
+}
 
-	TCHAR szClassname[80] ={};
-	GetClassName(hwnd, szClassname, ARRAYSIZE(szClassname));
-	TCHAR szWintitle[200] = {};
-	GetWindowText(hwnd, szWintitle, ARRAYSIZE(szWintitle));
+bool do_SaveIni(HWND hdlg, const TCHAR *inipath_input)
+{
+	TCHAR inipath[MaxPathBig] = _T("");
+	GetFullPathName(inipath_input, ARRAYSIZE(inipath), inipath, NULL);
 
-	if(_tcscmp(szClassname, _T("ComboLBox"))==0)
+	HANDLE hfile = CreateFile(inipath,
+		GENERIC_READ|GENERIC_WRITE,
+		0, // dwShareMode
+		NULL, // secu-attr
+		CREATE_ALWAYS, // dwCreationDisposition
+		0, NULL);
+	CEC_FILEHANDLE cec_hfile = hfile;
+	if(hfile==INVALID_HANDLE_VALUE)
 	{
-		RECT rc = {};
-		GetWindowRect(hwnd, &rc);
-
-		DWORD ws = GetWindowStyle(hwnd);
-		HWND hOwner = GetAncestor(hwnd, GA_ROOTOWNER);
-
-		vaDbgTs(_T("  [#%d] 0x%X , classname=%s '%s' X=%d,Y=%d w=%d,h=%d (%s) Owner=0x%X"), 
-			ecw.idx, hwnd, szClassname, szWintitle,
-			rc.left, rc.top, rc.right-rc.left, rc.bottom-rc.top,
-			ws&WS_VISIBLE ? _T("vis") : _T("hid"),
-			hOwner
-			);
+		vaMsgBox(hdlg, MB_OK|MB_ICONERROR, NULL,
+			_T("Cannot create file: \n\n%s\n\nWinErr=%s"), inipath, ITCS_WinError);
+		return false;
 	}
 
-	ecw.idx++;
+	TCHAR lpFileName[MaxPathBig] = _T("");
+	const int ValueLen = 20;
+	TCHAR dwDesiredAccess[ValueLen] = {};
+	TCHAR dwShareMode[ValueLen] = {};
+	TCHAR dwCreationDisposition[ValueLen] = {};
+	TCHAR dwFlagsAndAttributes[ValueLen] = {};
 
-	return TRUE;
-};
+	GetDlgItemText(hdlg, IDE_lpFileName, lpFileName, ARRAYSIZE(lpFileName));
+	GetDlgItemText(hdlg, IDE_dwDesiredAccess, dwDesiredAccess, ValueLen);
+	GetDlgItemText(hdlg, IDE_dwShareMode, dwShareMode, ValueLen);
+	GetDlgItemText(hdlg, IDE_dwCreationDisposition, dwCreationDisposition, ValueLen);
+	GetDlgItemText(hdlg, IDE_dwFlagsAndAttributes, dwFlagsAndAttributes, ValueLen);
 
+	TCHAR initext[MaxPathBig+400] = _T("");
+	_sntprintf_s(initext, _TRUNCATE, 
+		_T("[global]\r\n")
+		_T("lpFileName=%s\r\n")
+		_T("dwDesiredAccess=%s\r\n")
+		_T("dwShareMode=%s\r\n")
+		_T("dwCreationDisposition=%s\r\n")
+		_T("dwFlagsAndAttributes=%s\r\n"),
+		lpFileName, 
+		dwDesiredAccess, dwShareMode, dwCreationDisposition, dwFlagsAndAttributes
+		);
 
-void do_ComboboxIniList(HWND hdlg, HWND hcbx, UINT codeNotify)
+	DWORD bytesToWr = (DWORD) (_tcslen(initext) * sizeof(TCHAR));
+	DWORD bytesWritten = 0;
+
+	if(sizeof(TCHAR)==2)
+	{	// write extra UTF16LE BOM.
+		WriteFile(hfile, "\xFF\xFE", 2, &bytesWritten, NULL);
+	}
+
+	BOOL succ = WriteFile(hfile, initext, bytesToWr, &bytesWritten, NULL);
+	if(!succ)
+	{
+		vaMsgBox(hdlg, MB_OK|MB_ICONERROR, NULL,
+			_T("WriteFile(\"%s\") fail. WinErr=%s"), inipath, ITCS_WinError);
+
+		return false;
+	}
+
+	vaSetDlgItemText(hdlg, IDE_LogMsg, _T("INI file saved:\r\n%s"), inipath);
+	return true;
+}
+
+bool Is_StringInCombobox(HWND hcbx, const TCHAR *item)
 {
-	vaDbgTs(_T("Combobox: %s"), ITCSv(codeNotify, CBN_xxx_ComboBox));
+	AutoTCHARs textbuf = 0;
+	int items = ComboBox_GetCount(hcbx);
+	for(int i=0; i<items; i++)
+	{
+		int textlen = ComboBox_GetLBTextLen(hcbx, i);
+		if(textlen+1 > (int)textbuf.Size())
+			textbuf = textlen+1;
 
-	EnumChildWnd_st ecw = {hdlg};
+		ComboBox_GetLBText(hcbx, i, textbuf);
+
+		if(_tcsicmp(textbuf, item)==0)
+			return true;
+	}
+
+	return false;
+}
+
+void do_SaveIni_ButtonClick(HWND hdlg)
+{
+	SetDlgItemText(hdlg, IDE_LogMsg, _T(""));
+
+	HWND hcbx = GetDlgItem(hdlg, IDCB_IniList);
+	TCHAR inipath[MAX_PATH] = {};
+	ComboBox_GetText(hcbx, inipath, ARRAYSIZE(inipath));
+
+	if(!inipath[0])
+		return;
+
+	if(Is_FileExist(inipath))
+	{
+		int ret = vaMsgBox(hdlg, MB_YESNO|MB_ICONQUESTION, NULL, 
+			_T("Overwrite \"%s\" ?"), inipath);
+		
+		if(ret==IDNO)
+			return;
+	}
+
+	if( do_SaveIni(hdlg, inipath) )
+	{	// Add inipath to Combobox list.
+		if(! Is_StringInCombobox(hcbx, inipath))
+			ComboBox_AddString(hcbx, inipath);
+	}
+}
+
+void do_LoadIni(HWND hdlg, const TCHAR *inipath_input)
+{
+	// Note: If inipath is a filename, it is relative to C:\Windows ,
+	// so we need to get its fullpath first.
+
+	TCHAR inipath[MaxPathBig] = _T("");
+	GetFullPathName(inipath_input, ARRAYSIZE(inipath), inipath, NULL);
+
+	TCHAR tbuf[MaxPathBig] = _T("");
+	DWORD cret = 0;
 	
-	EnumChildWindows(
-		NULL, // hcbx
-		EnumChildProc, (LPARAM)&ecw);
+	tbuf[0] = '\0';
+	cret = GetPrivateProfileString(_T("global"), _T("lpFileName"), NULL, tbuf, ARRAYSIZE(tbuf), inipath);
+	SetDlgItemText(hdlg, IDE_lpFileName, tbuf);
+	
+	tbuf[0] = '\0';
+	cret = GetPrivateProfileString(_T("global"), _T("dwDesiredAccess"), NULL, tbuf, ARRAYSIZE(tbuf), inipath);
+	SetDlgItemText(hdlg, IDE_dwDesiredAccess, tbuf);
+
+	tbuf[0] = '\0';
+	cret = GetPrivateProfileString(_T("global"), _T("dwShareMode"), NULL, tbuf, ARRAYSIZE(tbuf), inipath);
+	SetDlgItemText(hdlg, IDE_dwShareMode, tbuf);
+
+	tbuf[0] = '\0';
+	cret = GetPrivateProfileString(_T("global"), _T("dwCreationDisposition"), NULL, tbuf, ARRAYSIZE(tbuf), inipath);
+	SetDlgItemText(hdlg, IDE_dwCreationDisposition, tbuf);
+
+	tbuf[0] = '\0';
+	cret = GetPrivateProfileString(_T("global"), _T("dwFlagsAndAttributes"), NULL, tbuf, ARRAYSIZE(tbuf), inipath);
+	SetDlgItemText(hdlg, IDE_dwFlagsAndAttributes, tbuf);
+
+	vaSetDlgItemText(hdlg, IDE_LogMsg, _T("INI file loaded:\r\n%s"), inipath);
+}
+
+void do_LoadIni_ButtonClick(HWND hdlg)
+{
+	SetDlgItemText(hdlg, IDE_LogMsg, _T(""));
+
+	HWND hcbx = GetDlgItem(hdlg, IDCB_IniList);
+	TCHAR inipath[MAX_PATH] = {};
+	ComboBox_GetText(hcbx, inipath, ARRAYSIZE(inipath));
+
+	if(!inipath[0])
+		return;
+
+	if(!Is_FileExist(inipath))
+	{
+		vaMsgBox(hdlg, MB_OK|MB_ICONERROR, NULL,
+			_T("INI file not exist: \"%s\""), inipath);
+		return;
+	}
+
+	do_LoadIni(hdlg, inipath);
 }
 
 void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify) 
@@ -270,8 +407,12 @@ void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify)
 		do_CloseFile(hdlg);
 		break;
 
-	case IDCB_IniList:
-		do_ComboboxIniList(hdlg, hwndCtl, codeNotify);
+	case IDB_Load:
+		do_LoadIni_ButtonClick(hdlg);
+		break;
+
+	case IDB_Save:
+		do_SaveIni_ButtonClick(hdlg);
 		break;
 
 	case IDOK:
@@ -328,8 +469,12 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	HWND hcbx = GetDlgItem(hdlg, IDCB_IniList);
 //	ComboBox_SetCueBannerText(hcbx, _T("Drop INI file here to load.")); // later
 
-	ComboBox_AddString(hcbx, _T("Item one"));
-	ComboBox_AddString(hcbx, _T("BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)"));
+	TCHAR szDefaultIni[MAX_PATH] = {};
+	_sntprintf_s(szDefaultIni, _TRUNCATE, _T("%s.ini"), GetExeStemname());
+	ComboBox_AddString(hcbx, szDefaultIni);
+	ComboBox_SetText(hcbx, szDefaultIni);
+
+	Dlgbox_EnableComboboxWideDrop(hdlg);
 
 	SetFocus(GetDlgItem(hdlg, IDB_CreateFile));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().

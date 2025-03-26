@@ -113,6 +113,29 @@ void vaDbgS(const TCHAR *fmt, ...)
 	OutputDebugString(buf);
 }
 
+const TCHAR *GetExeFilename() // the exe filename with .exe suffix
+{
+	static TCHAR s_exename[MAX_PATH] = _T("");
+	if(!s_exename[0])
+	{
+		GetModuleBaseName(GetCurrentProcess(), NULL, s_exename, ARRAYSIZE(s_exename));
+	}
+	return s_exename;
+}
+
+const TCHAR *GetExeStemname() // the exe filename without .exe suffix
+{
+	static TCHAR s_exestem[MAX_PATH] = _T("");
+	if(!s_exestem[0])
+	{
+		_tcscpy_s(s_exestem, GetExeFilename());
+
+		int slen = (int)_tcslen(s_exestem);
+		if(_tcsicmp(s_exestem+slen-4, _T(".exe"))==0)
+			s_exestem[slen-4] = '\0';
+	}
+	return s_exestem;
+}
 
 int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...)
 {
@@ -122,8 +145,7 @@ int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ..
 	va_start(args, szfmt);
 
 	if(!szTitle) {
-		GetModuleBaseName(GetCurrentProcess(), NULL, szModuleName, ARRAYSIZE(szModuleName));
-		szTitle = szModuleName;
+		szTitle = GetExeFilename();
 	}
 
 	TCHAR msgtext[4000] = {};
