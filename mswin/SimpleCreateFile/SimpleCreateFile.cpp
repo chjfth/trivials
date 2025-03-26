@@ -93,7 +93,7 @@ DWORD get_EditboxValue(HWND hdlg, UINT idedit)
 {
 	TCHAR tbuf[20] = {};
 	GetDlgItemText(hdlg, idedit, tbuf, ARRAYSIZE(tbuf));
-	return _tcstoul(tbuf, nullptr, 0);
+	return _tcstoul(tbuf, nullptr, 0); // could be (-1), if bad string
 }
 
 void Cf_InterpretParams(HWND hdlg)
@@ -108,28 +108,55 @@ void Cf_InterpretParams(HWND hdlg)
 	// dwDesiredAccess
 
 	DWORD dwDesiredAccess = get_EditboxValue(hdlg, IDE_dwDesiredAccess);
-	vaAppendText_mled(hemsg, _T("dwDesiredAccess=0x%X (interpret as %s):\r\n"), 
-		dwDesiredAccess, o2i.objtype);
-
-	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwDesiredAccess, *o2i.pitc));
+	if(dwDesiredAccess!=-1)
+	{
+		vaAppendText_mled(hemsg, _T("dwDesiredAccess=0x%X (interpret as %s):\r\n"), 
+			dwDesiredAccess, o2i.objtype);
+		vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwDesiredAccess, *o2i.pitc));
+	}
+	else
+	{	// A value larger than 32bit(eg 0xC00012345) could results.
+		vaAppendText_mled(hemsg, _T("dwDesiredAccess (bad value)\r\n\r\n"));
+	}
 
 	// dwShareMode
 
 	DWORD dwShareMode = get_EditboxValue(hdlg, IDE_dwShareMode);
-	vaAppendText_mled(hemsg, _T("dwShareMode=0x%02X):\r\n"), dwShareMode);
-	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwShareMode, itc::dwShareMode));
+	if(dwShareMode!=-1)
+	{
+		vaAppendText_mled(hemsg, _T("dwShareMode=0x%02X:\r\n"), dwShareMode);
+		vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwShareMode, itc::dwShareMode));
+	}
+	else
+	{
+		vaAppendText_mled(hemsg, _T("dwShareMode (bad value)\r\n\r\n"));
+	}
 
 	// dwCreationDisposition
 
 	DWORD dwCreationDisposition = get_EditboxValue(hdlg, IDE_dwCreationDisposition);
-	vaAppendText_mled(hemsg, _T("dwCreationDisposition=%u\r\n"), dwCreationDisposition);
-	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwCreationDisposition, itc::dwCreationDisposition));
+	if(dwCreationDisposition!=-1)
+	{
+		vaAppendText_mled(hemsg, _T("dwCreationDisposition=%u\r\n"), dwCreationDisposition);
+		vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwCreationDisposition, itc::dwCreationDisposition));
+	}
+	else
+	{
+		vaAppendText_mled(hemsg, _T("dwCreationDisposition (bad value)\r\n\r\n"));
+	}
 
 	// dwFlagsAndAttributes
 
 	DWORD dwFlagsAndAttributes = get_EditboxValue(hdlg, IDE_dwFlagsAndAttributes);
-	vaAppendText_mled(hemsg, _T("dwFlagsAndAttributes=0x%X\r\n"), dwFlagsAndAttributes);
-	vaAppendText_mled(hemsg, _T("%s"), ITCSv(dwFlagsAndAttributes, itc::dwFlagsAndAttributes));
+	if(dwFlagsAndAttributes!=-1)
+	{
+		vaAppendText_mled(hemsg, _T("dwFlagsAndAttributes=0x%X\r\n"), dwFlagsAndAttributes);
+		vaAppendText_mled(hemsg, _T("%s"), ITCSv(dwFlagsAndAttributes, itc::dwFlagsAndAttributes));
+	}
+	else
+	{
+		vaAppendText_mled(hemsg, _T("dwFlagsAndAttributes (bad value)\r\n\r\n"));
+	}
 }
 
 static void enable_DlgItem(HWND hdlg, UINT idUic, bool enable)
