@@ -2,8 +2,8 @@
 #define __ComboboxWideDrop_iversion_h_
 
 #define ComboboxWideDrop_VMAJOR 1
-#define ComboboxWideDrop_VMINOR 0
-#define ComboboxWideDrop_VPATCH 3
+#define ComboboxWideDrop_VMINOR 1
+#define ComboboxWideDrop_VPATCH 0
 #define ComboboxWideDrop_VTAIL  1
 
 #define ComboboxWideDropstr__(n) #n

@@ -214,7 +214,6 @@
 
   <ItemGroup>
     <ClCompile Include="ComboboxWideDrop.cpp" />
-    <ClCompile Include="Combobox_EnableWideDrop.cpp" />
     <ClCompile Include="..\utils.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp" />
@@ -228,11 +227,12 @@
     <None Include="_iversion.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Combobox_EnableWideDrop.h" />
     <ClInclude Include="iversion.h" />
     <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\WindowsX2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\Combobox_EnableWideDrop.h" />
     <ClInclude Include="..\..\__WinConst\mswin\winuser.itc.h" />
 <!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
