@@ -5,6 +5,7 @@
 #include <windowsx.h> // should be after ShellAPI.h to see _INC_SHELLAPI
 #include <tchar.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "resource.h"
 
 #include "iversion.h"
@@ -498,8 +499,9 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 	
-	vaSetWindowText(hdlg, _T("SimpleCreateFile v%d.%d.%d"), 
-		SimpleCreateFile_VMAJOR, SimpleCreateFile_VMINOR, SimpleCreateFile_VPATCH);
+	vaSetWindowText(hdlg, _T("SimpleCreateFile v%d.%d.%d (%s)"), 
+		SimpleCreateFile_VMAJOR, SimpleCreateFile_VMINOR, SimpleCreateFile_VPATCH,
+		str_ANSIorUnicode());
 	
 	Dlg_EnableJULayout(hdlg);
 

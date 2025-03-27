@@ -76,7 +76,7 @@
   <PropertyGroup Label="Configuration">
     <ProjectGuid>{20250324-0000-0000-0000-080707000001}</ProjectGuid>
     <ProjectName>SimpleCreateFile</ProjectName>
-     <TargetName>$(ProjectName)</TargetName>
+     <TargetName>$(ProjectName)</TargetName> <!-- override later with W or A suffix -->
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
 
@@ -97,9 +97,11 @@
   <!-- Unicode or ANSI(MBCS) -->
   <PropertyGroup Condition="!$(Configuration.Contains('ANSI'))" Label="Configuration">
     <CharacterSet>Unicode</CharacterSet>
+    <TargetName>$(ProjectName)W</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition=" $(Configuration.Contains('ANSI'))" Label="Configuration">
     <CharacterSet>MultiByte</CharacterSet>
+    <TargetName>$(ProjectName)A</TargetName>
   </PropertyGroup>
 
   <PropertyGroup>
