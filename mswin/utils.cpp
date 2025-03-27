@@ -286,3 +286,31 @@ DWORD TrueGetMillisec()
 	return millisec;
 }
 
+const TCHAR *str_ANSIorUnicode()
+{
+	return sizeof(TCHAR)==1 ? _T("ANSI") : _T("Unicode");
+}
+
+void util_SetDlgDefaultButton(HWND hwndDlg, UINT idDefault) 
+{
+	// Provided by PSSA2000 TokenMaster.cpp 
+
+	// Get that last default control
+	UINT nOld = (UINT) SendMessage(hwndDlg, DM_GETDEFID, 0, 0);
+
+	// Reset the current default push button to a regular button.
+	if (HIWORD(nOld) == DC_HASDEFID)
+	{
+		SendDlgItemMessage(hwndDlg, LOWORD(nOld), BM_SETSTYLE, 
+			BS_PUSHBUTTON, // make it a normal button
+			(LPARAM) TRUE);
+	}
+
+	// Update the default push button's control ID.
+	SendMessage(hwndDlg, DM_SETDEFID, idDefault, 0L);
+
+	// Set the new style.
+	SendDlgItemMessage(hwndDlg, idDefault, BM_SETSTYLE, 
+		BS_DEFPUSHBUTTON, // make it a stand-out button
+		(LPARAM) TRUE); 
+}

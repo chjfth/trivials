@@ -169,6 +169,16 @@ static void enable_DlgItem(HWND hdlg, UINT idUic, bool enable)
 	EnableWindow(huic, enable);
 }
 
+static void btn_EnableCreateFile(HWND hdlg, bool isEnCreateFile)
+{
+	enable_DlgItem(hdlg, IDB_CreateFile, isEnCreateFile ? true : false);
+	enable_DlgItem(hdlg, IDB_CloseHandle, isEnCreateFile ? false : true);
+
+	SetFocus(GetDlgItem(hdlg, isEnCreateFile ? IDB_CreateFile : IDB_CloseHandle));
+
+	util_SetDlgDefaultButton(hdlg, isEnCreateFile ? IDB_CreateFile : IDB_CloseHandle);
+}
+
 void do_CreateFile(HWND hdlg)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -208,8 +218,7 @@ void do_CreateFile(HWND hdlg)
 		vaAppendText_mled(helog, _T("GetLastError()=%s.\r\n"), ITCSv(winerr, WinError));
 	}
 
-	enable_DlgItem(hdlg, IDB_CreateFile, false);
-	enable_DlgItem(hdlg, IDB_CloseHandle, true);
+	btn_EnableCreateFile(hdlg, false);
 }
 
 void do_CloseFile(HWND hdlg)
@@ -231,8 +240,7 @@ void do_CloseFile(HWND hdlg)
 
 	prdata->hFile = NULL;
 
-	enable_DlgItem(hdlg, IDB_CreateFile, true);
-	enable_DlgItem(hdlg, IDB_CloseHandle, false);
+	btn_EnableCreateFile(hdlg, true);
 }
 
 bool Is_FileExist(const TCHAR *filepath)
@@ -508,8 +516,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	Cf_SetDefaultParams(hdlg);
 	Cf_InterpretParams(hdlg);
 
-	enable_DlgItem(hdlg, IDB_CreateFile, true);
-	enable_DlgItem(hdlg, IDB_CloseHandle, false);
+	btn_EnableCreateFile(hdlg, true);
 
 	HWND hcbx = GetDlgItem(hdlg, IDCB_IniList);
 //	ComboBox_SetCueBannerText(hcbx, _T("Drop INI file here to load."));

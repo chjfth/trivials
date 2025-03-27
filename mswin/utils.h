@@ -39,3 +39,7 @@ unsigned __int64 get_qpf();
 unsigned __int64 get_qpc();
 
 DWORD TrueGetMillisec();
+
+const TCHAR *str_ANSIorUnicode();
+
+void util_SetDlgDefaultButton(HWND hwndDlg, UINT idDefault);
