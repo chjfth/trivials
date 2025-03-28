@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <CommCtrl.h>
+#include <Shlobj.h>
 #include <Aclapi.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -203,8 +204,9 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 
-	vaSetWindowText(hdlg, _T("NtfsDumpSD v%d.%d.%d"), 
-		NtfsDumpSD_VMAJOR, NtfsDumpSD_VMINOR, NtfsDumpSD_VPATCH);
+	vaSetWindowText(hdlg, _T("NtfsDumpSD v%d.%d.%d %s"), 
+		NtfsDumpSD_VMAJOR, NtfsDumpSD_VMINOR, NtfsDumpSD_VPATCH,
+		IsUserAnAdmin() ? _T("(RunAsAdmin)") : _T(""));
 
 	TCHAR textbuf[MAX_PATH] = {};
 	GetSystemDirectory(textbuf, ARRAYSIZE(textbuf));
