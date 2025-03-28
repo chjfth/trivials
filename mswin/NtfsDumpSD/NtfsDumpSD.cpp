@@ -39,6 +39,16 @@ TCHAR* InterpretRights(DWORD rights, void *userctx)
 	TCHAR *pbuf = new TCHAR[BufChars];
 	pbuf[0] = '\0';
 
+	// Check for special ALL rights cases(to avoid verbose output)
+	//
+	if(rights==0x1F01FF)
+	{
+		_sntprintf_s(pbuf, BufChars, _TRUNCATE,
+			_T("%*s (STANDARD_RIGHTS_ALL | FILE_ALL_ACCESS)\r\n"), indents);
+	
+		return pbuf;
+	}
+
 #define DUMP_ONE_BIT_PERLINE(bitnames) \
 	if( (rights & (bitnames)) == bitnames ) \
 	_sntprintf_s(pbuf, BufChars, _TRUNCATE, _T("%s%*s (0x%08X) %s\r\n"), pbuf, indents, _T(""), \
