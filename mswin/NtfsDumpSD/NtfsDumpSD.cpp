@@ -11,6 +11,9 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <mswin/WinError.itc.h>
+using namespace itc;
+
 #include "iversion.h"
 
 #include "../utils.h"
@@ -135,7 +138,7 @@ void do_GetSD(HWND hdlg)
 			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Path not found."));
 		} else {
 			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
-				_T("GetFileAttributes() fail with winerr=%d"), winerr);
+				_T("GetFileAttributes() fail with winerr=%s"), ITCSv(winerr, WinError));
 		}
 		return;
 	}
@@ -157,7 +160,7 @@ void do_GetSD(HWND hdlg)
 	if(winerr)
 	{
 		vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
-			_T("GetNamedSecurityInfo() fails with winerr=%d"), winerr);
+			_T("GetNamedSecurityInfo() fails with winerr=%s"), ITCSv(winerr, WinError));
 		return;
 	}
 
