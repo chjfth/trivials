@@ -124,6 +124,9 @@ void do_DumpSD(HWND hdlg, PSECURITY_DESCRIPTOR pvSD,
 
 void do_GetSD(HWND hdlg)
 {
+	HWND hemsg = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+	vaSetWindowText(hemsg, _T("")); // clear text
+
 	DWORD winerr = 0;
 	TCHAR path[MAX_PATH] = {};
 	GetDlgItemText(hdlg, IDC_EDIT_Path, path, ARRAYSIZE(path));
@@ -135,12 +138,16 @@ void do_GetSD(HWND hdlg)
 	{
 		winerr = GetLastError();
 		if(winerr==ERROR_FILE_NOT_FOUND || winerr==ERROR_PATH_NOT_FOUND) {
-			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Path not found."));
+			vaAppendText_mled(hemsg, _T("Path not found.\r\n"));
 		} else {
-			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
-				_T("GetFileAttributes() fail with winerr=%s"), ITCSv(winerr, WinError));
+			vaAppendText_mled(hemsg, 
+				_T("GetFileAttributes() fail with winerr=%s\r\n"), ITCSv(winerr, WinError));
 		}
-		return;
+		
+		// ignore the error, just consider `path` a normal file.
+		attrs = 0;
+		vaAppendText_mled(hemsg, 
+			_T("Ignore the error above, go on with GetNamedSecurityInfo().\r\n"));
 	}
 
 	SECURITY_DESCRIPTOR *pSD = nullptr;
@@ -159,8 +166,8 @@ void do_GetSD(HWND hdlg)
 
 	if(winerr)
 	{
-		vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
-			_T("GetNamedSecurityInfo() fails with winerr=%s"), ITCSv(winerr, WinError));
+		vaAppendText_mled(hemsg,
+			_T("GetNamedSecurityInfo() fails with winerr=%s\r\n"), ITCSv(winerr, WinError));
 		return;
 	}
 
