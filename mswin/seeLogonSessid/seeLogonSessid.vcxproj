@@ -200,17 +200,17 @@
    -->
   <ItemGroup>
     <ClCompile Include="seeLogonSessid.cpp" />
-<!--
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
--->
+    <ClCompile Include="..\..\__WinConst\mswin\NtStatus.itc.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\NTSecAPI.itc.cpp" />
   </ItemGroup>
 
   <ItemGroup>
-<!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
--->
+    <ClInclude Include="..\..\__WinConst\mswin\NtStatus.itc.h" />
+    <ClInclude Include="..\..\__WinConst\mswin\NTSecAPI.itc.h" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
