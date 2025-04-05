@@ -11,6 +11,9 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#define util_WinSecuAPI_IMPL
+#include <mswin/util_WinSecuAPI.h>
+
 #include <mswin/WinError.itc.h>
 using namespace itc;
 
@@ -150,29 +153,66 @@ void do_GetSD(HWND hdlg)
 			_T("Ignore the error above, go on with GetNamedSecurityInfo().\r\n"));
 	}
 
+	bool hasAuditPriv = true; // assume true
+
+	// Enable "SeSecurityPrivilege" anyway, SACL_SECURITY_INFORMATION requires it.
+	util_EnableWinPriv(SE_SECURITY_NAME); 
+
+	// Strategy: I'll try GetNamedSecurityInfo() twice. 
+	// First try with SACL_SECURITY_INFORMATION. Most user will fail
+	// with ERROR_PRIVILEGE_NOT_HELD(1314), bcz SACL requires "SeSecurityPrivilege".
+	// If fail so, I do second try, this time without SACL_SECURITY_INFORMATION, 
+	// most user should succeed this time.
+
 	SECURITY_DESCRIPTOR *pSD = nullptr;
 	SID *psidOwner = nullptr;
 	SID *psidGroup = nullptr;
-	ACL *pAcl = nullptr;
+	ACL *pDacl = nullptr, *pSacl = nullptr;
+	
+	SECURITY_INFORMATION siflags = 
+		OWNER_SECURITY_INFORMATION | GROUP_SECURITY_INFORMATION 
+		| DACL_SECURITY_INFORMATION | SACL_SECURITY_INFORMATION 
+		| LABEL_SECURITY_INFORMATION ; 
 
-	winerr = GetNamedSecurityInfo(path, SE_FILE_OBJECT, 
-		OWNER_SECURITY_INFORMATION|GROUP_SECURITY_INFORMATION|DACL_SECURITY_INFORMATION,
+	winerr = GetNamedSecurityInfo(path, SE_FILE_OBJECT, siflags,
 		(PSID*)&psidOwner,
 		(PSID*)&psidGroup,
-		&pAcl,
-		NULL, // SACL
+		&pDacl,
+		&pSacl, // to receive Integrity-level
 		(PSECURITY_DESCRIPTOR*)&pSD);
 	Cec_LocalFree cec_sd = pSD;
 
-	if(winerr)
+	if(winerr==ERROR_PRIVILEGE_NOT_HELD)
 	{
-		vaAppendText_mled(hemsg,
-			_T("GetNamedSecurityInfo() fails with winerr=%s\r\n"), ITCSv(winerr, WinError));
-		return;
+		hasAuditPriv = false;
+		// Do second try
+		siflags &= ~SACL_SECURITY_INFORMATION;
+	
+		winerr = GetNamedSecurityInfo(path, SE_FILE_OBJECT, siflags,
+			(PSID*)&psidOwner,
+			(PSID*)&psidGroup,
+			&pDacl,
+			&pSacl, // to receive Integrity-level
+			(PSECURITY_DESCRIPTOR*)&pSD);
+		cec_sd = pSD;
+
+		if(winerr)
+		{
+			vaAppendText_mled(hemsg,
+				_T("GetNamedSecurityInfo() fails with winerr=%s\r\n"), ITCSv(winerr, WinError));
+			return;
+		}
 	}
 
 	ITR_st itrctx = { attrs&FILE_ATTRIBUTE_DIRECTORY ? true : false };
 	do_DumpSD(hdlg, pSD, InterpretRights, &itrctx);
+
+	if(!hasAuditPriv)
+	{
+		vaDbgS(_T("")); // blank line
+		vaAppendText_mled(hemsg,
+			_T("Note: You do not have %s, so Auditing ACEs will not be reported.\r\n"), SE_SECURITY_NAME);
+	}
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
