@@ -209,7 +209,7 @@ void do_GetSD(HWND hdlg)
 
 	if(!hasAuditPriv)
 	{
-		vaDbgS(_T("")); // blank line
+		vaAppendText_mled(hemsg, _T("\r\n")); // blank line
 		vaAppendText_mled(hemsg,
 			_T("Note: You do not have %s, so Auditing ACEs will not be reported.\r\n"), SE_SECURITY_NAME);
 	}

@@ -3,7 +3,7 @@
 
 #define NtfsDumpSD_VMAJOR 1
 #define NtfsDumpSD_VMINOR 3
-#define NtfsDumpSD_VPATCH 0
+#define NtfsDumpSD_VPATCH 1
 #define NtfsDumpSD_VTAIL  0
 
 #define NtfsDumpSDstr__(n) #n

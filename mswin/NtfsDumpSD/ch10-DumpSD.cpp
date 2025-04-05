@@ -10,6 +10,7 @@
 
 #include <itc/InterpretConst.h>
 #include <mswin/winnt.itc.h>
+#include <mswin/WinError.itc.h>
 
 #include "ch10-DumpSD.h"
 
@@ -86,7 +87,8 @@ TCHAR * SID2Repr(PSID pvSid, TCHAR buf[], int buflen)
 	{
 		DWORD winerr = GetLastError();
 		assert(!succ && winerr==ERROR_NONE_MAPPED);
-		_sntprintf_s(buf, buflen, _TRUNCATE, _T("( no mapped name )"));
+		_sntprintf_s(buf, buflen, _TRUNCATE, 
+			_T("%s ( no mapped name )"), pszSid);
 	}
 
 	LocalFree(pszSid);
@@ -246,13 +248,14 @@ void CH10_DumpSD( PSECURITY_DESCRIPTOR pvsd, FUNC_InterpretRights *procItr, void
 	vaDbgS(
 		_T("SECURITY_DESCRIPTOR at address: 0x%p\r\n")
 		_T("  .Revision=%d, length=%d\r\n")
-		_T("  .Control(flags) = %s\r\n")
+		_T("  .Control(flags) = 0x%X %s\r\n")
 		_T("  OwnerSID = %s\r\n")
 		_T("  GroupSID = %s\r\n")
 		_T("  DACL: %s ; SACL: %s")
 		,
-		(void*)psd, psd->Revision, sdlen,
-		ITCSv(psd->Control, SE_xxx_sdControl),
+		(void*)psd, 
+		psd->Revision, sdlen,
+		psd->Control, ITCSv(psd->Control, SE_xxx_sdControl),
 		SID2Repr(psidOwner, szOwnerRepr, BUFSIZ1), 
 		SID2Repr(psidGroup, szGroupRepr, BUFSIZ1),
 		ACL2ReprShort(fPresentDacl, pDACL, szDACL, BUF20), ACL2ReprShort(fPresentSacl, pSACL, szSACL, BUF20)
@@ -289,6 +292,7 @@ void CH10_DumpSD( PSECURITY_DESCRIPTOR pvsd, FUNC_InterpretRights *procItr, void
 	else
 	{
 		DWORD winerr = GetLastError();
-		vaDbgS(_T("Unexpect! ConvertSecurityDescriptorToStringSecurityDescriptor() error, winerr=%d"), winerr);
+		vaDbgS(_T("Unexpect! ConvertSecurityDescriptorToStringSecurityDescriptor() error, winerr=%s\r\n"), 
+			ITCSv(winerr, WinError));
 	}
 }
