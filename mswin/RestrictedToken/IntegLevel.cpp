@@ -212,9 +212,9 @@ int _tmain(int argc, TCHAR* argv[])
 	if(argc==1)
 	{
 		const TCHAR *s = _T("D:\\test\\foo.txt");
-		_tprintf(_T("IntegLevel v1.1, see/change NTFS file/dir's Integrity-level.\n"));
+		_tprintf(_T("IntegLevel v1.2, see/change NTFS file/dir's Integrity-level.\n"));
 		_tprintf(_T("Missing parameters.\n"));
-		_tprintf(_T("    IntegLevel <filepath> <integrity-level> <il-policy>\n"));
+		_tprintf(_T("    IntegLevel <filepath> [integrity-level] [il-policy]\n"));
 		_tprintf(_T("Example:\n"));
 		_tprintf(_T("    IntegLevel %s\n"), s);
 		_tprintf(_T("    IntegLevel %s Low\n"), s);
