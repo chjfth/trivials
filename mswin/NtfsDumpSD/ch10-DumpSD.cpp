@@ -176,7 +176,8 @@ void CH10_DumpACL( PACL pACL, FUNC_InterpretRights *procItr, void *userctx )
 		vaDbgS(TEXT("  ACE SID = %s"), szSidRepr);
 
 		vaDbgS(TEXT("  ACE Type = %s"), ITCSv(pACE->Header.AceType, AceType));
-		vaDbgS(TEXT("  ACE Flags = %s"), ITCSv(pACE->Header.AceFlags, AceFlags));
+		vaDbgS(TEXT("  ACE Flags = 0x%X , %s"), 
+			pACE->Header.AceFlags, ITCSv(pACE->Header.AceFlags, itc::AceFlags));
 
 		if(pACE->Header.AceType==SYSTEM_MANDATORY_LABEL_ACE_TYPE) 
 		{	// Vista+: Integrity-level special
@@ -248,7 +249,7 @@ void CH10_DumpSD( PSECURITY_DESCRIPTOR pvsd, FUNC_InterpretRights *procItr, void
 	vaDbgS(
 		_T("SECURITY_DESCRIPTOR at address: 0x%p\r\n")
 		_T("  .Revision=%d, length=%d\r\n")
-		_T("  .Control(flags) = 0x%X %s\r\n")
+		_T("  .Control(flags) = 0x%X , %s\r\n")
 		_T("  OwnerSID = %s\r\n")
 		_T("  GroupSID = %s\r\n")
 		_T("  DACL: %s ; SACL: %s")

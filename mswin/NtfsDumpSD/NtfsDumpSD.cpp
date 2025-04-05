@@ -116,13 +116,17 @@ TCHAR* InterpretRights(DWORD rights, void *userctx)
 	return pbuf;
 }
 
-void do_DumpSD(HWND hdlg, PSECURITY_DESCRIPTOR pvSD, 
+void do_DumpSD(HWND hdlg, const TCHAR *path, PSECURITY_DESCRIPTOR pvSD, 
 	FUNC_InterpretRights *procItr, void *userctx)
 {
 	g_dbgbuf[0] = '\0';
 	CH10_DumpSD(pvSD, procItr, userctx);
 
-	vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("%s"), g_dbgbuf);
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+	
+	vaSetWindowText(hedit, _T("%s\r\n\r\n"), path);
+
+	vaAppendText_mled(hedit, _T("%s"), g_dbgbuf);
 }
 
 void do_GetSD(HWND hdlg)
@@ -140,8 +144,12 @@ void do_GetSD(HWND hdlg)
 	if(attrs==INVALID_FILE_ATTRIBUTES)
 	{
 		winerr = GetLastError();
-		if(winerr==ERROR_FILE_NOT_FOUND || winerr==ERROR_PATH_NOT_FOUND) {
-			vaAppendText_mled(hemsg, _T("Path not found.\r\n"));
+		if(winerr==ERROR_FILE_NOT_FOUND 
+			|| winerr==ERROR_PATH_NOT_FOUND
+			|| winerr==ERROR_INVALID_NAME) 
+		{
+			vaAppendText_mled(hemsg, _T("Bad path or path not found. WinErr=%s\r\n"),
+				ITCSv(winerr, WinError));
 		} else {
 			vaAppendText_mled(hemsg, 
 				_T("GetFileAttributes() fail with winerr=%s\r\n"), ITCSv(winerr, WinError));
@@ -199,13 +207,19 @@ void do_GetSD(HWND hdlg)
 		if(winerr)
 		{
 			vaAppendText_mled(hemsg,
-				_T("GetNamedSecurityInfo() fails with winerr=%s\r\n"), ITCSv(winerr, WinError));
+				_T("[2]GetNamedSecurityInfo() fails with winerr=%s\r\n"), ITCSv(winerr, WinError));
 			return;
 		}
 	}
+	else if(winerr)
+	{
+		vaAppendText_mled(hemsg,
+			_T("[1]GetNamedSecurityInfo() fails with winerr=%s\r\n"), ITCSv(winerr, WinError));
+		return;
+	}
 
 	ITR_st itrctx = { attrs&FILE_ATTRIBUTE_DIRECTORY ? true : false };
-	do_DumpSD(hdlg, pSD, InterpretRights, &itrctx);
+	do_DumpSD(hdlg, path, pSD, InterpretRights, &itrctx);
 
 	if(!hasAuditPriv)
 	{
