@@ -193,6 +193,7 @@ void do_GetSD(HWND hdlg)
 	if(winerr==ERROR_PRIVILEGE_NOT_HELD)
 	{
 		hasAuditPriv = false;
+
 		// Do second try
 		siflags &= ~SACL_SECURITY_INFORMATION;
 	

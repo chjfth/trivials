@@ -145,7 +145,7 @@ void CH10_DumpACL( PACL pACL, FUNC_InterpretRights *procItr, void *userctx )
 	if (!GetAclInformation(pACL, &aclSize, sizeof(aclSize), AclSizeInformation))
 		return;
 
-	vaDbgS(TEXT("ACL ACE count: %d %s"), 
+	vaDbgS(TEXT("ACE count: %d %s"), 
 		aclSize.AceCount, 
 		aclSize.AceCount==0 ? _T("(=empty ACL)") : _T("")
 		);
