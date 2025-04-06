@@ -177,7 +177,7 @@ void change_IntegrityLevel(const TCHAR *szfn, DWORD il, DWORD ilpolicies)
 		psidIL);
 	if(!succ)
 	{
-		_tprintf(_T("AddMandatoryAce() fail with winerr=%d\n"), GetLastError());
+		_tprintf(_T("AddMandatoryAce() fail with winerr=%s\n"), ITCS_WinError);
 		exit(4);
 	}
 
@@ -195,8 +195,8 @@ void change_IntegrityLevel(const TCHAR *szfn, DWORD il, DWORD ilpolicies)
 	}
 	else
 	{
-		_tprintf(_T("SetNamedSecurityInfo(\"%s\") fail with winerr=%d\n"),
-			szfn, winerr);
+		_tprintf(_T("SetNamedSecurityInfo(\"%s\") fail with winerr=%s\n"),
+			szfn, ITCSv(winerr, itc::WinError));
 		exit(4);
 	}
 
