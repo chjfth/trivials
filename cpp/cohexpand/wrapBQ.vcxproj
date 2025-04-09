@@ -76,7 +76,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20250213-0000-0000-0000-100002000001}</ProjectGuid>
     <ProjectName>wrapBQ</ProjectName>
-     <TargetName>$(ProjectName>)</TargetName>
+     <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   

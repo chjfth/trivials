@@ -76,7 +76,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20250119-0000-0000-0000-103407000001}</ProjectGuid>
     <ProjectName>tLmGroupAdd</ProjectName>
-     <TargetName>$(ProjectName>)</TargetName>
+     <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   

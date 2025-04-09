@@ -76,7 +76,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20221114-0000-0000-0000-185103000001}</ProjectGuid>
     <ProjectName>seeRetBuf</ProjectName>
-     <TargetName>$(ProjectName>)</TargetName>
+     <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   

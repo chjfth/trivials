@@ -76,7 +76,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{20250317-0000-0000-0000-200536000001}</ProjectGuid>
     <ProjectName>coro1_switch_yield</ProjectName>
-     <TargetName>$(ProjectName>)</TargetName>
+     <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
   </PropertyGroup>
   

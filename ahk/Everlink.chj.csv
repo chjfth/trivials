@@ -8,6 +8,8 @@ https://www.evernote.com/shard/s21/nl/2425275/d399995c-707f-4dc6-8c81-1c11d3d9fd
 https://www.evernote.com/shard/s21/nl/2425275/537afc56-a58a-40fc-8206-8e935a13d71d , AccessMaster , 
 https://www.evernote.com/shard/s21/nl/2425275/2c903369-2c41-4d7c-b2d6-6ebbb10aaec3 , AcerR7 , 机器实例
 https://www.evernote.com/shard/s21/nl/2425275/bf36384f-d719-4ff6-9f7a-2aef11ce6be2 , AcerX1E , 2024 Acer ARM64 CPU 笔记本电脑
+https://www.evernote.com/shard/s21/nl/2425275/61e10d90-bd11-42e2-8e32-d79f142a10e1 , ADExplorer , Sysinternal 提供的 WindowsAD 信息查看器
+https://www.evernote.com/shard/s21/nl/2425275/f230dda1-3e10-4abb-80c3-a649c400772b , ADServ03 , 我的 Win2003 干净域控机 VM
 https://www.evernote.com/shard/s21/nl/2425275/0953e36a-32c0-404b-aa01-f0cdbd3e4200 , AHKv2 , Autohotkey v2
 https://www.evernote.com/shard/s21/nl/2425275/ee33a56c-3a14-45bf-a42e-f7b0b765e453 , AIDA64 , PC 硬件检测工具
 https://www.evernote.com/shard/s21/nl/2425275/52841283-8f33-46f6-b9ea-98f3ebf8229c , AIDrawSamp , AI 绘图案例收集
@@ -92,6 +94,8 @@ https://www.evernote.com/shard/s21/nl/2425275/58bdb796-2485-4520-b387-0d98f1d2a8
 https://www.evernote.com/shard/s21/nl/2425275/a424e311-76fe-4d09-9d6c-496a76b78aed , CUDAERR , CUDA 错误码场景收集
 https://www.evernote.com/shard/s21/nl/2425275/a84bf173-e375-45a9-9dfb-db435c29fd44 , CUDA , [CUDA] Nvidia CUDA SDK 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/b5ab35fa-2d84-446e-a7d2-41f0066fb304 , CURL , HTTP 超强命令行工具
+https://www.evernote.com/shard/s21/nl/2425275/c76ae1a3-f256-4018-88d8-f03ce85db1dd , CxxExcpt , C++ exception 主题帖
+https://www.evernote.com/shard/s21/nl/2425275/662e3b30-a1f2-4b56-bc6b-c99b3e30452f , CxxPrimer3 , C++ Primer 3rd ed (1998)
 https://www.evernote.com/shard/s21/nl/2425275/a16f5dea-4e16-4e3b-978d-681d192e33d2 , CxxString , C++ 自己写过的零碎字符串函数
 https://www.evernote.com/shard/s21/nl/2425275/81a35fc0-fceb-41b1-90ac-da7c0114105e , DadFood , 老爹送吃的到公寓
 https://www.evernote.com/shard/s21/nl/2425275/f55c779b-d146-49d7-8b4f-ea23186d9a87 , DadHos.202308 , 2023.08 老爹冠心病住院
@@ -253,6 +257,7 @@ https://www.evernote.com/shard/s21/nl/2425275/35cde0ec-f2f4-4321-bce9-302bb0a5f5
 https://www.evernote.com/shard/s21/nl/2425275/cacdc873-fbda-4aa0-b4f5-b00883046e39 , LLM_ChjDiary , 看大语言模型对于我私人日记的理解能力有多少
 https://www.evernote.com/shard/s21/nl/2425275/09cab69f-b849-4def-853f-f7bb33ef3a7a , LOBPF2019 , OReilly - Linux Observability with BPF (2019) 读书笔记
 https://www.evernote.com/shard/s21/nl/2425275/4d24d7d2-af10-4885-9f6b-7420fd84e3d1 , MacDev , Apple/Mac/iOS 开发工具
+https://www.evernote.com/shard/s21/nl/2425275/20e1d232-111c-4a61-87c0-fd6a52c43918 , makedeeptree , 压力测试程序: 创建巨量的文件夹
 https://www.evernote.com/shard/s21/nl/2425275/afb4fc04-aec3-4243-8770-ef3b8a818d50 , MbrPartId , MBR partition scheme, partition ID 列表
 https://www.evernote.com/shard/s21/nl/2425275/30be3315-ca07-49a9-ba82-b8439313c152 , MemoFunclet , 自写零碎函数备忘
 https://www.evernote.com/shard/s21/nl/2425275/4c69aa2e-3914-4d03-be9f-f857a1499fbe , Metaso , AI 密塔搜索 收集帖
@@ -304,6 +309,8 @@ https://www.evernote.com/shard/s21/nl/2425275/7dd129ea-a6af-4e5f-af74-28a97dbc10
 https://www.evernote.com/shard/s21/nl/2425275/bd13ffe5-cdc1-49c5-b93c-8ac20b2a9f9c , NtfsEverything , voidtools Everything, 极速 NTFS 文件名搜索软件
 https://www.evernote.com/shard/s21/nl/2425275/a7ac9d5d-a9c1-4e17-bf75-ac80154b5c16 , NTFSexp , 有关 NTFS 权限，可做的实验
 https://www.evernote.com/shard/s21/nl/2425275/8c65a2a6-a4dc-4807-b420-56b0130fa5b7 , NtfsNullDacl , 将一个 NTFS 文件/目录设为 NULL-DACL 的小程序
+https://www.evernote.com/shard/s21/nl/2425275/f78a0e4f-8ef3-4db2-b92a-98c78febcf06 , NTFS , NTFS 文件系统 主题帖
+https://www.evernote.com/shard/s21/nl/2425275/c751b326-36b5-4b1e-b6b4-42f3cd4c1ac7 , NtPerms , 主题帖: Windows NT 的权限系统/规则
 https://www.evernote.com/shard/s21/nl/2425275/e8000794-60c9-437e-b2ef-da227454f628 , NV-RTX2070 , Nvidia 公版显卡 RTX 2070
 https://www.evernote.com/shard/s21/nl/2425275/e405d26b-7995-468d-9fb6-3208f76c96c8 , OBS , Open Broadcast Studio 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/a51f6fba-0947-4c3e-84fa-493c82e6f123 , Ollama , LLM 整合框架
