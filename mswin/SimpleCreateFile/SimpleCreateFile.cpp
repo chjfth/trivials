@@ -1,5 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include <WinIoCtl.h>
 #include <ShellAPI.h>
 #include <CommCtrl.h>
 #include <windowsx.h> // should be after ShellAPI.h to see _INC_SHELLAPI
@@ -194,6 +195,7 @@ void do_CreateFile(HWND hdlg)
 	DWORD dwShareMode = get_EditboxValue(hdlg, IDE_dwShareMode);
 	DWORD dwCreationDisposition = get_EditboxValue(hdlg, IDE_dwCreationDisposition);
 	DWORD dwFlagsAndAttributes = get_EditboxValue(hdlg, IDE_dwFlagsAndAttributes);
+	BOOL isMakeSparse = Button_GetCheck(GetDlgItem(hdlg, IDCKB_MakeSparse));
 
 	SetLastError(0); 
 
@@ -216,6 +218,20 @@ void do_CreateFile(HWND hdlg)
 	{
 		// When CREATE_ALWAYS, CreateFile can succeed with GetLastError()=ERROR_ALREADY_EXISTS .
 		vaAppendText_mled(helog, _T("GetLastError()=%s.\r\n"), ITCSv(winerr, WinError));
+	}
+
+	if(isMakeSparse)
+	{
+		DWORD bytesReturned = 0;
+		BOOL succ = DeviceIoControl(hfile,
+			FSCTL_SET_SPARSE,  // Control code for setting sparse
+			NULL, 0, NULL, 0,
+			&bytesReturned, NULL);
+
+		if(succ)
+			vaAppendText_mled(helog, _T("DeviceIoControl(FSCTL_SET_SPARSE) success.\r\n")); 
+		else
+			vaAppendText_mled(helog, _T("DeviceIoControl(FSCTL_SET_SPARSE) fail, WinErr=%s\r\n"), ITCS_WinError);
 	}
 
 	// Show file attributes
@@ -295,6 +311,7 @@ bool do_SaveIni(HWND hdlg, const TCHAR *inipath_input)
 	GetDlgItemText(hdlg, IDE_dwShareMode, dwShareMode, ValueLen);
 	GetDlgItemText(hdlg, IDE_dwCreationDisposition, dwCreationDisposition, ValueLen);
 	GetDlgItemText(hdlg, IDE_dwFlagsAndAttributes, dwFlagsAndAttributes, ValueLen);
+	BOOL isMakeSparse = Button_GetCheck(GetDlgItem(hdlg, IDCKB_MakeSparse));
 
 	TCHAR initext[MaxPathBig+400] = _T("");
 	_sntprintf_s(initext, _TRUNCATE, 
@@ -303,9 +320,12 @@ bool do_SaveIni(HWND hdlg, const TCHAR *inipath_input)
 		_T("dwDesiredAccess=%s\r\n")
 		_T("dwShareMode=%s\r\n")
 		_T("dwCreationDisposition=%s\r\n")
-		_T("dwFlagsAndAttributes=%s\r\n"),
+		_T("dwFlagsAndAttributes=%s\r\n")
+		_T("isMakeSparse=%d\r\n")
+		,
 		lpFileName, 
-		dwDesiredAccess, dwShareMode, dwCreationDisposition, dwFlagsAndAttributes
+		dwDesiredAccess, dwShareMode, dwCreationDisposition, dwFlagsAndAttributes,
+		isMakeSparse
 		);
 
 	DWORD bytesToWr = (DWORD) (_tcslen(initext) * sizeof(TCHAR));
@@ -405,6 +425,9 @@ void do_LoadIni(HWND hdlg, const TCHAR *inipath_input)
 	tbuf[0] = '\0';
 	cret = GetPrivateProfileString(_T("global"), _T("dwFlagsAndAttributes"), NULL, tbuf, ARRAYSIZE(tbuf), inipath);
 	SetDlgItemText(hdlg, IDE_dwFlagsAndAttributes, tbuf);
+
+	cret = GetPrivateProfileString(_T("global"), _T("isMakeSparse"), _T("0"), tbuf, ARRAYSIZE(tbuf), inipath);
+	Button_SetCheck(GetDlgItem(hdlg, IDCKB_MakeSparse), tbuf[0]=='1'?TRUE:FALSE); 
 
 	vaSetDlgItemText(hdlg, IDE_LogMsg, _T("INI file loaded:\r\n%s"), inipath);
 }
