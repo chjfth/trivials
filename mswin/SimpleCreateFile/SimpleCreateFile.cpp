@@ -185,6 +185,8 @@ void do_CreateFile(HWND hdlg)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	assert(prdata->hFile==NULL);
 
+	BOOL succ = 0;
+
 	HWND helog = GetDlgItem(hdlg, IDE_LogMsg);
 	SetWindowText(helog, _T(""));
 
@@ -223,7 +225,7 @@ void do_CreateFile(HWND hdlg)
 	if(isMakeSparse)
 	{
 		DWORD bytesReturned = 0;
-		BOOL succ = DeviceIoControl(hfile,
+		succ = DeviceIoControl(hfile,
 			FSCTL_SET_SPARSE,  // Control code for setting sparse
 			NULL, 0, NULL, 0,
 			&bytesReturned, NULL);
@@ -235,15 +237,33 @@ void do_CreateFile(HWND hdlg)
 	}
 
 	// Show file attributes
-	DWORD attr = GetFileAttributes(openpath);
-	if(attr==INVALID_FILE_ATTRIBUTES)
+
+	BY_HANDLE_FILE_INFORMATION bfi = {};
+	succ = GetFileInformationByHandle(hfile, &bfi);
+	if(succ)
 	{
-		vaAppendText_mled(helog, _T("GetFileAttributes() error, WinErr=%s"), ITCS_WinError);
+		vaAppendText_mled(helog, _T("GetFileInformationByHandle() reports file attributes 0x%X :\r\n%s"), 
+			bfi.dwFileAttributes, ITCSv(bfi.dwFileAttributes, FILE_ATTRIBUTE_xxx));
 	}
 	else
 	{
-		vaAppendText_mled(helog, _T("GetFileAttributes() reports 0x%X :\r\n%s"), 
-			attr, ITCSv(attr, FILE_ATTRIBUTE_xxx));
+		vaAppendText_mled(helog, _T("Unexpect! GetFileInformationByHandle() fail, WinErr=%s"), ITCS_WinError);
+	}
+
+
+	// check again using GetFileAttributes()
+	DWORD attr = GetFileAttributes(openpath);
+	if(attr==INVALID_FILE_ATTRIBUTES)
+	{	// report error
+		vaAppendText_mled(helog, _T("Unexpect! GetFileAttributes() error, WinErr=%s"), ITCS_WinError);
+	}
+	else
+	{
+		if(attr != bfi.dwFileAttributes)
+		{
+			vaAppendText_mled(helog, _T("Panic! GetFileAttributes() reports different file attributes 0x%X :\r\n%s"), 
+				attr, ITCSv(attr, FILE_ATTRIBUTE_xxx));
+		}
 	}
 
 	btn_EnableCreateFile(hdlg, false);
