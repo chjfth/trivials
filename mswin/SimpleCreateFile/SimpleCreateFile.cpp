@@ -214,8 +214,20 @@ void do_CreateFile(HWND hdlg)
 	vaAppendText_mled(helog, _T("CreateFile() success. Handle=0x%X.\r\n"), hfile);
 	if(winerr)
 	{
-		// When CREAT_ALWAYS, CreateFile can succeed with GetLastError()=ERROR_ALREADY_EXISTS .
+		// When CREATE_ALWAYS, CreateFile can succeed with GetLastError()=ERROR_ALREADY_EXISTS .
 		vaAppendText_mled(helog, _T("GetLastError()=%s.\r\n"), ITCSv(winerr, WinError));
+	}
+
+	// Show file attributes
+	DWORD attr = GetFileAttributes(openpath);
+	if(attr==INVALID_FILE_ATTRIBUTES)
+	{
+		vaAppendText_mled(helog, _T("GetFileAttributes() error, WinErr=%s"), ITCS_WinError);
+	}
+	else
+	{
+		vaAppendText_mled(helog, _T("GetFileAttributes() reports 0x%X :\r\n%s"), 
+			attr, ITCSv(attr, FILE_ATTRIBUTE_xxx));
 	}
 
 	btn_EnableCreateFile(hdlg, false);
@@ -488,9 +500,10 @@ static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
+	const int ysplit = 82;
 	jul->AnchorControl(0,0, 100,0, IDE_lpFileName);
-	jul->AnchorControl(0,0, 100,100, IDE_Interpret);
-	jul->AnchorControl(0,100, 100,100, IDE_LogMsg);
+	jul->AnchorControl(0,0, 100,ysplit, IDE_Interpret);
+	jul->AnchorControl(0,ysplit, 100,100, IDE_LogMsg);
 	
 	jul->AnchorControl(0,100, 0,100, IDB_CreateFile);
 	jul->AnchorControl(0,100, 0,100, IDB_CloseHandle);

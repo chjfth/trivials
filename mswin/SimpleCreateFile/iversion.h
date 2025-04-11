@@ -3,7 +3,7 @@
 
 #define SimpleCreateFile_VMAJOR 1
 #define SimpleCreateFile_VMINOR 0
-#define SimpleCreateFile_VPATCH 6
+#define SimpleCreateFile_VPATCH 7
 #define SimpleCreateFile_VTAIL  0
 
 #define SimpleCreateFilestr__(n) #n

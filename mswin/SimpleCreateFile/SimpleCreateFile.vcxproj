@@ -220,7 +220,8 @@
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
-    <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\WinBase.itc.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\WinUser.itc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SimpleCreateFile.rc" />
