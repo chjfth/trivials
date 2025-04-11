@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <ChunkHelper.h>
+
 // [2025-01-17] Chj: NTFS sparse file related code assisted by GPT4o.
 
 INT64 g_solidlen = 0;
@@ -84,7 +86,8 @@ void CopySparseRange(HANDLE hSource, HANDLE hDest, INT64 StartOffset, INT64 EndO
 	delete []outranges;
 }
 
-void CopySparseFile(const TCHAR* sourceFile, const TCHAR* destFile) {
+void CopySparseFile(const TCHAR* sourceFile, const TCHAR* destFile) 
+{
 	// Open the source file
 	HANDLE hSource = CreateFile(sourceFile, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	if (hSource == INVALID_HANDLE_VALUE) {
@@ -121,21 +124,22 @@ void CopySparseFile(const TCHAR* sourceFile, const TCHAR* destFile) {
 		}
 	}
 
-	const int ONE_RANGE_SIZE = 1024*1024;
 	LARGE_INTEGER li = {};
 	GetFileSizeEx(hSource, &li);
 	INT64 filesize = li.QuadPart;
-	INT64 remain = filesize;
-	INT64 offset = 0;
 
-	while(remain>0)
+	const INT64 ONE_RANGE_SIZE = 1024*1024;
+	auto chelp = makeChunkHelper(filesize, ONE_RANGE_SIZE);
+
+	for(;;)
 	{
-		int nowcopys = remain<ONE_RANGE_SIZE ? (int)remain : ONE_RANGE_SIZE;
+		INT64 rangenow = chelp.next();
+		INT64 offset = chelp.offset();
 
-		CopySparseRange(hSource, hDest, offset, offset+nowcopys);
+		CopySparseRange(hSource, hDest, offset, offset+rangenow);
 
-		offset += nowcopys;
-		remain -= nowcopys;
+		if(chelp.drop(rangenow) <= 0)
+			break;
 	}
 
 	// Clean up
