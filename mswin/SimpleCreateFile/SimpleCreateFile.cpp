@@ -108,6 +108,14 @@ void Cf_InterpretParams(HWND hdlg)
 	HWND hemsg = GetDlgItem(hdlg, IDE_Interpret);
 	vaSetWindowText(hemsg, _T(""));
 
+	// Tell filepath length
+
+	HWND hedtFilename = GetDlgItem(hdlg, IDE_lpFileName);
+	int fnChars = Edit_GetTextLength(hedtFilename);
+	{
+		vaAppendText_mled(hemsg, _T("lpFileName (%d TCHARs)\r\n\r\n"), fnChars);
+	}
+
 	// dwDesiredAccess
 
 	DWORD dwDesiredAccess = get_EditboxValue(hdlg, IDE_dwDesiredAccess);
