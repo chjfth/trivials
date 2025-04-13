@@ -250,12 +250,12 @@ void do_CreateFile(HWND hdlg)
 	succ = GetFileInformationByHandle(hfile, &bfi);
 	if(succ)
 	{
-		vaAppendText_mled(helog, _T("GetFileInformationByHandle() reports file attributes 0x%X :\r\n%s"), 
+		vaAppendText_mled(helog, _T("GetFileInformationByHandle() reports file attributes 0x%X :\r\n%s\r\n"), 
 			bfi.dwFileAttributes, ITCSv(bfi.dwFileAttributes, FILE_ATTRIBUTE_xxx));
 	}
 	else
 	{
-		vaAppendText_mled(helog, _T("Unexpect! GetFileInformationByHandle() fail, WinErr=%s"), ITCS_WinError);
+		vaAppendText_mled(helog, _T("Unexpect! GetFileInformationByHandle() fail, WinErr=%s\r\n"), ITCS_WinError);
 	}
 
 
@@ -263,13 +263,17 @@ void do_CreateFile(HWND hdlg)
 	DWORD attr = GetFileAttributes(openpath);
 	if(attr==INVALID_FILE_ATTRIBUTES)
 	{	// report error
-		vaAppendText_mled(helog, _T("Unexpect! GetFileAttributes() error, WinErr=%s"), ITCS_WinError);
+		vaAppendText_mled(helog, _T("Unexpect! GetFileAttributes() error, WinErr=%s\r\n"), ITCS_WinError);
 	}
 	else
 	{
 		if(attr != bfi.dwFileAttributes)
 		{
-			vaAppendText_mled(helog, _T("Panic! GetFileAttributes() reports different file attributes 0x%X :\r\n%s"), 
+			// This can happen if we use FILE_FLAG_BACKUP_SEMANTICS to open a junction.
+			// bfi.dwFileAttributes = FILE_ATTRIBUTE_DIRECTORY(0x0010)
+			// attr = FILE_ATTRIBUTE_DIRECTORY(0x0010)|FILE_ATTRIBUTE_REPARSE_POINT(0x0400)
+			vaAppendText_mled(helog, 
+				_T("Note: GetFileAttributes() reports different file attributes 0x%X :\r\n%s\r\n"), 
 				attr, ITCSv(attr, FILE_ATTRIBUTE_xxx));
 		}
 	}
