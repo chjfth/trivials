@@ -288,7 +288,7 @@ void CH10_DumpSD( PSECURITY_DESCRIPTOR pvsd, FUNC_InterpretRights *procItr, void
 	Cec_LocalFree cec_textsd = pTextSD;
 	if(succ)
 	{
-		vaDbgS(_T("Text-form SD:\r\n%s"), pTextSD);
+		vaDbgS(_T("Text-form SD (SDDL):\r\n%s"), pTextSD);
 	}
 	else
 	{
