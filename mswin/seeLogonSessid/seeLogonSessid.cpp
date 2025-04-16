@@ -97,7 +97,7 @@ void enum_logon_session_id_detail(LUID* cur)
 			pus("UserName:", info.UserName);
 			pus("LogonDomain:", info.LogonDomain);
 			pus("AuthenticationPackage:", info.AuthenticationPackage);
-			printf("\tLogonType: %s\n", ITCSv(info.LogonType, itc::SECURITY_LOGON_TYPE));
+			printf("\tLogonType: %s\n", ITCSv(info.LogonType, itc_SECURITY_LOGON_TYPE));
 			printf("\tSession-idx: %u\n", info.Session);
 
 			char* str = NULL;
