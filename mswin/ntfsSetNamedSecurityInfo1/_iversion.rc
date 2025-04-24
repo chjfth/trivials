@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    ntfsSetNamedSecurityInfo1_VMAJOR, ntfsSetNamedSecurityInfo1_VMINOR, ntfsSetNamedSecurityInfo1_VPATCH, ntfsSetNamedSecurityInfo1_VTAIL
+ProductVersion ntfsSetNamedSecurityInfo1_VMAJOR, ntfsSetNamedSecurityInfo1_VMINOR, ntfsSetNamedSecurityInfo1_VPATCH, ntfsSetNamedSecurityInfo1_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     ntfsSetNamedSecurityInfo1_NAME
+            VALUE "FileDescription", ntfsSetNamedSecurityInfo1_NAME
+            VALUE "FileVersion",    ntfsSetNamedSecurityInfo1_VMAJORs "." ntfsSetNamedSecurityInfo1_VMINORs "." ntfsSetNamedSecurityInfo1_VPATCHs
+            VALUE "ProductVersion",    ntfsSetNamedSecurityInfo1_VMAJORs "." ntfsSetNamedSecurityInfo1_VMINORs "." ntfsSetNamedSecurityInfo1_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , ntfsSetNamedSecurityInfo1_NAME ".exe"
+            VALUE "InternalName", ntfsSetNamedSecurityInfo1_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}

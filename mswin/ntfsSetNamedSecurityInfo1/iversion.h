@@ -1,0 +1,28 @@
+#ifndef __ntfsSetNamedSecurityInfo1_iversion_h_
+#define __ntfsSetNamedSecurityInfo1_iversion_h_
+
+#define ntfsSetNamedSecurityInfo1_VMAJOR 1
+#define ntfsSetNamedSecurityInfo1_VMINOR 0
+#define ntfsSetNamedSecurityInfo1_VPATCH 0
+#define ntfsSetNamedSecurityInfo1_VTAIL  1
+
+#define ntfsSetNamedSecurityInfo1str__(n) #n
+#define ntfsSetNamedSecurityInfo1str(n) ntfsSetNamedSecurityInfo1str__(n)
+
+// The following 4 are used in .rc
+#define ntfsSetNamedSecurityInfo1_VMAJORs ntfsSetNamedSecurityInfo1str(ntfsSetNamedSecurityInfo1_VMAJOR)
+#define ntfsSetNamedSecurityInfo1_VMINORs ntfsSetNamedSecurityInfo1str(ntfsSetNamedSecurityInfo1_VMINOR)
+#define ntfsSetNamedSecurityInfo1_VPATCHs ntfsSetNamedSecurityInfo1str(ntfsSetNamedSecurityInfo1_VPATCH)
+#define ntfsSetNamedSecurityInfo1_VTAILs  ntfsSetNamedSecurityInfo1str(ntfsSetNamedSecurityInfo1_VTAIL)
+
+#define ntfsSetNamedSecurityInfo1_NAME "ntfsSetNamedSecurityInfo1"
+
+enum {
+	ntfsSetNamedSecurityInfo1_vmajor = ntfsSetNamedSecurityInfo1_VMAJOR,
+	ntfsSetNamedSecurityInfo1_vminor = ntfsSetNamedSecurityInfo1_VMINOR,
+	ntfsSetNamedSecurityInfo1_vpatch = ntfsSetNamedSecurityInfo1_VPATCH,
+	ntfsSetNamedSecurityInfo1_vtail = ntfsSetNamedSecurityInfo1_VTAIL,
+};
+
+
+#endif
