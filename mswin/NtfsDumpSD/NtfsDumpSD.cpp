@@ -33,9 +33,16 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+enum FileOrDir_et 
+{
+	FodUnknown = 0,
+	FodFile = 1,
+	FodDir = 2,
+};
+
 struct ITR_st
 {
-	bool isDir;
+	FileOrDir_et fod;
 };
 
 
@@ -57,7 +64,7 @@ TCHAR* InterpretRights(DWORD rights, void *userctx)
 	}
 
 #define DUMP_ONE_BIT_PERLINE(bitnames) \
-	if( (rights & (bitnames)) == bitnames ) \
+	if( (rights & (bitnames)) == (bitnames) ) \
 	_sntprintf_s(pbuf, BufChars, _TRUNCATE, _T("%s%*s (0x%08X) %s\r\n"), pbuf, indents, _T(""), \
 	(bitnames), _T(#bitnames));
 
@@ -74,29 +81,42 @@ TCHAR* InterpretRights(DWORD rights, void *userctx)
 	DUMP_ONE_BIT_PERLINE(READ_CONTROL);
 	DUMP_ONE_BIT_PERLINE(DELETE);
 
-	if(ctx.isDir)
+	DUMP_ONE_BIT_PERLINE(FILE_WRITE_ATTRIBUTES); // 0x100
+	DUMP_ONE_BIT_PERLINE(FILE_READ_ATTRIBUTES);  // 0x80
+	DUMP_ONE_BIT_PERLINE(FILE_WRITE_EA);         // 0x10
+	DUMP_ONE_BIT_PERLINE(FILE_READ_EA);          // 0x08
+
+	if(ctx.fod==FodDir)
 	{
-		DUMP_ONE_BIT_PERLINE(FILE_WRITE_ATTRIBUTES); // 0x100
-		DUMP_ONE_BIT_PERLINE(FILE_READ_ATTRIBUTES);  // 0x80
 		DUMP_ONE_BIT_PERLINE(FILE_DELETE_CHILD);     // 0x40
 		DUMP_ONE_BIT_PERLINE(FILE_TRAVERSE);         // 0x20
-		DUMP_ONE_BIT_PERLINE(FILE_WRITE_EA);         // 0x10
-		DUMP_ONE_BIT_PERLINE(FILE_READ_EA);          // 0x08
+
 		DUMP_ONE_BIT_PERLINE(FILE_ADD_SUBDIRECTORY); // 0x04
 		DUMP_ONE_BIT_PERLINE(FILE_ADD_FILE);         // 0x02
 		DUMP_ONE_BIT_PERLINE(FILE_LIST_DIRECTORY);   // 0x01
 	}
-	else
+	else if(ctx.fod==FodFile)
 	{
-		DUMP_ONE_BIT_PERLINE(FILE_WRITE_ATTRIBUTES); // 0x100
-		DUMP_ONE_BIT_PERLINE(FILE_READ_ATTRIBUTES);  // 0x80
 		                                             // 0x40 (none for file)
 		DUMP_ONE_BIT_PERLINE(FILE_EXECUTE);          // 0x20
-		DUMP_ONE_BIT_PERLINE(FILE_WRITE_EA);         // 0x10
-		DUMP_ONE_BIT_PERLINE(FILE_READ_EA);          // 0x08
+
 		DUMP_ONE_BIT_PERLINE(FILE_APPEND_DATA);      // 0x04
 		DUMP_ONE_BIT_PERLINE(FILE_WRITE_DATA);       // 0x02
 		DUMP_ONE_BIT_PERLINE(FILE_READ_DATA);        // 0x01
+	}
+	else
+	{
+		assert(ctx.fod==FodUnknown);
+
+		// This can occur if the path to check fails on GetFileAttributes(),
+		// probably due to ERROR_ACCESS_DENIED.
+
+		DUMP_ONE_BIT_PERLINE(FILE_DELETE_CHILD);                        // 0x40
+		DUMP_ONE_BIT_PERLINE(FILE_TRAVERSE | FILE_EXECUTE);             // 0x20
+
+		DUMP_ONE_BIT_PERLINE(FILE_ADD_SUBDIRECTORY | FILE_APPEND_DATA); // 0x04
+		DUMP_ONE_BIT_PERLINE(FILE_ADD_FILE | FILE_WRITE_DATA);          // 0x02
+		DUMP_ONE_BIT_PERLINE(FILE_LIST_DIRECTORY | FILE_READ_DATA);     // 0x01
 	}
 
 	// Four composite right names:
@@ -124,7 +144,8 @@ void do_DumpSD(HWND hdlg, const TCHAR *path, PSECURITY_DESCRIPTOR pvSD,
 
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 	
-	vaSetWindowText(hedit, _T("%s\r\n\r\n"), path);
+	vaAppendText_mled(hedit, _T("==== %s\r\n\r\n"), path);
+	// -- Don't overwrite existing messages. Existing error messages can be informational.
 
 	vaAppendText_mled(hedit, _T("%s"), g_dbgbuf);
 }
@@ -140,8 +161,14 @@ void do_GetSD(HWND hdlg)
 	if(!path[0])
 		return;
 
+	ITR_st itrctx = { FodUnknown };
+
 	DWORD attrs = GetFileAttributes(path);
-	if(attrs==INVALID_FILE_ATTRIBUTES)
+	if(attrs!=INVALID_FILE_ATTRIBUTES)
+	{
+		itrctx.fod = (attrs&FILE_ATTRIBUTE_DIRECTORY) ? FodDir : FodFile;
+	}
+	else
 	{
 		winerr = GetLastError();
 		if(winerr==ERROR_FILE_NOT_FOUND 
@@ -150,7 +177,12 @@ void do_GetSD(HWND hdlg)
 		{
 			vaAppendText_mled(hemsg, _T("Bad path or path not found. WinErr=%s\r\n"),
 				ITCSv(winerr, WinError));
-		} else {
+		} 
+		else 
+		{
+			// Note: Even GetFileAttributes() reports ERROR_ACCESS_DENIED,
+			// GetNamedSecurityInfo() can still success.
+
 			vaAppendText_mled(hemsg, 
 				_T("GetFileAttributes() fail with winerr=%s\r\n"), ITCSv(winerr, WinError));
 		}
@@ -219,7 +251,6 @@ void do_GetSD(HWND hdlg)
 		return;
 	}
 
-	ITR_st itrctx = { attrs&FILE_ATTRIBUTE_DIRECTORY ? true : false };
 	do_DumpSD(hdlg, path, pSD, InterpretRights, &itrctx);
 
 	if(!hasAuditPriv)
