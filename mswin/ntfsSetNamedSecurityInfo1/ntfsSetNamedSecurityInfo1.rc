@@ -33,6 +33,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDI_WINMAIN             ICON                    "ntfsSetNamedSecurityInfo1.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
@@ -44,8 +45,8 @@ CAPTION "ntfsSetNamedSecurityInfo1"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "NTFS path:",IDC_LABEL1,4,4,43,12,SS_CENTERIMAGE
-    EDITTEXT        IDC_EDIT_LOGMSG,4,190,285,26,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "Button1",IDC_BUTTON1,104,226,50,14
+    EDITTEXT        IDC_EDIT_LOGMSG,4,190,285,33,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
+    DEFPUSHBUTTON   "Button1",IDC_BUTTON1,104,226,50,14
     EDITTEXT        IDE_NtfsPath,54,4,227,14,ES_AUTOHSCROLL
     GROUPBOX        "ALLOW ACEs",IDC_STATIC,4,22,285,67
     EDITTEXT        IDE_AllowTrustees,54,33,227,14,ES_AUTOHSCROLL
@@ -120,6 +121,17 @@ BEGIN
 END
 
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_WINMAIN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

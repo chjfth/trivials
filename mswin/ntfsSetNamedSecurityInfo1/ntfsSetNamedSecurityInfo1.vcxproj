@@ -228,7 +228,9 @@
   <ItemGroup>
     <ClInclude Include="iversion.h" />
     <ClInclude Include="..\utils.h" />
+    <ClInclude Include="helper.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\StringHelper.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />

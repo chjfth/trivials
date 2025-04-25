@@ -2,17 +2,18 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="ntfsSetNamedSecurityInfo1.cpp" />
-    <ClCompile Include="..\utils.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp">
       <Filter>chjutils</Filter>
     </ClCompile>
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp">
       <Filter>chjutils</Filter>
     </ClCompile>
+    <ClCompile Include="..\utils.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iversion.h" />
-    <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h">
       <Filter>chjutils</Filter>
@@ -21,6 +22,13 @@
       <Filter>chjutils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__chjcxx\common-include\include\StringHelper.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="helper.h" />
+    <ClInclude Include="..\utils.h">
       <Filter>chjutils</Filter>
     </ClInclude>
   </ItemGroup>
