@@ -4,6 +4,7 @@
 #include <CommCtrl.h>
 #include <NTSecAPI.h>
 #include <AclAPI.h>
+#include <sddl.h>
 #include <tchar.h>
 #include <stdio.h>
 #include "resource.h"
@@ -16,6 +17,7 @@
 
 #include <EnsureClnup_mswin.h>
 
+#include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
 using namespace itc;
 
@@ -187,6 +189,51 @@ void fill_Dacl_with_Aces(ACL *pAcl, const Trustees_st &tees, DWORD aceflags,
 	}
 }
 
+void do_ShowDbgSetNamedSecurityInfo(HWND hdlg, 
+	const Trustees_st& teesDeny, const Trustees_st& teesAllow, 
+	SECURITY_INFORMATION aclWhat)
+{
+	int totalAces = teesDeny.count + teesAllow.count;
+
+	if (teesDeny.count + teesAllow.count > 0)
+	{
+		appendmsg(hdlg, _T("%s"), _T("Will set these ACEs:"));
+
+		int i;
+		for (i = 0; i < teesDeny.count; i++)
+		{
+			const Trustee_st &tee = teesDeny.ecaTrustees[i];
+
+			TCHAR *sidstr = NULL;
+			ConvertSidToStringSid((PSID)tee.abSid.Ptr(), &sidstr);
+			CEC_LocalFree cec = sidstr;
+
+			appendmsg(hdlg,
+				_T("[%d/%d] Deny: \"%s\", SID=%s")
+				,
+				i + 1, totalAces,
+				tee.abName.Ptr(), sidstr);
+		}
+
+		for (i = 0; i < teesAllow.count; i++)
+		{
+			const Trustee_st &tee = teesAllow.ecaTrustees[i];
+
+			TCHAR *sidstr = NULL;
+			ConvertSidToStringSid((PSID)tee.abSid.Ptr(), &sidstr);
+			CEC_LocalFree cec = sidstr;
+
+			appendmsg(hdlg,
+				_T("[%d/%d] Allow: \"%s\", SID=%s")
+				,
+				teesDeny.count + i + 1, totalAces,
+				tee.abName.Ptr(), sidstr);
+		}
+	}
+
+	appendmsg(hdlg, _T("aclWhat=%s"), ITCSv(aclWhat, xxx_SECURITY_INFORMATION));
+}
+
 void do_SetNamedSecurityInfo(HWND hdlg)
 {
 	//// Grab user input from UI and finally call SetNamedSecurityInfo for these UI input.
@@ -209,6 +256,7 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 		int ret = vaMsgBox(hdlg, MB_OKCANCEL, NULL, _T("%s"),
 			_T("You do not provide any trustee in deny/allow list, so you are setting an Empty-DACL.\n")
 			_T("So no one has permission to access this NTFS path .\n")
+			_T("\n")
 			_T("Are you sure?"));
 		if (ret == IDCANCEL)
 			return;
@@ -233,22 +281,33 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 	// Start calling SetNamedSecurityInfo()
 	//
 
-	TCHAR timestr[100] = {};
-	appendmsg(hdlg, _T("%s Start calling SetNamedSecurityInfo()"),
-		now_timestr(timestr, ARRAYSIZE(timestr)));
+	DWORD aclWhat = DACL_SECURITY_INFORMATION;
+	
+	int isProtectedDacl = Button_GetCheck(GetDlgItem(hdlg, IDCK_ProtectedDacl));
+	if (isProtectedDacl)
+		aclWhat |= PROTECTED_DACL_SECURITY_INFORMATION;
 
-	DWORD whattoset = DACL_SECURITY_INFORMATION; // | PROTECTED_DACL_SECURITY_INFORMATION;
+	int isUnprotectedDacl = Button_GetCheck(GetDlgItem(hdlg, IDCK_UnProtectedDacl));
+	if (isUnprotectedDacl)
+		aclWhat |= UNPROTECTED_DACL_SECURITY_INFORMATION;
+
 	
 //	HWND hemsg = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 	
 	TCHAR ntfspath[MAX_PATH] = {};
 	GetDlgItemText(hdlg, IDE_NtfsPath, ntfspath, ARRAYSIZE(ntfspath));
 	
+	do_ShowDbgSetNamedSecurityInfo(hdlg, teesDeny, teesAllow, aclWhat);
+
+	TCHAR timestr[100] = {};
+	appendmsg(hdlg, _T("%s Start calling SetNamedSecurityInfo()"),
+		now_timestr(timestr, ARRAYSIZE(timestr)));
+
 	DWORD msec_start = TrueGetMillisec();
 	DWORD winerr = SetNamedSecurityInfo(
 		ntfspath,            // object name
 		SE_FILE_OBJECT,      // object type
-		whattoset,
+		aclWhat,
 		NULL,                // owner info (unchanged)
 		NULL,                // group info (unchanged)
 		pDacl, // explicit DACL to set (may be a copy of the current one)

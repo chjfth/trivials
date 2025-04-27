@@ -18,16 +18,18 @@
 #define IDCK_Deny_NO_PROPAGATE_INHERIT_ACE 1011
 #define IDCK_Deny_INHERIT_ONLY_ACE      1012
 #define IDE_DenyTrustees                1014
-#define IDC_CHECK5                      1015
+#define IDCK_ProtectedDacl              1015
+#define IDC_CHECK1                      1016
+#define IDCK_UnProtectedDacl            1016
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        104
+#define _APS_NEXT_RESOURCE_VALUE        105
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1016
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
