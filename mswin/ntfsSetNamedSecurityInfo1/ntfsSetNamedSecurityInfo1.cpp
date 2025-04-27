@@ -172,7 +172,8 @@ int cal_AceSizeTotal(const Trustees_st &tees)
 	return totalbytes;
 }
 
-void fill_Dacl_with_Aces(ACL *pAcl, const Trustees_st &tees, DWORD aceflags,
+void fill_Dacl_with_Aces(ACL *pAcl, const Trustees_st &tees, 
+	DWORD aceflags, ACCESS_MASK AceMask,
 	decltype(AddAccessAllowedAceEx) procAddAce)
 {
 	DWORD aclRevision = ACL_REVISION;
@@ -181,8 +182,8 @@ void fill_Dacl_with_Aces(ACL *pAcl, const Trustees_st &tees, DWORD aceflags,
 	{
 		const Trustee_st &tee = tees.ecaTrustees[i];
 
-		BOOL succ = procAddAce(pAcl, aclRevision, aceflags,
-			GENERIC_ALL | STANDARD_RIGHTS_ALL,
+		BOOL succ = procAddAce(pAcl, aclRevision, 
+			aceflags, AceMask,
 			const_cast<SID*>(tee.abSid.Bufptr())
 			);
 		WINAPI_CHECK_THROWE(succ, AddAccessAllowedAceEx/AddAccessDeniedAceEx);
@@ -238,6 +239,8 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 {
 	//// Grab user input from UI and finally call SetNamedSecurityInfo for these UI input.
 
+	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T(""));
+
 	// Get deny-trustee list and allow-trustee list from UI.
 
 	BOOL succ = 0;
@@ -274,8 +277,10 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 	succ = InitializeAcl(pDacl, AclBytesTotal, aclRevision);
 	WINAPI_CHECK_THROWE(succ, InitializeAcl);
 
-	fill_Dacl_with_Aces(pDacl, teesDeny, aceflags, AddAccessDeniedAceEx);
-	fill_Dacl_with_Aces(pDacl, teesAllow, aceflags, AddAccessAllowedAceEx);
+	ACCESS_MASK AceMask = GENERIC_ALL | STANDARD_RIGHTS_ALL;
+
+	fill_Dacl_with_Aces(pDacl, teesDeny, aceflags, AceMask, AddAccessDeniedAceEx);
+	fill_Dacl_with_Aces(pDacl, teesAllow, aceflags, AceMask, AddAccessAllowedAceEx);
 
 	//
 	// Start calling SetNamedSecurityInfo()
