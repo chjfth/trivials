@@ -9,6 +9,7 @@
 #include <tchar.h>
 #include <stdio.h>
 #include <stdlib.h>
+//#include <utility> // for vaDBG function-template
 #include "resource.h"
 
 #include "iversion.h"
@@ -19,6 +20,8 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <itc/InterpretConst.h>
+#include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
 using namespace itc;
 
@@ -48,36 +51,6 @@ struct DlgPrivate_st
 	const TCHAR *mystr;
 	int clicks;
 };
-
-struct MapInt2Str {
-	int n;
-	const TCHAR *s;
-};
-
-#define MAP_ENTRY(i) { i, _T(#i) }
-
-const TCHAR *getSidType(SID_NAME_USE use)
-{
-	MapInt2Str maps[] = 
-	{
-		MAP_ENTRY(SidTypeUser),
-		MAP_ENTRY(SidTypeGroup),
-		MAP_ENTRY(SidTypeDomain),
-		MAP_ENTRY(SidTypeAlias),
-		MAP_ENTRY(SidTypeWellKnownGroup),
-		MAP_ENTRY(SidTypeDeletedAccount),
-		MAP_ENTRY(SidTypeInvalid),
-		MAP_ENTRY(SidTypeUnknown),
-		MAP_ENTRY(SidTypeComputer),
-		MAP_ENTRY(SidTypeLabel),
-	};
-	for(int i=0; i<_countof(maps); i++)
-	{
-		if(maps[i].n==use)
-			return maps[i].s;
-	}
-	return _T("Bad SID_NAME_USE value");
-}
 
 bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 {
@@ -158,7 +131,7 @@ bool in_LsaLookupNames(HWND hdlg, LSA_UNICODE_STRING *arus, int uscount)
 		}
 	
 		_sntprintf_s(textbuf, _TRUNCATE, _T("%s%s (=%d)\r\n"), textbuf,
-			getSidType(xsid.Use) , xsid.Use);
+			ITCS(xsid.Use, itc::itc_SID_NAME_USE) , xsid.Use);
 
 		_sntprintf_s(textbuf, _TRUNCATE, _T("%sDomainIndex=%d\r\n"), textbuf,
 			xsid.DomainIndex);
