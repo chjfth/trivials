@@ -20,6 +20,8 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <StringHelper.h>
+
 #include <itc/InterpretConst.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
@@ -206,7 +208,9 @@ bool do_LsaLookupNames(HWND hdlg)
 	SetDlgItemText(hdlg, IDC_EDIT_SidOutput, _T(""));
 	SetDlgItemText(hdlg, IDC_EDIT_DomainOutput, _T(""));
 
-	int nlines = count_lines(szinput);
+	StringSplitter<decltype(szinput), StringSplitter_IsCrlf, StringSplitter_TrimSpacechar> sp(szinput);
+
+	int nlines = sp.count();
 	if(nlines<=0)
 	{
 		vaMsgBox(hdlg, MB_OK, _T("Info"), _T("Empty input. Nothing to do."));
@@ -216,34 +220,21 @@ bool do_LsaLookupNames(HWND hdlg)
 	// Build LSA_UNICODE_STRING array of nlines eles
 	
 	CecArray_LSA_UNICODE_STRING arus = new LSA_UNICODE_STRING[nlines];
-	int i = 0, iline = 0;
-	while( szinput[i] )
+	int iline = 0;
+	for(;; iline++)
 	{
-		// Skip any \r\n :
-		while(szinput[i]=='\r' || szinput[i]=='\n')
-			i++;
-
-		if(szinput[i]=='\0')
+		int len = 0;
+		int pos = sp.next(&len);
+		if (pos == -1)
 			break;
 
-		// now at a line start
-
-		arus[iline].Buffer = szinput+i;
-		
-		// Find line-end by scanning for \r or \n
-		int j = i;
-		while(szinput[j]!='\r' && szinput[j]!='\n' && szinput[j]!='\0')
-			j++;
-
-		arus[iline].Length = USHORT((j - i) * sizeof(TCHAR)); // length in bytes
+		arus[iline].Buffer = szinput+pos;
+		arus[iline].Length = USHORT(len * sizeof(TCHAR)); // length in bytes
 		arus[iline].MaximumLength = arus[iline].Length;
-
-		iline++;
-
-		i = j;
 	}
 
 	vaDbgS(_T("Input %d names:"), iline);
+	int i;
 	for(i=0; i<iline; i++)
 		vaDbgS(_T("    %.*s"), arus[i].Length/sizeof(TCHAR), arus[i].Buffer);
 
