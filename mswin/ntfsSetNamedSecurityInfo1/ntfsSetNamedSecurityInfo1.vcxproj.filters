@@ -11,6 +11,12 @@
     <ClCompile Include="..\utils.cpp">
       <Filter>chjutils</Filter>
     </ClCompile>
+    <ClCompile Include="CHIMPL.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iversion.h" />

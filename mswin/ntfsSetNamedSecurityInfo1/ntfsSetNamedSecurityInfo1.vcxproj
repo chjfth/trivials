@@ -115,7 +115,9 @@
         "v143" on VC2022
       -->
     <PlatformToolset Condition="$(DefaultPlatformToolset)!=''">$(DefaultPlatformToolset)</PlatformToolset>
-  </PropertyGroup>
+
+    <!-- Chj special: For VC2013 and VC2015, I want them to produce WinXP-runnable EXE. (I want v120_xp or v140_xp) -->
+    <PlatformToolset Condition="$(DefaultPlatformToolset)=='v120' or $(DefaultPlatformToolset)=='v140'">$(DefaultPlatformToolset)_xp</PlatformToolset>  </PropertyGroup>
 
   <!---->
 
@@ -214,6 +216,7 @@
 
   <ItemGroup>
     <ClCompile Include="ntfsSetNamedSecurityInfo1.cpp" />
+    <ClCompile Include="CHIMPL.cpp" />
     <ClCompile Include="..\utils.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />

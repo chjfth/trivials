@@ -7,6 +7,7 @@
 #include <sddl.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <limits.h>
 #include "resource.h"
 
 #include "iversion.h"
@@ -21,11 +22,7 @@
 #include <mswin/WinError.itc.h>
 using namespace itc;
 
-#define JAUTOBUF_IMPL
-#define vaDBG vaDbgTs
 #include <JAutoBuf.h>
-
-#define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
 #include "helper.h"
@@ -87,7 +84,7 @@ void appendmsg(HWND hdlg, const TCHAR *fmt, ...)
 	va_end(args);
 }
 
-Trustees_st myAllocTrusteeArray(const TCHAR *pszTrusteelist)
+Trustees_st myCreateTrusteeArray(const TCHAR *pszTrusteelist)
 {
 	// pszTrusteeList, trustees separated by semicolons
 
@@ -235,29 +232,89 @@ void do_ShowDbgSetNamedSecurityInfo(HWND hdlg,
 	appendmsg(hdlg, _T("aclWhat=%s"), ITCSv(aclWhat, xxx_SECURITY_INFORMATION));
 }
 
+DWORD get_AceflagsDeny(HWND hdlg)
+{
+	DWORD aceflags = 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Deny_OBJECT_INHERIT_ACE) ? OBJECT_INHERIT_ACE : 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Deny_CONTAINER_INHERIT_ACE) ? CONTAINER_INHERIT_ACE : 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Deny_NO_PROPAGATE_INHERIT_ACE) ? NO_PROPAGATE_INHERIT_ACE : 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Deny_INHERIT_ONLY_ACE) ? INHERIT_ONLY_ACE : 0;
+	return aceflags;
+}
+
+DWORD get_AceflagsAllow(HWND hdlg)
+{
+	DWORD aceflags = 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Allow_OBJECT_INHERIT_ACE) ? OBJECT_INHERIT_ACE : 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Allow_CONTAINER_INHERIT_ACE) ? CONTAINER_INHERIT_ACE : 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Allow_NO_PROPAGATE_INHERIT_ACE) ? NO_PROPAGATE_INHERIT_ACE : 0;
+	aceflags |= IsDlgButtonChecked(hdlg, IDCK_Allow_INHERIT_ONLY_ACE) ? INHERIT_ONLY_ACE : 0;
+	return aceflags;
+}
+
+ACCESS_MASK get_AceMask(HWND hdlg)
+{
+	TCHAR tbuf[20] = {};
+	TCHAR *endptr = nullptr;
+	GetDlgItemText(hdlg, IDE_CustomAccessMask, tbuf, ARRAYSIZE(tbuf));
+	ULONG val = _tcstoul(tbuf, &endptr, 0);
+	if (*endptr != '\0')
+		THROWE(_T("%s"), _T("Custom Access Mask invalid input format."));
+	else if (val == ULONG_MAX)
+		THROWE(_T("%s"), _T("Custom Access Mask value too large."));
+	else if (val == 0)
+		THROWE(_T("%s"), _T("Custom Access Mask input is invalid, should not be 0."));
+
+	return val;
+}
+
+void ui_UpdateAccessMask(HWND hdlg, UINT uic)
+{
+	TCHAR tbuf[20] = {};
+	if (uic == IDWB_FILE_ALL_ACCESS)
+	{
+		_sntprintf_s(tbuf, _TRUNCATE, _T("0x%08X"), FILE_ALL_ACCESS);
+		SetDlgItemText(hdlg, IDE_CustomAccessMask, tbuf);
+	}
+	else if (uic == IDWB_GENERIC_ALL)
+	{
+		_sntprintf_s(tbuf, _TRUNCATE, _T("0x%08X"), GENERIC_ALL);
+		SetDlgItemText(hdlg, IDE_CustomAccessMask, tbuf);
+	}
+	else if (uic == IDWB_CustomAccessMask)
+	{
+		SetFocus(GetDlgItem(hdlg, IDE_CustomAccessMask));
+	}
+}
+
+
 void do_SetNamedSecurityInfo(HWND hdlg)
 {
 	//// Grab user input from UI and finally call SetNamedSecurityInfo for these UI input.
 
 	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T(""));
 
+	TCHAR ntfspath[MAX_PATH] = {};
+	GetDlgItemText(hdlg, IDE_NtfsPath, ntfspath, ARRAYSIZE(ntfspath));
+
+	//
 	// Get deny-trustee list and allow-trustee list from UI.
+	//
 
 	BOOL succ = 0;
 	TCHAR tbuf[400] = {};
 	DWORD aclRevision = ACL_REVISION;
-	DWORD aceflags = OBJECT_INHERIT_ACE | CONTAINER_INHERIT_ACE;
 
 	GetDlgItemText(hdlg, IDE_DenyTrustees, tbuf, ARRAYSIZE(tbuf));
-	Trustees_st teesDeny = myAllocTrusteeArray(tbuf);
+	Trustees_st teesDeny = myCreateTrusteeArray(tbuf);
 
 	GetDlgItemText(hdlg, IDE_AllowTrustees, tbuf, ARRAYSIZE(tbuf));
-	Trustees_st teesAllow = myAllocTrusteeArray(tbuf);
+	Trustees_st teesAllow = myCreateTrusteeArray(tbuf);
 
 	if (teesDeny.count == 0 && teesAllow.count == 0)
 	{
 		int ret = vaMsgBox(hdlg, MB_OKCANCEL, NULL, _T("%s"),
-			_T("You do not provide any trustee in deny/allow list, so you are setting an Empty-DACL.\n")
+			_T("You do not provide any DENY-trustees or ALLOW-trustees, so you are setting an Empty-DACL.\n")
 			_T("So no one has permission to access this NTFS path .\n")
 			_T("\n")
 			_T("Are you sure?"));
@@ -277,10 +334,28 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 	succ = InitializeAcl(pDacl, AclBytesTotal, aclRevision);
 	WINAPI_CHECK_THROWE(succ, InitializeAcl);
 
-	ACCESS_MASK AceMask = GENERIC_ALL | STANDARD_RIGHTS_ALL;
+	DWORD aceflagsDeny = get_AceflagsDeny(hdlg);
+	DWORD aceflagsAllow = get_AceflagsAllow(hdlg);
 
-	fill_Dacl_with_Aces(pDacl, teesDeny, aceflags, AceMask, AddAccessDeniedAceEx);
-	fill_Dacl_with_Aces(pDacl, teesAllow, aceflags, AceMask, AddAccessAllowedAceEx);
+	ACCESS_MASK AceMask = get_AceMask(hdlg);
+
+	appendmsg(hdlg, _T("Deny-ACE flags: 0x%08X , %s"), aceflagsDeny, ITCSv(aceflagsDeny, AceFlags));
+	appendmsg(hdlg, _T("Allow-ACE flags: 0x%08X , %s"), aceflagsAllow, ITCSv(aceflagsAllow, AceFlags));
+	
+	DWORD fileattr = GetFileAttributes(ntfspath);
+	if (fileattr == INVALID_FILE_ATTRIBUTES)
+	{
+		appendmsg(hdlg, _T("Access Mask to use(on both Deny/Allow): 0x%08X (not knowing whether it is a file or directory)"));
+	}
+	else
+	{
+		int isDir = fileattr & FILE_ATTRIBUTE_DIRECTORY;
+		appendmsg(hdlg, _T("Access Mask to use(on both Deny/Allow): 0x%08X , %s"),
+			AceMask, ITCSv(AceMask, isDir?DirectoryRights:FileRights));
+	}
+
+	fill_Dacl_with_Aces(pDacl, teesDeny, aceflagsDeny, AceMask, AddAccessDeniedAceEx);
+	fill_Dacl_with_Aces(pDacl, teesAllow, aceflagsAllow, AceMask, AddAccessAllowedAceEx);
 
 	//
 	// Start calling SetNamedSecurityInfo()
@@ -296,12 +371,6 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 	if (isUnprotectedDacl)
 		aclWhat |= UNPROTECTED_DACL_SECURITY_INFORMATION;
 
-	
-//	HWND hemsg = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-	
-	TCHAR ntfspath[MAX_PATH] = {};
-	GetDlgItemText(hdlg, IDE_NtfsPath, ntfspath, ARRAYSIZE(ntfspath));
-	
 	do_ShowDbgSetNamedSecurityInfo(hdlg, teesDeny, teesAllow, aclWhat);
 
 	TCHAR timestr[100] = {};
@@ -325,12 +394,15 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 
 	appendmsg(hdlg, _T("Time cost: %u millisec"), msec_used);
 
-	WINAPI_CHECK_THROWE(winerr?FALSE:TRUE, SetNamedSecurityInfo);
+	if (winerr) 
+	{
+		THROWE(_T("SetNamedSecurityInfo() fail, winerr=%s"), ITCSv(winerr, WinError)); 
+	}
 }
 
 
 
-void test1(HWND hdlg)
+void DO_SetNamedSecurityInfo(HWND hdlg)
 {
 	try
 	{
@@ -338,10 +410,15 @@ void test1(HWND hdlg)
 	}
 	catch (const ErrMsg& e)
 	{
-		appendmsg(hdlg, _T("[ERROR] In %s:\r\n%s"), e.m_func, e.m_errmsg);
+		TCHAR timestr[40] = _T("");
+		now_timestr(timestr, ARRAYSIZE(timestr));
+
+		appendmsg(hdlg, _T("%s[ERROR] In %s():\r\n%s"), timestr, e.m_func, e.m_errmsg);
+
+		vaMsgBox(hdlg, MB_OK|MB_ICONERROR, NULL, 
+			_T("[ERROR] In %s():\r\n%s"), e.m_func, e.m_errmsg);
 	}
 }
-
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
@@ -350,12 +427,25 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDB_SetSecurityInfo:
 	{
-		test1(hdlg);
+		DO_SetNamedSecurityInfo(hdlg);
 
 		break;
 	}
+	case IDWB_FILE_ALL_ACCESS:
+	case IDWB_GENERIC_ALL:
+	case IDWB_CustomAccessMask:
+		ui_UpdateAccessMask(hdlg, id);
+		break;
+
+	case IDE_CustomAccessMask:
+	{
+		if (LOWORD(codeNotify) == EN_SETFOCUS)
+			CheckRadioButton(hdlg, IDWB_FILE_ALL_ACCESS, IDWB_CustomAccessMask, IDWB_CustomAccessMask);
+		break;
+	}
+
 	case IDOK:
 	case IDCANCEL:
 	{
@@ -369,9 +459,9 @@ static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
-	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
+	jul->AnchorControl(0,0, 100,0, IDE_NtfsPath);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+	jul->AnchorControl(0,100, 0,100, IDB_SetSecurityInfo);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
@@ -389,9 +479,21 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	// SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata->mystr);
 	SetDlgItemText(hdlg, IDE_NtfsPath, _T("d:\\Atest"));
 
+	const TCHAR *cuetext = _T("Users or groups, separated by semicolons.");
+	Edit_SetCueBannerText(GetDlgItem(hdlg, IDE_DenyTrustees), cuetext);
+	Edit_SetCueBannerText(GetDlgItem(hdlg, IDE_AllowTrustees), cuetext);
+
+	CheckDlgButton(hdlg, IDCK_Deny_OBJECT_INHERIT_ACE, 1);
+	CheckDlgButton(hdlg, IDCK_Deny_CONTAINER_INHERIT_ACE, 1);
+	CheckDlgButton(hdlg, IDCK_Allow_OBJECT_INHERIT_ACE, 1);
+	CheckDlgButton(hdlg, IDCK_Allow_CONTAINER_INHERIT_ACE, 1);
+
+	CheckRadioButton(hdlg, IDWB_FILE_ALL_ACCESS, IDWB_CustomAccessMask, IDWB_FILE_ALL_ACCESS);
+	ui_UpdateAccessMask(hdlg, IDWB_FILE_ALL_ACCESS);
+
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDE_NtfsPath));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
