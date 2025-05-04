@@ -1,7 +1,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <Psapi.h>
 #include <windowsx.h>
+#include <Psapi.h>
+#include <ShlObj.h> // IsUserAnAdmin()
 #include <assert.h>
 #include <stdio.h>
 
@@ -313,4 +314,28 @@ void util_SetDlgDefaultButton(HWND hwndDlg, UINT idDefault)
 	SendDlgItemMessage(hwndDlg, idDefault, BM_SETSTYLE, 
 		BS_DEFPUSHBUTTON, // make it a stand-out button
 		(LPARAM) TRUE); 
+}
+
+#pragma comment(lib, "Shell32.lib")
+
+BOOL Is_UserAnAdmin()
+{
+	// Define this wrapper instead of using IsUserAnAdmin(), bcz on VC2015 blames warning on a buggy line from ShlObj.h:
+	/*
+1>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include\ShlObj.h(1151): warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+1>         utils.cpp
+
+The buggy line is(L#1146):
+
+typedef enum tagGPFIDL_FLAGS
+{
+	GPFIDL_DEFAULT    = 0x0000,      // normal Win32 file name, servers and drive roots included
+	GPFIDL_ALTNAME    = 0x0001,      // short file name
+	GPFIDL_UNCPRINTER = 0x0002,      // include UNC printer names too (non file system item)
+};
+
+WinSDK 8.1 has fixed it.
+	*/
+	
+	return IsUserAnAdmin();
 }

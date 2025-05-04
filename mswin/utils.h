@@ -43,3 +43,5 @@ DWORD TrueGetMillisec();
 const TCHAR *str_ANSIorUnicode();
 
 void util_SetDlgDefaultButton(HWND hwndDlg, UINT idDefault);
+
+BOOL Is_UserAnAdmin();

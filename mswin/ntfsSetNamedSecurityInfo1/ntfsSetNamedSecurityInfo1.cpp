@@ -5,6 +5,7 @@
 #include <NTSecAPI.h>
 #include <AclAPI.h>
 #include <sddl.h>
+#include <ShlObj.h>
 #include <tchar.h>
 #include <stdio.h>
 #include <limits.h>
@@ -473,8 +474,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 	
-	vaSetWindowText(hdlg, _T("ntfsSetNamedSecurityInfo1 v%d.%d.%d"), 
-		ntfsSetNamedSecurityInfo1_VMAJOR, ntfsSetNamedSecurityInfo1_VMINOR, ntfsSetNamedSecurityInfo1_VPATCH);
+	vaSetWindowText(hdlg, _T("ntfsSetNamedSecurityInfo1 v%d.%d.%d %s"), 
+		ntfsSetNamedSecurityInfo1_VMAJOR, ntfsSetNamedSecurityInfo1_VMINOR, ntfsSetNamedSecurityInfo1_VPATCH,
+		Is_UserAnAdmin() ? _T("(RunAsAdmin)") : _T("")
+		);
 	
 	// SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata->mystr);
 	SetDlgItemText(hdlg, IDE_NtfsPath, _T("d:\\Atest"));
