@@ -163,7 +163,7 @@ int cal_AceSizeTotal(const Trustees_st &tees)
 	for(int i=0; i<tees.count; i++)
 	{
 		const Trustee_st &tee = tees.ecaTrustees[i];
-		int sidbytes = tee.abSid.Bytes();
+		int sidbytes = (int)tee.abSid.Bytes();
 		totalbytes += (bytesAceHeaderMask + sidbytes);
 	}
 

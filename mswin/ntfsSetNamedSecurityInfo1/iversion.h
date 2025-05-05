@@ -3,8 +3,8 @@
 
 #define ntfsSetNamedSecurityInfo1_VMAJOR 1
 #define ntfsSetNamedSecurityInfo1_VMINOR 0
-#define ntfsSetNamedSecurityInfo1_VPATCH 1
-#define ntfsSetNamedSecurityInfo1_VTAIL  1
+#define ntfsSetNamedSecurityInfo1_VPATCH 2
+#define ntfsSetNamedSecurityInfo1_VTAIL  0
 
 #define ntfsSetNamedSecurityInfo1str__(n) #n
 #define ntfsSetNamedSecurityInfo1str(n) ntfsSetNamedSecurityInfo1str__(n)

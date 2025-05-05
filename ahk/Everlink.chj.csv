@@ -117,6 +117,7 @@ https://www.evernote.com/shard/s21/nl/2425275/13bc6c56-c420-4f80-94f7-901ef5b51b
 https://www.evernote.com/shard/s21/nl/2425275/56b3b85f-2e31-4ff6-b873-a75fe076dfa1 , DefaultLocales , 
 https://www.evernote.com/shard/s21/nl/2425275/e3bcd1b8-307c-4315-b5d0-0762faf77a63 , DefWindowProc , 窗口系统的 default winow procedure 内部做的事
 https://www.evernote.com/shard/s21/nl/2425275/fce669b8-7dc1-4847-95a8-9e1c86cc6e67 , demo_clone , TLPI CH28 演示 Linux clone() 的程序
+https://www.evernote.com/shard/s21/nl/2425275/03a72d88-4b00-452c-9227-0be258cb1b1e , DemosCxxThrow , 使用 C++ exception 来报错的程序
 https://www.evernote.com/shard/s21/nl/2425275/ad2498fa-cfac-4e63-8322-83aa53aea30c , DesignPattern , 设计模式
 https://www.evernote.com/shard/s21/nl/2425275/c4a5f7ba-0816-4995-b98b-77c094d9dddb , DesignRational , 合理性设计收集帖
 https://www.evernote.com/shard/s21/nl/2425275/ba90658c-59ce-46bc-96f7-4d7623f24d72 , devcon , 
@@ -326,6 +327,7 @@ https://www.evernote.com/shard/s21/nl/2425275/bd13ffe5-cdc1-49c5-b93c-8ac20b2a9f
 https://www.evernote.com/shard/s21/nl/2425275/a7ac9d5d-a9c1-4e17-bf75-ac80154b5c16 , NTFSexp , 有关 NTFS 权限，可做的实验
 https://www.evernote.com/shard/s21/nl/2425275/8ff46d45-fcab-41f5-b51b-1a11cff63326 , NtfsIntroPerm , NTFS volume/partition, 最初的 permission 设定
 https://www.evernote.com/shard/s21/nl/2425275/8c65a2a6-a4dc-4807-b420-56b0130fa5b7 , NtfsNullDacl , 将一个 NTFS 文件/目录设为 NULL-DACL 的小程序
+https://www.evernote.com/shard/s21/nl/2425275/f7ac980f-e3d1-4f56-a033-7b348ffd2c8b , ntfsSetNamedSecurityInfo1 , SetNamedSecurityInfo 测试程序
 https://www.evernote.com/shard/s21/nl/2425275/f78a0e4f-8ef3-4db2-b92a-98c78febcf06 , NTFS , NTFS 文件系统 主题帖
 https://www.evernote.com/shard/s21/nl/2425275/c751b326-36b5-4b1e-b6b4-42f3cd4c1ac7 , NtPerms , 主题帖: Windows NT 的权限系统/规则
 https://www.evernote.com/shard/s21/nl/2425275/e8000794-60c9-437e-b2ef-da227454f628 , NV-RTX2070 , Nvidia 公版显卡 RTX 2070

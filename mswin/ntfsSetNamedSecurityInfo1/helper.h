@@ -45,7 +45,7 @@ public:
 		}
 		else
 		{
-			int slen = strlen(s);
+			int slen = (int)strlen(s);
 			m_wchars = new WCHAR[slen + 1];
 			MultiByteToWideChar(0, 0, s, slen+1, m_wchars, slen+1);
 			m_isdelete = true;
