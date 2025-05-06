@@ -10,10 +10,26 @@
 
 #include "utils.h"
 
+#include <utility>
+#include <CxxVerCheck.h>
+
+#ifdef CXX11_OR_NEWER
+template<typename... Args>
+void vaDBG(Args&&... args) // forwards all arguments
+{
+	vaDbgTs(std::forward<Args>(args)...);
+}
+#else
+void vaDBG(...)
+{
+	vaDbgTs(_T("Not C++11 compiled, vaDBG() is nullop."));
+};
+#endif
+
+
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
-#define vaDBG vaDbgTs
 #include <mswin/winuser.itc.h>
 
 #define Combobox_EnableWideDrop_IMPL
