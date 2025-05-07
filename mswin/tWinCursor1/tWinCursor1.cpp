@@ -6,12 +6,26 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#define EXE_VERSION "1.0"
+#define EXE_VERSION "1.1"
 
 #include "utils.h"
 
 #include <mswin/winuser.itc.h>
 using namespace itc;
+
+#define HT_NOT_FAKE (-4)
+int g_HTxxx_to_fake = HT_NOT_FAKE; 
+// -- Can be overridden by command line param
+// You can pass HTLEFT , HTCAPTION etc as argument.
+
+void Prepare_CmdParams(const TCHAR *pszargs)
+{
+	if(pszargs==NULL || *pszargs=='\0')
+		return;
+
+	g_HTxxx_to_fake = HTxxx_HitTest.OneNameToVal(pszargs);
+}
+
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 
@@ -23,6 +37,8 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	HWND         hwnd = NULL;
 	MSG          msg = {};
 	WNDCLASS     wndclass = {};
+
+	Prepare_CmdParams(szCmdLine);
 
 	wndclass.style         = CS_HREDRAW | CS_VREDRAW ;
 	wndclass.lpfnWndProc   = WndProc ;
@@ -83,7 +99,19 @@ void Cls_OnPaint(HWND hwnd)
 
 	GetClientRect (hwnd, &rect) ;          
 	Ellipse(hdc, 0,0, rect.right, rect.bottom);
-	DrawText (hdc, TEXT ("Hello, WindowsX !"), -1, &rect,
+
+	TCHAR szFakeinfo[100] = {};
+	const TCHAR *ptext = _T("Hello, WM_SETCURSOR!");
+
+	if(g_HTxxx_to_fake!=HT_NOT_FAKE)
+	{
+		_sntprintf_s(szFakeinfo, _TRUNCATE, _T("Will fake WM_NCHITTEST with %s."),
+			ITCS(g_HTxxx_to_fake, HTxxx_HitTest));
+
+		ptext = szFakeinfo;
+	}
+
+	DrawText (hdc, ptext, -1, &rect,
 		DT_SINGLELINE | DT_CENTER | DT_VCENTER) ;
 
 	EndPaint (hwnd, &ps) ;
@@ -106,9 +134,17 @@ UINT Cls_OnNCHitTest(HWND hwnd, int x, int y)
 {
 	UINT htcode = FORWARD_WM_NCHITTEST(hwnd, x, y, DefWindowProc);
 
-	vaDbgTs(_T("WM_NCHITTEST [%d,%d] returns HT=%s"), x, y, ITCSv(htcode, HTxxx_HitTest));
-
-	return htcode;
+	if(g_HTxxx_to_fake==HT_NOT_FAKE)
+	{
+		vaDbgTs(_T("WM_NCHITTEST [%d,%d] returns HT=%s"), x, y, ITCSv(htcode, HTxxx_HitTest));
+		return htcode;
+	}
+	else
+	{
+		vaDbgTs(_T("WM_NCHITTEST [%d,%d] returns FAKED %s"), x, y, 
+			ITCSv(g_HTxxx_to_fake, HTxxx_HitTest));
+		return g_HTxxx_to_fake;
+	}
 }
 
 BOOL Cls_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mousemsg)
@@ -140,26 +176,28 @@ BOOL Cls_OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT mousemsg
 void Cls_OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	vaDbgTs(_T("WM_LBUTTONDOWN keyFlags=0x%X"), keyFlags);
-	SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+
+//	SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 }
 
 void Cls_OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags)
 {
 	vaDbgTs(_T("WM_LBUTTONUP"));
-	//	SetCursor(LoadCursor(NULL, IDC_IBEAM));
+
+//	SetCursor(LoadCursor(NULL, IDC_IBEAM));
 }
 
 
 void Cls_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
 	vaDbgTs(_T("WM_RBUTTONDOWN"));
-	//	SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+//	SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
 	HWND hwndDesk = GetDesktopWindow();
 	printf("hwndDesktop = 0x%X\n", hwndDesk);
 
-	//	Sleep(1000);
-	//	SendMessage(hwndDesk, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM)2);
+//	Sleep(1000);
+//	SendMessage(hwndDesk, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM)2);
 }
 
 
