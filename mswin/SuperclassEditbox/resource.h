@@ -5,8 +5,6 @@
 #define IDI_WINMAIN                     100
 #define IDD_WINMAIN                     101
 #define IDC_LABEL1                      1000
-#define IDC_EDIT_LOGMSG                 1001
-#define IDC_BUTTON1                     1002
 #define IDC_EDIT1                       1003
 #define IDC_EDIT2                       1004
 

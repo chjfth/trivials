@@ -147,9 +147,6 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 
 	make_NodigitEditbox_wndclass(hinstExe);
 
-	const TCHAR *szfullcmdline = GetCommandLine();
-	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
-
 	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, (LPARAM)&dlgdata);
 
