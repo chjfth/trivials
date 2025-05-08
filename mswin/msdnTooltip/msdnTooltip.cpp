@@ -62,13 +62,20 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	switch (id) 
 	{{
 	case IDB_TooltipForUic:
-		if(!ctx.hdlgTtForUic)
+	{
+		HWND &hsub = ctx.hdlgTtForUic;
+		if(!hsub)
 		{
-			ctx.hdlgTtForUic = CreateDialog(g_hinstExe, MAKEINTRESOURCE(IDD_TooltipForUic), 
+			hsub = CreateDialog(g_hinstExe, MAKEINTRESOURCE(IDD_TooltipForUic), 
 				hdlgMain, DlgProc_TtForUic);
-			ASSERT_DLG_SUCC(ctx.hdlgTtForUic, IDD_TooltipForUic);
+			ASSERT_DLG_SUCC(hsub, IDD_TooltipForUic);
+		}
+		else
+		{
+			SetForegroundWindow(hsub);
 		}
 		break;
+	}
 	case IDB_TooltipForRectArea:
 		break;
 	case IDOK:
