@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="msdnTooltip.cpp" />
+    <ClCompile Include="..\utils.cpp" />
+    <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="iversion.h" />
+    <ClInclude Include="..\utils.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__WinConst\mswin\winuser.itc.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="msdnTooltip.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="msdnTooltip.ico" />
+    <None Include="_iversion.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="chjutils">
+      <UniqueIdentifier>{55ba9e46-6776-437e-b70b-1253c888b74e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

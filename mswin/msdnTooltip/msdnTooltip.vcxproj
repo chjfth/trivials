@@ -221,6 +221,8 @@
     <ClCompile Include="..\utils.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="msdnTooltip.rc" />
@@ -236,6 +238,7 @@
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
+    <ClInclude Include="..\..\__WinConst\mswin\winuser.itc.h" />
   </ItemGroup>
  
   <!-- MSBuild system stock Cpp.targets -->

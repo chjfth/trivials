@@ -33,6 +33,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDI_WINMAIN             ICON                    "msdnTooltip.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
@@ -59,6 +60,15 @@ BEGIN
     PUSHBUTTON      "Hover on me for tooltip",IDB_HasTooltip,15,35,94,14
 END
 
+IDD_TooltipForRectArea DIALOGEX 0, 0, 159, 66
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Tooltip for a Rect-area"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Just a lonely label.",IDC_STATIC,48,28,60,8
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -77,6 +87,10 @@ BEGIN
     END
 
     IDD_TooltipForUic, DIALOG
+    BEGIN
+    END
+
+    IDD_TooltipForRectArea, DIALOG
     BEGIN
     END
 END
@@ -111,6 +125,17 @@ BEGIN
 END
 
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_TooltipForRectArea AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
