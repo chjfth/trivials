@@ -8,6 +8,10 @@
 
 #include "utils.h"
 
+#pragma comment(lib, "Psapi.lib") // GetModuleBaseName
+#pragma comment(lib, "Shell32.lib") // IsUserAnAdmin
+
+
 TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd, bool add_millisec)
 {
 	SYSTEMTIME st = {0};
