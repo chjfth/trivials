@@ -15,6 +15,7 @@
     <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp">
       <Filter>chjutils</Filter>
     </ClCompile>
+    <ClCompile Include="CHIMPL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iversion.h" />
@@ -32,6 +33,9 @@
     <ClInclude Include="..\..\__WinConst\mswin\winuser.itc.h">
       <Filter>chjutils</Filter>
     </ClInclude>
+    <ClInclude Include="shareinc.h" />
+    <ClInclude Include="ModelessChild.h" />
+    <ClInclude Include="ModelessTtdemo.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="msdnTooltip.rc" />

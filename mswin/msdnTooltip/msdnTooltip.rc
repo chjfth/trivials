@@ -66,7 +66,7 @@ EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Tooltip for a Rect-area"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Just a lonely label.",IDC_STATIC,48,28,60,8
+    LTEXT           "Whole client area of the dialogbox\nis the hot area for tooltip.",IDC_STATIC,22,23,115,19
 END
 
 
