@@ -7,6 +7,12 @@
 
 #include "../utils.h"
 
+#include <CxxVerCheck.h>
+#ifndef CXX11_OR_NEWER
+#error "This header file requires "
+#endif
+
+
 class CModelessTtDemo : public CModelessChild
 {
 	// This class holds a tooltip HWND that is shared by each concrete
@@ -20,7 +26,7 @@ public:
 
 	using CModelessChild::CModelessChild; // this requires C++11, VC2015+
 
-	virtual Relay_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override
+	virtual DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override
 	{
 		CModelessChild::DlgProc(uMsg, wParam, lParam);
 
@@ -38,10 +44,10 @@ public:
 					m_hwndTooltip = NULL;
 				}
 			}
-			return Relay_no;
+			return DoneSth_yes;
 		}
 
-		return Relay_yes;
+		return DoneSth_no;
 	}
 
 

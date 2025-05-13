@@ -8,7 +8,7 @@ class CTtDlgForRectArea : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	Relay_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 #ifdef TtDlgForRectArea_IMPL
@@ -42,7 +42,7 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 }
 
 
-CModelessChild::Relay_et
+CModelessChild::DoneSth_et
 CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
@@ -57,7 +57,7 @@ CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
 	}
 
-	return Relay_no;
+	return DoneSth_yes;
 }
 
 #endif // TtDlgForRectArea_IMPL

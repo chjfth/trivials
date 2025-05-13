@@ -8,7 +8,7 @@ class CTtDlgForUic : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	Relay_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 };
 
 #ifdef TtDlgForUic_IMPL
@@ -58,7 +58,7 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText)
 	return hwndTip;
 }
 
-CModelessChild::Relay_et
+CModelessChild::DoneSth_et
 CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
@@ -73,7 +73,7 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		vaDbgTs(_T("Called CreateToolTip_ForUic(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
 	}
 
-	return Relay_no;
+	return DoneSth_yes;
 }
 
 #endif // TtDlgForUic_IMPL

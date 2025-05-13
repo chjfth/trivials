@@ -6,6 +6,7 @@
 #include <tchar.h>
 #include <windows.h>
 
+#include <mswin/mswinClarify.h>
 #include <SdringTCHAR.h>
 
 class CModelessChild
@@ -22,8 +23,8 @@ public:
 	HWND GetHdlg() { return m_hdlgMe; } // debug purpose
 
 protected:
-	enum Relay_et { Relay_no = 0, Relay_yes = 1 };
-	virtual Relay_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	enum DoneSth_et { DoneSth_no = 0 , DoneSth_yes = 1 };
+	virtual DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	static INT_PTR WINAPI BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -85,14 +86,14 @@ INT_PTR WINAPI CModelessChild::BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, 
 	}
 
 
-	Relay_et is_relay = Relay_yes;
+	DoneSth_et donesth = DoneSth_no;
 
 	if (pMydlg && uMsg != 0)
 	{
 		// note: WM_SETFONT precedes WM_INITDIALOG, so we need to check pMydlg.
 		// note: After closing child dlg, we could see uMsg==0, weird.
 
-		pMydlg->DlgProc(uMsg, wParam, lParam);
+		donesth = pMydlg->DlgProc(uMsg, wParam, lParam);
 	}
 	else
 	{
@@ -104,17 +105,16 @@ INT_PTR WINAPI CModelessChild::BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, 
 		}
 	}
 
-	return is_relay ? FALSE : TRUE;
-	// -- TRUE means "let outer-layer/system go on processing this uMsg.
+	return donesth ? FALSE : TRUE;
 }
 
-CModelessChild::Relay_et
+CModelessChild::DoneSth_et
 CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_INITDIALOG)
 	{
 		vaDBG(_T("%s (hdlg=0x%08X) created."), msz_name, m_hdlgMe);
-		return Relay_no;
+		return DoneSth_yes;
 	}
 	if (uMsg == WM_COMMAND)
 	{
@@ -126,13 +126,13 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			assert(IsWindow(m_hdlgMe));
 			::PostMessage(m_hdlgMe, m_WM_KillSelf, 0, 0);
 		}
-		return Relay_no;
+		return DoneSth_yes;
 	}
 	else if (uMsg == WM_DESTROY)
 	{
 		// [2025-05-10] Q: Why I can not see this?
 		// Neither in debug-message of BaseDlgProc().
-		return Relay_yes;
+		return DoneSth_no;
 	}
 	else if (uMsg == m_WM_KillSelf)
 	{
@@ -148,10 +148,10 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		mr_ptrme_by_parent = NULL;
 		delete this;
 
-		return Relay_no;
+		return DoneSth_yes;
 	}
 	else
-		return Relay_yes;
+		return DoneSth_no;
 }
 
 #ifndef ModelessChild_DEBUG
