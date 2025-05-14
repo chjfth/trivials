@@ -75,7 +75,19 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 
 		vaDbgTs(_T("Called CreateToolTip_ForUic(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
 
-		*pMsgRet = ACCEPT_DEFAULT_FOCUS;
+		SetFocus(GetDlgItem(m_hdlgMe, IDB_HasTooltip));
+		*pMsgRet = AcceptDefaultFocus_FALSE;
+
+		return Actioned_yes;
+	}
+	if (uMsg == WM_COMMAND)
+	{
+		UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
+		if (cmd == IDB_NoTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_NoTooltip clicked."));
+		else if (cmd == IDB_HasTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_HasTooltip clicked."));
+
 		return Actioned_yes;
 	}
 	else 

@@ -59,7 +59,7 @@ CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMs
 
 		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);		
 		
-		*pMsgRet = ACCEPT_DEFAULT_FOCUS;
+		*pMsgRet = AcceptDefaultFocus_TRUE;
 		return Actioned_yes;
 	}
 	else

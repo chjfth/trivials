@@ -8,12 +8,6 @@
 #include <commdefs.h>
 #include "../utils.h"
 
-#include <CxxVerCheck.h>
-#ifndef CXX11_OR_NEWER
-#error "This header file requires "
-#endif
-
-
 class CModelessTtDemo : public CModelessChild
 {
 	// This class holds a tooltip HWND that is shared by each concrete

@@ -10,6 +10,12 @@
 #include <mswin/mswinClarify.h>
 #include <SdringTCHAR.h>
 
+#include <CxxVerCheck.h>
+#ifndef CXX11_OR_NEWER
+#error "This header file requires VC2015+ compiler."
+#endif
+
+
 class CModelessChild
 {
 	// This class helps the parent-dialog manage this object as modeless child-dialog.
@@ -131,7 +137,7 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRe
 	{
 		vaDBG(_T("%s (hdlg=0x%08X) created."), msz_name, m_hdlgMe);
 		
-		*pMsgRet = ACCEPT_DEFAULT_FOCUS;
+		*pMsgRet = AcceptDefaultFocus_TRUE;
 		return Actioned_yes;
 	}
 	if (uMsg == WM_COMMAND)
