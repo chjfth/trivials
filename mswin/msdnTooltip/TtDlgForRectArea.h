@@ -8,7 +8,8 @@ class CTtDlgForRectArea : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+	DLGPROC_ret DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth = nullptr) override;
 };
 
 #ifdef TtDlgForRectArea_IMPL
@@ -42,10 +43,12 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 }
 
 
-CModelessChild::DoneSth_et
-CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
+DLGPROC_ret
+CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth)
 {
-	CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
+	SETTLE_OUTPUT_PTR(DoneSth_et, pDoneSth, DoneSth_no);
+
+	DLGPROC_ret dlgret = CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
 
 	if (uMsg == WM_INITDIALOG)
 	{
@@ -55,9 +58,12 @@ CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			_T("This is tooltip for a whole client-area."));
 
 		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
+
+		*pDoneSth = DoneSth_yes;
+		return ACCEPT_DEFAULT_FOCUS;
 	}
 
-	return DoneSth_yes;
+	return dlgret;
 }
 
 #endif // TtDlgForRectArea_IMPL

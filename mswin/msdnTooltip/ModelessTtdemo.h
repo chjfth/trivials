@@ -5,6 +5,7 @@
 #include <windowsx.h>
 #include "ModelessChild.h"
 
+#include <commdefs.h>
 #include "../utils.h"
 
 #include <CxxVerCheck.h>
@@ -26,9 +27,12 @@ public:
 
 	using CModelessChild::CModelessChild; // this requires C++11, VC2015+
 
-	virtual DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override
+	virtual DLGPROC_ret DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth=nullptr) override
 	{
-		CModelessChild::DlgProc(uMsg, wParam, lParam);
+		SETTLE_OUTPUT_PTR(DoneSth_et, pDoneSth, DoneSth_no);
+
+		DLGPROC_ret dlgret = CModelessChild::DlgProc(uMsg, wParam, lParam, pDoneSth);
 
 		if (uMsg == WM_COMMAND)
 		{
@@ -44,10 +48,12 @@ public:
 					m_hwndTooltip = NULL;
 				}
 			}
-			return DoneSth_yes;
+			
+			*pDoneSth = DoneSth_yes;
+			return 0;
 		}
-
-		return DoneSth_no;
+		else
+			return dlgret;
 	}
 
 

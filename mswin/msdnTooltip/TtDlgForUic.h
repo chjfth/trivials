@@ -8,7 +8,8 @@ class CTtDlgForUic : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+	DLGPROC_ret DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth=nullptr) override;
 };
 
 #ifdef TtDlgForUic_IMPL
@@ -58,10 +59,12 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText)
 	return hwndTip;
 }
 
-CModelessChild::DoneSth_et
-CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
+DLGPROC_ret
+CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth)
 {
-	CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
+	SETTLE_OUTPUT_PTR(DoneSth_et, pDoneSth, DoneSth_no);
+
+	DLGPROC_ret dlgret = CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
 
 	if (uMsg == WM_INITDIALOG)
 	{
@@ -71,9 +74,11 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			_T("This is the tooltip for the button IDB_HasTootip"));
 
 		vaDbgTs(_T("Called CreateToolTip_ForUic(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
-	}
 
-	return DoneSth_yes;
+		return ACCEPT_DEFAULT_FOCUS;
+	}
+	else 
+		return dlgret;
 }
 
 #endif // TtDlgForUic_IMPL

@@ -6,6 +6,7 @@
 #include <tchar.h>
 #include <windows.h>
 
+#include <commdefs.h>
 #include <mswin/mswinClarify.h>
 #include <SdringTCHAR.h>
 
@@ -24,9 +25,11 @@ public:
 
 protected:
 	enum DoneSth_et { DoneSth_no = 0 , DoneSth_yes = 1 };
-	virtual DoneSth_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
+	
+	virtual DLGPROC_ret DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
+		DoneSth_et *pDoneSth=nullptr);
 
-	static INT_PTR WINAPI BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	static DLGPROC_ret WINAPI BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 protected:
 	Sdring msd_name;
@@ -45,6 +48,7 @@ protected:
 #ifdef ModelessChild_IMPL
 
 #include <assert.h>
+#include <WindowsX.h>
 
 #ifndef ModelessChild_DEBUG
 #define vaDBG(...) // make vaDBG empty, no debugging message
@@ -70,7 +74,8 @@ BOOL CModelessChild::CreateTheDialog(const TCHAR *name,
 	return m_hdlgMe ? TRUE : FALSE;
 }
 
-INT_PTR WINAPI CModelessChild::BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+DLGPROC_ret WINAPI 
+CModelessChild::BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CModelessChild *pMydlg = (CModelessChild*)GetWindowLongPtr(hdlg, DWLP_USER);
 
@@ -85,15 +90,17 @@ INT_PTR WINAPI CModelessChild::BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, 
 		SetWindowLongPtr(hdlg, DWLP_USER, lParam);
 	}
 
-
-	DoneSth_et donesth = DoneSth_no;
+	DLGPROC_ret dlgret = 0;
 
 	if (pMydlg && uMsg != 0)
 	{
 		// note: WM_SETFONT precedes WM_INITDIALOG, so we need to check pMydlg.
 		// note: After closing child dlg, we could see uMsg==0, weird.
 
-		donesth = pMydlg->DlgProc(uMsg, wParam, lParam);
+		dlgret = pMydlg->DlgProc(uMsg, wParam, lParam);
+
+		DLGPROC_ret trueret = SetDlgMsgResult(hdlg, uMsg, dlgret);
+		return trueret;
 	}
 	else
 	{
@@ -103,18 +110,21 @@ INT_PTR WINAPI CModelessChild::BaseDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, 
 		if (uMsg == 0) {
 			vaDBG(_T("note: We see uMsg==0 in DialogProc."));
 		}
-	}
 
-	return donesth ? FALSE : TRUE;
+		return 0;
+	}
 }
 
-CModelessChild::DoneSth_et
-CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
+DLGPROC_ret
+CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth)
 {
+	SETTLE_OUTPUT_PTR(DoneSth_et, pDoneSth, DoneSth_no);
+
 	if (uMsg == WM_INITDIALOG)
 	{
 		vaDBG(_T("%s (hdlg=0x%08X) created."), msz_name, m_hdlgMe);
-		return DoneSth_yes;
+		
+		return ACCEPT_DEFAULT_FOCUS;
 	}
 	if (uMsg == WM_COMMAND)
 	{
@@ -126,13 +136,15 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			assert(IsWindow(m_hdlgMe));
 			::PostMessage(m_hdlgMe, m_WM_KillSelf, 0, 0);
 		}
-		return DoneSth_yes;
+
+		*pDoneSth = DoneSth_yes;
+		return 0;
 	}
 	else if (uMsg == WM_DESTROY)
 	{
 		// [2025-05-10] Q: Why I can not see this?
 		// Neither in debug-message of BaseDlgProc().
-		return DoneSth_no;
+		return 0;
 	}
 	else if (uMsg == m_WM_KillSelf)
 	{
@@ -148,10 +160,11 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 		mr_ptrme_by_parent = NULL;
 		delete this;
 
-		return DoneSth_yes;
+		*pDoneSth = DoneSth_yes;
+		return 0;
 	}
 	else
-		return DoneSth_no;
+		return 0;
 }
 
 #ifndef ModelessChild_DEBUG
