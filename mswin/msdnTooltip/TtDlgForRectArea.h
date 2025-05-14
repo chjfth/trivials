@@ -8,8 +8,8 @@ class CTtDlgForRectArea : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	DLGPROC_ret DlgProc(
-		UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth = nullptr) override;
+	Actioned_et DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 };
 
 #ifdef TtDlgForRectArea_IMPL
@@ -36,19 +36,19 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 	ti.hinst = g_hinstExe; // required?
 	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
 
-								  // Associate the tooltip with the "tool" window.
+	// Associate the tooltip with the "tool" window.
 	SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
 
 	return hwndTT;
 }
 
 
-DLGPROC_ret
-CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth)
+CModelessChild::Actioned_et
+CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
-	SETTLE_OUTPUT_PTR(DoneSth_et, pDoneSth, DoneSth_no);
+	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	DLGPROC_ret dlgret = CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
+	Actioned_et actioned = CModelessTtDemo::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
 	if (uMsg == WM_INITDIALOG)
 	{
@@ -57,13 +57,13 @@ CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *
 		m_hwndTooltip = CreateToolTipForRectArea(m_hdlgMe,
 			_T("This is tooltip for a whole client-area."));
 
-		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
-
-		*pDoneSth = DoneSth_yes;
-		return ACCEPT_DEFAULT_FOCUS;
+		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);		
+		
+		*pMsgRet = ACCEPT_DEFAULT_FOCUS;
+		return Actioned_yes;
 	}
-
-	return dlgret;
+	else
+		return actioned;
 }
 
 #endif // TtDlgForRectArea_IMPL

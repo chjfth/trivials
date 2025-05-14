@@ -27,12 +27,12 @@ public:
 
 	using CModelessChild::CModelessChild; // this requires C++11, VC2015+
 
-	virtual DLGPROC_ret DlgProc(
-		UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth=nullptr) override
+	virtual Actioned_et DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override
 	{
-		SETTLE_OUTPUT_PTR(DoneSth_et, pDoneSth, DoneSth_no);
+		SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-		DLGPROC_ret dlgret = CModelessChild::DlgProc(uMsg, wParam, lParam, pDoneSth);
+		Actioned_et actioned = CModelessChild::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
 		if (uMsg == WM_COMMAND)
 		{
@@ -49,11 +49,10 @@ public:
 				}
 			}
 			
-			*pDoneSth = DoneSth_yes;
-			return 0;
+			return Actioned_yes;
 		}
 		else
-			return dlgret;
+			return actioned;
 	}
 
 

@@ -8,8 +8,8 @@ class CTtDlgForUic : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	DLGPROC_ret DlgProc(
-		UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth=nullptr) override;
+	Actioned_et DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 };
 
 #ifdef TtDlgForUic_IMPL
@@ -59,12 +59,12 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText)
 	return hwndTip;
 }
 
-DLGPROC_ret
-CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDoneSth)
+CModelessChild::Actioned_et
+CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
-	SETTLE_OUTPUT_PTR(DoneSth_et, pDoneSth, DoneSth_no);
+	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	DLGPROC_ret dlgret = CModelessTtDemo::DlgProc(uMsg, wParam, lParam);
+	Actioned_et actioned = CModelessTtDemo::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
 	if (uMsg == WM_INITDIALOG)
 	{
@@ -75,10 +75,11 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, DoneSth_et *pDone
 
 		vaDbgTs(_T("Called CreateToolTip_ForUic(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
 
-		return ACCEPT_DEFAULT_FOCUS;
+		*pMsgRet = ACCEPT_DEFAULT_FOCUS;
+		return Actioned_yes;
 	}
 	else 
-		return dlgret;
+		return actioned;
 }
 
 #endif // TtDlgForUic_IMPL
