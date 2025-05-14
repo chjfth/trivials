@@ -64,7 +64,7 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
 	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	Actioned_et actioned = CModelessTtDemo::DlgProc(uMsg, wParam, lParam, pMsgRet);
+	Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
 	if (uMsg == WM_INITDIALOG)
 	{
