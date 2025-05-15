@@ -22,15 +22,19 @@ void vaDBG(...)
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
-#define ModelessChild_DEBUG
-#define ModelessChild_IMPL
+#define   ModelessChild_DEBUG
+#define   ModelessChild_IMPL
 #include "ModelessChild.h"
 
-#define TtDlgForUic_DEBUG
-#define TtDlgForUic_IMPL
+#define   TtDlgForUic_DEBUG
+#define   TtDlgForUic_IMPL
 #include "TtDlgForUic.h"
 
-#define TtDlgForRectArea_DEBUG
-#define TtDlgForRectArea_IMPL
+#define   TtDlgForRectArea_DEBUG
+#define   TtDlgForRectArea_IMPL
 #include "TtDlgForRectArea.h"
+
+#define   TtDlgTrackingToolTip_DEBUG
+#define   TtDlgTrackingToolTip_IMPL
+#include "TtDlgTrackingToolTip.h"
 

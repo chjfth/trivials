@@ -13,7 +13,7 @@
 //#include "ModelessTtdemo.h"
 #include "TtDlgForUic.h"
 #include "TtDlgForRectArea.h"
-
+#include "TtDlgTrackingToolTip.h"
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -25,6 +25,7 @@ struct DlgPrivate_st
 	int clicks;
 	CModelessChild *ptdForUic; // HWND hdlgTtForUic;
 	CModelessChild *ptdForRectArea; // HWND hdlgTtForRectArea;
+	CModelessChild *ptdTrackingTooltip1;
 };
 
 
@@ -43,6 +44,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_TooltipForRectArea:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgForRectArea>(
 			_T("IDD_TooltipForRectArea"), IDD_TooltipForRectArea, hdlgMain, &ctx.ptdForRectArea);
+		break;
+
+	case IDB_TrackingTooltip1:
+		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingToolTip>(
+			_T("IDD_TrackingTooltip1"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltip1);
 		break;
 
 	case IDOK:
@@ -117,8 +123,6 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int nCmdShow
 		TranslateMessage (&msg) ;
 		DispatchMessage (&msg) ;
 	}
-
-
 
 	return 0;
 }

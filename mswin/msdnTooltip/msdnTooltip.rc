@@ -48,6 +48,7 @@ BEGIN
     PUSHBUTTON      "Close",IDOK,84,99,50,14
     PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,24,135,14
     PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,42,135,14
+    PUSHBUTTON      "Tracking Tooltip",IDB_TrackingTooltip1,4,61,135,14
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
@@ -68,6 +69,15 @@ CAPTION "Tooltip for a Rect-area"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Whole client area of the dialogbox\nis the hot area for tooltip.",IDC_STATIC,22,23,115,19
+END
+
+IDD_TrackingTooltip1 DIALOGEX 0, 0, 159, 66
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Tracking-tooltip demo"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "A tracking tooltip appears in this dialogbox.",IDC_STATIC,22,23,115,19
 END
 
 
@@ -139,6 +149,11 @@ BEGIN
 END
 
 IDD_TooltipForUic AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_WINMAIN AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
