@@ -33,7 +33,8 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText)
 	HWND hwndTool = GetDlgItem(hDlg, toolID);
 
 	// Create the tooltip. g_hInst is the global instance handle.
-	HWND hwndTip = CreateWindowEx(NULL,
+	HWND hwndTip = CreateWindowEx(
+		NULL, // better to assign WS_EX_TOPMOST here.
 		TOOLTIPS_CLASS,
 		NULL, // window title
 		WS_POPUP | TTS_ALWAYSTIP | TTS_BALLOON,

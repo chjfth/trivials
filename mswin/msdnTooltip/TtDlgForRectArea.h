@@ -33,7 +33,8 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 	ti.uFlags = TTF_SUBCLASS;
 	ti.hwnd = hwndOwner;
 	GetClientRect(hwndOwner, &ti.rect);
-	ti.hinst = g_hinstExe; // required?
+//	ti.hinst = g_hinstExe; // not required, msdn bug!
+	
 	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
 
 	// Associate the tooltip with the "tool" window.
