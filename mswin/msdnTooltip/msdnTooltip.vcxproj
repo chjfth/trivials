@@ -224,6 +224,7 @@
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\CommCtrl.itc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="msdnTooltip.rc" />

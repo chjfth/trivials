@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <commdefs.h>
+
 extern HINSTANCE g_hinstExe;
 
 #define ASSERT_DLG_SUCC(hdlg, dlg_rcid) \

@@ -16,6 +16,9 @@
       <Filter>chjutils</Filter>
     </ClCompile>
     <ClCompile Include="CHIMPL.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\CommCtrl.itc.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iversion.h" />
@@ -34,8 +37,10 @@
       <Filter>chjutils</Filter>
     </ClInclude>
     <ClInclude Include="shareinc.h" />
-    <ClInclude Include="ModelessChild.h" />
     <ClInclude Include="ModelessTtdemo.h" />
+    <ClInclude Include="TtDlgForUic.h" />
+    <ClInclude Include="TtDlgForRectArea.h" />
+    <ClInclude Include="TtDlgTrackingToolTip.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="msdnTooltip.rc" />
