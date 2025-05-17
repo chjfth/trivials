@@ -70,7 +70,7 @@ HWND CreateTrackingToolTip(HWND hwndOwner, const TCHAR* pText, TOOLINFO& ti)
 
 	ti.cbSize = sizeof(TOOLINFO);
 	ti.uFlags = TTF_IDISHWND
-		| TTF_TRACK   // key point
+		;// | TTF_TRACK   // key point
 		; // | TTF_ABSOLUTE;
 	ti.hwnd = hwndOwner; // [2017-10-09] tried, can be NULL
 //	ti.hinst = g_hInst;
@@ -98,6 +98,14 @@ HWND CreateTrackingToolTip(HWND hwndOwner, const TCHAR* pText, TOOLINFO& ti)
 
 	// Associate the tooltip with the tool window.
 	SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
+
+
+	// Add 2nd hottool
+	HWND hstatic2 = GetDlgItem(hwndOwner, IDC_STATIC2);
+	ti.uId = (UINT_PTR)hstatic2;
+	ti.lpszText = _T("Second hottool.");
+	BOOL succ2 = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
+
 
 	return hwndTT;
 }
@@ -132,7 +140,7 @@ CTtDlgTrackingToolTip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR 
 #if 1
 TOOLINFO lti = { sizeof(lti) };
 //SetRect(&lti.rect, 100, 100, 200, 200);
-lti.uId = (UINT_PTR)GetDlgItem(m_hdlgMe, IDC_STATIC1);
+lti.uId = (UINT_PTR)GetDlgItem(m_hdlgMe, IDC_STATIC2);
 lti.hwnd = m_hdlgMe; // GetDlgItem(m_hdlgMe, IDC_STATIC1);
 
 #else

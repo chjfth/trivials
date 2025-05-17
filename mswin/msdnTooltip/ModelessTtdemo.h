@@ -28,25 +28,17 @@ public:
 
 		Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
-		if (uMsg == WM_COMMAND)
-		{
-			assert(mr_ptrme_by_parent == this);
+		return actioned;
+	}
 
-			UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
-			if (cmd == IDCANCEL)
-			{
-				if (m_hwndTooltip)
-				{
-					vaDbgTs(_T("Tooltip(hwnd 0x%08X) destroy."), m_hwndTooltip);
-					DestroyWindow(m_hwndTooltip);
-					m_hwndTooltip = NULL;
-				}
-			}
-			
-			return Actioned_yes;
+	virtual void DlgClosing() override
+	{
+		if (m_hwndTooltip)
+		{
+			vaDbgTs(_T("Tooltip(hwnd 0x%08X) destroy."), m_hwndTooltip);
+			DestroyWindow(m_hwndTooltip);
+			m_hwndTooltip = NULL;
 		}
-		else
-			return actioned;
 	}
 
 

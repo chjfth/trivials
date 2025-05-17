@@ -41,10 +41,13 @@ protected:
 
 	static DLGPROC_ret WINAPI StartDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+	virtual void DlgClosing() {};
+
 protected:
 	Sdring msd_name;
 	const TCHAR *msz_name = nullptr;
 	HWND m_hdlgMe = nullptr;
+	HWND m_hdlgParent = nullptr;
 
 	CModelessChild* &mr_ptrme_by_parent; // key member
 	UINT m_WM_KillSelf = 0;
@@ -73,11 +76,13 @@ BOOL CModelessChild::CreateTheDialog(const TCHAR *name,
 	msd_name = name;
 	msz_name = msd_name;
 
+	m_hdlgParent = hdlgParent;
+
 	m_hdlgMe = CreateDialogParam(hInstExe, MAKEINTRESOURCE(dlg_resid), hdlgParent,
 		StartDlgProc,
 		(LPARAM)this // dlgparam
 	);
-	
+
 	mr_ptrme_by_parent = this;
 	m_WM_KillSelf = RegisterWindowMessage(_T("ModelessChild_KillSelf"));
 
@@ -149,6 +154,8 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRe
 		{
 			assert(IsWindow(m_hdlgMe));
 			::PostMessage(m_hdlgMe, m_WM_KillSelf, 0, 0);
+
+			this->DlgClosing();
 		}
 
 		return Actioned_yes;

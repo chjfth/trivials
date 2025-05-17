@@ -49,6 +49,7 @@ BEGIN
     PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,24,135,14
     PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,42,135,14
     PUSHBUTTON      "Tracking Tooltip",IDB_TrackingTooltip1,4,61,135,14
+    CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,26,63,10
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
