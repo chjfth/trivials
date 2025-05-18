@@ -170,6 +170,8 @@ CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void CTtDlgTrackingTooltip_LiveMousePos::DlgClosing()
 {
+	__super::DlgClosing();
+
 	EnableDlgItem(m_hdlgParent, IDE_TtOffsetX);
 	EnableDlgItem(m_hdlgParent, IDE_TtOffsetY);
 }

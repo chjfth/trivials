@@ -96,6 +96,6 @@ inline void dbg_TTM_ADDTOOL(const TCHAR *textprefix, const TOOLINFO& ti, BOOL su
 		(UINT_PTR)ti.uId,
 		RECTtext(ti.rect, rtext, ARRAYSIZE(rtext)),
 		ti.lpszText,
-		succ ? "[Success]" : "[Fail]"
+		succ ? _T("[Success]") : _T("[Fail]")
 		);
 }
