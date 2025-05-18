@@ -6,7 +6,14 @@
 #include "ModelessChild.h"
 
 #include <commdefs.h>
+
+#include <mswin/win32cozy.h> // for RECTtext
+
+#include <mswin/commctrl.itc.h>
+using namespace itc;
+
 #include "../utils.h"
+
 
 class CModelessTtDemo : public CModelessChild
 {
@@ -69,3 +76,26 @@ public:
 	}
 
 };
+
+
+inline void dbg_TTM_ADDTOOL(const TCHAR *textprefix, const TOOLINFO& ti, BOOL succ)
+{
+	TCHAR rtext[60] = {};
+	vaDbgTs(
+		_T("%s , TTM_ADDTOOL:\n")
+		_T("    ti.uFlags = %s \n")
+		_T("    ti.hwnd = 0x%08X \n")
+		_T("    ti.uId  = 0x%08X \n")
+		_T("    ti.rect = %s \n")
+		_T("    ti.lpszText = %s \n")
+		_T("    %s")
+		,
+		textprefix,
+		ITCSv(ti.uFlags, TTF_xxx),
+		(UINT_PTR)ti.hwnd,
+		(UINT_PTR)ti.uId,
+		RECTtext(ti.rect, rtext, ARRAYSIZE(rtext)),
+		ti.lpszText,
+		succ ? "[Success]" : "[Fail]"
+		);
+}

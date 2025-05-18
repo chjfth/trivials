@@ -7,7 +7,7 @@
 #include <windows.h>
 
 #include <commdefs.h>
-#include <mswin/mswinClarify.h>
+#include <mswin/win32clarify.h>
 #include <SdringTCHAR.h>
 
 #include <CxxVerCheck.h>

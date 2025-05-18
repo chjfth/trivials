@@ -39,17 +39,21 @@ IDI_WINMAIN             ICON                    "msdnTooltip.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 223, 117
+IDD_WINMAIN DIALOGEX 0, 0, 241, 117
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "msdnTooltipDemo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CTEXT           "MSDN tooltip demos",IDC_LABEL1,4,4,186,12,SS_CENTERIMAGE
-    PUSHBUTTON      "Close",IDOK,84,99,50,14
+    PUSHBUTTON      "Close",IDOK,95,99,50,14
     PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,24,135,14
     PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,42,135,14
-    PUSHBUTTON      "Tracking Tooltip",IDB_TrackingTooltip1,4,61,135,14
+    PUSHBUTTON      "Tracking Tooltip on mouse position",IDB_TrackingTooltip1,4,61,135,14
     CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,26,63,10
+    LTEXT           "offset X:",IDC_STATIC,144,64,29,8
+    EDITTEXT        IDE_TtOffsetX,173,62,22,14,ES_AUTOHSCROLL
+    LTEXT           "Y:",IDC_STATIC,199,64,8,8
+    EDITTEXT        IDE_TtOffsetY,207,62,22,14,ES_AUTOHSCROLL
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
@@ -94,7 +98,7 @@ BEGIN
     IDD_WINMAIN, DIALOG
     BEGIN
         LEFTMARGIN, 4
-        RIGHTMARGIN, 219
+        RIGHTMARGIN, 237
         TOPMARGIN, 4
         BOTTOMMARGIN, 113
     END

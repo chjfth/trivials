@@ -47,7 +47,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 
 	case IDB_TrackingTooltip1:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingToolTip>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_ShowMousePos>(
 			_T("IDD_TrackingTooltip1"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltip1);
 		break;
 
@@ -72,6 +72,9 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	vaSetWindowText(hdlg, _T("msdnTooltipDemo v%d.%d.%d"), 
 		msdnTooltip_VMAJOR, msdnTooltip_VMINOR, msdnTooltip_VPATCH);
 	
+	SetDlgItemInt(hdlg, IDE_TtOffsetX,  10, bSigned_TRUE);
+	SetDlgItemInt(hdlg, IDE_TtOffsetY, -20, bSigned_TRUE);
+
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
