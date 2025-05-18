@@ -3,6 +3,16 @@
 
 #include "CxxVierarchy.h"
 
+/*
+Limitations of this Vierarchy pattern:
+(1) vwork()'s return value cannot be inspected by caller. So vwork() have to return
+    info via an output parameter.
+(2) vwork() can not be marked `virtual`, which will cause &CFoo1::vwork and &CFoo2::vwork 
+    etc result in virtual dispatching.
+	This greatly defeats the purpose of V-round calling of *Parent*'s same-name function.
+*/
+
+
 class CFoo1
 {
 public:
@@ -35,9 +45,6 @@ public:
 		printf("[vseq=%2d] CFoo3.vwork(%d, %d)\n", vseq, param1, param2);
 	}
 };
-
-
-
 
 
 int main()
