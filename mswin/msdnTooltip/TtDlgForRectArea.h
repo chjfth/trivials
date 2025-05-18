@@ -46,25 +46,29 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 
 void 
 CTtDlgForRectArea::DlgProc(VSeq_t vseq,
-	UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_et *pDlgRet)
+	UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet)
 {
 //	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	auto vc = MakeVierachyCall(this, &CModelessTtDemo::DlgProc, vseq,
+	auto vc = MakeVierarchyCall(this, &CModelessTtDemo::DlgProc, vseq,
 		uMsg, wParam, lParam, pDlgRet);
 
-	if (uMsg == WM_INITDIALOG)
+	if (VSeq_IsBeforeChild(vseq))
 	{
-		// Create the tooltip window.
+		if (uMsg == WM_INITDIALOG)
+		{
+			// Create the tooltip window.
 
-		m_hwndTooltip = CreateToolTipForRectArea(m_hdlgMe,
-			_T("This is tooltip for a whole client-area."));
+			m_hwndTooltip = CreateToolTipForRectArea(m_hdlgMe,
+				_T("This is tooltip for a whole client-area."));
 
-//		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);		
-		
-		pDlgRet->actioned = Actioned_yes;
-		pDlgRet->retval = AcceptDefaultFocus_TRUE;
+			//		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);		
+
+			pDlgRet->actioned = Actioned_yes;
+			pDlgRet->retval = AcceptDefaultFocus_TRUE;
+		}
 	}
 }
+
 
 #endif // TtDlgForRectArea_IMPL

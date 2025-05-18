@@ -32,12 +32,12 @@ public:
 	virtual void DlgProc(VSeq_t vseq,
 		UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet=nullptr) override
 	{
-		auto vc = MakeVierachyCall(this, &CModelessChild::DlgProc, vseq, 
+		auto vc = MakeVierarchyCall(this, &CModelessChild::DlgProc, vseq, 
 			uMsg, wParam, lParam, pDlgRet);
 
-		if (uMsg == WM_INITDIALOG)
+		if (VSeq_IsAfterChild(vseq))
 		{
-			if(VSeq_IsAfterChild(vseq))
+			if (uMsg == WM_INITDIALOG)
 			{
 				vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 			}
@@ -46,13 +46,16 @@ public:
 
 	virtual void DlgClosing(VSeq_t vseq) override
 	{
-		auto vc = MakeVierachyCall(this, &CModelessChild::DlgClosing, vseq);
+		auto vc = MakeVierarchyCall(this, &CModelessChild::DlgClosing, vseq);
 
-		if (m_hwndTooltip)
+		if(VSeq_IsBeforeChild(vseq))
 		{
-			vaDbgTs(_T("In %s, destroy tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
-			DestroyWindow(m_hwndTooltip);
-			m_hwndTooltip = NULL;
+			if (m_hwndTooltip)
+			{
+				vaDbgTs(_T("In %s, destroy tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
+				DestroyWindow(m_hwndTooltip);
+				m_hwndTooltip = NULL;
+			}
 		}
 	}
 

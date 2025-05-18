@@ -30,7 +30,7 @@ public:
 
 	HWND GetHdlg() { return m_hdlgMe; } // debug purpose
 
-protected:
+public:
 	enum Actioned_et { Actioned_no = 0 , Actioned_yes = 1 };
 	struct DlgRet_st // Dialogbox-message processing result
 	{
