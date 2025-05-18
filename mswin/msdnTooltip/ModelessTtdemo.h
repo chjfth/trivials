@@ -6,6 +6,7 @@
 #include "ModelessChild.h"
 
 #include <commdefs.h>
+#include <CxxVierarchy.h>
 
 #include <mswin/win32cozy.h> // for RECTtext
 
@@ -28,18 +29,25 @@ public:
 
 	using CModelessChild::CModelessChild; // this requires C++11, VC2015+
 
-	virtual Actioned_et DlgProc(
-		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override
+	virtual void DlgProc(VSeq_t vseq,
+		UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet=nullptr) override
 	{
-		SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
+		auto vc = MakeVierachyCall(this, &CModelessChild::DlgProc, vseq, 
+			uMsg, wParam, lParam, pDlgRet);
 
-		Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
-
-		return actioned;
+		if (uMsg == WM_INITDIALOG)
+		{
+			if(VSeq_IsAfterChild(vseq))
+			{
+				vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
+			}
+		}
 	}
 
-	virtual void DlgClosing() override
+	virtual void DlgClosing(VSeq_t vseq) override
 	{
+		auto vc = MakeVierachyCall(this, &CModelessChild::DlgClosing, vseq);
+
 		if (m_hwndTooltip)
 		{
 			vaDbgTs(_T("In %s, destroy tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
