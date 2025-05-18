@@ -42,7 +42,7 @@ public:
 	{
 		if (m_hwndTooltip)
 		{
-			vaDbgTs(_T("Tooltip(hwnd 0x%08X) destroy."), m_hwndTooltip);
+			vaDbgTs(_T("In %s, destroy tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 			DestroyWindow(m_hwndTooltip);
 			m_hwndTooltip = NULL;
 		}

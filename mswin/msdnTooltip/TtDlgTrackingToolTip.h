@@ -6,7 +6,7 @@
 #include <mswin/WM_MOUSELEAVE_helper.h>
 
 
-class CTtDlgTrackingTooltip_ShowMousePos : public CModelessTtDemo
+class CTtDlgTrackingTooltip_LiveMousePos : public CModelessTtDemo
 {
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
@@ -78,7 +78,7 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 
 
 CModelessChild::Actioned_et
-CTtDlgTrackingTooltip_ShowMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
+CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
 	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
@@ -93,7 +93,7 @@ CTtDlgTrackingTooltip_ShowMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lPa
 
 		m_mouseleave.SetHwnd(m_hdlgMe);
 
-		vaDbgTs(_T("Called CreateTrackingTooltip_FreeOnScreen(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
+		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
 		// Fetch user params from dlgbox UI.
 		BOOL bTrans = 0;
@@ -168,7 +168,7 @@ CTtDlgTrackingTooltip_ShowMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lPa
 		return actioned;
 }
 
-void CTtDlgTrackingTooltip_ShowMousePos::DlgClosing()
+void CTtDlgTrackingTooltip_LiveMousePos::DlgClosing()
 {
 	EnableDlgItem(m_hdlgParent, IDE_TtOffsetX);
 	EnableDlgItem(m_hdlgParent, IDE_TtOffsetY);
