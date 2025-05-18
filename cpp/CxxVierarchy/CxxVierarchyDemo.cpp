@@ -17,7 +17,7 @@ class CFoo2 : public CFoo1
 public:
 	void vwork(VSeq_t vseq, int param1, int param2)
 	{
-		auto vc = MakeVierachyCall(this, &CFoo1::vwork, vseq, param1, param2);
+		auto vc = MakeVierarchyCall(this, &CFoo1::vwork, vseq, param1, param2);
 		// -- Why I cannot write `&__super::vwork`?
 
 		printf("[vseq=%2d] CFoo2.vwork(%d, %d)\n", vseq, param1, param2);
@@ -29,7 +29,7 @@ class CFoo3 : public CFoo2
 public:
 	void vwork(VSeq_t vseq, int param1, int param2)
 	{
-		auto vc = MakeVierachyCall(this, &CFoo2::vwork, vseq, param1, param2);
+		auto vc = MakeVierarchyCall(this, &CFoo2::vwork, vseq, param1, param2);
 		// -- Why I cannot write `&__super::vwork`?
 
 		printf("[vseq=%2d] CFoo3.vwork(%d, %d)\n", vseq, param1, param2);
