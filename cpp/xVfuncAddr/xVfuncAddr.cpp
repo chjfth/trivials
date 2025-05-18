@@ -39,7 +39,7 @@ public:
 
 void CFoo1::check()
 {
-	printf("==== CFoo2 check ====\n");
+	printf("==== CFoo1 check ====\n");
 	printf("&CFoo1::vwork = %p \n", &CFoo1::vwork);
 	printf("&CFoo2::vwork = %p \n", &CFoo2::vwork);
 	printf("&CFoo3::vwork = %p \n", &CFoo3::vwork);
@@ -63,7 +63,7 @@ void CFoo3::check()
 
 int main()
 {
-	CFoo2 obj1;
+	CFoo1 obj1;
 	obj1.check();
 
 	CFoo2 obj2;
