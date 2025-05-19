@@ -4,6 +4,7 @@
 #include "ModelessTtdemo.h"
 
 #include <mswin/WM_MOUSELEAVE_helper.h>
+#include <mswin/win32cozy.h>
 
 
 class CTtDlgTrackingTooltip_LiveMousePos : public CModelessTtDemo
@@ -24,7 +25,7 @@ private:
 };
 
 
-class CTtDlgTrackingToolTip : public CModelessTtDemo
+class CTtDlgTrackingTooltip_misc : public CModelessTtDemo
 {
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
@@ -32,11 +33,20 @@ public:
 	Actioned_et DlgProc(
 		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 
+	virtual void DlgClosing() override;
+
 private:
 	CWmMouseleaveHelper m_mouseleave;
 
 	TOOLINFO m_ti = { sizeof(TOOLINFO) };
 	int m_oldX = 0, m_oldY = 0;
+
+	int m_offsetX, m_offsetY; // tooltip's offset to mouse-position 
+
+	BOOL m_isClientToScreen = TRUE;
+
+private:
+	static const int sar_OptUic[];
 };
 
 
@@ -49,6 +59,8 @@ private:
 
 HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 {
+	// FreeOnScreen implies: TOOLINFO.hwnd and TOOLINFO.uId are both NULL;
+
 	// Create the tooltip-window.
 	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST, 
 		TOOLTIPS_CLASS, 
@@ -106,7 +118,7 @@ CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lPa
 		SetWindowText(m_hdlgMe, _T("Tooltip tracking concise way"));
 
 		vaSetDlgItemText(m_hdlgMe, IDC_STATIC1,
-			_T("Tooltip showing mouse-pos throughout whole dialog-box client-area. \r\n")
+			_T("Tooltip showing mouse-pos throughout whole dialog-box client-area.\r\n")
 			_T("Tooltip offset (%d, %d) from actual mouse-pos.")
 			,
 			m_offsetX, m_offsetY);
@@ -185,75 +197,48 @@ void CTtDlgTrackingTooltip_LiveMousePos::DlgClosing()
 }
 
 
-
-
-HWND CreateTrackingToolTip_raw(HWND hwndOwner)
-{
-	return 0;
-}
-
-HWND CreateTrackingToolTip(HWND hwndOwner, const TCHAR* pText, TOOLINFO& ti)
+HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
+	BOOL isTTF_TRACK, BOOL isTTF_ABSOLUTE)
 {
 	// Create a tooltip.
-	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL,
+
+	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST, 
+		TOOLTIPS_CLASS, 
+		NULL, // window title
 		WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-		hwndOwner, NULL, g_hinstExe, NULL);
+		hwndOwner, 
+		NULL, g_hinstExe, NULL);
 
 	if (!hwndTT)
-	{
 		return NULL;
-	}
-
-	TCHAR rtext[60] = {};
-
-	// Set up the tool information. In this case, the "tool" is the entire parent window.
 
 	ti.cbSize = sizeof(TOOLINFO);
-	ti.uFlags = TTF_IDISHWND
-		;// | TTF_TRACK   // key point
-		; // | TTF_ABSOLUTE;
-	ti.hwnd = hwndOwner; // [2017-10-09] tried, can be NULL
-//	ti.hinst = g_hInst;
-	ti.lpszText = (TCHAR *)pText;
-
-	HWND hstatic = GetDlgItem(hwndOwner, IDC_STATIC1);
-	ti.uId = (UINT_PTR)hstatic; // hwndOwner; // [2017-10-09] tried, can be NULL
-
-	GetClientRect(hstatic, &ti.rect);
-//SetRect(&ti.rect, 20,20, 120,120);
-
-	vaDbgTs(
-		_T("CreateTrackingToolTip(), TTM_ADDTOOL:\n")
-		_T("    ti.uFlags = %s \n")
-		_T("    ti.hwnd = 0x%08X \n")
-		_T("    ti.uId  = 0x%08X \n")
-		_T("    ti.rect = %s \n")
-		_T("    ti.lpszText = %s")
-		,
-		ITCSv(ti.uFlags, TTF_xxx),
-		(UINT_PTR)ti.hwnd,
-		(UINT_PTR)ti.uId,
-		RECTtext(ti.rect, rtext, ARRAYSIZE(rtext)),
-		ti.lpszText);
+	
+	ti.uFlags = TTF_IDISHWND;
+	if (isTTF_TRACK)
+		ti.uFlags |= TTF_TRACK;
+	if (isTTF_ABSOLUTE)
+		ti.uFlags |= TTF_ABSOLUTE;
+	
+	ti.hwnd = NULL;
+	ti.uId = (UINT_PTR)hwndOwner; // the dlgbox handle
+	ti.lpszText = NULL;
+	SetRect(&ti.rect, 0, 0, 0, 0);
 
 	// Associate the tooltip with the tool window.
-	SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
+	BOOL succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
-
-	// Add 2nd hottool
-	HWND hstatic2 = GetDlgItem(hwndOwner, IDC_STATIC2);
-	ti.uId = (UINT_PTR)hstatic2;
-	ti.lpszText = _T("Second hottool.");
-	BOOL succ2 = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
-
+	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, succ);
 
 	return hwndTT;
 }
 
+const int CTtDlgTrackingTooltip_misc::sar_OptUic[] = {
+	IDCK_TTF_TRACK, IDCK_TTF_ABSOLUTE, IDCK_ClientToScreen };
 
 CModelessChild::Actioned_et
-CTtDlgTrackingToolTip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
+CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
 	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
@@ -261,15 +246,36 @@ CTtDlgTrackingToolTip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR 
 
 	if (uMsg == WM_INITDIALOG)
 	{
+		BOOL isTTF_TRACK = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRACK);
+		BOOL isTTF_ABSOLUTE = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_ABSOLUTE);
+		m_isClientToScreen = IsDlgButtonChecked(m_hdlgParent, IDCK_ClientToScreen);
+
+		BOOL bTrans = 0;
+		m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetX, &bTrans, bSigned_TRUE);
+		m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetY, &bTrans, bSigned_TRUE);
+
 		// Create the tooltip window.
 
-		m_hwndTooltip = CreateTrackingToolTip(m_hdlgMe,
-			_T("This is a tracking tooltip"),
-			m_ti);
+		m_hwndTooltip = CreateTrackingToolTip_misc(m_hdlgMe, m_ti, isTTF_TRACK, isTTF_ABSOLUTE);
+		assert(m_hwndTooltip);
 
 		m_mouseleave.SetHwnd(m_hdlgMe);
 
-		vaDbgTs(_T("Called CreateTrackingToolTip(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
+		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
+
+		SetWindowText(m_hdlgMe, _T("Tooltip tracking misc test"));
+		vaSetDlgItemText(m_hdlgMe, IDC_STATIC1,
+			_T("TTF_TRACK = %s\r\n")
+			_T("TTM_TRACKPOSITION ClientToScreen = %s\r\n")
+			_T("TTF_ABSOLUTE = %s\r\n")
+			_T("offsetX: %d , offsetY: %d")
+			,
+			isTTF_TRACK ? _T("yes") : _T("no"),
+			m_isClientToScreen ? _T("yes") : _T("no"),
+			isTTF_ABSOLUTE ? _T("yes") : _T("no"),
+			m_offsetX, m_offsetY);
+		
+		Enable_Uics(FALSE, m_hdlgParent, sar_OptUic);
 
 		return Actioned_yes;
 	}
@@ -277,25 +283,8 @@ CTtDlgTrackingToolTip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR 
 	{
 		CWmMouseleaveHelper::Move_ret moveret = m_mouseleave.do_WM_MOUSEMOVE();
 
-
-#if 1
-TOOLINFO lti = { sizeof(lti) };
-//SetRect(&lti.rect, 100, 100, 200, 200);
-lti.uId = (UINT_PTR)GetDlgItem(m_hdlgMe, IDC_STATIC2);
-lti.hwnd = m_hdlgMe; // GetDlgItem(m_hdlgMe, IDC_STATIC1);
-
-#else
-TOOLINFO lti = m_ti; lti.uFlags = 0;
-//lti.hwnd = 0; // would ruin, .hwnd is must
-//lti.uId = (UINT_PTR)m_hdlgMe;
-//lti.uId = (UINT_PTR)GetDlgItem(m_hdlgMe, IDC_STATIC_TEXT);
-//lti.hwnd = GetDlgItem(m_hdlgMe, IDC_STATIC_TEXT);
-SetRect(&lti.rect, 0, 0, 0, 0); // OK. lti.rect is not a must
-lti.lpszText = NULL; // ok. not must
-#endif // 0
-
 		// Activate the tooltip.
-		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&lti);
+		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&m_ti);
 
 		int newX = GET_X_LPARAM(lParam);
 		int newY = GET_Y_LPARAM(lParam);
@@ -310,15 +299,17 @@ lti.lpszText = NULL; // ok. not must
 
 			// Update the text.
 			WCHAR coords[20];
-			_sntprintf_s(coords, _TRUNCATE, _T("%d, %d ww"), newX, newY);
+			_sntprintf_s(coords, _TRUNCATE, _T("mouse: %d, %d"), newX, newY);
 
 			m_ti.lpszText = coords;
-//			SendMessage(m_hwndTooltip, TTM_SETTOOLINFO, 0, (LPARAM)&m_ti);
+			SendMessage(m_hwndTooltip, TTM_SETTOOLINFO, 0, (LPARAM)&m_ti);
 
 			// Position the tooltip. The coordinates are adjusted so that the tooltip does not overlap the mouse pointer.
 
-			POINT pt_ttm = { newX+10, newY+10 };
-//			ClientToScreen(m_hdlgMe, &pt_ttm);
+			POINT pt_ttm = { newX + m_offsetX, newY + m_offsetY };
+
+			if(m_isClientToScreen)
+				ClientToScreen(m_hdlgMe, &pt_ttm);
 
 			vaDbgTs(_T("Mouse at client [%d,%d]; pt_ttm [%d,%d]"),
 				newX, newY,  pt_ttm.x, pt_ttm.y);
@@ -333,12 +324,20 @@ lti.lpszText = NULL; // ok. not must
 		m_mouseleave.do_WM_MOUSELEAVE();
 
 		// The mouse pointer has left our window. Deactivate the tooltip.
-//		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&m_ti);
+		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&m_ti);
 
 		return Actioned_yes;
 	}
 	else 
 		return actioned;
 }
+
+void CTtDlgTrackingTooltip_misc::DlgClosing()
+{
+	__super::DlgClosing();
+
+	Enable_Uics(TRUE, m_hdlgParent, sar_OptUic);
+}
+
 
 #endif // TtDlgTrackingToolTip_IMPL

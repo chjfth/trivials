@@ -16,13 +16,17 @@
 #define IDB_TrackingTooltip1            1005
 #define IDC_STATIC1                     1005
 #define IDC_STATIC2                     1006
+#define IDB_TrackingTooltipMisc         1006
 #define IDCK_TTS_BALLOON                1007
 #define IDE_TtOffsetX                   1008
-#define IDE_TtOffsetX2                  1009
 #define IDE_TtOffsetY                   1009
 #define IDB_NoTooltip                   1010
+#define IDCK_TTF_TRACK                  1010
 #define IDB_HasTooltip                  1011
 #define IDB_NoTooltip2                  1011
+#define IDC_CHECK3                      1011
+#define IDCK_TTF_ABSOLUTE               1011
+#define IDCK_ClientToScreen             1012
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -31,7 +35,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        108
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1010
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

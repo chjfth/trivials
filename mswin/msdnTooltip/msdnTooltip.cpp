@@ -26,6 +26,7 @@ struct DlgPrivate_st
 	CModelessChild *ptdForUic; // HWND hdlgTtForUic;
 	CModelessChild *ptdForRectArea; // HWND hdlgTtForRectArea;
 	CModelessChild *ptdTrackingTooltip1;
+	CModelessChild *ptdTrackingTooltipMisc;
 };
 
 
@@ -51,6 +52,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			_T("IDD_TrackingTooltip1"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltip1);
 		break;
 
+	case IDB_TrackingTooltipMisc:
+		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_misc>(
+			_T("IDD_TrackingTooltipMisc"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltipMisc);
+		break;
+
 	case IDOK:
 	case IDCANCEL:
 	{
@@ -74,6 +80,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	SetDlgItemInt(hdlg, IDE_TtOffsetX,  10, bSigned_TRUE);
 	SetDlgItemInt(hdlg, IDE_TtOffsetY, -20, bSigned_TRUE);
+
+	CheckDlgButton(hdlg, IDCK_TTF_TRACK, TRUE);
+	CheckDlgButton(hdlg, IDCK_TTF_ABSOLUTE, TRUE);
+	CheckDlgButton(hdlg, IDCK_ClientToScreen, TRUE);
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
