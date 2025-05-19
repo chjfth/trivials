@@ -84,7 +84,7 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 			_T("This is the tooltip for the button IDB_HasTootip"),
 			btnCkd ? true : false);
 
-		vaDbgTs(_T("Called CreateToolTip_ForUic(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
+		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
 		SetFocus(GetDlgItem(m_hdlgMe, IDB_HasTooltip));
 		*pMsgRet = AcceptDefaultFocus_FALSE;

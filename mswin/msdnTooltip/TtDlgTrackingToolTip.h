@@ -103,6 +103,14 @@ CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lPa
 		DisableDlgItem(m_hdlgParent, IDE_TtOffsetX);
 		DisableDlgItem(m_hdlgParent, IDE_TtOffsetY);
 
+		SetWindowText(m_hdlgMe, _T("Tooltip tracking concise way"));
+
+		vaSetDlgItemText(m_hdlgMe, IDC_STATIC1,
+			_T("Tooltip showing mouse-pos throughout whole dialog-box client-area. \r\n")
+			_T("Tooltip offset (%d, %d) from actual mouse-pos.")
+			,
+			m_offsetX, m_offsetY);
+
 		return Actioned_yes;
 	}
 	if (uMsg == WM_MOUSEMOVE)

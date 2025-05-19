@@ -58,7 +58,7 @@ CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMs
 		m_hwndTooltip = CreateToolTipForRectArea(m_hdlgMe,
 			_T("This is tooltip for a whole client-area."));
 
-		vaDbgTs(_T("Called CreateToolTipForRectArea(), tooltip-hwnd=0x%08X."), m_hwndTooltip);		
+		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 		
 		*pMsgRet = AcceptDefaultFocus_TRUE;
 		return Actioned_yes;
