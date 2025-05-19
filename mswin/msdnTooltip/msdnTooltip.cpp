@@ -14,6 +14,7 @@
 #include "TtDlgForUic.h"
 #include "TtDlgForRectArea.h"
 #include "TtDlgTrackingToolTip.h"
+#include "TtDlgInplaceToolTip.h"
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -27,6 +28,7 @@ struct DlgPrivate_st
 	CModelessChild *ptdForRectArea; // HWND hdlgTtForRectArea;
 	CModelessChild *ptdTrackingTooltip1;
 	CModelessChild *ptdTrackingTooltipMisc;
+	CModelessChild *ptdInplaceTooltip;
 };
 
 
@@ -55,6 +57,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_TrackingTooltipMisc:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_misc>(
 			_T("IDD_TrackingTooltipMisc"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltipMisc);
+		break;
+
+	case IDB_InplaceTooltip:
+		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgInplaceTooltip>(
+			_T("IDD_InplaceTooltip"), IDD_InplaceTooltip, hdlgMain, &ctx.ptdInplaceTooltip);
 		break;
 
 	case IDOK:

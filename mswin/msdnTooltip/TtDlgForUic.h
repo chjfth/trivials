@@ -17,10 +17,10 @@ public:
 #ifdef TtDlgForUic_IMPL
 
 // Description:
-//   Creates a tooltip for an item in a dialog box.
+//   Creates a tooltip for a control(Uic) in a dialog box.
 // Parameters:
-//   idTool - identifier of an dialog box item.
-//   nDlg - window handle of the dialog box.
+//   idTool - identifier of an dialog box control.
+//   hDlg - window handle of the dialog box.
 //   pszText - string to use as the tooltip text.
 // Returns:
 //   The handle to the tooltip.
@@ -35,7 +35,7 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 	// Get the window of the tool.
 	HWND hwndTool = GetDlgItem(hDlg, toolID);
 
-	// Create the tooltip. g_hInst is the global instance handle.
+	// Create the tooltip. g_hinstExe is the global instance handle.
 	HWND hwndTip = CreateWindowEx(
 		NULL, // better to assign WS_EX_TOPMOST here.
 		TOOLTIPS_CLASS,
@@ -49,7 +49,7 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 
 	if (!hwndTool || !hwndTip)
 	{
-		return (HWND)NULL;
+		return NULL;
 	}
 
 	// Associate the tooltip with the tool.

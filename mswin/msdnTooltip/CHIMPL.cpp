@@ -38,3 +38,7 @@ void vaDBG(...)
 #define   TtDlgTrackingToolTip_IMPL
 #include "TtDlgTrackingToolTip.h"
 
+#define   TtDlgInplaceTooltip_DEBUG
+#define   TtDlgInplaceTooltip_IMPL
+#include "TtDlgInplaceTooltip.h"
+

@@ -39,13 +39,13 @@ IDI_WINMAIN             ICON                    "msdnTooltip.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 241, 156
+IDD_WINMAIN DIALOGEX 0, 0, 241, 174
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "msdnTooltipDemo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CTEXT           "MSDN tooltip demos",IDC_LABEL1,4,4,186,12,SS_CENTERIMAGE
-    PUSHBUTTON      "Close",IDOK,95,138,50,14
+    PUSHBUTTON      "Close",IDOK,95,156,50,14
     PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,24,135,14
     PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,42,135,14
     PUSHBUTTON      "Tracking Tooltip concise way",IDB_TrackingTooltip1,4,61,135,14
@@ -60,6 +60,7 @@ BEGIN
     CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,114,66,10
     CONTROL         "ClientToScreen for TTM_TRACKPOSITION",IDCK_ClientToScreen,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,114,149,10
+    PUSHBUTTON      "In-place tooltip for Uics",IDB_InplaceTooltip,4,134,135,14
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
@@ -92,6 +93,17 @@ BEGIN
     CTEXT           "Text label 2",IDC_STATIC2,19,61,157,13,WS_BORDER
 END
 
+IDD_InplaceTooltip DIALOGEX 0, 0, 145, 82
+STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "In-place tooltip demo"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Current time and date",IDC_STATIC1,13,8,118,36
+    LTEXT           "Short date",IDL_ShortDate,13,49,118,8,SS_NOTIFY
+    LTEXT           "Long date",IDL_LongDate,13,65,118,8,SS_NOTIFY | SS_ENDELLIPSIS
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -106,7 +118,7 @@ BEGIN
         LEFTMARGIN, 4
         RIGHTMARGIN, 237
         TOPMARGIN, 4
-        BOTTOMMARGIN, 152
+        BOTTOMMARGIN, 170
     END
 
     IDD_TooltipForUic, DIALOG
@@ -121,6 +133,10 @@ BEGIN
     BEGIN
         RIGHTMARGIN, 192
         BOTTOMMARGIN, 78
+    END
+
+    IDD_InplaceTooltip, DIALOG
+    BEGIN
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -177,6 +193,11 @@ BEGIN
 END
 
 IDD_TrackingTooltip1 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_InplaceTooltip AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

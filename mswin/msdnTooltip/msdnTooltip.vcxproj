@@ -242,6 +242,7 @@
     <ClInclude Include="TtDlgForUic.h" />
     <ClInclude Include="TtDlgForRectArea.h" />
     <ClInclude Include="TtDlgTrackingToolTip.h" />
+    <ClInclude Include="TtDlgInplaceToolTip.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
