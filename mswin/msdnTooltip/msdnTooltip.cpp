@@ -48,7 +48,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 
 	case IDB_TrackingTooltip1:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_LiveMousePos>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_concise>(
 			_T("IDD_TrackingTooltip1"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltip1);
 		break;
 

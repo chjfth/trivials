@@ -7,7 +7,7 @@
 #include <mswin/win32cozy.h>
 
 
-class CTtDlgTrackingTooltip_LiveMousePos : public CModelessTtDemo
+class CTtDlgTrackingTooltip_concise : public CModelessTtDemo
 {
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
@@ -90,7 +90,7 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 
 
 CModelessChild::Actioned_et
-CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
+CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
 	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
@@ -148,20 +148,17 @@ CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lPa
 			WCHAR coords[40];
 			_sntprintf_s(coords, _TRUNCATE, _T("%d, %d"), newX, newY);
 
-			// Now we'll use TTM_SETTOOLINFO to set new tooltip-text.
-			// Before doing this, we need to call TTM_GETTOOLINFO to fetch the tooltip's
-			// original TOOLINFO.uFlags value. By this way, we do not need a global TOOLINFO var.
-			// A zero .uFlags would totally change the tooltip's behavior.
-
-			SendMessage(m_hwndTooltip, TTM_GETTOOLINFO, 0, (LPARAM)&ti);
-			assert(ti.uFlags != 0);
-
 			// Set new text of the tooltip.
 			ti.lpszText = coords;
-			SendMessage(m_hwndTooltip, TTM_SETTOOLINFO, 0, (LPARAM)&ti);
+			SendMessage(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
+			// -- Note: Don't merely use TTM_SETTOOLINFO here, which has ti.uFlags==0,
+			// (no TTF_TRACK flag bit), which in turn causes TTM_TRACKPOSITION's x,y coords
+			// to become useless.
+			// If we use TTM_UPDATETIPTEXT, then the tooltip code does not care ti.uFlags,
+			// so the initial TTF_TRACK(when we did TTM_ADDTOOL) feature is preserved.
 
-			// Position the tooltip. The coordinates are adjusted so that the tooltip does not overlap the mouse pointer.
-
+			// Position the tooltip. The coordinates are adjusted so that 
+			// the tooltip does not overlap the mouse pointer.
 			POINT pt_ttm = { newX + m_offsetX, newY + m_offsetY };
 			ClientToScreen(m_hdlgMe, &pt_ttm);
 
@@ -188,7 +185,7 @@ CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lPa
 		return actioned;
 }
 
-void CTtDlgTrackingTooltip_LiveMousePos::DlgClosing()
+void CTtDlgTrackingTooltip_concise::DlgClosing()
 {
 	__super::DlgClosing();
 
