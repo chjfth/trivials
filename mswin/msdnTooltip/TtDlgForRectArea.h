@@ -33,12 +33,16 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 	ti.uFlags = TTF_SUBCLASS;
 	ti.hwnd = hwndOwner;
 	GetClientRect(hwndOwner, &ti.rect);
-//	ti.hinst = g_hinstExe; // not required, msdn bug!
+
+	ti.uId = 0;
+	ti.hinst = NULL; // not required to be g_hinstExe, msdn bug!
 	
 	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
 
 	// Associate the tooltip with the "tool" window.
-	SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
+	BOOL succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
+
+	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, succ);
 
 	return hwndTT;
 }
@@ -62,6 +66,11 @@ CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMs
 		
 		*pMsgRet = AcceptDefaultFocus_TRUE;
 		return Actioned_yes;
+	}
+	if (uMsg == WM_NOTIFY)
+	{
+		dbg_WM_NOTIFY(wParam, lParam);
+		return Actioned_no;
 	}
 	else
 		return actioned;

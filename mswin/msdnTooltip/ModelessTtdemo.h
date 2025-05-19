@@ -84,8 +84,8 @@ inline void dbg_TTM_ADDTOOL(const TCHAR *textprefix, const TOOLINFO& ti, BOOL su
 	vaDbgTs(
 		_T("%s , TTM_ADDTOOL:\n")
 		_T("    ti.uFlags = %s \n")
-		_T("    ti.hwnd = 0x%08X \n")
-		_T("    ti.uId  = 0x%08X \n")
+		_T("    ti.hwnd = 0x%X \n")
+		_T("    ti.uId  = 0x%X \n")
 		_T("    ti.rect = %s \n")
 		_T("    ti.lpszText = %s \n")
 		_T("    %s")
@@ -98,4 +98,13 @@ inline void dbg_TTM_ADDTOOL(const TCHAR *textprefix, const TOOLINFO& ti, BOOL su
 		ti.lpszText,
 		succ ? _T("[Success]") : _T("[Fail]")
 		);
+}
+
+inline void dbg_WM_NOTIFY(WPARAM wParam, LPARAM lParam)
+{
+	int uic = (int)wParam;
+	NMHDR *pnmh = (NMHDR *)lParam;
+
+	vaDbgTs(_T("WM_NOTIFY from Uic(%d): idFrom=0x%llX, code=%s"),
+		uic, (UINT64)pnmh->idFrom, ITCSv(pnmh->code, TTN_xxx));
 }

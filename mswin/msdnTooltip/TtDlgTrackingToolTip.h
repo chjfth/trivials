@@ -181,6 +181,12 @@ CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 
 		return Actioned_yes;
 	}
+	if (uMsg == WM_NOTIFY)
+	{
+		// will not see this bcz the tooltip does not spin up spontaneously
+		dbg_WM_NOTIFY(wParam, lParam);
+		return Actioned_no;
+	}
 	else
 		return actioned;
 }
@@ -330,7 +336,13 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 		return Actioned_yes;
 	}
-	else 
+	if (uMsg == WM_NOTIFY)
+	{
+		// will not see this bcz the tooltip does not spin up spontaneously
+		dbg_WM_NOTIFY(wParam, lParam);
+		return Actioned_no;
+	}
+	else
 		return actioned;
 }
 

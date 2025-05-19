@@ -53,12 +53,16 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 	}
 
 	// Associate the tooltip with the tool.
-	TOOLINFO toolInfo = { sizeof(TOOLINFO) };
-	toolInfo.hwnd = hDlg;
-	toolInfo.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
-	toolInfo.uId = (UINT_PTR)hwndTool;
-	toolInfo.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
-	SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&toolInfo);
+	TOOLINFO ti = { sizeof(TOOLINFO) };
+	ti.hwnd = hDlg;
+	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+	ti.uId = (UINT_PTR)hwndTool;
+	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
+	
+	// Associate the tooltip with the "tool" window.
+	BOOL succ = SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
+
+	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, succ);
 
 	return hwndTip;
 }
@@ -91,12 +95,17 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 
 		return Actioned_yes;
 	}
+	if (uMsg == WM_NOTIFY)
+	{
+		dbg_WM_NOTIFY(wParam, lParam);
+		return Actioned_no;
+	}
 	if (uMsg == WM_COMMAND)
 	{
-		UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
-		if (cmd == IDB_NoTooltip)
+		UINT uic = GET_WM_COMMAND_ID(wParam, lParam);
+		if (uic == IDB_NoTooltip)
 			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_NoTooltip clicked."));
-		else if (cmd == IDB_HasTooltip)
+		else if (uic == IDB_HasTooltip)
 			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_HasTooltip clicked."));
 
 		return Actioned_yes;
