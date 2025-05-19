@@ -89,7 +89,7 @@ CAPTION "Tracking-tooltip demo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Different Text for different demo.",IDC_STATIC1,19,11,155,36
-    CTEXT           "Text label 2",IDC_STATIC2,69,61,56,13,WS_BORDER
+    CTEXT           "Text label 2",IDC_STATIC2,19,61,157,13,WS_BORDER
 END
 
 
