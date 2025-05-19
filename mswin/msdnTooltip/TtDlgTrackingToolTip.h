@@ -11,10 +11,10 @@ class CTtDlgTrackingTooltip_LiveMousePos : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	virtual void DlgProc(VSeq_t vseq,
-		UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet=nullptr) override;
+	Actioned_et DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet = nullptr) override;
 
-	virtual void DlgClosing(VSeq_t seq) override;
+	virtual void DlgClosing() override;
 
 private:
 	CWmMouseleaveHelper m_mouseleave;
@@ -29,8 +29,8 @@ class CTtDlgTrackingToolTip : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	virtual void DlgProc(VSeq_t vseq,
-		UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet=nullptr) override;
+	Actioned_et DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 
 private:
 	CWmMouseleaveHelper m_mouseleave;
@@ -41,7 +41,7 @@ private:
 
 
 //////////////////////////////////////////////////////////////////////////
-// Implementation code below
+// Implementation below
 //////////////////////////////////////////////////////////////////////////
 
 #ifdef TtDlgTrackingToolTip_IMPL
@@ -77,102 +77,100 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 }
 
 
-void 
-CTtDlgTrackingTooltip_LiveMousePos::DlgProc(VSeq_t vseq,
-	UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet)
+CModelessChild::Actioned_et
+CTtDlgTrackingTooltip_LiveMousePos::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
-//	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
+	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	auto vc = MakeVierarchyCall(this, &CModelessTtDemo::DlgProc, vseq,
-		uMsg, wParam, lParam, pDlgRet);
+	Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
-	if (VSeq_IsBeforeChild(vseq))
+	if (uMsg == WM_INITDIALOG)
 	{
-		if (uMsg == WM_INITDIALOG)
-		{
-			// Create the tooltip window.
+		// Create the tooltip window.
 
-			m_hwndTooltip = CreateTrackingTooltip_FreeOnScreen(m_hdlgMe);
-			assert(m_hwndTooltip);
+		m_hwndTooltip = CreateTrackingTooltip_FreeOnScreen(m_hdlgMe);
+		assert(m_hwndTooltip);
 
-			m_mouseleave.SetHwnd(m_hdlgMe);
+		m_mouseleave.SetHwnd(m_hdlgMe);
 
-			// Fetch user params from dlgbox UI.
-			BOOL bTrans = 0;
-			m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetX, &bTrans, bSigned_TRUE);
-			m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetY, &bTrans, bSigned_TRUE);
+		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
-			DisableDlgItem(m_hdlgParent, IDE_TtOffsetX);
-			DisableDlgItem(m_hdlgParent, IDE_TtOffsetY);
+		// Fetch user params from dlgbox UI.
+		BOOL bTrans = 0;
+		m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetX, &bTrans, bSigned_TRUE);
+		m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetY, &bTrans, bSigned_TRUE);
 
-			pDlgRet->actioned = Actioned_yes;
-			pDlgRet->retval = AcceptDefaultFocus_TRUE;
-		}
-		if (uMsg == WM_MOUSEMOVE)
-		{
-			CWmMouseleaveHelper::Move_ret moveret = m_mouseleave.do_WM_MOUSEMOVE();
+		DisableDlgItem(m_hdlgParent, IDE_TtOffsetX);
+		DisableDlgItem(m_hdlgParent, IDE_TtOffsetY);
 
-			// Activate the tooltip (make tooltip-window appear).
-			TOOLINFO ti = { sizeof(TOOLINFO) };
-			SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
-
-			int newX = GET_X_LPARAM(lParam);
-			int newY = GET_Y_LPARAM(lParam);
-
-			// Make sure the mouse has actually moved. The presence of the tooltip 
-			// causes Windows to send the message continuously.
-
-			if ((newX != m_oldX) || (newY != m_oldY))
-			{
-				m_oldX = newX;
-				m_oldY = newY;
-
-				// Update the text.
-				WCHAR coords[20];
-				_sntprintf_s(coords, _TRUNCATE, _T("%d, %d"), newX, newY);
-
-				// Now we'll use TTM_SETTOOLINFO to set new tooltip-text.
-				// Before doing this, we need to call TTM_GETTOOLINFO to fetch the tooltip's
-				// original TOOLINFO.uFlags value. By this way, we do not need a global TOOLINFO var.
-				// A zero .uFlags would totally change the tooltip's behavior.
-
-				SendMessage(m_hwndTooltip, TTM_GETTOOLINFO, 0, (LPARAM)&ti);
-				assert(ti.uFlags != 0);
-
-				// Set new text of the tooltip.
-				ti.lpszText = coords;
-				SendMessage(m_hwndTooltip, TTM_SETTOOLINFO, 0, (LPARAM)&ti);
-
-				// Position the tooltip. The coordinates are adjusted so that the tooltip does not overlap the mouse pointer.
-
-				POINT pt_ttm = { newX + m_offsetX, newY + m_offsetY };
-				ClientToScreen(m_hdlgMe, &pt_ttm);
-
-				vaDbgTs(_T("Mouse at client [%d,%d]; pt_ttm [%d,%d]"),
-					newX, newY, pt_ttm.x, pt_ttm.y);
-
-				SendMessage(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(pt_ttm.x, pt_ttm.y));
-			}
-
-			// return Actioned_yes; // no need for mouse-move
-		}
-		else if (uMsg == WM_MOUSELEAVE)
-		{
-			m_mouseleave.do_WM_MOUSELEAVE();
-
-			TOOLINFO ti = { sizeof(TOOLINFO) }; // meaningful: .hwnd=NULL and .uId=NULL
-
-			// The mouse pointer has left our window. Deactivate(hide) the tooltip.
-			SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
-
-			// return Actioned_yes; // no need for mouse-leave
-		}
+		return Actioned_yes;
 	}
+	if (uMsg == WM_MOUSEMOVE)
+	{
+		CWmMouseleaveHelper::Move_ret moveret = m_mouseleave.do_WM_MOUSEMOVE();
+
+		// Activate the tooltip (make tooltip-window appear).
+		TOOLINFO ti = { sizeof(TOOLINFO) };
+		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
+
+		int newX = GET_X_LPARAM(lParam);
+		int newY = GET_Y_LPARAM(lParam);
+
+		// Make sure the mouse has actually moved. The presence of the tooltip 
+		// causes Windows to send the message continuously.
+
+		if ((newX != m_oldX) || (newY != m_oldY))
+		{
+			m_oldX = newX;
+			m_oldY = newY;
+
+			// Update the text.
+			WCHAR coords[20];
+			_sntprintf_s(coords, _TRUNCATE, _T("%d, %d"), newX, newY);
+
+			// Now we'll use TTM_SETTOOLINFO to set new tooltip-text.
+			// Before doing this, we need to call TTM_GETTOOLINFO to fetch the tooltip's
+			// original TOOLINFO.uFlags value. By this way, we do not need a global TOOLINFO var.
+			// A zero .uFlags would totally change the tooltip's behavior.
+
+			SendMessage(m_hwndTooltip, TTM_GETTOOLINFO, 0, (LPARAM)&ti);
+			assert(ti.uFlags != 0);
+
+			// Set new text of the tooltip.
+			ti.lpszText = coords;
+			SendMessage(m_hwndTooltip, TTM_SETTOOLINFO, 0, (LPARAM)&ti);
+
+			// Position the tooltip. The coordinates are adjusted so that the tooltip does not overlap the mouse pointer.
+
+			POINT pt_ttm = { newX + m_offsetX, newY + m_offsetY };
+			ClientToScreen(m_hdlgMe, &pt_ttm);
+
+			vaDbgTs(_T("Mouse at client [%d,%d]; pt_ttm [%d,%d]"),
+				newX, newY, pt_ttm.x, pt_ttm.y);
+
+			SendMessage(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(pt_ttm.x, pt_ttm.y));
+		}
+
+		return Actioned_yes;
+	}
+	else if (uMsg == WM_MOUSELEAVE)
+	{
+		m_mouseleave.do_WM_MOUSELEAVE();
+
+		TOOLINFO ti = { sizeof(TOOLINFO) }; // meaningful: .hwnd=NULL and .uId=NULL
+
+		// The mouse pointer has left our window. Deactivate(hide) the tooltip.
+		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
+
+		return Actioned_yes;
+	}
+	else
+		return actioned;
 }
 
-void CTtDlgTrackingTooltip_LiveMousePos::DlgClosing(VSeq_t vseq)
+void CTtDlgTrackingTooltip_LiveMousePos::DlgClosing()
 {
-	auto vc = MakeVierarchyCall(this, &CModelessTtDemo::DlgClosing, vseq);
+	__super::DlgClosing();
 
 	EnableDlgItem(m_hdlgParent, IDE_TtOffsetX);
 	EnableDlgItem(m_hdlgParent, IDE_TtOffsetY);
@@ -246,14 +244,12 @@ HWND CreateTrackingToolTip(HWND hwndOwner, const TCHAR* pText, TOOLINFO& ti)
 }
 
 
-void
-CTtDlgTrackingToolTip::DlgProc(VSeq_t vseq,
-	UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet)
+CModelessChild::Actioned_et
+CTtDlgTrackingToolTip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
-//	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
+	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	auto vc = MakeVierarchyCall(this, &CModelessTtDemo::DlgProc, vseq,
-		uMsg, wParam, lParam, pDlgRet);
+	Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
 	if (uMsg == WM_INITDIALOG)
 	{
@@ -265,15 +261,33 @@ CTtDlgTrackingToolTip::DlgProc(VSeq_t vseq,
 
 		m_mouseleave.SetHwnd(m_hdlgMe);
 
-		pDlgRet->actioned = Actioned_yes;
-		pDlgRet->retval = AcceptDefaultFocus_FALSE;
+		vaDbgTs(_T("Called CreateTrackingToolTip(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
+
+		return Actioned_yes;
 	}
 	if (uMsg == WM_MOUSEMOVE)
 	{
 		CWmMouseleaveHelper::Move_ret moveret = m_mouseleave.do_WM_MOUSEMOVE();
 
+
+#if 1
+TOOLINFO lti = { sizeof(lti) };
+//SetRect(&lti.rect, 100, 100, 200, 200);
+lti.uId = (UINT_PTR)GetDlgItem(m_hdlgMe, IDC_STATIC2);
+lti.hwnd = m_hdlgMe; // GetDlgItem(m_hdlgMe, IDC_STATIC1);
+
+#else
+TOOLINFO lti = m_ti; lti.uFlags = 0;
+//lti.hwnd = 0; // would ruin, .hwnd is must
+//lti.uId = (UINT_PTR)m_hdlgMe;
+//lti.uId = (UINT_PTR)GetDlgItem(m_hdlgMe, IDC_STATIC_TEXT);
+//lti.hwnd = GetDlgItem(m_hdlgMe, IDC_STATIC_TEXT);
+SetRect(&lti.rect, 0, 0, 0, 0); // OK. lti.rect is not a must
+lti.lpszText = NULL; // ok. not must
+#endif // 0
+
 		// Activate the tooltip.
-		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&m_ti);
+		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&lti);
 
 		int newX = GET_X_LPARAM(lParam);
 		int newY = GET_Y_LPARAM(lParam);
@@ -304,7 +318,7 @@ CTtDlgTrackingToolTip::DlgProc(VSeq_t vseq,
 			SendMessage(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(pt_ttm.x, pt_ttm.y));
 	}
 
-//		return Actioned_yes;
+		return Actioned_yes;
 	}
 	else if (uMsg == WM_MOUSELEAVE)
 	{
@@ -313,8 +327,10 @@ CTtDlgTrackingToolTip::DlgProc(VSeq_t vseq,
 		// The mouse pointer has left our window. Deactivate the tooltip.
 //		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&m_ti);
 
-//		return Actioned_yes;
+		return Actioned_yes;
 	}
+	else 
+		return actioned;
 }
 
 #endif // TtDlgTrackingToolTip_IMPL

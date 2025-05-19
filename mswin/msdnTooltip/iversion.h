@@ -2,8 +2,8 @@
 #define __msdnTooltip_iversion_h_
 
 #define msdnTooltip_VMAJOR 1
-#define msdnTooltip_VMINOR 1
-#define msdnTooltip_VPATCH 0
+#define msdnTooltip_VMINOR 0
+#define msdnTooltip_VPATCH 8
 #define msdnTooltip_VTAIL  0
 
 #define msdnTooltipstr__(n) #n

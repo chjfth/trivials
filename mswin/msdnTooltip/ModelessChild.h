@@ -7,7 +7,6 @@
 #include <windows.h>
 
 #include <commdefs.h>
-#include <CxxVierarchy.h>
 #include <mswin/win32clarify.h>
 #include <SdringTCHAR.h>
 
@@ -30,25 +29,19 @@ public:
 
 	HWND GetHdlg() { return m_hdlgMe; } // debug purpose
 
-public:
+protected:
 	enum Actioned_et { Actioned_no = 0 , Actioned_yes = 1 };
-	struct DlgRet_st // Dialogbox-message processing result
-	{
-		Actioned_et actioned;
-		INT_PTR retval; // = DialogProc()'s return-value
-	};
-
-
-	virtual void DlgProc(VSeq_t vseq, UINT uMsg, WPARAM wParam, LPARAM lParam,
-		DlgRet_st *pDlgRet=nullptr);
+	
+	virtual Actioned_et DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam,
+		INT_PTR *pMsgRet=nullptr);
 	// -- Note: The function body reports dlgbox-message processing result
-	// by returning Actioned_et and the INT_PTR, in output var pMsgRet. 
-	// The actual implementation of DlgProc do not need to call SetDlgMsgResult(), 
-	// bcz it will be called by StartDlgProc() for you.
+	// by returning Actioned_et and setting *pMsgRet. 
+	// The function body do not need to call SetDlgMsgResult(), bcz it will be called 
+	// by StartDlgProc() for you.
 
 	static DLGPROC_ret WINAPI StartDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-	virtual void DlgClosing(VSeq_t vseq) {};
+	virtual void DlgClosing() {};
 
 protected:
 	Sdring msd_name;
@@ -119,11 +112,11 @@ CModelessChild::StartDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		// note: WM_SETFONT precedes WM_INITDIALOG, so we need to check pMydlg.
 		// note: After closing child dlg, we could see uMsg==0, weird.
 
-		DlgRet_st dlgret = {};
-		pMydlg->DlgProc(0, uMsg, wParam, lParam, &dlgret);
+		INT_PTR MsgRet = 0;
+		Actioned_et actioned = pMydlg->DlgProc(uMsg, wParam, lParam, &MsgRet);
 
-		trueret = dlgret.actioned==Actioned_yes ? 
-			SetDlgMsgResult(hdlg, uMsg, dlgret.retval) : DLGPROC_ActionedNo;
+		trueret = actioned==Actioned_yes ? 
+			SetDlgMsgResult(hdlg, uMsg, MsgRet) : DLGPROC_ActionedNo;
 		return trueret;
 	}
 	else
@@ -140,55 +133,57 @@ CModelessChild::StartDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return trueret;
 }
 
-void
-CModelessChild::DlgProc(VSeq_t vseq,
-	UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet)
+CModelessChild::Actioned_et
+CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
-	SETTLE_OUTPUT_PTR(DlgRet_st, pDlgRet, {});
+	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	if(VSeq_IsBeforeChild(vseq))
+	if (uMsg == WM_INITDIALOG)
 	{
-		if (uMsg == WM_INITDIALOG)
-		{
-			vaDBG(_T("%s (hdlg=0x%08X) created."), msz_name, m_hdlgMe);
-
-			pDlgRet->actioned = Actioned_yes;
-			pDlgRet->retval = AcceptDefaultFocus_TRUE;
-		}
-		if (uMsg == WM_COMMAND)
-		{
-			assert(mr_ptrme_by_parent == this);
-
-			UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
-			if (cmd == IDCANCEL)
-			{
-				assert(IsWindow(m_hdlgMe));
-				::PostMessage(m_hdlgMe, m_WM_KillSelf, 0, 0);
-
-				this->DlgClosing(0);
-			}
-		}
-		else if (uMsg == WM_DESTROY)
-		{
-			// [2025-05-10] Q: Why I can not see this?
-			// Neither in debug-message of BaseDlgProc().
-			vaDBG(_T("CModelessChild::DlgProc(): See WM_DESTROY."));
-		}
-		else if (uMsg == m_WM_KillSelf)
-		{
-			SetWindowLongPtr(m_hdlgMe, DWLP_USER, NULL);
-			// -- This is important, it stops further dialog WM_xxx message from calling 
-			// this virtual DlgProc(). See CModelessChild::BaseDlgProc().
-
-			vaDBG(_T("%s (hdlg=0x%08X) EndDialog()."), msz_name, m_hdlgMe);
-
-			EndDialog(m_hdlgMe, 0);
-
-			// Tell parent that I have destroyed myself.
-			mr_ptrme_by_parent = NULL;
-			delete this;
-		}
+		vaDBG(_T("%s (hdlg=0x%08X) created."), msz_name, m_hdlgMe);
+		
+		*pMsgRet = AcceptDefaultFocus_TRUE;
+		return Actioned_yes;
 	}
+	if (uMsg == WM_COMMAND)
+	{
+		assert(mr_ptrme_by_parent == this);
+
+		UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
+		if (cmd == IDCANCEL)
+		{
+			assert(IsWindow(m_hdlgMe));
+			::PostMessage(m_hdlgMe, m_WM_KillSelf, 0, 0);
+
+			this->DlgClosing();
+		}
+
+		return Actioned_yes;
+	}
+	else if (uMsg == WM_DESTROY)
+	{
+		// [2025-05-10] Q: Why I can not see this?
+		// Neither in debug-message of BaseDlgProc().
+		return Actioned_no;
+	}
+	else if (uMsg == m_WM_KillSelf)
+	{
+		SetWindowLongPtr(m_hdlgMe, DWLP_USER, NULL);
+		// -- This is important, it stops further dialog WM_xxx message from calling 
+		// this virtual DlgProc(). See CModelessChild::BaseDlgProc().
+
+		vaDBG(_T("%s (hdlg=0x%08X) EndDialog()."), msz_name, m_hdlgMe);
+
+		EndDialog(m_hdlgMe, 0);
+
+		// Tell parent that I have destroyed myself.
+		mr_ptrme_by_parent = NULL;
+		delete this;
+
+		return Actioned_yes;
+	}
+	else
+		return Actioned_no;
 }
 
 #ifndef ModelessChild_DEBUG

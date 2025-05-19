@@ -8,16 +8,11 @@ class CTtDlgForUic : public CModelessTtDemo
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
 
-	virtual void DlgProc(VSeq_t vseq,
-		UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet=nullptr) override;
+	Actioned_et DlgProc(
+		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 
-	virtual void DlgClosing(VSeq_t vseq) override;
+	virtual void DlgClosing() override;
 };
-
-
-//////////////////////////////////////////////////////////////////////////
-// Implementation code below
-//////////////////////////////////////////////////////////////////////////
 
 #ifdef TtDlgForUic_IMPL
 
@@ -68,61 +63,55 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 	return hwndTip;
 }
 
-void 
-CTtDlgForUic::DlgProc(VSeq_t vseq,
-	UINT uMsg, WPARAM wParam, LPARAM lParam, DlgRet_st *pDlgRet)
+CModelessChild::Actioned_et
+CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
-//	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
+	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
-	auto vc = MakeVierarchyCall(this, &CModelessTtDemo::DlgProc, vseq,
-		uMsg, wParam, lParam, pDlgRet);
+	Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
-	if (VSeq_IsBeforeChild(vseq))
+	if (uMsg == WM_INITDIALOG)
 	{
-		if (uMsg == WM_INITDIALOG)
-		{
-			// Fetch parameter from UI
+		// Fetch parameter from UI
 
-			HWND hckb = GetDlgItem(m_hdlgParent, IDCK_TTS_BALLOON);
-			int btnCkd = Button_GetCheck(hckb);
-			EnableWindow(hckb, FALSE);
+		HWND hckb = GetDlgItem(m_hdlgParent, IDCK_TTS_BALLOON);
+		int btnCkd = Button_GetCheck(hckb);
+		EnableWindow(hckb, FALSE);
 
-			// Create the tooltip window.
+		// Create the tooltip window.
 
-			m_hwndTooltip = CreateToolTip_ForUic(IDB_HasTooltip, m_hdlgMe,
-				_T("This is the tooltip for the button IDB_HasTootip"),
-				btnCkd ? true : false);
+		m_hwndTooltip = CreateToolTip_ForUic(IDB_HasTooltip, m_hdlgMe,
+			_T("This is the tooltip for the button IDB_HasTootip"),
+			btnCkd ? true : false);
 
-			//		vaDbgTs(_T("Called CreateToolTip_ForUic(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
+		vaDbgTs(_T("Called CreateToolTip_ForUic(), tooltip-hwnd=0x%08X."), m_hwndTooltip);
 
-			SetFocus(GetDlgItem(m_hdlgMe, IDB_HasTooltip));
-			pDlgRet->actioned = Actioned_yes;
-			pDlgRet->retval = AcceptDefaultFocus_FALSE;
+		SetFocus(GetDlgItem(m_hdlgMe, IDB_HasTooltip));
+		*pMsgRet = AcceptDefaultFocus_FALSE;
 
-		}
-		if (uMsg == WM_COMMAND)
-		{
-			UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
-			if (cmd == IDB_NoTooltip)
-				SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_NoTooltip clicked."));
-			else if (cmd == IDB_HasTooltip)
-				SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_HasTooltip clicked."));
-
-			//		return Actioned_yes;
-		}
+		return Actioned_yes;
 	}
+	if (uMsg == WM_COMMAND)
+	{
+		UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
+		if (cmd == IDB_NoTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_NoTooltip clicked."));
+		else if (cmd == IDB_HasTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_HasTooltip clicked."));
+
+		return Actioned_yes;
+	}
+	else 
+		return actioned;
 }
 
 void 
-CTtDlgForUic::DlgClosing(VSeq_t vseq)
+CTtDlgForUic::DlgClosing()
 {
-	auto vc = MakeVierarchyCall(this, &CModelessTtDemo::DlgClosing, vseq);
+	__super::DlgClosing();
 
-	if(VSeq_IsBeforeChild(vseq))
-	{
-		HWND hckb = GetDlgItem(m_hdlgParent, IDCK_TTS_BALLOON);
-		EnableWindow(hckb, TRUE);
-	}
+	HWND hckb = GetDlgItem(m_hdlgParent, IDCK_TTS_BALLOON);
+	EnableWindow(hckb, TRUE);
 }
 
 #endif // TtDlgForUic_IMPL
