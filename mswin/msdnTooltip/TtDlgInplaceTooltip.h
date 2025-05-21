@@ -43,7 +43,7 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 	// Associate Uics to the tooltip.
 	TOOLINFO ti = { sizeof(TOOLINFO) };
 	ti.hwnd = hdlg;
-	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS | ((TTF_TRANSPARENT));
 	ti.lpszText = _T("Uic-init tooltip text");
 
 	for (int i = 0; i < nUics; i++)
@@ -192,8 +192,8 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 				//   to {LT(91, 170) RB(279, 186)[188 x 16]}
 
 				SetWindowPos(m_hwndTooltip, NULL, 
-					rc_label.left, rc_label.top, 
-					0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+					rc_label.left, rc_label.top, 0, 0, 
+					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 				
 				*pMsgRet = TRUE; 
 				// -- Important, as return-value for TTN_SHOW. It tells tooltip code
