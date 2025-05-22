@@ -55,20 +55,46 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
-void Dlg_OnMouseMove(HWND hdlg, int x, int y, UINT keyFlags)
+static void Show_MouseMessage(HWND hdlg, const TCHAR* whichmsg,
+	int x, int y, UINT keyFlags)
 {
 	static int s_count = 0;
 	s_count++;
 
 	vaSetDlgItemText(hdlg, IDC_EDIT1, 
-		_T("[#%d] WM_MOUSEMOVE: x=%d, y=%d\r\n")
+		_T("[#%d] %s: x=%d, y=%d\r\n")
 		_T("keyFlags: %s")
 		, 
 		s_count, 
+		whichmsg,
 		x, y,
 		ITCSv(keyFlags, MK_xxx_mouse));
 }
 
+void Dlg_OnMouseMove(HWND hdlg, int x, int y, UINT keyFlags)
+{
+	Show_MouseMessage(hdlg, _T("WM_MOUSEMOVE"), x, y, keyFlags);
+}
+
+void Dlg_OnLButtonDown(HWND hdlg, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+{
+	Show_MouseMessage(hdlg, _T("WM_LBUTTONDOWN"), x, y, keyFlags);
+}
+
+void Dlg_OnRButtonDown(HWND hdlg, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+{
+	Show_MouseMessage(hdlg, _T("WM_RBUTTONDOWN"), x, y, keyFlags);
+}
+
+void Dlg_OnLButtonUp(HWND hdlg, int x, int y, UINT keyFlags)
+{
+	Show_MouseMessage(hdlg, _T("WM_LBUTTONUP"), x, y, keyFlags);
+}
+
+void Dlg_OnRButtonUp(HWND hdlg, int x, int y, UINT keyFlags)
+{
+	Show_MouseMessage(hdlg, _T("WM_RBUTTONUP"), x, y, keyFlags);
+}
 
 INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
@@ -78,6 +104,10 @@ INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
 
 		HANDLE_dlgMSG(hdlg, WM_MOUSEMOVE,     Dlg_OnMouseMove);
+		HANDLE_dlgMSG(hdlg, WM_LBUTTONDOWN,   Dlg_OnLButtonDown);
+		HANDLE_dlgMSG(hdlg, WM_LBUTTONUP,   Dlg_OnLButtonUp);
+		HANDLE_dlgMSG(hdlg, WM_RBUTTONDOWN,   Dlg_OnRButtonDown);
+		HANDLE_dlgMSG(hdlg, WM_RBUTTONUP,   Dlg_OnRButtonUp);
 	}
 	return FALSE;
 }
