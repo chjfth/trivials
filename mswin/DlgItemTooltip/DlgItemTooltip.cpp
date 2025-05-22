@@ -13,6 +13,8 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <mswin/win32clarify.h>
+
 #include <mswin/CommCtrl.itc.h>
 using namespace itc;
 
@@ -30,46 +32,13 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+const TCHAR *s_InitPrompt = _T("Click [Create tooltip] button to go on.");
+const TCHAR *s_TooltipPrompt = _T("Hover mouse over me to show in-place tooltip.");
 
-void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
+void create_demo_tooltip(HWND hdlg, BOOL isWsExTransparent, BOOL isTtfTransparent)
 {
-	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR textbuf[200];
-
-	switch (id) 
-	{{
-	case IDC_BUTTON1:
-	{
-		++(prdata->clicks);
-		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata->clicks);
-		SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, textbuf);
-
-		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
-		break;
-	}
-	case IDOK:
-	case IDCANCEL:
-	{
-		EndDialog(hdlg, id);
-		break;
-	}
-	}}
-}
-
-static void Dlg_EnableJULayout(HWND hdlg)
-{
-	JULayout *jul = JULayout::EnableJULayout(hdlg);
-
-	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
-	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
-
-	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
-}
-
-void create_demo_tooltip(HWND hdlg)
-{
-	g_hwndTT = CreateWindowEx(WS_EX_TRANSPARENT, 
+	g_hwndTT = CreateWindowEx(
+		isWsExTransparent ? WS_EX_TRANSPARENT : 0, 
 		TOOLTIPS_CLASS, 
 		NULL, // window title
 		TTS_NOPREFIX | TTS_NOANIMATE | TTS_ALWAYSTIP,
@@ -79,18 +48,19 @@ void create_demo_tooltip(HWND hdlg)
 	if(!g_hwndTT)
 		return;
 
+	vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
+		_T("Tooltip-HWND = 0x%08X"), g_hwndTT);
+
 	HWND hwndLabel = GetDlgItem(hdlg, IDC_LABEL1);
-	TCHAR szLabel[100] = {};
-	GetDlgItemText(hdlg, IDC_LABEL1, szLabel, ARRAYSIZE(szLabel));
 
 	g_hfTT = GetWindowFont(hwndLabel);
 	SetWindowFont(g_hwndTT, g_hfTT, FALSE);
 
 	TOOLINFO ti = { sizeof(ti) };
-	ti.uFlags =  TTF_SUBCLASS | TTF_IDISHWND;
+	ti.uFlags =  TTF_SUBCLASS | TTF_IDISHWND | (isTtfTransparent ? TTF_TRANSPARENT : 0);
 	ti.hwnd = hdlg;
-	ti.uId = (UINT_PTR)hwndLabel; // 0;
-	ti.lpszText = szLabel;
+	ti.uId = (UINT_PTR)hwndLabel;
+	ti.lpszText = const_cast<TCHAR*>(s_TooltipPrompt);
 	
 	RECT rcLabel = {};
 	GetWindowRect(hwndLabel, &rcLabel);
@@ -111,22 +81,6 @@ void create_demo_tooltip(HWND hdlg)
 	succ = SendMessage(g_hwndTT, TTM_SETDELAYTIME, TTDT_AUTOPOP, 12000);
 }
 
-BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
-{
-	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
-
-	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
-	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
-	
-	create_demo_tooltip(hdlg);
-	
-	Dlg_EnableJULayout(hdlg);
-
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
-	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
-}
-
-// new >>>
 
 LRESULT OnTooltipShow(HWND hdlg, NMHDR *pnm)
 {
@@ -168,24 +122,104 @@ LRESULT OnTooltipShow(HWND hdlg, NMHDR *pnm)
 	return TRUE; // suppress default positioning
 }
 
-LRESULT Dlg_OnNotify(HWND hwnd, int idFrom, NMHDR *pnm)
-{
-	vaDbgTs(_T("Dlg_OnNotify() idFrom=%d , code=%s"),
-		idFrom, ITCSv(pnm->code, TTN_xxx));
 
-	//if (pnm->hwndFrom == g_hwndTT)  
+LRESULT Dlg_OnNotify(HWND hdlg, int idFrom, NMHDR *pnm)
+{
+	vaDbgTs(_T("Dlg_OnNotify() idFrom=%d(0x%X) , code=%s"),
+		idFrom, idFrom, ITCSv(pnm->code, TTN_xxx));
+
+	// memo: pnm->idFrom is the COMPLETE pointer-size version of idFrom.
+
+	HWND hwndLabel = GetDlgItem(hdlg, IDC_LABEL1);
+
+	if (pnm->idFrom == (UINT_PTR)hwndLabel)  
 	{
 		switch (pnm->code) {
 		case TTN_SHOW:
-			return OnTooltipShow(hwnd, pnm);
+			return OnTooltipShow(hdlg, pnm);
 		}
 	}
 	return 0;   
 }
 
-void Dlg_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)
+void Dlg_OnMouseMove(HWND hdlg, int x, int y, UINT keyFlags)
 {
 	vaDbgTs(_T("WM_MOUSEMOVE: x=%d, y=%d"), x, y);
+}
+
+void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+
+	switch (id) 
+	{{
+	case IDB_CreateTooltip:
+	{
+		if(g_hwndTT==NULL)
+		{
+			BOOL isWsExTransp = IsDlgButtonChecked(hdlg, IDCK_WsExTransparent);
+			BOOL isTtfTransp = IsDlgButtonChecked(hdlg, IDCK_TtfTransparent);
+			create_demo_tooltip(hdlg, isWsExTransp, isTtfTransp);
+
+			SetDlgItemText(hdlg, IDB_CreateTooltip, _T("&Destroy tooltip"));
+			SetDlgItemText(hdlg, IDC_LABEL1, s_TooltipPrompt);
+
+			DisableDlgItem(hdlg, IDCK_WsExTransparent);
+			DisableDlgItem(hdlg, IDCK_TtfTransparent);
+		}
+		else
+		{
+			BOOL succ = DestroyWindow(g_hwndTT);
+			g_hwndTT = NULL;
+			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
+				_T("Destroy tooltip-window [%s]"), succ?_T("Success"):_T("Fail"));
+
+			SetDlgItemText(hdlg, IDB_CreateTooltip, _T("&Create tooltip"));
+			SetDlgItemText(hdlg, IDC_LABEL1, s_InitPrompt);
+
+			EnableDlgItem(hdlg, IDCK_WsExTransparent);
+			EnableDlgItem(hdlg, IDCK_TtfTransparent);
+		}
+		break;
+	}
+	case IDOK:
+	case IDCANCEL:
+	{
+		EndDialog(hdlg, id);
+		break;
+	}
+	}}
+}
+
+static void Dlg_EnableJULayout(HWND hdlg)
+{
+	JULayout *jul = JULayout::EnableJULayout(hdlg);
+
+	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
+	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
+	jul->AnchorControl(0,100, 0,100, IDCK_WsExTransparent);
+	jul->AnchorControl(0,100, 0,100, IDCK_TtfTransparent);
+	jul->AnchorControl(100,100, 100,100, IDB_CreateTooltip);
+
+	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
+}
+
+BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
+{
+	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
+
+	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
+	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
+
+	vaSetWindowText(hdlg, _T("DlgItemTooltip v%d.%d.%d"), 
+		DlgItemTooltip_VMAJOR, DlgItemTooltip_VMINOR, DlgItemTooltip_VPATCH);
+
+	SetDlgItemText(hdlg, IDC_LABEL1, s_InitPrompt);
+
+	Dlg_EnableJULayout(hdlg);
+
+	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
 
