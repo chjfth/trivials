@@ -97,9 +97,10 @@ LRESULT OnTooltipShow(HWND hdlg, NMHDR *pnm)
 	MapWindowRect(hdlg, NULL, &rc1);
 	RECT rc2 = rc1; 
 
-	// Now, rc1 is the text-label's window Rect, and the text may have been
+	// Now, rc1 is the text-label's window Rect, and the label text may have been
 	// vertically centered, not necessarily rendered from y-top.
-	// So we need to find out y-start of the text.
+	// So, in order for the tooltip to show-up exactly overlaying the label text,
+	// we need to find out y-start of the label text.
 	HDC hdc = GetDC(hdlg);
 	SelectFont(hdc, g_hfTT);
 	TEXTMETRIC tm = {};
@@ -216,9 +217,12 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	SetDlgItemText(hdlg, IDC_LABEL1, s_InitPrompt);
 
+	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG,
+		_T("Note: If you tick neither WS_EX_TRANSPARENT or TTF_TRANSPARENT, the in-place tooltip will flicker."));
+
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDB_CreateTooltip));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
