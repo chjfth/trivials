@@ -13,6 +13,9 @@
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <mswin/CommCtrl.itc.h>
+using namespace itc;
+
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 HINSTANCE g_hinstExe;
@@ -84,9 +87,9 @@ void create_demo_tooltip(HWND hdlg)
 	SetWindowFont(g_hwndTT, g_hfTT, FALSE);
 
 	TOOLINFO ti = { sizeof(ti) };
-	ti.uFlags =  TTF_SUBCLASS;
+	ti.uFlags =  TTF_SUBCLASS | TTF_IDISHWND;
 	ti.hwnd = hdlg;
-	ti.uId = 0;
+	ti.uId = (UINT_PTR)hwndLabel; // 0;
 	ti.lpszText = szLabel;
 	
 	RECT rcLabel = {};
@@ -125,29 +128,59 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 // new >>>
 
-LRESULT OnTooltipShow(HWND hwnd, NMHDR *pnm)
+LRESULT OnTooltipShow(HWND hdlg, NMHDR *pnm)
 {
-	TOOLINFO ti = {sizeof(ti)};
-	ti.hwnd = hwnd;
-	BOOL succ = SendMessage(pnm->hwndFrom, TTM_GETTOOLINFO, 0, (LPARAM)&ti);
+// 	TOOLINFO ti = {sizeof(ti)};
+// 	ti.hwnd = hdlg;
+// 	BOOL succ = SendMessage(pnm->hwndFrom, TTM_GETTOOLINFO, 0, (LPARAM)&ti);
 
-	RECT rc = g_rcText;
-	MapWindowRect(hwnd, NULL, &rc);
-	SendMessage(pnm->hwndFrom, TTM_ADJUSTRECT, TRUE, (LPARAM)&rc);
-	SetWindowPos(pnm->hwndFrom, 0, rc.left, rc.top, 0, 0,
+	RECT rcLabel = {};
+	HWND hwndLabel = GetDlgItem(hdlg, IDC_LABEL1);
+	GetWindowRect(hwndLabel, &rcLabel);
+	MapWindowPoints(HWND_DESKTOP, hdlg, (POINT*)&rcLabel, 2);
+	RECT rc1 = rcLabel;
+
+	MapWindowRect(hdlg, NULL, &rc1);
+	RECT rc2 = rc1; 
+
+	// Now, rc1 is the text-label's window Rect, and the text may have been
+	// vertically centered, not necessarily rendered from y-top.
+	// So we need to find out y-start of the text.
+	HDC hdc = GetDC(hdlg);
+	SelectFont(hdc, g_hfTT);
+	TEXTMETRIC tm = {};
+	GetTextMetrics(hdc, &tm);
+
+	rc1.top += (rc1.bottom - rc1.top - tm.tmHeight)/2; // quite accurate
+
+	// Another way to calculate y-top
+	RECT rcText = rc2;
+	TCHAR szText[256];
+	GetDlgItemText(hdlg, IDC_LABEL1, szText, ARRAYSIZE(szText));
+	DrawText(hdc, szText, -1, &rcText, DT_SINGLELINE|DT_CALCRECT);
+	rc2.top += (rc2.bottom - rc2.top - (rcText.bottom-rcText.top))/2;
+
+	assert( EqualRect(&rc1, &rc2) ); // hope so
+
+	SendMessage(pnm->hwndFrom, TTM_ADJUSTRECT, TRUE, (LPARAM)&rc1);
+	SetWindowPos(pnm->hwndFrom, 0, rc1.left, rc1.top, 0, 0,
 		SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOZORDER);
 	return TRUE; // suppress default positioning
 }
 
 LRESULT Dlg_OnNotify(HWND hwnd, int idFrom, NMHDR *pnm)
 {
-	if (pnm->hwndFrom == g_hwndTT) {
+	vaDbgTs(_T("Dlg_OnNotify() idFrom=%d , code=%s"),
+		idFrom, ITCSv(pnm->code, TTN_xxx));
+
+	//if (pnm->hwndFrom == g_hwndTT)  
+	{
 		switch (pnm->code) {
 		case TTN_SHOW:
 			return OnTooltipShow(hwnd, pnm);
 		}
 	}
-	return 0;
+	return 0;   
 }
 
 void Dlg_OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags)

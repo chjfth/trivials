@@ -219,10 +219,8 @@
   <ItemGroup>
     <ClCompile Include="DlgItemTooltip.cpp" />
     <ClCompile Include="..\utils.cpp" />
-<!--
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
-    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
--->
+    <ClCompile Include="..\..\__WinConst\mswin\CommCtrl.itc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DlgItemTooltip.rc" />
