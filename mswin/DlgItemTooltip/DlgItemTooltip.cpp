@@ -148,45 +148,52 @@ void Dlg_OnMouseMove(HWND hdlg, int x, int y, UINT keyFlags)
 	vaDbgTs(_T("WM_MOUSEMOVE: x=%d, y=%d"), x, y);
 }
 
-void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
+void do_IDB_CreateTooltip(HWND hdlg)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	HWND &hwndTT = prdata->hwndTooltip;
+
+	if(hwndTT==NULL)
+	{
+		BOOL isWsExTransp = IsDlgButtonChecked(hdlg, IDCK_WsExTransparent);
+		BOOL isTtfTransp = IsDlgButtonChecked(hdlg, IDCK_TtfTransparent);
+		hwndTT = create_demo_tooltip(hdlg, isWsExTransp, isTtfTransp);
+		if(!hwndTT)
+		{
+			SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Unexpect! Tooltip window creation fail."));
+			return;
+		}
+
+		SetDlgItemText(hdlg, IDB_CreateTooltip, _T("&Destroy tooltip"));
+		SetDlgItemText(hdlg, IDC_LABEL1, s_TooltipPrompt);
+
+		DisableDlgItem(hdlg, IDCK_WsExTransparent);
+		DisableDlgItem(hdlg, IDCK_TtfTransparent);
+	}
+	else
+	{
+		BOOL succ = DestroyWindow(hwndTT);
+		hwndTT = NULL;
+		vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
+			_T("Destroy tooltip-window [%s]"), succ?_T("Success"):_T("Fail"));
+
+		SetDlgItemText(hdlg, IDB_CreateTooltip, _T("&Create tooltip"));
+		SetDlgItemText(hdlg, IDC_LABEL1, s_InitPrompt);
+
+		EnableDlgItem(hdlg, IDCK_WsExTransparent);
+		EnableDlgItem(hdlg, IDCK_TtfTransparent);
+	}
+}
+
+void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
+{
+	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 
 	switch (id) 
 	{{
 	case IDB_CreateTooltip:
 	{
-		if(hwndTT==NULL)
-		{
-			BOOL isWsExTransp = IsDlgButtonChecked(hdlg, IDCK_WsExTransparent);
-			BOOL isTtfTransp = IsDlgButtonChecked(hdlg, IDCK_TtfTransparent);
-			hwndTT = create_demo_tooltip(hdlg, isWsExTransp, isTtfTransp);
-			if(!hwndTT)
-			{
-				SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Unexpect! Tooltip window creation fail."));
-				break;
-			}
-
-			SetDlgItemText(hdlg, IDB_CreateTooltip, _T("&Destroy tooltip"));
-			SetDlgItemText(hdlg, IDC_LABEL1, s_TooltipPrompt);
-
-			DisableDlgItem(hdlg, IDCK_WsExTransparent);
-			DisableDlgItem(hdlg, IDCK_TtfTransparent);
-		}
-		else
-		{
-			BOOL succ = DestroyWindow(hwndTT);
-			hwndTT = NULL;
-			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
-				_T("Destroy tooltip-window [%s]"), succ?_T("Success"):_T("Fail"));
-
-			SetDlgItemText(hdlg, IDB_CreateTooltip, _T("&Create tooltip"));
-			SetDlgItemText(hdlg, IDC_LABEL1, s_InitPrompt);
-
-			EnableDlgItem(hdlg, IDCK_WsExTransparent);
-			EnableDlgItem(hdlg, IDCK_TtfTransparent);
-		}
+		do_IDB_CreateTooltip(hdlg);
 		break;
 	}
 	case IDOK:
