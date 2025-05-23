@@ -22,39 +22,39 @@ using namespace itc;
 
 HINSTANCE g_hinstExe;
 
-HFONT g_hfTT;
-HWND g_hwndTT;
-RECT g_rcText;
 
 struct DlgPrivate_st
 {
-	const TCHAR *mystr;
-	int clicks;
+	HWND hwndTooltip;
 };
 
 const TCHAR *s_InitPrompt = _T("Click [Create tooltip] button to go on.");
 const TCHAR *s_TooltipPrompt = _T("Hover mouse over me to show in-place tooltip.");
 
-void create_demo_tooltip(HWND hdlg, BOOL isWsExTransparent, BOOL isTtfTransparent)
+HWND create_demo_tooltip(HWND hdlg, BOOL isWsExTransparent, BOOL isTtfTransparent)
 {
-	g_hwndTT = CreateWindowEx(
+	// Will return tooltip HWND.
+
+	HWND hwndTT = CreateWindowEx(
 		isWsExTransparent ? WS_EX_TRANSPARENT : 0, 
 		TOOLTIPS_CLASS, 
 		NULL, // window title
 		TTS_NOPREFIX | TTS_NOANIMATE | TTS_ALWAYSTIP,
 		0, 0, 0, 0,
-		hdlg, NULL, nullptr, NULL);
-	assert(g_hwndTT);
-	if(!g_hwndTT)
-		return;
+		hdlg, NULL, 
+		nullptr, // Chj: deliberate NULL hInstance, looks OK
+		NULL);
+	assert(hwndTT);
+	if(!hwndTT)
+		return NULL;
 
 	vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
-		_T("Tooltip-HWND = 0x%08X"), g_hwndTT);
+		_T("Tooltip-HWND = 0x%08X"), hwndTT);
 
 	HWND hwndLabel = GetDlgItem(hdlg, IDC_LABEL1);
 
-	g_hfTT = GetWindowFont(hwndLabel);
-	SetWindowFont(g_hwndTT, g_hfTT, FALSE);
+	HFONT hfont = GetWindowFont(hwndLabel);
+	SetWindowFont(hwndTT, hfont, FALSE);
 
 	TOOLINFO ti = { sizeof(ti) };
 	ti.uFlags =  TTF_SUBCLASS | TTF_IDISHWND | (isTtfTransparent ? TTF_TRANSPARENT : 0);
@@ -64,21 +64,18 @@ void create_demo_tooltip(HWND hdlg, BOOL isWsExTransparent, BOOL isTtfTransparen
 	
 	RECT rcLabel = {};
 	GetWindowRect(hwndLabel, &rcLabel);
-	g_rcText = rcLabel;
 
-	MapWindowPoints(HWND_DESKTOP, hdlg, (POINT*)&g_rcText, 2);
+	MapWindowPoints(HWND_DESKTOP, hdlg, (POINT*)&rcLabel, 2);
 
-	ScreenToClient(hdlg, (POINT*)&rcLabel.left);
-	ScreenToClient(hdlg, (POINT*)&rcLabel.right);
 
-	ti.rect = rcLabel;
-
-	BOOL succ = SendMessage(g_hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
+	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 	assert(succ);
 
 	// Chj: Set tooltip delay-times.
-	succ = SendMessage(g_hwndTT, TTM_SETDELAYTIME, TTDT_INITIAL, 10);
-	succ = SendMessage(g_hwndTT, TTM_SETDELAYTIME, TTDT_AUTOPOP, 12000);
+	succ = SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_INITIAL, 10);
+	succ = SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_AUTOPOP, 12000);
+
+	return hwndTT;
 }
 
 
@@ -101,8 +98,9 @@ LRESULT OnTooltipShow(HWND hdlg, NMHDR *pnm)
 	// vertically centered, not necessarily rendered from y-top.
 	// So, in order for the tooltip to show-up exactly overlaying the label text,
 	// we need to find out y-start of the label text.
-	HDC hdc = GetDC(hdlg);
-	SelectFont(hdc, g_hfTT);
+	HDC hdc = GetDC(hwndLabel);
+	HFONT hfont = GetWindowFont(hwndLabel);
+	SelectFont(hdc, hfont);
 	TEXTMETRIC tm = {};
 	GetTextMetrics(hdc, &tm);
 
@@ -114,6 +112,8 @@ LRESULT OnTooltipShow(HWND hdlg, NMHDR *pnm)
 	GetDlgItemText(hdlg, IDC_LABEL1, szText, ARRAYSIZE(szText));
 	DrawText(hdc, szText, -1, &rcText, DT_SINGLELINE|DT_CALCRECT);
 	rc2.top += (rc2.bottom - rc2.top - (rcText.bottom-rcText.top))/2;
+
+	ReleaseDC(hwndLabel, hdc);
 
 	assert( EqualRect(&rc1, &rc2) ); // hope so
 
@@ -151,16 +151,22 @@ void Dlg_OnMouseMove(HWND hdlg, int x, int y, UINT keyFlags)
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	HWND &hwndTT = prdata->hwndTooltip;
 
 	switch (id) 
 	{{
 	case IDB_CreateTooltip:
 	{
-		if(g_hwndTT==NULL)
+		if(hwndTT==NULL)
 		{
 			BOOL isWsExTransp = IsDlgButtonChecked(hdlg, IDCK_WsExTransparent);
 			BOOL isTtfTransp = IsDlgButtonChecked(hdlg, IDCK_TtfTransparent);
-			create_demo_tooltip(hdlg, isWsExTransp, isTtfTransp);
+			hwndTT = create_demo_tooltip(hdlg, isWsExTransp, isTtfTransp);
+			if(!hwndTT)
+			{
+				SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, _T("Unexpect! Tooltip window creation fail."));
+				break;
+			}
 
 			SetDlgItemText(hdlg, IDB_CreateTooltip, _T("&Destroy tooltip"));
 			SetDlgItemText(hdlg, IDC_LABEL1, s_TooltipPrompt);
@@ -170,8 +176,8 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		}
 		else
 		{
-			BOOL succ = DestroyWindow(g_hwndTT);
-			g_hwndTT = NULL;
+			BOOL succ = DestroyWindow(hwndTT);
+			hwndTT = NULL;
 			vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
 				_T("Destroy tooltip-window [%s]"), succ?_T("Success"):_T("Fail"));
 
@@ -251,7 +257,7 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
-	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
+	DlgPrivate_st dlgdata = { };
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, (LPARAM)&dlgdata);
 
 	return 0;

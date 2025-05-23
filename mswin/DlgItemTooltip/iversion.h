@@ -2,8 +2,8 @@
 #define __DlgItemTooltip_iversion_h_
 
 #define DlgItemTooltip_VMAJOR 1
-#define DlgItemTooltip_VMINOR 1
-#define DlgItemTooltip_VPATCH 1
+#define DlgItemTooltip_VMINOR 2
+#define DlgItemTooltip_VPATCH 0
 #define DlgItemTooltip_VTAIL  0
 
 #define DlgItemTooltipstr__(n) #n
