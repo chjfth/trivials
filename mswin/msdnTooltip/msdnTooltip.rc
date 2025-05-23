@@ -61,6 +61,8 @@ BEGIN
     CONTROL         "ClientToScreen for TTM_TRACKPOSITION",IDCK_ClientToScreen,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,114,149,10
     PUSHBUTTON      "In-place tooltip for Uics",IDB_InplaceTooltip,4,134,135,14
+    LTEXT           "Font-size (pt):",IDC_STATIC,145,137,47,8
+    EDITTEXT        IDE_FontsizePt,196,135,27,14,ES_AUTOHSCROLL
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66

@@ -225,6 +225,7 @@
     <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\CommCtrl.itc.cpp" />
+    <ClCompile Include="dlgbox-helper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="msdnTooltip.rc" />
@@ -243,6 +244,7 @@
     <ClInclude Include="TtDlgForRectArea.h" />
     <ClInclude Include="TtDlgTrackingToolTip.h" />
     <ClInclude Include="TtDlgInplaceToolTip.h" />
+    <ClInclude Include="dlgbox-helper.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />

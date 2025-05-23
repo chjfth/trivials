@@ -16,6 +16,8 @@
 #include "TtDlgTrackingToolTip.h"
 #include "TtDlgInplaceToolTip.h"
 
+#include "dlgbox-helper.h"
+
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 HINSTANCE g_hinstExe;
@@ -60,10 +62,20 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		break;
 
 	case IDB_InplaceTooltip:
+	{
+		BOOL bTrans = 0;
+		int pt = GetDlgItemInt(hdlgMain, IDE_FontsizePt, &bTrans, bSigned_FALSE);
+		if(bTrans && pt>0)
+		{
+			void *dlgtmpl = LoadAndPatchDialogTemplate(g_hinstExe, 
+				MAKEINTRESOURCE(IDD_InplaceTooltip), pt);
+			assert(dlgtmpl);
+		}
+
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgInplaceTooltip>(
 			_T("IDD_InplaceTooltip"), IDD_InplaceTooltip, hdlgMain, &ctx.ptdInplaceTooltip);
 		break;
-
+	}
 	case IDOK:
 	case IDCANCEL:
 	{
@@ -91,6 +103,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	CheckDlgButton(hdlg, IDCK_TTF_TRACK, TRUE);
 	CheckDlgButton(hdlg, IDCK_TTF_ABSOLUTE, TRUE);
 	CheckDlgButton(hdlg, IDCK_ClientToScreen, TRUE);
+
+	SetDlgItemText(hdlg, IDE_FontsizePt, _T("10"));
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
