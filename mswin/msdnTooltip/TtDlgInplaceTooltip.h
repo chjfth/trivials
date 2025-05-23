@@ -1,7 +1,11 @@
 #include "shareinc.h"
 
+#include <mswin/JULayout2.h>
+
 #include "resource.h"
 #include "ModelessTtdemo.h"
+
+enum { OffScreenX = -32000, OffScreenY = -32000 };
 
 class CTtDlgInplaceTooltip : public CModelessTtDemo
 {
@@ -97,6 +101,17 @@ void RefreshUI_Datetime(HWND hdlg)
 const int CTtDlgInplaceTooltip::sar_Uics[] = {
 	IDL_ShortDate, IDL_LongDate };
 
+static void enable_Julayout(HWND hdlg)
+{
+	JULayout *jul = JULayout::EnableJULayout(hdlg, 130, 0, 32000, 600);
+
+	jul->AnchorControl(0, 0, 100, 100, IDC_STATIC1);
+
+	jul->AnchorControl(0, 100, 100, 100, IDL_ShortDate);
+	jul->AnchorControl(0, 100, 100, 100, IDL_LongDate);
+
+}
+
 CModelessChild::Actioned_et
 CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
@@ -106,6 +121,8 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 
 	if (uMsg == WM_INITDIALOG)
 	{
+		enable_Julayout(m_hdlgMe);
+
 		SetDlgItemText(m_hdlgMe, IDC_STATIC1,
 			_T("To see datetime text in full, either hover your mouse over the text label ")
 			_T("to activate in-place tooltip, or, resize the dialogbox.")
@@ -169,6 +186,8 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 			SIZE size_req = {};
 			GetTextExtentPoint32(hdc, szLabel, lenLabel, &size_req);
 
+			ReleaseDC(hwndLabel, hdc);
+
 			RECT rc_label = {};
 			GetClientRect(hwndLabel, &rc_label);
 			int label_width = rc_label.right - rc_label.left;
@@ -180,6 +199,9 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 			if (size_req.cx > label_width)
 			{
 				// Yes, need update text.
+
+				vaDbgTs(_T("Text-extent > label-width (%d > %d), will show inplace-tootlip."), size_req.cx, label_width);
+
 				ti.lpszText = szLabel;
 				SendMessage(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
 
@@ -193,20 +215,25 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 
 				SetWindowPos(m_hwndTooltip, NULL, 
 					rc_label.left, rc_label.top, 0, 0, 
-					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-				
-				*pMsgRet = TRUE; 
-				// -- Important, as return-value for TTN_SHOW. It tells tooltip code
-				// to respect our SetWindowPos().
+					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);				
 			}
 			else
 			{
-				// No. Set empty text, so the tooltip does not show-up.
-				ti.lpszText = _T("");
-				SendMessage(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
+				// No. We will "suppress" the tooltip by moving it off-screen.
+
+				vaDbgTs(_T("Text-extent < label-width (%d < %d), will hide inplace-tootlip."), size_req.cx, label_width);
+
+				SetWindowPos(m_hwndTooltip, NULL,
+					OffScreenX, OffScreenY, 0, 0,
+					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+				// ti.lpszText = _T(""); // wrong way
+				// -- NOTE: Don't set empty text, which will cause later TTN_SHOW to never come up.
 			}
 
-			ReleaseDC(hwndLabel, hdc);
+			*pMsgRet = TRUE;
+			// -- Important, as return-value for TTN_SHOW. It tells tooltip code
+			// to respect our SetWindowPos().
 		}
 
 		return Actioned_yes;

@@ -99,7 +99,7 @@ EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "In-place tooltip demo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Current time and date",IDC_STATIC1,13,8,118,36
+    LTEXT           "User hint",IDC_STATIC1,13,8,118,36
     LTEXT           "Short date",IDL_ShortDate,13,49,118,8,SS_NOTIFY
     LTEXT           "Long date",IDL_LongDate,13,65,118,8,SS_NOTIFY | SS_ENDELLIPSIS
 END
