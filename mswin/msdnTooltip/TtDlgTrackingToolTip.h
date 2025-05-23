@@ -81,9 +81,9 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 	ti.uId = NULL; // We want "whole screen", so these two are NULL.
 
 	// Associate the tooltip with the tool window.
-	BOOL succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
+	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
-	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, succ);
+	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
 
 	return hwndTT;
 }
@@ -230,9 +230,9 @@ HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 	SetRect(&ti.rect, 0, 0, 0, 0);
 
 	// Associate the tooltip with the tool window.
-	BOOL succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
+	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
-	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, succ);
+	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
 
 	return hwndTT;
 }

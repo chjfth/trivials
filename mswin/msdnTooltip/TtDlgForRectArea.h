@@ -40,9 +40,9 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
 
 	// Associate the tooltip with the "tool" window.
-	BOOL succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
+	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
 
-	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, succ);
+	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
 
 	return hwndTT;
 }

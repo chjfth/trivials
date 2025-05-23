@@ -57,11 +57,11 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 		assert(ti.uId);
 
 		// Associate this Uic to the tooltip.
-		BOOL succ = SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
+		LRESULT succ = SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
 		TCHAR szprefix[40];
 		_sntprintf_s(szprefix, _TRUNCATE, _T("CreateInplaceTooltip_ForUics() #%d"), i+1);
-		dbg_TTM_ADDTOOL(szprefix, ti, succ);
+		dbg_TTM_ADDTOOL(szprefix, ti, (BOOL)succ);
 	}
 	
 
