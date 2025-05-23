@@ -69,9 +69,13 @@ LoadAndPatchDialogTemplate(HINSTANCE hInst, LPCTSTR lpDialogName, WORD newPointS
 
     // Now we're at the font size (WORD), font weight (WORD), italic (BYTE), charset (BYTE), then font name (WCHAR[])
     WORD* pSize = (WORD*)p;
-    *pSize++ = newPointSize;    // Font size
+    
+	if (*pSize != newPointSize)
+	{
+		*pSize = newPointSize;    // Font size
+	}
 
-	pSize += 2;
+	pSize += 3;
 
     // Now pSize points to Unicode Font name, "MS Shell Dlg" etc
 

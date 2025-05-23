@@ -104,7 +104,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	CheckDlgButton(hdlg, IDCK_TTF_ABSOLUTE, TRUE);
 	CheckDlgButton(hdlg, IDCK_ClientToScreen, TRUE);
 
-	SetDlgItemText(hdlg, IDE_FontsizePt, _T("10"));
+	SetDlgItemText(hdlg, IDE_FontsizePt, _T("8"));
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
