@@ -15,6 +15,7 @@
 
 #include <mswin/win32clarify.h>
 
+#include <mswin/WinUser.itc.h>
 #include <mswin/CommCtrl.itc.h>
 using namespace itc;
 
@@ -73,7 +74,8 @@ HWND create_demo_tooltip(HWND hdlg, BOOL isWsExTransparent, BOOL isTtfTransparen
 
 	// Chj: Set tooltip delay-times.
 	succ = SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_INITIAL, 10);
-	succ = SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_AUTOPOP, 12000);
+	succ = SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_AUTOPOP, 29000); 
+	// -- show tooltip for 29 seconds; too-large(eg 59000) will revert to 5000 default.
 
 	return hwndTT;
 }
@@ -145,13 +147,26 @@ LRESULT Dlg_OnNotify(HWND hdlg, int idFrom, NMHDR *pnm)
 
 void Dlg_OnMouseMove(HWND hdlg, int x, int y, UINT keyFlags)
 {
-	vaDbgTs(_T("WM_MOUSEMOVE: x=%d, y=%d"), x, y);
+	vaDbgTs(_T("Dlg - WM_MOUSEMOVE: x=%d, y=%d"), x, y);
+}
+
+LRESULT CALLBACK 
+SubclassProc_MonitorTooltip(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, 
+	UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+	assert(uIdSubclass==0);
+	HWND hdlg = (HWND)(dwRefData);
+
+	vaDbgTs(_T("Tooltip sees wmsg: %s"), ITCSv(uMsg, TTM_xxx_WM_xxx));
+
+	return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 }
 
 void do_IDB_CreateTooltip(HWND hdlg)
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	HWND &hwndTT = prdata->hwndTooltip;
+	BOOL succ = 0;
 
 	if(hwndTT==NULL)
 	{
@@ -169,10 +184,19 @@ void do_IDB_CreateTooltip(HWND hdlg)
 
 		DisableDlgItem(hdlg, IDCK_WsExTransparent);
 		DisableDlgItem(hdlg, IDCK_TtfTransparent);
+
+		succ = SetWindowSubclass(hwndTT, SubclassProc_MonitorTooltip, 0, (DWORD_PTR)hdlg);
+		assert(succ);
 	}
 	else
 	{
-		BOOL succ = DestroyWindow(hwndTT);
+		BOOL succ = 0;
+		succ = RemoveWindowSubclass(hwndTT, SubclassProc_MonitorTooltip, 0);
+		assert(succ);
+
+		succ = DestroyWindow(hwndTT);
+		assert(succ);
+
 		hwndTT = NULL;
 		vaSetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
 			_T("Destroy tooltip-window [%s]"), succ?_T("Success"):_T("Fail"));
