@@ -1,6 +1,7 @@
 #include "shareinc.h"
 
 #include <mswin/JULayout2.h>
+#include <mswin/win32cozy.h>
 
 #include "resource.h"
 #include "ModelessTtdemo.h"
@@ -183,6 +184,10 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 			HFONT hfont = GetWindowFont(hwndLabel);
 			SelectFont(hdc, hfont);
 			
+			// let tooltip use the same font as target label. 
+			SetWindowFont(m_hwndTooltip, hfont, FALSE);
+
+
 			SIZE size_req = {};
 			GetTextExtentPoint32(hdc, szLabel, lenLabel, &size_req);
 
@@ -206,16 +211,22 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 				SendMessage(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
 
 				// And reposition the tooltip "in-place".
-				GetWindowRect(hwndLabel, &rc_label);
+				RECT rc_label_ext = {};
+				GetWindowRect(hwndLabel, &rc_label_ext);
+				rc_label_ext.right = rc_label_ext.left + size_req.cx;
+				rc_label_ext.bottom = rc_label_ext.top + size_req.cy;
 
-				SendMessage(m_hwndTooltip, TTM_ADJUSTRECT, TRUE, (LPARAM)&rc_label);
-				// -- This make rc_label nudge a bit towards left and top. For example:
-				// From {LT(97, 172) RB(274, 185)[177 x 13]}
-				//   to {LT(91, 170) RB(279, 186)[188 x 16]}
+				SendMessage(m_hwndTooltip, TTM_ADJUSTRECT, TRUE, (LPARAM)&rc_label_ext);
+				// -- This make rc_label_ext nudge a bit towards left and top. 
+				// On a Win7 1280x1024 screen:
+				// From {LT(551, 545) RB(773, 558)  [222 x 13]}
+				//   to {LT(545, 543) RB(778, 559)  [233 x 16]}
 
 				SetWindowPos(m_hwndTooltip, NULL, 
-					rc_label.left, rc_label.top, 0, 0, 
-					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);				
+					rc_label_ext.left, rc_label_ext.top, RECTwidth(rc_label_ext), RECTheight(rc_label_ext), 
+					SWP_NOZORDER | SWP_NOACTIVATE);	
+				// -- Must not include SWP_NOSIZE, bcz tooltip's width may have changed 
+				// due to new text, and the new size has been calculated in rc_label_ext .
 			}
 			else
 			{
