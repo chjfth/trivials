@@ -78,12 +78,17 @@ BOOL CModelessChild::CreateTheDialog(const TCHAR *name,
 
 	m_hdlgParent = hdlgParent;
 
+	mr_ptrme_by_parent = this;
+	// -- mr_ptrme_by_parent should better be set before calling CreateDialogParam(),
+	// bcz WM_INITDIALOG's calling SetDlgItemText(m_hdlgMe, IDC_SOME_EDITBOX, ...)
+	// could trigger m_hdlgMe's WM_COMMAND(EN_UPDATE), where we like to see 
+	// mr_ptrme_by_parent is non-NULL. CTtDlgInplaceSimplest can trigger this.
+
 	m_hdlgMe = CreateDialogParam(hInstExe, MAKEINTRESOURCE(dlg_resid), hdlgParent,
 		StartDlgProc,
 		(LPARAM)this // dlgparam
 	);
 
-	mr_ptrme_by_parent = this;
 	m_WM_KillSelf = RegisterWindowMessage(_T("ModelessChild_KillSelf"));
 
 	return m_hdlgMe ? TRUE : FALSE;
@@ -150,7 +155,7 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRe
 		assert(mr_ptrme_by_parent == this);
 
 		UINT cmd = GET_WM_COMMAND_ID(wParam, lParam);
-		if (cmd == IDCANCEL)
+		if (cmd == IDCANCEL || cmd == IDOK)
 		{
 			assert(IsWindow(m_hdlgMe));
 			::PostMessage(m_hdlgMe, m_WM_KillSelf, 0, 0);

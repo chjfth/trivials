@@ -32,7 +32,7 @@ private:
 HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 {
 	// Create the tooltip. g_hinstExe is the global instance handle.
-	HWND hwndTip = CreateWindowEx(
+	HWND hwndTT = CreateWindowEx(
 		NULL, // better to assign WS_EX_TOPMOST here.
 		TOOLTIPS_CLASS,
 		NULL, // window title
@@ -42,7 +42,7 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 		hdlg, // tooltip-window's owner
 		NULL, NULL, NULL);
 
-	if (!hwndTip)
+	if (!hwndTT)
 		return NULL;
 
 	// Associate Uics to the tooltip.
@@ -57,15 +57,17 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 		assert(ti.uId);
 
 		// Associate this Uic to the tooltip.
-		LRESULT succ = SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
+		LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
 		TCHAR szprefix[40];
 		_sntprintf_s(szprefix, _TRUNCATE, _T("CreateInplaceTooltip_ForUics() #%d"), i+1);
 		dbg_TTM_ADDTOOL(szprefix, ti, (BOOL)succ);
+	
+		// Make the tooltip appear immediately (10ms), instead of delaying 500ms.
+		SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_INITIAL, 10);
 	}
 	
-
-	return hwndTip;
+	return hwndTT;
 }
 
 void RefreshUI_Datetime(HWND hdlg)
@@ -144,7 +146,7 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 		*pMsgRet = AcceptDefaultFocus_FALSE;
 		return Actioned_yes;
 	}
-	if (uMsg == WM_TIMER)
+	else if (uMsg == WM_TIMER)
 	{
 		if (wParam == s_timerId)
 		{
@@ -152,7 +154,7 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 		}
 		return Actioned_yes;
 	}
-	if (uMsg == WM_NOTIFY)
+	else if (uMsg == WM_NOTIFY)
 	{
 		dbg_WM_NOTIFY(wParam, lParam);
 

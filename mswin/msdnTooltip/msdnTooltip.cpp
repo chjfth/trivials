@@ -14,6 +14,7 @@
 #include "TtDlgForUic.h"
 #include "TtDlgForRectArea.h"
 #include "TtDlgTrackingToolTip.h"
+#include "TtDlgInplaceSimplest.h"
 #include "TtDlgInplaceToolTip.h"
 
 #include "dlgbox-helper.h"
@@ -30,6 +31,7 @@ struct DlgPrivate_st
 	CModelessChild *ptdForRectArea; // HWND hdlgTtForRectArea;
 	CModelessChild *ptdTrackingTooltip1;
 	CModelessChild *ptdTrackingTooltipMisc;
+	CModelessChild *ptdInplaceSimplest;
 	CModelessChild *ptdInplaceTooltip;
 };
 
@@ -59,6 +61,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_TrackingTooltipMisc:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_misc>(
 			_T("IDD_TrackingTooltipMisc"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltipMisc);
+		break;
+
+	case IDB_InplaceSimplest:
+		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgInplaceSimplest>(
+			_T("IDD_InplaceSimplest"), IDD_InplaceSimplest, hdlgMain, &ctx.ptdInplaceSimplest);
 		break;
 
 	case IDB_InplaceTooltip:

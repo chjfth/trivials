@@ -244,6 +244,7 @@
     <ClInclude Include="TtDlgForRectArea.h" />
     <ClInclude Include="TtDlgTrackingToolTip.h" />
     <ClInclude Include="TtDlgInplaceToolTip.h" />
+    <ClInclude Include="TtDlgInplaceSimplest.h" />
     <ClInclude Include="dlgbox-helper.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />

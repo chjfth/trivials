@@ -282,7 +282,7 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 		return Actioned_yes;
 	}
-	if (uMsg == WM_MOUSEMOVE)
+	else if (uMsg == WM_MOUSEMOVE)
 	{
 		CWmMouseleaveHelper::Move_ret moveret = m_mouseleave.do_WM_MOUSEMOVE();
 
@@ -321,7 +321,7 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 				_T("TTM_TRACKPOSITION use [%d, %d]"), pt_ttm.x, pt_ttm.y);
 
 			SendMessage(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(pt_ttm.x, pt_ttm.y));
-	}
+		}
 
 		return Actioned_yes;
 	}
