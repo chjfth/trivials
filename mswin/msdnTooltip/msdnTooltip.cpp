@@ -55,12 +55,12 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 	case IDB_TrackingTooltipConcise:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_concise>(
-			_T("IDD_TrackingTooltip1"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltip1);
+			_T("IDD_TrackingTooltip1"), IDD_TrackingConcise, hdlgMain, &ctx.ptdTrackingTooltip1);
 		break;
 
 	case IDB_TrackingTooltipMisc:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_misc>(
-			_T("IDD_TrackingTooltipMisc"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltipMisc);
+			_T("IDD_TrackingTooltipMisc"), IDD_TrackingConcise, hdlgMain, &ctx.ptdTrackingTooltipMisc);
 		break;
 
 	case IDB_InplaceSimplest:
@@ -75,12 +75,12 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(bTrans && pt>0)
 		{
 			void *dlgtmpl = LoadAndPatchDialogTemplate(g_hinstExe, 
-				MAKEINTRESOURCE(IDD_InplaceTooltip), pt);
+				MAKEINTRESOURCE(IDD_InplaceComplex), pt);
 			assert(dlgtmpl);
 		}
 
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgInplaceTooltip>(
-			_T("IDD_InplaceTooltip"), IDD_InplaceTooltip, hdlgMain, &ctx.ptdInplaceTooltip);
+			_T("IDD_InplaceTooltip"), IDD_InplaceComplex, hdlgMain, &ctx.ptdInplaceTooltip);
 		break;
 	}
 	case IDOK:

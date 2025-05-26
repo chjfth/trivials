@@ -6,9 +6,10 @@
 #define IDD_WINMAIN                     100
 #define IDD_TooltipForUic               101
 #define IDD_TooltipForRectArea          102
-#define IDD_TrackingTooltip1            103
-#define IDD_InplaceSimplest             104
-#define IDD_InplaceTooltip              105
+#define IDD_TooltipMultiline            103
+#define IDD_TrackingConcise             104
+#define IDD_InplaceSimplest             105
+#define IDD_InplaceComplex              106
 #define IDC_LABEL1                      1000
 #define IDC_EDIT_LOGMSG                 1001
 #define IDB_InplaceSimplest             1002
