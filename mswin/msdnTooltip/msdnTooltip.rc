@@ -68,6 +68,7 @@ BEGIN
     PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,192,135,14
     EDITTEXT        IDE_FontsizePt,196,193,27,13,ES_AUTOHSCROLL
     LTEXT           "Font-size (pt):",IDS_FontsizePt,145,195,47,8
+    CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,65,91,10
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
@@ -100,7 +101,6 @@ BEGIN
     PUSHBUTTON      "&Hover on me for tooltip",IDB_HasTooltip,7,27,94,14
     EDITTEXT        IDC_EDIT1,7,48,146,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
 END
-
 
 IDD_TrackingConcise DIALOGEX 0, 0, 195, 82
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
@@ -145,10 +145,7 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_WINMAIN, DIALOG
     BEGIN
-        LEFTMARGIN, 4
-        RIGHTMARGIN, 237
-        TOPMARGIN, 4
-        BOTTOMMARGIN, 229
+        , 212, 237
     END
 
     IDD_TooltipForUic, DIALOG
@@ -157,21 +154,16 @@ BEGIN
 
     IDD_TooltipForRectArea, DIALOG
     BEGIN
+        , 12582912
     END
 
-    IDD_TrackingTooltip1, DIALOG
+    IDD_TooltipMultiline, DIALOG
     BEGIN
-        RIGHTMARGIN, 192
-        BOTTOMMARGIN, 78
     END
 
     IDD_InplaceSimplest, DIALOG
     BEGIN
-        RIGHTMARGIN, 159
-    END
-
-    IDD_InplaceTooltip, DIALOG
-    BEGIN
+        , 4096
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -227,12 +219,12 @@ BEGIN
     0
 END
 
-IDD_TrackingTooltip1 AFX_DIALOG_LAYOUT
+IDD_TRACKINGTOOLTIP1 AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
 
-IDD_InplaceTooltip AFX_DIALOG_LAYOUT
+IDD_INPLACETOOLTIP AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

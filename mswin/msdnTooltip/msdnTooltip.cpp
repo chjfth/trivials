@@ -104,7 +104,9 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
 	jul->AnchorControls(0, 0, 0, 0,
-		IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth, IDB_MultilineTooltip,
+		IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth, 
+		IDCK_WsexTransparent,
+		IDB_MultilineTooltip,
 		-1);
 	jul->AnchorControls(0, 0, 100, 100, // right-side
 		IDGB_MultilineTooltip, IDE_MultilineText,
@@ -138,6 +140,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	CheckDlgButton(hdlg, IDCK_EnableMultiline, TRUE);
 	SetDlgItemText(hdlg, IDE_LineWidth, _T("200"));
 	SetDlgItemText(hdlg, IDE_MultilineText, _T("Sample Line 1\r\nSample Line 2"));
+	CheckDlgButton(hdlg, IDCK_WsexTransparent, TRUE);
 
 	SetDlgItemInt(hdlg, IDE_TttOffsetX,  10, bSigned_TRUE);
 	SetDlgItemInt(hdlg, IDE_TttOffsetY, -20, bSigned_TRUE);

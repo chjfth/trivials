@@ -25,7 +25,7 @@ private:
 #ifdef TtDlgMultiline_IMPL
 
 HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
-	BOOL isMultiline, int LineWidth)
+	BOOL isMultiline, int LineWidth, BOOL isWsexTransparent)
 {
 	assert(hwndOwner);
 	assert(uicHottool);
@@ -37,7 +37,7 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 
 	// Create the tooltip. g_hinstExe is the global instance handle.
 	HWND hwndTT = CreateWindowEx(
-		WS_EX_TRANSPARENT, // better to add WS_EX_TOPMOST here.
+		(isWsexTransparent ? WS_EX_TRANSPARENT : 0), // better to add WS_EX_TOPMOST here.
 		TOOLTIPS_CLASS,
 		NULL, // window title
 		WS_POPUP | TTS_ALWAYSTIP,  // need WS_POPUP?
@@ -80,7 +80,7 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 }
 
 const int CTtDlgMultiline::sar_OptUic[] = {
-	IDCK_EnableMultiline, IDE_LineWidth};
+	IDCK_EnableMultiline, IDE_LineWidth, IDCK_WsexTransparent };
 
 
 CModelessChild::Actioned_et
@@ -97,13 +97,14 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 		BOOL isMultiline = IsDlgButtonChecked(m_hdlgParent, IDCK_EnableMultiline);
 		BOOL bTrans = 0;
 		int LineWidth = GetDlgItemInt(m_hdlgParent, IDE_LineWidth, &bTrans, bSigned_FALSE);
+		BOOL isWsExTransparent = IsDlgButtonChecked(m_hdlgParent, IDCK_WsexTransparent);
 
 		Enable_Uics(FALSE, m_hdlgParent, sar_OptUic);
 
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateToolTip_Multiline(m_hdlgMe, IDB_HasTooltip,
-			isMultiline, LineWidth);
+			isMultiline, LineWidth, isWsExTransparent);
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 

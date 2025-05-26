@@ -44,6 +44,8 @@
 #define IDE_MultilineText               1024
 #define IDB_MultilineTooltip            1025
 #define IDS_LineWidth                   1026
+#define IDC_CHECK1                      1027
+#define IDCK_WsexTransparent            1027
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -52,7 +54,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        110
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
