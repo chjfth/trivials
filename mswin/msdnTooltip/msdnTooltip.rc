@@ -48,7 +48,7 @@ BEGIN
     CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,5,63,10
     PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,21,135,14
     GROUPBOX        "Multiline Tooltip dynamic text",IDGB_MultilineTooltip,4,40,233,55
-    CONTROL         "Multiline",IDCK_EnableMultiline,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,51,41,10
+    CONTROL         "Multiline",IDCK_EnableMultiline,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,51,40,10
     EDITTEXT        IDE_LineWidth,50,49,28,14,ES_AUTOHSCROLL
     LTEXT           "line-width",IDS_LineWidth,81,52,32,8
     EDITTEXT        IDE_MultilineText,116,50,121,41,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL

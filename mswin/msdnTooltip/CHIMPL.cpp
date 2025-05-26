@@ -46,3 +46,7 @@ void vaDBG(...)
 #define   TtDlgInplaceTooltip_IMPL
 #include "TtDlgInplaceTooltip.h"
 
+#define   TtDlgMultiline_DEBUG
+#define   TtDlgMultiline_IMPL
+#include "TtDlgMultiline.h"
+

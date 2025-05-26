@@ -242,6 +242,7 @@
     <ClInclude Include="ModelessTtdemo.h" />
     <ClInclude Include="TtDlgForUic.h" />
     <ClInclude Include="TtDlgForRectArea.h" />
+    <ClInclude Include="TtDlgMultiline.h" />
     <ClInclude Include="TtDlgTrackingToolTip.h" />
     <ClInclude Include="TtDlgInplaceToolTip.h" />
     <ClInclude Include="TtDlgInplaceSimplest.h" />

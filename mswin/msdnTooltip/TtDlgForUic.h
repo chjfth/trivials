@@ -28,6 +28,8 @@ public:
 HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 	bool isTTS_BALLOON)
 {
+	HWND hwndOwner = hDlg;
+
 	if (!toolID || !hDlg || !pszText)
 	{
 		return FALSE;
@@ -36,18 +38,18 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 	HWND hwndTool = GetDlgItem(hDlg, toolID);
 
 	// Create the tooltip. g_hinstExe is the global instance handle.
-	HWND hwndTip = CreateWindowEx(
-		NULL, // better to assign WS_EX_TOPMOST here.
+	HWND hwndTT = CreateWindowEx(
+		0, // better to assign WS_EX_TOPMOST here.
 		TOOLTIPS_CLASS,
 		NULL, // window title
-		WS_POPUP | TTS_ALWAYSTIP | (isTTS_BALLOON ? TTS_BALLOON : 0),
+		WS_POPUP | TTS_ALWAYSTIP | (isTTS_BALLOON ? TTS_BALLOON : 0), // need WS_POPUP?
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		hDlg, // tooltip-window's owner
+		hwndOwner, // tooltip-window's owner, receiving WM_NOTIFY
 		NULL,
 		g_hinstExe, NULL);
 
-	if (!hwndTool || !hwndTip)
+	if (!hwndTool || !hwndTT)
 	{
 		return NULL;
 	}
@@ -60,11 +62,11 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
 	
 	// Associate the tooltip with the "tool" window.
-	LRESULT succ = SendMessage(hwndTip, TTM_ADDTOOL, 0, (LPARAM)&ti);
+	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
-	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
+	dbg_TTM_ADDTOOL(_T("CreateToolTip_ForUic()"), ti, (BOOL)succ);
 
-	return hwndTip;
+	return hwndTT;
 }
 
 CModelessChild::Actioned_et

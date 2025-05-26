@@ -26,8 +26,6 @@
 #define IDB_NoTooltip                   1010
 #define IDCK_TTF_TRACK                  1010
 #define IDB_HasTooltip                  1011
-#define IDB_NoTooltip2                  1011
-#define IDC_CHECK3                      1011
 #define IDCK_TTF_ABSOLUTE               1011
 #define IDCK_ClientToScreen             1012
 #define IDL_ShortDate                   1013

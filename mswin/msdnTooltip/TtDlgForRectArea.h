@@ -42,7 +42,7 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 	// Associate the tooltip with the "tool" window.
 	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
 
-	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
+	dbg_TTM_ADDTOOL(_T("CreateToolTipForRectArea()"), ti, (BOOL)succ);
 
 	return hwndTT;
 }

@@ -13,6 +13,7 @@
 //#include "ModelessTtdemo.h"
 #include "TtDlgForUic.h"
 #include "TtDlgForRectArea.h"
+#include "TtDlgMultiline.h"
 #include "TtDlgTrackingToolTip.h"
 #include "TtDlgInplaceSimplest.h"
 #include "TtDlgInplaceToolTip.h"
@@ -29,6 +30,7 @@ struct DlgPrivate_st
 	int clicks;
 	CModelessChild *ptdForUic; // HWND hdlgTtForUic;
 	CModelessChild *ptdForRectArea; // HWND hdlgTtForRectArea;
+	CModelessChild *ptdMultiline;
 	CModelessChild *ptdTrackingTooltip1;
 	CModelessChild *ptdTrackingTooltipMisc;
 	CModelessChild *ptdInplaceSimplest;
@@ -51,6 +53,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_TooltipForRectArea:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgForRectArea>(
 			_T("IDD_TooltipForRectArea"), IDD_TooltipForRectArea, hdlgMain, &ctx.ptdForRectArea);
+		break;
+
+	case IDB_MultilineTooltip:
+		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgMultiline>(
+			_T("IDD_TooltipMultiline"), IDD_TooltipMultiline, hdlgMain, &ctx.ptdMultiline);
 		break;
 
 	case IDB_TrackingTooltipConcise:
@@ -129,8 +136,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		msdnTooltip_VMAJOR, msdnTooltip_VMINOR, msdnTooltip_VPATCH);
 	
 	CheckDlgButton(hdlg, IDCK_EnableMultiline, TRUE);
-	SetDlgItemText(hdlg, IDE_LineWidth, _T("100"));
-	SetDlgItemText(hdlg, IDE_MultilineText, _T("Sample line 1\r\nSample Line 2"));
+	SetDlgItemText(hdlg, IDE_LineWidth, _T("200"));
+	SetDlgItemText(hdlg, IDE_MultilineText, _T("Sample Line 1\r\nSample Line 2"));
 
 	SetDlgItemInt(hdlg, IDE_TttOffsetX,  10, bSigned_TRUE);
 	SetDlgItemInt(hdlg, IDE_TttOffsetY, -20, bSigned_TRUE);
@@ -185,11 +192,14 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int nCmdShow
 		if(IsDialogMessage(hdlgMain, &msg))
 			continue;
 
+		// If some demo dlg needs Tab-key swtiching focus, we should add these:
+/*
 		if(ctx.ptdForUic && IsDialogMessage(ctx.ptdForUic->GetHdlg(), &msg))
 			continue;
 
 		if(ctx.ptdForRectArea && IsDialogMessage(ctx.ptdForRectArea->GetHdlg(), &msg))
 			continue;
+*/
 
 		TranslateMessage (&msg) ;
 		DispatchMessage (&msg) ;

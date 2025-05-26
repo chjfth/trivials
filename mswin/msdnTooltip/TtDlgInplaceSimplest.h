@@ -22,6 +22,8 @@ HWND CreateToolTip_InplaceSimplest(HWND hwndOwner, int uicHottool)
 	// Note for Static label as hottool, the Static uic needs SS_NOTIFY flag,
 	// so that it can receive mouse messages.
 
+	HWND hwndUic = GetDlgItem(hwndOwner, uicHottool);
+
 	// Create a tooltip.
 	HWND hwndTT = CreateWindowEx(
 		WS_EX_TOPMOST | WS_EX_TRANSPARENT,
@@ -31,8 +33,6 @@ HWND CreateToolTip_InplaceSimplest(HWND hwndOwner, int uicHottool)
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, 
 		NULL, g_hinstExe, NULL);
-
-	HWND hwndUic = GetDlgItem(hwndOwner, uicHottool);
 
 	// Set up "tool" information. In this case, the "tool" is the entire parent window.
 
@@ -51,7 +51,7 @@ HWND CreateToolTip_InplaceSimplest(HWND hwndOwner, int uicHottool)
 	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFO)&ti);
 	assert(succ);
 
-	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
+	dbg_TTM_ADDTOOL(_T("CreateToolTip_InplaceSimplest()"), ti, (BOOL)succ);
 
 	// Make the tooltip appear immediately (10ms), instead of delaying 500ms.
 	SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_INITIAL, 10);
