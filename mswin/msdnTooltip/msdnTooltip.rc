@@ -44,24 +44,22 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CA
 CAPTION "msdnTooltipDemo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CTEXT           "MSDN tooltip demos",IDC_LABEL1,4,4,186,12,SS_CENTERIMAGE
-    PUSHBUTTON      "Close",IDOK,95,171,50,14
-    PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,24,135,14
-    PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,42,135,14
-    PUSHBUTTON      "Tracking Tooltip concise way",IDB_TrackingTooltip1,4,61,135,14
-    CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,26,63,10
-    LTEXT           "offset X:",IDC_STATIC,144,64,29,8
-    EDITTEXT        IDE_TtOffsetX,173,62,22,14,ES_AUTOHSCROLL
-    LTEXT           "Y:",IDC_STATIC,199,64,8,8
-    EDITTEXT        IDE_TtOffsetY,207,62,22,14,ES_AUTOHSCROLL
-    GROUPBOX        "Tracking tooltip misc",IDC_STATIC,4,84,232,44
+    PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,3,135,14
+    PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,21,135,14
+    PUSHBUTTON      "Tracking Tooltip concise way",IDB_TrackingTooltip1,4,40,135,14
+    CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,5,63,10
+    LTEXT           "offset X:",IDC_STATIC,144,43,29,8
+    EDITTEXT        IDE_TtOffsetX,173,41,22,14,ES_AUTOHSCROLL
+    LTEXT           "Y:",IDC_STATIC,199,43,8,8
+    EDITTEXT        IDE_TtOffsetY,207,41,22,14,ES_AUTOHSCROLL
+    GROUPBOX        "Tracking tooltip misc",IDGB_TrackingTooltip,4,84,232,44
     CONTROL         "TTF_TRACK",IDCK_TTF_TRACK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,98,54,10
     PUSHBUTTON      "Tracking Tooltip misc parameters",IDB_TrackingTooltipMisc,11,95,127,14
     CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,114,66,10
     CONTROL         "ClientToScreen for TTM_TRACKPOSITION",IDCK_ClientToScreen,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,114,149,10
-    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceTooltip,4,149,135,14
-    LTEXT           "Font-size (pt):",IDC_STATIC,145,152,47,8
+    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,149,135,14
+    LTEXT           "Font-size (pt):",IDS_FontsizePt,145,152,47,8
     EDITTEXT        IDE_FontsizePt,196,150,27,14,ES_AUTOHSCROLL
     PUSHBUTTON      "In-place tooltip simplest",IDB_InplaceSimplest,4,131,135,14
 END

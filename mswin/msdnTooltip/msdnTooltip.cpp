@@ -92,6 +92,21 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	}}
 }
 
+static void Dlg_EnableJULayout(HWND hdlg)
+{
+	JULayout *jul = JULayout::EnableJULayout(hdlg);
+
+	jul->AnchorControls(0, 100, 0, 100, 
+		IDGB_TrackingTooltip, IDB_TrackingTooltipMisc, 
+		IDCK_TTF_TRACK, IDCK_ClientToScreen, IDCK_TTF_ABSOLUTE
+		,
+		IDB_InplaceSimplest, IDB_InplaceComplex, IDS_FontsizePt, IDE_FontsizePt
+		);
+
+
+	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
+}
+
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
 	vaDbgTs(_T("hdlgMain = 0x%08X"), hdlg);
@@ -112,6 +127,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	CheckDlgButton(hdlg, IDCK_ClientToScreen, TRUE);
 
 	SetDlgItemText(hdlg, IDE_FontsizePt, _T("8"));
+
+	Dlg_EnableJULayout(hdlg);
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().

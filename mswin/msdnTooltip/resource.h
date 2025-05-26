@@ -33,8 +33,11 @@
 #define IDL_ShortDate                   1013
 #define IDB_TrackingTooltip2            1013
 #define IDB_InplaceTooltip              1013
+#define IDB_InplaceComplex              1013
 #define IDL_LongDate                    1014
 #define IDE_FontsizePt                  1015
+#define IDGB_TrackingTooltip            1016
+#define IDS_FontsizePt                  1017
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -43,7 +46,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        110
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1016
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
