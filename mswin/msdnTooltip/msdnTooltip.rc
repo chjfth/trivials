@@ -69,6 +69,7 @@ BEGIN
     EDITTEXT        IDE_FontsizePt,196,193,27,13,ES_AUTOHSCROLL
     LTEXT           "Font-size (pt):",IDS_FontsizePt,145,195,47,8
     CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,65,91,10
+    CONTROL         "TTF_CENTERTIP",IDCK_TTF_CENTERTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,17,69,10
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
@@ -154,7 +155,6 @@ BEGIN
 
     IDD_TooltipForRectArea, DIALOG
     BEGIN
-        , 12582912
     END
 
     IDD_TooltipMultiline, DIALOG
@@ -163,7 +163,6 @@ BEGIN
 
     IDD_InplaceSimplest, DIALOG
     BEGIN
-        , 4096
     END
 END
 #endif    // APSTUDIO_INVOKED

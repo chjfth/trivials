@@ -26,7 +26,7 @@ public:
 //   The handle to the tooltip.
 //
 HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
-	bool isTTS_BALLOON)
+	BOOL isTTS_BALLOON, BOOL isTTF_CENTERTIP)
 {
 	HWND hwndOwner = hDlg;
 
@@ -57,7 +57,7 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 	// Associate the tooltip with the tool.
 	TOOLINFO ti = { sizeof(TOOLINFO) };
 	ti.hwnd = hDlg;
-	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS | (isTTF_CENTERTIP ? TTF_CENTERTIP : 0);
 	ti.uId = (UINT_PTR)hwndTool;
 	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
 	
@@ -80,15 +80,14 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 	{
 		// Fetch parameter from UI
 
-		HWND hckb = GetDlgItem(m_hdlgParent, IDCK_TTS_BALLOON);
-		int btnCkd = Button_GetCheck(hckb);
-		EnableWindow(hckb, FALSE);
+		BOOL isTTS_BALLOON = IsDlgButtonChecked(m_hdlgParent, IDCK_TTS_BALLOON);
+		BOOL isTTF_CENTERTIP = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_CENTERTIP);
 
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateToolTip_ForUic(IDB_HasTooltip, m_hdlgMe,
 			_T("This is the tooltip for the button IDB_HasTootip"),
-			btnCkd ? true : false);
+			isTTS_BALLOON, isTTF_CENTERTIP);
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
@@ -120,9 +119,6 @@ void
 CTtDlgForUic::DlgClosing()
 {
 	__super::DlgClosing();
-
-	HWND hckb = GetDlgItem(m_hdlgParent, IDCK_TTS_BALLOON);
-	EnableWindow(hckb, TRUE);
 }
 
 #endif // TtDlgForUic_IMPL
