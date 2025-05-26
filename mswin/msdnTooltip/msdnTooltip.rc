@@ -52,16 +52,16 @@ BEGIN
     EDITTEXT        IDE_TtOffsetX,173,41,22,14,ES_AUTOHSCROLL
     LTEXT           "Y:",IDC_STATIC,199,43,8,8
     EDITTEXT        IDE_TtOffsetY,207,41,22,14,ES_AUTOHSCROLL
-    GROUPBOX        "Tracking tooltip misc",IDGB_TrackingTooltip,4,84,232,44
-    CONTROL         "TTF_TRACK",IDCK_TTF_TRACK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,98,54,10
-    PUSHBUTTON      "Tracking Tooltip misc parameters",IDB_TrackingTooltipMisc,11,95,127,14
-    CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,114,66,10
+    GROUPBOX        "Tracking tooltip misc",IDGB_TrackingTooltip,4,104,232,44
+    CONTROL         "TTF_TRACK",IDCK_TTF_TRACK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,118,54,10
+    PUSHBUTTON      "Tracking Tooltip misc parameters",IDB_TrackingTooltipMisc,11,115,127,14
+    CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,134,66,10
     CONTROL         "ClientToScreen for TTM_TRACKPOSITION",IDCK_ClientToScreen,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,114,149,10
-    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,149,135,14
-    LTEXT           "Font-size (pt):",IDS_FontsizePt,145,152,47,8
-    EDITTEXT        IDE_FontsizePt,196,150,27,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "In-place tooltip simplest",IDB_InplaceSimplest,4,131,135,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,134,149,10
+    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,169,135,14
+    LTEXT           "Font-size (pt):",IDS_FontsizePt,145,172,47,8
+    EDITTEXT        IDE_FontsizePt,196,170,27,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "In-place tooltip simplest",IDB_InplaceSimplest,4,151,135,14
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
