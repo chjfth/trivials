@@ -109,11 +109,11 @@ CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 
 		// Fetch user params from dlgbox UI.
 		BOOL bTrans = 0;
-		m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetX, &bTrans, bSigned_TRUE);
-		m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetY, &bTrans, bSigned_TRUE);
+		m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TttOffsetX, &bTrans, bSigned_TRUE);
+		m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TttOffsetY, &bTrans, bSigned_TRUE);
 
-		DisableDlgItem(m_hdlgParent, IDE_TtOffsetX);
-		DisableDlgItem(m_hdlgParent, IDE_TtOffsetY);
+		DisableDlgItem(m_hdlgParent, IDE_TttOffsetX);
+		DisableDlgItem(m_hdlgParent, IDE_TttOffsetY);
 
 		SetWindowText(m_hdlgMe, _T("Tooltip tracking concise way"));
 
@@ -195,8 +195,8 @@ void CTtDlgTrackingTooltip_concise::DlgClosing()
 {
 	__super::DlgClosing();
 
-	EnableDlgItem(m_hdlgParent, IDE_TtOffsetX);
-	EnableDlgItem(m_hdlgParent, IDE_TtOffsetY);
+	EnableDlgItem(m_hdlgParent, IDE_TttOffsetX);
+	EnableDlgItem(m_hdlgParent, IDE_TttOffsetY);
 }
 
 
@@ -254,8 +254,8 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 		m_isClientToScreen = IsDlgButtonChecked(m_hdlgParent, IDCK_ClientToScreen);
 
 		BOOL bTrans = 0;
-		m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetX, &bTrans, bSigned_TRUE);
-		m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TtOffsetY, &bTrans, bSigned_TRUE);
+		m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TttOffsetX, &bTrans, bSigned_TRUE);
+		m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TttOffsetY, &bTrans, bSigned_TRUE);
 
 		// Create the tooltip window.
 

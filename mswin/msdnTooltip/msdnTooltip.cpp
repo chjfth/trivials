@@ -53,7 +53,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			_T("IDD_TooltipForRectArea"), IDD_TooltipForRectArea, hdlgMain, &ctx.ptdForRectArea);
 		break;
 
-	case IDB_TrackingTooltip1:
+	case IDB_TrackingTooltipConcise:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_concise>(
 			_T("IDD_TrackingTooltip1"), IDD_TrackingTooltip1, hdlgMain, &ctx.ptdTrackingTooltip1);
 		break;
@@ -96,12 +96,21 @@ static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
-	jul->AnchorControls(0, 100, 0, 100, 
+	jul->AnchorControls(0, 0, 0, 0,
+		IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth, IDB_MultilineTooltip,
+		-1);
+	jul->AnchorControls(0, 0, 100, 100, // right-side
+		IDGB_MultilineTooltip, IDE_MultilineText,
+		-1);
+
+	jul->AnchorControls(0, 100, 0, 100, // left-bottom corner
+		IDB_TrackingTooltipConcise, IDS_TttOffsetX, IDE_TttOffsetX, IDS_TttOffsetY, IDE_TttOffsetY
+		,
 		IDGB_TrackingTooltip, IDB_TrackingTooltipMisc, 
 		IDCK_TTF_TRACK, IDCK_ClientToScreen, IDCK_TTF_ABSOLUTE
 		,
-		IDB_InplaceSimplest, IDB_InplaceComplex, IDS_FontsizePt, IDE_FontsizePt
-		);
+		IDB_InplaceSimplest, IDB_InplaceComplex, IDS_FontsizePt, IDE_FontsizePt,
+		-1);
 
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
@@ -119,8 +128,12 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	vaSetWindowText(hdlg, _T("msdnTooltipDemo v%d.%d.%d"), 
 		msdnTooltip_VMAJOR, msdnTooltip_VMINOR, msdnTooltip_VPATCH);
 	
-	SetDlgItemInt(hdlg, IDE_TtOffsetX,  10, bSigned_TRUE);
-	SetDlgItemInt(hdlg, IDE_TtOffsetY, -20, bSigned_TRUE);
+	CheckDlgButton(hdlg, IDCK_EnableMultiline, TRUE);
+	SetDlgItemText(hdlg, IDE_LineWidth, _T("100"));
+	SetDlgItemText(hdlg, IDE_MultilineText, _T("Sample line 1\r\nSample Line 2"));
+
+	SetDlgItemInt(hdlg, IDE_TttOffsetX,  10, bSigned_TRUE);
+	SetDlgItemInt(hdlg, IDE_TttOffsetY, -20, bSigned_TRUE);
 
 	CheckDlgButton(hdlg, IDCK_TTF_TRACK, TRUE);
 	CheckDlgButton(hdlg, IDCK_TTF_ABSOLUTE, TRUE);
@@ -130,7 +143,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDB_TooltipForUic));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 

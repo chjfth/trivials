@@ -11,18 +11,17 @@
 #define IDD_InplaceTooltip              105
 #define IDC_LABEL1                      1000
 #define IDC_EDIT_LOGMSG                 1001
-#define IDC_BUTTON1                     1002
 #define IDB_InplaceSimplest             1002
 #define IDB_TooltipForUic               1003
 #define IDB_TooltipForRectArea          1004
 #define IDC_EDIT1                       1004
-#define IDB_TrackingTooltip1            1005
 #define IDC_STATIC1                     1005
+#define IDB_TrackingTooltipConcise      1005
 #define IDC_STATIC2                     1006
 #define IDB_TrackingTooltipMisc         1006
 #define IDCK_TTS_BALLOON                1007
-#define IDE_TtOffsetX                   1008
-#define IDE_TtOffsetY                   1009
+#define IDE_TttOffsetX                  1008
+#define IDE_TttOffsetY                  1009
 #define IDB_NoTooltip                   1010
 #define IDCK_TTF_TRACK                  1010
 #define IDB_HasTooltip                  1011
@@ -38,6 +37,14 @@
 #define IDE_FontsizePt                  1015
 #define IDGB_TrackingTooltip            1016
 #define IDS_FontsizePt                  1017
+#define IDS_TttOffsetX                  1019
+#define IDS_TttOffsetY                  1020
+#define IDGB_MultilineTooltip           1021
+#define IDCK_EnableMultiline            1022
+#define IDE_LineWidth                   1023
+#define IDE_MultilineText               1024
+#define IDB_MultilineTooltip            1025
+#define IDS_LineWidth                   1026
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -46,7 +53,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        110
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1018
+#define _APS_NEXT_CONTROL_VALUE         1027
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
