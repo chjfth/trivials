@@ -39,7 +39,7 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText,
 
 	// Create the tooltip. g_hinstExe is the global instance handle.
 	HWND hwndTT = CreateWindowEx(
-		0, // better to assign WS_EX_TOPMOST here.
+		WS_EX_TRANSPARENT, // better to add WS_EX_TOPMOST here.
 		TOOLTIPS_CLASS,
 		NULL, // window title
 		WS_POPUP | TTS_ALWAYSTIP | (isTTS_BALLOON ? TTS_BALLOON : 0), // need WS_POPUP?
