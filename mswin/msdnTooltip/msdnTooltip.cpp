@@ -195,14 +195,13 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int nCmdShow
 		if(IsDialogMessage(hdlgMain, &msg))
 			continue;
 
-		// If some demo dlg needs Tab-key swtiching focus, we should add these:
-/*
+		// If some demo dlg needs Tab-key switching focus, we should add these:
+
 		if(ctx.ptdForUic && IsDialogMessage(ctx.ptdForUic->GetHdlg(), &msg))
 			continue;
 
-		if(ctx.ptdForRectArea && IsDialogMessage(ctx.ptdForRectArea->GetHdlg(), &msg))
+		if(ctx.ptdMultiline && IsDialogMessage(ctx.ptdMultiline->GetHdlg(), &msg))
 			continue;
-*/
 
 		TranslateMessage (&msg) ;
 		DispatchMessage (&msg) ;
