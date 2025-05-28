@@ -43,19 +43,25 @@ struct DlgPrivate_st
 {
 	HWND hdlg;
 	HWND hwndTT;
+	
+	BOOL isTweak;
 	int uicTtUse;
 };
 
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
-	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	DlgPrivate_st &prdata = *(DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 
 	switch (id) 
 	{{
 	case IDC_RADIO1:
 	case IDC_RADIO2:
-		prdata->uicTtUse = id;
+		prdata.uicTtUse = id;
+		break;
+
+	case IDCK_TWEAK:
+		prdata.isTweak = IsDlgButtonChecked(hdlg, IDCK_TWEAK);
 		break;
 
 	case IDOK:
@@ -78,22 +84,25 @@ SubclassProc_MyTooltip(HWND hwndTT, UINT uMsg, WPARAM wParam, LPARAM lParam,
 	// Debug-peeking window messages to the tooltip-window.
 	if(uMsg==TTM_WINDOWFROMPOINT)
 	{
-		POINT &pt = *(POINT*)lParam;
+		if(prdata.isTweak)
+		{
+			POINT &pt = *(POINT*)lParam;
 
-		// Chj: We will tamper the `pt`, cheat that "mouse position" is from 
-		// current prdata.uicTtUse.
+			// Chj: We will tamper the `pt`, cheat that "mouse position" is from 
+			// current prdata.uicTtUse.
 
-		HWND hwndTool = GetDlgItem(prdata.hdlg, prdata.uicTtUse);
-		assert(IsWindow(hwndTool));
-		
-		RECT rc;
-		GetWindowRect(hwndTool, &rc);
-		POINT ptnew = {(rc.left+rc.right)/2 , (rc.top+rc.bottom)/2};
+			HWND hwndTool = GetDlgItem(prdata.hdlg, prdata.uicTtUse);
+			assert(IsWindow(hwndTool));
 
-		vaDbgTs(_T("Tooltip sees TTM_WINDOWFROMPOINT, pt=[%d,%d] -> [%d,%d]"), 
-			 pt.x, pt.y, ptnew.x, ptnew.y);
+			RECT rc;
+			GetWindowRect(hwndTool, &rc);
+			POINT ptnew = {(rc.left+rc.right)/2 , (rc.top+rc.bottom)/2};
 
-		pt = ptnew; // tamper this pt, 
+			vaDbgTs(_T("Tooltip sees TTM_WINDOWFROMPOINT, pt=[%d,%d] -> [%d,%d]"), 
+				pt.x, pt.y, ptnew.x, ptnew.y);
+
+			pt = ptnew; // tamper this pt, 
+		}
 	}
 	else if(uMsg==WM_TIMER)
 	{
