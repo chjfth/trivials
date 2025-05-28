@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    testTTM_WINDOWFROMPOINT_VMAJOR, testTTM_WINDOWFROMPOINT_VMINOR, testTTM_WINDOWFROMPOINT_VPATCH, testTTM_WINDOWFROMPOINT_VTAIL
+ProductVersion testTTM_WINDOWFROMPOINT_VMAJOR, testTTM_WINDOWFROMPOINT_VMINOR, testTTM_WINDOWFROMPOINT_VPATCH, testTTM_WINDOWFROMPOINT_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     testTTM_WINDOWFROMPOINT_NAME
+            VALUE "FileDescription", testTTM_WINDOWFROMPOINT_NAME
+            VALUE "FileVersion",    testTTM_WINDOWFROMPOINT_VMAJORs "." testTTM_WINDOWFROMPOINT_VMINORs "." testTTM_WINDOWFROMPOINT_VPATCHs
+            VALUE "ProductVersion",    testTTM_WINDOWFROMPOINT_VMAJORs "." testTTM_WINDOWFROMPOINT_VMINORs "." testTTM_WINDOWFROMPOINT_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , testTTM_WINDOWFROMPOINT_NAME ".exe"
+            VALUE "InternalName", testTTM_WINDOWFROMPOINT_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
