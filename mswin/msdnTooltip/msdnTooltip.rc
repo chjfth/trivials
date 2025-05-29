@@ -39,18 +39,20 @@ IDI_WINMAIN             ICON                    "msdnTooltip.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 241, 213
+IDD_WINMAIN DIALOGEX 0, 0, 241, 231
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "msdnTooltipDemo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,3,135,14
     CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,5,63,10
+    CONTROL         "TTF_CENTERTIP",IDCK_TTF_CENTERTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,17,69,10
     PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,21,135,14
     GROUPBOX        "Multiline Tooltip dynamic text",IDGB_MultilineTooltip,4,40,233,55
     CONTROL         "Multiline",IDCK_EnableMultiline,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,51,40,10
     EDITTEXT        IDE_LineWidth,50,50,28,13,ES_AUTOHSCROLL
     LTEXT           "line-width",IDS_LineWidth,81,52,32,8
+    CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,65,91,10
     EDITTEXT        IDE_MultilineText,116,50,121,41,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
     PUSHBUTTON      "Multiline tooltip",IDB_MultilineTooltip,9,78,100,14
     PUSHBUTTON      "Tracking Tooltip concise way",IDB_TrackingTooltipConcise,4,106,135,14
@@ -58,18 +60,18 @@ BEGIN
     EDITTEXT        IDE_TttOffsetX,173,107,22,13,ES_AUTOHSCROLL
     LTEXT           "Y:",IDS_TttOffsetY,199,109,8,8
     EDITTEXT        IDE_TttOffsetY,207,107,22,13,ES_AUTOHSCROLL
-    GROUPBOX        "Tracking tooltip misc",IDGB_TrackingTooltip,4,123,232,44
+    GROUPBOX        "Tracking tooltip misc",IDGB_TrackingTooltip,4,123,232,59
     PUSHBUTTON      "Tracking Tooltip misc parameters",IDB_TrackingTooltipMisc,9,134,127,14
-    CONTROL         "TTF_TRACK",IDCK_TTF_TRACK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,137,54,10
+    CONTROL         "TTF_TRACK",IDCK_TTF_TRACK,"Button",BS_AUTO3STATE | WS_TABSTOP,10,154,54,10
+    EDITTEXT        IDE_DelayAfterTooltipText,68,152,22,13,ES_AUTOHSCROLL
+    LTEXT           "millisec delay after updating tooltip text",IDS_DelayAfterTooltipText,95,154,127,8,SS_CENTERIMAGE
     CONTROL         "ClientToScreen for TTM_TRACKPOSITION",IDCK_ClientToScreen,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,153,149,10
-    CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,153,66,10
-    PUSHBUTTON      "In-place tooltip simplest",IDB_InplaceSimplest,4,174,135,14
-    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,192,135,14
-    EDITTEXT        IDE_FontsizePt,196,193,27,13,ES_AUTOHSCROLL
-    LTEXT           "Font-size (pt):",IDS_FontsizePt,145,195,47,8
-    CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,65,91,10
-    CONTROL         "TTF_CENTERTIP",IDCK_TTF_CENTERTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,17,69,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,168,149,10
+    CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,168,66,10
+    PUSHBUTTON      "In-place tooltip simplest",IDB_InplaceSimplest,4,192,135,14
+    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,210,135,14
+    EDITTEXT        IDE_FontsizePt,196,211,27,13,ES_AUTOHSCROLL
+    LTEXT           "Font-size (pt):",IDS_FontsizePt,145,213,47,8
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
@@ -106,11 +108,21 @@ END
 IDD_TrackingConcise DIALOGEX 0, 0, 195, 82
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "Tracking-tooltip demo"
+CAPTION "Tracking-tooltip concise"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Different Text for different demo.",IDC_STATIC1,19,11,155,36
     CTEXT           "Text label 2",IDC_STATIC2,19,61,157,13,WS_BORDER
+END
+
+IDD_TrackingMisc DIALOGEX 0, 0, 195, 94
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Tracking-tooltip misc"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Different Text for different demo.",IDC_STATIC1,19,11,155,52
+    CTEXT           "Text label 2",IDC_STATIC2,19,76,157,13,WS_BORDER
 END
 
 IDD_InplaceSimplest DIALOGEX 0, 0, 169, 66
@@ -146,7 +158,7 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_WINMAIN, DIALOG
     BEGIN
-        , 212, 237
+        BOTTOMMARGIN, 213
     END
 
     IDD_TooltipForUic, DIALOG
@@ -158,6 +170,10 @@ BEGIN
     END
 
     IDD_TooltipMultiline, DIALOG
+    BEGIN
+    END
+
+    IDD_TrackingMisc, DIALOG
     BEGIN
     END
 
@@ -229,6 +245,11 @@ BEGIN
 END
 
 IDD_InplaceSimplest AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_TrackingMisc AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

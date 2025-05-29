@@ -67,7 +67,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 	case IDB_TrackingTooltipMisc:
 		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_misc>(
-			_T("IDD_TrackingTooltipMisc"), IDD_TrackingConcise, hdlgMain, &ctx.ptdTrackingTooltipMisc);
+			_T("IDD_TrackingTooltipMisc"), IDD_TrackingMisc, hdlgMain, &ctx.ptdTrackingTooltipMisc);
 		break;
 
 	case IDB_InplaceSimplest:
@@ -116,7 +116,8 @@ static void Dlg_EnableJULayout(HWND hdlg)
 		IDB_TrackingTooltipConcise, IDS_TttOffsetX, IDE_TttOffsetX, IDS_TttOffsetY, IDE_TttOffsetY
 		,
 		IDGB_TrackingTooltip, IDB_TrackingTooltipMisc, 
-		IDCK_TTF_TRACK, IDCK_ClientToScreen, IDCK_TTF_ABSOLUTE
+		IDCK_TTF_TRACK, IDE_DelayAfterTooltipText, IDS_DelayAfterTooltipText,
+		IDCK_ClientToScreen, IDCK_TTF_ABSOLUTE
 		,
 		IDB_InplaceSimplest, IDB_InplaceComplex, IDS_FontsizePt, IDE_FontsizePt,
 		-1);
@@ -148,6 +149,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	CheckDlgButton(hdlg, IDCK_TTF_TRACK, TRUE);
 	CheckDlgButton(hdlg, IDCK_TTF_ABSOLUTE, TRUE);
 	CheckDlgButton(hdlg, IDCK_ClientToScreen, TRUE);
+	SetDlgItemText(hdlg, IDE_DelayAfterTooltipText, _T("0"));
 
 	SetDlgItemText(hdlg, IDE_FontsizePt, _T("8"));
 

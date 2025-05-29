@@ -43,6 +43,8 @@ private:
 
 	int m_offsetX, m_offsetY; // tooltip's offset to mouse-position 
 
+	UINT m_cksTTF_TRACK = 1; // tri-state checkbox
+	int m_delayms = 0;
 	BOOL m_isClientToScreen = TRUE;
 
 private:
@@ -201,7 +203,7 @@ void CTtDlgTrackingTooltip_concise::DlgClosing()
 
 
 HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
-	BOOL isTTF_TRACK, BOOL isTTF_ABSOLUTE)
+	bool isTTF_TRACK, BOOL isTTF_ABSOLUTE)
 {
 	// Create a tooltip.
 
@@ -238,7 +240,9 @@ HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 }
 
 const int CTtDlgTrackingTooltip_misc::sar_OptUic[] = {
-	IDCK_TTF_TRACK, IDCK_TTF_ABSOLUTE, IDCK_ClientToScreen };
+	IDCK_TTF_TRACK, IDE_DelayAfterTooltipText, IDS_DelayAfterTooltipText,
+	IDCK_TTF_ABSOLUTE, IDCK_ClientToScreen 
+};
 
 CModelessChild::Actioned_et
 CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
@@ -252,11 +256,16 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 	if (uMsg == WM_INITDIALOG)
 	{
-		BOOL isTTF_TRACK = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRACK);
+		m_cksTTF_TRACK = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRACK);
 		BOOL isTTF_ABSOLUTE = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_ABSOLUTE);
 		m_isClientToScreen = IsDlgButtonChecked(m_hdlgParent, IDCK_ClientToScreen);
 
+		bool isTTF_TRACK = (m_cksTTF_TRACK==1 ? true : false);
+		bool isSimulateTracking = (m_cksTTF_TRACK==2 ? true : false);
+
 		BOOL bTrans = 0;
+		m_delayms = GetDlgItemInt(m_hdlgParent, IDE_DelayAfterTooltipText, &bTrans, bSigned_TRUE);
+
 		m_offsetX = GetDlgItemInt(m_hdlgParent, IDE_TttOffsetX, &bTrans, bSigned_TRUE);
 		m_offsetY = GetDlgItemInt(m_hdlgParent, IDE_TttOffsetY, &bTrans, bSigned_TRUE);
 
@@ -272,11 +281,15 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 		SetWindowText(m_hdlgMe, _T("Tooltip tracking misc test"));
 		vaSetDlgItemText(m_hdlgMe, IDC_STATIC1,
 			_T("TTF_TRACK = %s\r\n")
+			_T("%s") // Simulate tracking...
+			_T("%d ms delay after updating tooltip text\r\n")
 			_T("TTM_TRACKPOSITION ClientToScreen = %s\r\n")
 			_T("TTF_ABSOLUTE = %s\r\n")
 			_T("offsetX: %d , offsetY: %d")
 			,
 			isTTF_TRACK ? _T("yes") : _T("no"),
+			isSimulateTracking ? _T("> Simulate tracking with SetwindowPos()\r\n") : _T(""),
+			m_delayms,
 			m_isClientToScreen ? _T("yes") : _T("no"),
 			isTTF_ABSOLUTE ? _T("yes") : _T("no"),
 			m_offsetX, m_offsetY);
@@ -310,7 +323,14 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 			ti.lpszText = coords;
 			SendMessage(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
 
-			// Position the tooltip. The coordinates are adjusted so that the tooltip does not overlap the mouse pointer.
+			if (m_delayms>0)
+			{
+				// A small delay after TTM_UPDATETIPTEXT, to demonstrate 
+				// [non-TTF_TRACK + SetWindowPos] problem.
+				Sleep(m_delayms); 
+			}
+
+			// Now position the tooltip to user-desired mouse-offset. 
 
 			POINT pt_ttm = { newX + m_offsetX, newY + m_offsetY };
 
@@ -323,7 +343,11 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 			vaSetDlgItemText(m_hdlgMe, IDC_STATIC2,
 				_T("TTM_TRACKPOSITION use [%d, %d]"), pt_ttm.x, pt_ttm.y);
 
-			SendMessage(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(pt_ttm.x, pt_ttm.y));
+			bool isSimulateTracking = (m_cksTTF_TRACK == 2 ? true : false);
+			if(! isSimulateTracking)
+				SendMessage(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(pt_ttm.x, pt_ttm.y));
+			else
+				SetWindowPos(m_hwndTooltip, 0, pt_ttm.x, pt_ttm.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE);
 		}
 
 		return Actioned_yes;

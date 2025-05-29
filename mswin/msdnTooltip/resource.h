@@ -8,8 +8,9 @@
 #define IDD_TooltipForRectArea          102
 #define IDD_TooltipMultiline            103
 #define IDD_TrackingConcise             104
-#define IDD_InplaceSimplest             105
-#define IDD_InplaceComplex              106
+#define IDD_TrackingMisc                105
+#define IDD_InplaceSimplest             106
+#define IDD_InplaceComplex              107
 #define IDC_LABEL1                      1000
 #define IDC_EDIT_LOGMSG                 1001
 #define IDB_InplaceSimplest             1002
@@ -36,6 +37,7 @@
 #define IDE_FontsizePt                  1015
 #define IDGB_TrackingTooltip            1016
 #define IDS_FontsizePt                  1017
+#define IDE_DelayAfterTooltipText       1018
 #define IDS_TttOffsetX                  1019
 #define IDS_TttOffsetY                  1020
 #define IDGB_MultilineTooltip           1021
@@ -45,8 +47,8 @@
 #define IDB_MultilineTooltip            1025
 #define IDS_LineWidth                   1026
 #define IDCK_WsexTransparent            1027
-#define IDC_CHECK2                      1028
 #define IDCK_TTF_CENTERTIP              1028
+#define IDS_DelayAfterTooltipText       1030
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -55,7 +57,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        110
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1029
+#define _APS_NEXT_CONTROL_VALUE         1031
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
