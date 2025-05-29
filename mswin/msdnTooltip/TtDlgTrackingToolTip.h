@@ -38,7 +38,7 @@ public:
 private:
 	CWmMouseleaveHelper m_mouseleave;
 
-	TOOLINFO m_ti = { sizeof(TOOLINFO) };
+//	TOOLINFO m_ti = { sizeof(TOOLINFO) }; // no need
 	int m_oldX = 0, m_oldY = 0;
 
 	int m_offsetX, m_offsetY; // tooltip's offset to mouse-position 
@@ -232,7 +232,7 @@ HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 	// Associate the tooltip with the tool window.
 	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
-	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
+	dbg_TTM_ADDTOOL(_T("CreateTrackingToolTip_misc()"), ti, (BOOL)succ);
 
 	return hwndTT;
 }
@@ -247,6 +247,9 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 	Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
+	TOOLINFO ti = { sizeof(TOOLINFO) };
+	ti.uId = (UINT_PTR)m_hdlgMe; // .uId identifies our sole hottool-area
+
 	if (uMsg == WM_INITDIALOG)
 	{
 		BOOL isTTF_TRACK = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRACK);
@@ -259,7 +262,7 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 		// Create the tooltip window.
 
-		m_hwndTooltip = CreateTrackingToolTip_misc(m_hdlgMe, m_ti, isTTF_TRACK, isTTF_ABSOLUTE);
+		m_hwndTooltip = CreateTrackingToolTip_misc(m_hdlgMe, ti, isTTF_TRACK, isTTF_ABSOLUTE);
 		assert(m_hwndTooltip);
 
 		m_mouseleave.SetHwnd(m_hdlgMe);
@@ -287,7 +290,7 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 		CWmMouseleaveHelper::Move_ret moveret = m_mouseleave.do_WM_MOUSEMOVE();
 
 		// Activate(make visible) the tooltip.
-		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&m_ti);
+		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
 
 		int newX = GET_X_LPARAM(lParam);
 		int newY = GET_Y_LPARAM(lParam);
@@ -304,8 +307,8 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 			WCHAR coords[40];
 			_sntprintf_s(coords, _TRUNCATE, _T("mouse: %d, %d"), newX, newY);
 
-			m_ti.lpszText = coords;
-			SendMessage(m_hwndTooltip, TTM_SETTOOLINFO, 0, (LPARAM)&m_ti);
+			ti.lpszText = coords;
+			SendMessage(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
 
 			// Position the tooltip. The coordinates are adjusted so that the tooltip does not overlap the mouse pointer.
 
@@ -332,7 +335,7 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 		vaSetDlgItemText(m_hdlgMe, IDC_STATIC2, _T("Mouse outside the dialog-box area."));
 
 		// The mouse pointer has left our window. Deactivate the tooltip.
-		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&m_ti);
+		SendMessage(m_hwndTooltip, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
 
 		return Actioned_yes;
 	}
