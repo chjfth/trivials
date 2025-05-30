@@ -64,10 +64,11 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 	// FreeOnScreen implies: TOOLINFO.hwnd and TOOLINFO.uId are both NULL;
 
 	// Create the tooltip-window.
-	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST, 
+	HWND hwndTT = CreateWindowEx(
+		WS_EX_TOPMOST | flag_WS_EX_TRANSPARENT(),
 		TOOLTIPS_CLASS, 
 		NULL, // window title
-		WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP,
+		TTS_NOPREFIX | TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, 
 		NULL, g_hinstExe, NULL);
@@ -76,7 +77,7 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 		return NULL;
 
 	TOOLINFO ti = { sizeof(TOOLINFO) };
-	ti.uFlags = TTF_TRACK | TTF_ABSOLUTE;
+	ti.uFlags = TTF_TRACK | TTF_ABSOLUTE | flag_TTF_CENTERTIP();
 	// -- TTF_TRACK: User can use TTM_TRACKPOSITION to set its position.
 	// -- TTF_ABSOLUTE: Makes TTM_TRACKPOSITION(X,Y) genuine, no encircling effect.
 	ti.hwnd = NULL;
@@ -203,14 +204,15 @@ void CTtDlgTrackingTooltip_concise::DlgClosing()
 
 
 HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
-	bool isTTF_TRACK, BOOL isTTF_ABSOLUTE)
+	BOOL isTTF_TRANSPARENT, BOOL isTTF_TRACK, BOOL isTTF_ABSOLUTE)
 {
 	// Create a tooltip.
 
-	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST, 
+	HWND hwndTT = CreateWindowEx(
+		WS_EX_TOPMOST | flag_WS_EX_TRANSPARENT(), 
 		TOOLTIPS_CLASS, 
 		NULL, // window title
-		WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP,
+		TTS_NOPREFIX | TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, 
 		NULL, g_hinstExe, NULL);
@@ -220,7 +222,9 @@ HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 
 	ti.cbSize = sizeof(TOOLINFO);
 	
-	ti.uFlags = TTF_IDISHWND;
+	ti.uFlags = TTF_IDISHWND | flag_TTF_CENTERTIP();
+	if (isTTF_TRANSPARENT)
+		ti.uFlags |= TTF_TRANSPARENT;
 	if (isTTF_TRACK)
 		ti.uFlags |= TTF_TRACK;
 	if (isTTF_ABSOLUTE)
@@ -240,8 +244,9 @@ HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 }
 
 const int CTtDlgTrackingTooltip_misc::sar_OptUic[] = {
+	IDCK_TTF_TRANSPARENT,
 	IDCK_TTF_TRACK, IDE_DelayAfterTooltipText, IDS_DelayAfterTooltipText,
-	IDCK_TTF_ABSOLUTE, IDCK_ClientToScreen 
+	IDCK_ClientToScreen, IDCK_TTF_ABSOLUTE
 };
 
 CModelessChild::Actioned_et
@@ -256,6 +261,8 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 	if (uMsg == WM_INITDIALOG)
 	{
+		BOOL isTTF_TRANSPARENT = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRANSPARENT);
+
 		m_cksTTF_TRACK = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRACK);
 		BOOL isTTF_ABSOLUTE = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_ABSOLUTE);
 		m_isClientToScreen = IsDlgButtonChecked(m_hdlgParent, IDCK_ClientToScreen);
@@ -271,7 +278,8 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 		// Create the tooltip window.
 
-		m_hwndTooltip = CreateTrackingToolTip_misc(m_hdlgMe, ti, isTTF_TRACK, isTTF_ABSOLUTE);
+		m_hwndTooltip = CreateTrackingToolTip_misc(m_hdlgMe, ti, 
+			isTTF_TRANSPARENT, isTTF_TRACK, isTTF_ABSOLUTE);
 		assert(m_hwndTooltip);
 
 		m_mouseleave.SetHwnd(m_hdlgMe);

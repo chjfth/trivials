@@ -25,7 +25,7 @@ private:
 #ifdef TtDlgMultiline_IMPL
 
 HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
-	BOOL isMultiline, int LineWidth, BOOL isWsexTransparent)
+	BOOL isMultiline, int LineWidth)
 {
 	assert(hwndOwner);
 	assert(uicHottool);
@@ -37,10 +37,10 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 
 	// Create the tooltip. g_hinstExe is the global instance handle.
 	HWND hwndTT = CreateWindowEx(
-		(isWsexTransparent ? WS_EX_TRANSPARENT : 0), // better to add WS_EX_TOPMOST here.
+		WS_EX_TOPMOST | flag_WS_EX_TRANSPARENT(),
 		TOOLTIPS_CLASS,
 		NULL, // window title
-		WS_POPUP | TTS_ALWAYSTIP,  // need WS_POPUP?
+		TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, // tooltip-window's owner
@@ -57,7 +57,7 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 	// Associate the tooltip with the tool.
 	TOOLINFO ti = { sizeof(TOOLINFO) };
 	ti.hwnd = hwndOwner;
-	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS;
+	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS | flag_TTF_CENTERTIP();
 	ti.uId = (UINT_PTR)hwndUic;
 	ti.lpszText = LPSTR_TEXTCALLBACK;
 	
@@ -80,7 +80,7 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 }
 
 const int CTtDlgMultiline::sar_OptUic[] = {
-	IDCK_EnableMultiline, IDE_LineWidth, IDCK_WsexTransparent };
+	IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth };
 
 
 CModelessChild::Actioned_et
@@ -104,7 +104,7 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateToolTip_Multiline(m_hdlgMe, IDB_HasTooltip,
-			isMultiline, LineWidth, isWsExTransparent);
+			isMultiline, LineWidth);
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 

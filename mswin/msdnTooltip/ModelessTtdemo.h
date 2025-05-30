@@ -14,7 +14,6 @@ using namespace itc;
 
 #include "../utils.h"
 
-
 class CModelessTtDemo : public CModelessChild
 {
 	// This class holds a tooltip HWND that is shared by each concrete
@@ -107,4 +106,25 @@ inline void dbg_WM_NOTIFY(WPARAM wParam, LPARAM lParam)
 
 	vaDbgTs(_T("WM_NOTIFY from Uic(%d): idFrom=0x%llX, code=%s"),
 		uic, (UINT64)pnmh->idFrom, ITCSv(pnmh->code, TTN_xxx));
+}
+
+
+
+extern BOOL g_isTTS_BALLOON;
+extern BOOL g_isTTF_CENTERTIP;
+extern BOOL g_isWS_EX_TRANSPARENT;
+
+inline DWORD flag_TTS_BALLOON()
+{
+	return (g_isTTS_BALLOON ? TTS_BALLOON : 0);
+}
+
+inline DWORD flag_TTF_CENTERTIP()
+{
+	return (g_isTTF_CENTERTIP ? TTF_CENTERTIP : 0);
+}
+
+inline DWORD flag_WS_EX_TRANSPARENT()
+{
+	return (g_isWS_EX_TRANSPARENT ? WS_EX_TRANSPARENT : 0);
 }

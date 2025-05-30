@@ -24,6 +24,10 @@
 
 HINSTANCE g_hinstExe;
 
+BOOL g_isTTS_BALLOON = FALSE;
+BOOL g_isTTF_CENTERTIP = FALSE;
+BOOL g_isWS_EX_TRANSPARENT = TRUE;
+
 
 struct DlgPrivate_st
 {
@@ -90,6 +94,21 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			_T("IDD_InplaceTooltip"), IDD_InplaceComplex, hdlgMain, &ctx.ptdInplaceTooltip);
 		break;
 	}
+	case IDCK_TTS_BALLOON:
+	{
+		g_isTTS_BALLOON = IsDlgButtonChecked(hdlg, IDCK_TTS_BALLOON);
+		break;
+	}
+	case IDCK_TTF_CENTERTIP:
+	{
+		g_isTTF_CENTERTIP = IsDlgButtonChecked(hdlg, IDCK_TTF_CENTERTIP);
+		break;
+	}
+	case IDCK_WsexTransparent:
+	{
+		g_isWS_EX_TRANSPARENT = IsDlgButtonChecked(hdlg, IDCK_WsexTransparent);
+		break;
+	}
 	case IDOK:
 	case IDCANCEL:
 	{
@@ -105,7 +124,6 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 	jul->AnchorControls(0, 0, 0, 0,
 		IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth, 
-		IDCK_WsexTransparent,
 		IDB_MultilineTooltip,
 		-1);
 	jul->AnchorControls(0, 0, 100, 100, // right-side
@@ -115,7 +133,7 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	jul->AnchorControls(0, 100, 0, 100, // left-bottom corner
 		IDB_TrackingTooltipConcise, IDS_TttOffsetX, IDE_TttOffsetX, IDS_TttOffsetY, IDE_TttOffsetY
 		,
-		IDGB_TrackingTooltip, IDB_TrackingTooltipMisc, 
+		IDGB_TrackingTooltip, IDB_TrackingTooltipMisc, IDCK_TTF_TRANSPARENT,
 		IDCK_TTF_TRACK, IDE_DelayAfterTooltipText, IDS_DelayAfterTooltipText,
 		IDCK_ClientToScreen, IDCK_TTF_ABSOLUTE
 		,
@@ -137,15 +155,19 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	vaSetWindowText(hdlg, _T("msdnTooltipDemo v%d.%d.%d"), 
 		msdnTooltip_VMAJOR, msdnTooltip_VMINOR, msdnTooltip_VPATCH);
-	
+
+	CheckDlgButton(hdlg, IDCK_TTS_BALLOON, g_isTTS_BALLOON);
+	CheckDlgButton(hdlg, IDCK_TTF_CENTERTIP, g_isTTF_CENTERTIP);
+	CheckDlgButton(hdlg, IDCK_WsexTransparent, g_isWS_EX_TRANSPARENT);
+
 	CheckDlgButton(hdlg, IDCK_EnableMultiline, TRUE);
 	SetDlgItemText(hdlg, IDE_LineWidth, _T("200"));
 	SetDlgItemText(hdlg, IDE_MultilineText, _T("Sample Line 1\r\nSample Line 2"));
-	CheckDlgButton(hdlg, IDCK_WsexTransparent, TRUE);
 
 	SetDlgItemInt(hdlg, IDE_TttOffsetX,  10, bSigned_TRUE);
 	SetDlgItemInt(hdlg, IDE_TttOffsetY, -20, bSigned_TRUE);
 
+	CheckDlgButton(hdlg, IDCK_TTF_TRANSPARENT, TRUE);
 	CheckDlgButton(hdlg, IDCK_TTF_TRACK, TRUE);
 	CheckDlgButton(hdlg, IDCK_TTF_ABSOLUTE, TRUE);
 	CheckDlgButton(hdlg, IDCK_ClientToScreen, TRUE);

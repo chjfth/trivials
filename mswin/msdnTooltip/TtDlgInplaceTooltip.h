@@ -21,9 +21,6 @@ public:
 private:
 	static const int sar_Uics[];
 	UINT_PTR s_timerId = 1;
-
-private:
-
 };
 
 #ifdef TtDlgInplaceTooltip_IMPL

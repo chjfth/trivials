@@ -17,20 +17,21 @@ public:
 HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 {
 	// Create a tooltip.
-	HWND hwndTT = CreateWindowEx(WS_EX_TOPMOST,
+	HWND hwndTT = CreateWindowEx(
+		WS_EX_TOPMOST | flag_WS_EX_TRANSPARENT(),
 		TOOLTIPS_CLASS,
 		NULL, // window title
-		WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP,
+		TTS_NOPREFIX | TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, NULL, g_hinstExe, NULL);
 
-	SetWindowPos(hwndTT, HWND_TOPMOST, 0, 0, 0, 0,
-		SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
+//	SetWindowPos(hwndTT, HWND_TOPMOST, 0, 0, 0, 0,
+//		SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE); // no use
 
 	// Set up "tool" information. In this case, the "tool" is the entire parent window.
 
 	TOOLINFO ti = { sizeof(TOOLINFO) };
-	ti.uFlags = TTF_SUBCLASS;
+	ti.uFlags = TTF_SUBCLASS | flag_TTF_CENTERTIP();
 	ti.hwnd = hwndOwner;
 	GetClientRect(hwndOwner, &ti.rect);
 

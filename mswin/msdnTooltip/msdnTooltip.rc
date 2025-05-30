@@ -39,39 +39,41 @@ IDI_WINMAIN             ICON                    "msdnTooltip.ico"
 // Dialog
 //
 
-IDD_WINMAIN DIALOGEX 0, 0, 241, 231
+IDD_WINMAIN DIALOGEX 0, 0, 247, 244
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "msdnTooltipDemo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,3,135,14
-    CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,5,63,10
-    CONTROL         "TTF_CENTERTIP",IDCK_TTF_CENTERTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,17,69,10
-    PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,4,21,135,14
-    GROUPBOX        "Multiline Tooltip dynamic text",IDGB_MultilineTooltip,4,40,233,55
-    CONTROL         "Multiline",IDCK_EnableMultiline,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,51,40,10
-    EDITTEXT        IDE_LineWidth,50,50,28,13,ES_AUTOHSCROLL
-    LTEXT           "line-width",IDS_LineWidth,81,52,32,8
-    CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,65,91,10
-    EDITTEXT        IDE_MultilineText,116,50,121,41,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "Multiline tooltip",IDB_MultilineTooltip,9,78,100,14
-    PUSHBUTTON      "Tracking Tooltip concise way",IDB_TrackingTooltipConcise,4,106,135,14
-    LTEXT           "offset X:",IDS_TttOffsetX,144,109,29,8
-    EDITTEXT        IDE_TttOffsetX,173,107,22,13,ES_AUTOHSCROLL
-    LTEXT           "Y:",IDS_TttOffsetY,199,109,8,8
-    EDITTEXT        IDE_TttOffsetY,207,107,22,13,ES_AUTOHSCROLL
-    GROUPBOX        "Tracking tooltip misc",IDGB_TrackingTooltip,4,123,232,59
-    PUSHBUTTON      "Tracking Tooltip misc parameters",IDB_TrackingTooltipMisc,9,134,127,14
-    CONTROL         "TTF_TRACK",IDCK_TTF_TRACK,"Button",BS_AUTO3STATE | WS_TABSTOP,10,154,54,10
-    EDITTEXT        IDE_DelayAfterTooltipText,68,152,22,13,ES_AUTOHSCROLL
-    LTEXT           "millisec delay after updating tooltip text",IDS_DelayAfterTooltipText,95,154,127,8,SS_CENTERIMAGE
+    PUSHBUTTON      "Tooltip for a control(Uic)",IDB_TooltipForUic,4,38,111,14
+    CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,19,63,10
+    CONTROL         "TTF_CENTERTIP",IDCK_TTF_CENTERTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,19,66,10
+    PUSHBUTTON      "Tooltip for a Rect area",IDB_TooltipForRectArea,124,38,111,14
+    GROUPBOX        "Multiline tooltip dynamic text",IDGB_MultilineTooltip,4,58,236,53
+    CONTROL         "Multiline",IDCK_EnableMultiline,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,40,10
+    EDITTEXT        IDE_LineWidth,50,69,28,13,ES_AUTOHSCROLL
+    LTEXT           "line-width",IDS_LineWidth,81,71,32,8
+    CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,144,19,90,10
+    EDITTEXT        IDE_MultilineText,116,69,119,38,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    PUSHBUTTON      "Multiline tooltip",IDB_MultilineTooltip,9,94,100,14
+    PUSHBUTTON      "Tracking Tooltip concise way",IDB_TrackingTooltipConcise,4,122,135,14
+    LTEXT           "offset X:",IDS_TttOffsetX,144,125,29,8
+    EDITTEXT        IDE_TttOffsetX,173,123,22,13,ES_AUTOHSCROLL
+    LTEXT           "Y:",IDS_TttOffsetY,199,125,8,8
+    EDITTEXT        IDE_TttOffsetY,207,123,22,13,ES_AUTOHSCROLL
+    GROUPBOX        "Tracking tooltip misc",IDGB_TrackingTooltip,4,139,236,59
+    PUSHBUTTON      "Tracking Tooltip misc parameters",IDB_TrackingTooltipMisc,9,150,127,14
+    CONTROL         "TTF_TRACK",IDCK_TTF_TRACK,"Button",BS_AUTO3STATE | WS_TABSTOP,10,170,54,10
+    EDITTEXT        IDE_DelayAfterTooltipText,68,168,22,13,ES_AUTOHSCROLL
+    LTEXT           "millisec delay after updating tooltip text",IDS_DelayAfterTooltipText,95,170,127,8,SS_CENTERIMAGE
     CONTROL         "ClientToScreen for TTM_TRACKPOSITION",IDCK_ClientToScreen,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,168,149,10
-    CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,168,66,10
-    PUSHBUTTON      "In-place tooltip simplest",IDB_InplaceSimplest,4,192,135,14
-    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,210,135,14
-    EDITTEXT        IDE_FontsizePt,196,211,27,13,ES_AUTOHSCROLL
-    LTEXT           "Font-size (pt):",IDS_FontsizePt,145,213,47,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,184,149,10
+    CONTROL         "TTF_ABSOLUTE",IDCK_TTF_ABSOLUTE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,165,184,66,10
+    PUSHBUTTON      "In-place tooltip simplest",IDB_InplaceSimplest,4,208,135,14
+    PUSHBUTTON      "In-place tooltip complex",IDB_InplaceComplex,4,226,135,14
+    EDITTEXT        IDE_FontsizePt,196,227,27,13,ES_AUTOHSCROLL
+    LTEXT           "Font-size (pt):",IDS_FontsizePt,145,228,47,8
+    LTEXT           "Global options when creating a tooltip instance:",IDC_STATIC,7,7,152,8
+    CONTROL         "TTF_TRANSPARENT",IDCK_TTF_TRANSPARENT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,146,153,80,10
 END
 
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
@@ -158,7 +160,8 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_WINMAIN, DIALOG
     BEGIN
-        BOTTOMMARGIN, 213
+        RIGHTMARGIN, 243
+        BOTTOMMARGIN, 243
     END
 
     IDD_TooltipForUic, DIALOG
