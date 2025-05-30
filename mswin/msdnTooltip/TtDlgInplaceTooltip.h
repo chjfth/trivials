@@ -30,10 +30,10 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 {
 	// Create the tooltip. g_hinstExe is the global instance handle.
 	HWND hwndTT = CreateWindowEx(
-		NULL, // better to assign WS_EX_TOPMOST here.
+		WS_EX_TOPMOST | flag_WS_EX_TRANSPARENT(),
 		TOOLTIPS_CLASS,
 		NULL, // window title
-		WS_POPUP | TTS_ALWAYSTIP,
+		TTS_NOPREFIX | TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		hdlg, // tooltip-window's owner
