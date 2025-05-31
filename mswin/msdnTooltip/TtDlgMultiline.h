@@ -73,7 +73,6 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 		SendMessage(hwndTT, TTM_SETMAXTIPWIDTH, 0, (-1));
 	}
 
-
 	dbg_TTM_ADDTOOL(_T("CreateToolTip_Multiline()"), ti, (BOOL)succ);
 
 	return hwndTT;
@@ -103,12 +102,12 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 
 		// Create the tooltip window.
 
-		m_hwndTooltip = CreateToolTip_Multiline(m_hdlgMe, IDB_HasTooltip,
+		m_hwndTooltip = CreateToolTip_Multiline(m_hdlgMe, IDB_BtnHasTooltip,
 			isMultiline, LineWidth);
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
-		SetFocus(GetDlgItem(m_hdlgMe, IDB_HasTooltip));
+		SetFocus(GetDlgItem(m_hdlgMe, IDB_BtnHasTooltip));
 		*pMsgRet = AcceptDefaultFocus_FALSE;
 
 		return Actioned_yes;
@@ -148,10 +147,10 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 	if (uMsg == WM_COMMAND)
 	{
 		UINT uic = GET_WM_COMMAND_ID(wParam, lParam);
-		if (uic == IDB_NoTooltip)
-			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_NoTooltip clicked."));
-		else if (uic == IDB_HasTooltip)
-			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_HasTooltip clicked."));
+		if (uic == IDB_BtnNoTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_BtnNoTooltip clicked."));
+		else if (uic == IDB_BtnHasTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_BtnHasTooltip clicked."));
 
 		return Actioned_yes;
 	}

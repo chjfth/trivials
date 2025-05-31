@@ -82,8 +82,8 @@ EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Tooltip for a Uic"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    PUSHBUTTON      "&No tooltip on me",IDB_NoTooltip,7,6,94,14
-    PUSHBUTTON      "&Hover on me for tooltip",IDB_HasTooltip,7,27,94,14
+    PUSHBUTTON      "&No tooltip on me",IDB_BtnNoTooltip,7,6,94,14
+    PUSHBUTTON      "&Hover on me for tooltip",IDB_BtnHasTooltip,7,27,94,14
     EDITTEXT        IDC_EDIT1,7,48,146,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
 END
 
@@ -102,8 +102,8 @@ EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Multiline Tooltip demo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    PUSHBUTTON      "&No tooltip on me",IDB_NoTooltip,7,6,94,14
-    PUSHBUTTON      "&Hover on me for tooltip",IDB_HasTooltip,7,27,94,14
+    PUSHBUTTON      "&No tooltip on me",IDB_BtnNoTooltip,7,6,94,14
+    PUSHBUTTON      "&Hover on me for tooltip",IDB_BtnHasTooltip,7,27,94,14
     EDITTEXT        IDC_EDIT1,7,48,146,13,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
 END
 

@@ -24,13 +24,12 @@
 #define IDCK_TTS_BALLOON                1007
 #define IDE_TttOffsetX                  1008
 #define IDE_TttOffsetY                  1009
-#define IDB_NoTooltip                   1010
+#define IDB_BtnNoTooltip                1010
 #define IDCK_TTF_TRACK                  1010
-#define IDB_HasTooltip                  1011
+#define IDB_BtnHasTooltip               1011
 #define IDCK_TTF_ABSOLUTE               1011
 #define IDCK_ClientToScreen             1012
 #define IDL_ShortDate                   1013
-#define IDB_TrackingTooltip2            1013
 #define IDB_InplaceTooltip              1013
 #define IDB_InplaceComplex              1013
 #define IDL_LongDate                    1014
@@ -49,7 +48,6 @@
 #define IDCK_WsexTransparent            1027
 #define IDCK_TTF_CENTERTIP              1028
 #define IDS_DelayAfterTooltipText       1030
-#define IDC_CHECK1                      1031
 #define IDCK_TTF_TRANSPARENT            1031
 #define IDC_STATIC                      -1
 

@@ -19,13 +19,13 @@ public:
 // Description:
 //   Creates a tooltip for a control(Uic) in a dialog box.
 // Parameters:
-//   idTool - identifier of an dialog box control.
 //   hDlg - window handle of the dialog box.
+//   idTool - Control-ID in hDlg dialog box.
 //   pszText - string to use as the tooltip text.
 // Returns:
-//   The handle to the tooltip.
+//   The HWND of the newly created the tooltip.
 //
-HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText)
+HWND CreateToolTip_ForUic(HWND hDlg, int toolID, PCTSTR pszText)
 {
 	HWND hwndOwner = hDlg;
 
@@ -33,7 +33,8 @@ HWND CreateToolTip_ForUic(int toolID, HWND hDlg, PCTSTR pszText)
 	{
 		return FALSE;
 	}
-	// Get the window of the tool.
+
+	// Get the HWND of the tool.
 	HWND hwndTool = GetDlgItem(hDlg, toolID);
 
 	// Create the tooltip. g_hinstExe is the global instance handle.
@@ -79,12 +80,12 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 	{
 		// Create the tooltip window.
 
-		m_hwndTooltip = CreateToolTip_ForUic(IDB_HasTooltip, m_hdlgMe,
-			_T("This is the tooltip for the button IDB_HasTootip"));
+		m_hwndTooltip = CreateToolTip_ForUic(m_hdlgMe, IDB_BtnHasTooltip,
+			_T("This is the tooltip for the button IDB_BtnHasTooltip"));
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
-		SetFocus(GetDlgItem(m_hdlgMe, IDB_HasTooltip));
+		SetFocus(GetDlgItem(m_hdlgMe, IDB_BtnHasTooltip));
 		*pMsgRet = AcceptDefaultFocus_FALSE;
 
 		return Actioned_yes;
@@ -97,10 +98,10 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 	if (uMsg == WM_COMMAND)
 	{
 		UINT uic = GET_WM_COMMAND_ID(wParam, lParam);
-		if (uic == IDB_NoTooltip)
-			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_NoTooltip clicked."));
-		else if (uic == IDB_HasTooltip)
-			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_HasTooltip clicked."));
+		if (uic == IDB_BtnNoTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_BtnNoTooltip clicked."));
+		else if (uic == IDB_BtnHasTooltip)
+			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_BtnHasTooltip clicked."));
 
 		return Actioned_yes;
 	}
