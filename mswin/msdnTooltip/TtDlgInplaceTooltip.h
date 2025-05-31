@@ -19,7 +19,10 @@ public:
 	virtual void DlgClosing() override;
 
 private:
-	static const int sar_Uics[];
+	static const int sar_OptUic[];
+
+private:
+	static const int sar_UicsToReveal[];
 	UINT_PTR s_timerId = 1;
 };
 
@@ -98,7 +101,9 @@ void RefreshUI_Datetime(HWND hdlg)
 		longDate, szTime, slen);
 }
 
-const int CTtDlgInplaceTooltip::sar_Uics[] = {
+const int CTtDlgInplaceTooltip::sar_OptUic[] = { IDS_FontsizePt, IDE_FontsizePt };
+
+const int CTtDlgInplaceTooltip::sar_UicsToReveal[] = {
 	IDL_ShortDate, IDL_LongDate };
 
 static void enable_Julayout(HWND hdlg)
@@ -220,13 +225,15 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateInplaceTooltip_ForUics(m_hdlgMe,
-			sar_Uics, ARRAYSIZE(sar_Uics));
+			sar_UicsToReveal, ARRAYSIZE(sar_UicsToReveal));
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
 		// Refresh UI datetime
 		RefreshUI_Datetime(m_hdlgMe);
 		SetTimer(m_hdlgMe, s_timerId, 1000, NULL);
+
+		Enable_Uics(FALSE, m_hdlgParent, sar_OptUic);
 
 		SetFocus(NULL);
 		*pMsgRet = AcceptDefaultFocus_FALSE;
@@ -274,6 +281,8 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 void CTtDlgInplaceTooltip::DlgClosing()
 {
 	__super::DlgClosing();
+
+	Enable_Uics(TRUE, m_hdlgParent, sar_OptUic);
 
 	KillTimer(m_hdlgMe, s_timerId);
 }

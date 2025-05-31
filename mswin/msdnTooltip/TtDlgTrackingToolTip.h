@@ -118,8 +118,6 @@ CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 		DisableDlgItem(m_hdlgParent, IDE_TttOffsetX);
 		DisableDlgItem(m_hdlgParent, IDE_TttOffsetY);
 
-		SetWindowText(m_hdlgMe, _T("Tooltip tracking concise way"));
-
 		vaSetDlgItemText(m_hdlgMe, IDC_STATIC1,
 			_T("Tooltip showing mouse-pos throughout whole dialog-box client-area.\r\n")
 			_T("Tooltip offset (%d, %d) from actual mouse-pos.")
@@ -286,7 +284,6 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 
-		SetWindowText(m_hdlgMe, _T("Tooltip tracking misc test"));
 		vaSetDlgItemText(m_hdlgMe, IDC_STATIC1,
 			_T("TTF_TRACK = %s\r\n")
 			_T("%s") // Simulate tracking...

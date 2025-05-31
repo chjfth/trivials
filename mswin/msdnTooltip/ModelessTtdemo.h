@@ -7,12 +7,33 @@
 
 #include <commdefs.h>
 
+#include <StringHelper.h>
 #include <mswin/win32cozy.h> // for RECTtext
 
 #include <mswin/commctrl.itc.h>
 using namespace itc;
 
 #include "../utils.h"
+
+extern BOOL g_isTTS_BALLOON;
+extern BOOL g_isTTF_CENTERTIP;
+extern BOOL g_isWS_EX_TRANSPARENT;
+
+inline DWORD flag_TTS_BALLOON()
+{
+	return (g_isTTS_BALLOON ? TTS_BALLOON : 0);
+}
+
+inline DWORD flag_TTF_CENTERTIP()
+{
+	return (g_isTTF_CENTERTIP ? TTF_CENTERTIP : 0);
+}
+
+inline DWORD flag_WS_EX_TRANSPARENT()
+{
+	return (g_isWS_EX_TRANSPARENT ? WS_EX_TRANSPARENT : 0);
+}
+
 
 class CModelessTtDemo : public CModelessChild
 {
@@ -34,6 +55,11 @@ public:
 
 		Actioned_et actioned = __super::DlgProc(uMsg, wParam, lParam, pMsgRet);
 
+		if (uMsg == WM_INITDIALOG)
+		{
+			DlgTitle_add_BCT();
+		}
+
 		return actioned;
 	}
 
@@ -47,6 +73,32 @@ public:
 		}
 	}
 
+	void DlgTitle_add_BCT()
+	{
+		TCHAR szTitle[80] = {};
+		GetWindowText(m_hdlgMe, szTitle, ARRAYSIZE(szTitle));
+
+		TCHAR suffix[10] = _T("");
+		if (g_isTTS_BALLOON)
+			_sntprintf_s(suffix, _TRUNCATE, _T("%sB."), suffix);
+		if (g_isTTF_CENTERTIP)
+			_sntprintf_s(suffix, _TRUNCATE, _T("%sC."), suffix);
+		if (g_isWS_EX_TRANSPARENT)
+			_sntprintf_s(suffix, _TRUNCATE, _T("%sT."), suffix);
+
+		int slen = (int)_tcslen(suffix);
+		if(slen==0)
+		{
+			_sntprintf_s(szTitle, _TRUNCATE, _T("%s (-)"), szTitle);
+		}
+		else
+		{
+			suffix[slen - 1] = '\0';
+			_sntprintf_s(szTitle, _TRUNCATE, _T("%s (%s)"), szTitle, suffix);
+		}
+
+		SetWindowText(m_hdlgMe, szTitle);
+	}
 
 public:
 	template<typename T_TtDemoDlg> // T_TtDemoDlg is CTtDlgForUic etc.
@@ -110,21 +162,3 @@ inline void dbg_WM_NOTIFY(WPARAM wParam, LPARAM lParam)
 
 
 
-extern BOOL g_isTTS_BALLOON;
-extern BOOL g_isTTF_CENTERTIP;
-extern BOOL g_isWS_EX_TRANSPARENT;
-
-inline DWORD flag_TTS_BALLOON()
-{
-	return (g_isTTS_BALLOON ? TTS_BALLOON : 0);
-}
-
-inline DWORD flag_TTF_CENTERTIP()
-{
-	return (g_isTTF_CENTERTIP ? TTF_CENTERTIP : 0);
-}
-
-inline DWORD flag_WS_EX_TRANSPARENT()
-{
-	return (g_isWS_EX_TRANSPARENT ? WS_EX_TRANSPARENT : 0);
-}

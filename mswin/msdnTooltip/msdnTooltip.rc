@@ -44,7 +44,7 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CA
 CAPTION "msdnTooltipDemo"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Global options when creating a tooltip instance:",IDC_STATIC,7,7,152,8
+    LTEXT           "Global options when creating a tooltip instance: (B.C.T)",IDC_STATIC,7,7,178,8
     CONTROL         "TTS_BALLOON",IDCK_TTS_BALLOON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,19,63,10
     CONTROL         "TTF_CENTERTIP",IDCK_TTF_CENTERTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,19,66,10
     CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,144,19,90,10
@@ -110,20 +110,19 @@ END
 IDD_TrackingConcise DIALOGEX 0, 0, 195, 82
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "Tracking-tooltip concise"
+CAPTION "Tracking-Tooltip concise"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Different Text for different demo.",IDC_STATIC1,19,11,155,36
-    CTEXT           "Text label 2",IDC_STATIC2,19,61,157,13,WS_BORDER
+    LTEXT           "To be filled by code",IDC_STATIC1,19,11,155,36
 END
 
 IDD_TrackingMisc DIALOGEX 0, 0, 195, 94
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "Tracking-tooltip misc"
+CAPTION "Tracking-Tooltip misc"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    LTEXT           "Different Text for different demo.",IDC_STATIC1,19,11,155,52
+    LTEXT           "To be filled by code",IDC_STATIC1,19,11,155,52
     CTEXT           "Text label 2",IDC_STATIC2,19,76,157,13,WS_BORDER
 END
 
@@ -173,6 +172,10 @@ BEGIN
     END
 
     IDD_TooltipMultiline, DIALOG
+    BEGIN
+    END
+
+    IDD_TrackingConcise, DIALOG
     BEGIN
     END
 
@@ -253,6 +256,11 @@ BEGIN
 END
 
 IDD_TrackingMisc AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_TrackingConcise AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
