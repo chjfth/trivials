@@ -163,10 +163,14 @@ CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 			POINT pt_ttm = { newX + m_offsetX, newY + m_offsetY };
 			ClientToScreen(m_hdlgMe, &pt_ttm);
 
-			vaDbgTs(_T("Mouse at client [%d,%d]; pt_ttm [%d,%d]"),
+			vaDbgTs(_T("Mouse at client [%d,%d]; set-track [%d,%d]"),
 				newX, newY, pt_ttm.x, pt_ttm.y);
 
 			SendMessage(m_hwndTooltip, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(pt_ttm.x, pt_ttm.y));
+		}
+		else
+		{
+			vaDbgTs(_T("See WM_MOUSEMOVE, same pos"));
 		}
 
 		return Actioned_yes;
@@ -174,6 +178,9 @@ CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 	else if (uMsg == WM_MOUSELEAVE)
 	{
 		m_mouseleave.do_WM_MOUSELEAVE();
+
+		DWORD mousepos = GetMessagePos();
+		vaDbgTs(_T("See WM_MOUSELEAVE, now at screen [%d,%d]"), GET_X_LPARAM(mousepos), GET_Y_LPARAM(mousepos));
 
 		TOOLINFO ti = { sizeof(TOOLINFO) }; // meaningful: .hwnd=NULL and .uId=NULL
 
@@ -200,6 +207,7 @@ void CTtDlgTrackingTooltip_concise::DlgClosing()
 	EnableDlgItem(m_hdlgParent, IDE_TttOffsetY);
 }
 
+//////////////////////////////////////////////////////////////////////////
 
 HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 	BOOL isTTF_TRANSPARENT, BOOL isTTF_TRACK, BOOL isTTF_ABSOLUTE)
@@ -342,7 +350,7 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 			if(m_isClientToScreen)
 				ClientToScreen(m_hdlgMe, &pt_ttm);
 
-			vaDbgTs(_T("Mouse at client [%d,%d]; pt_ttm [%d,%d]"),
+			vaDbgTs(_T("Mouse at client [%d,%d]; set-track [%d,%d]"),
 				newX, newY,  pt_ttm.x, pt_ttm.y);
 
 			vaSetDlgItemText(m_hdlgMe, IDC_STATIC2,
@@ -360,6 +368,9 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 	else if (uMsg == WM_MOUSELEAVE)
 	{
 		m_mouseleave.do_WM_MOUSELEAVE();
+
+		DWORD mousepos = GetMessagePos();
+		vaDbgTs(_T("See WM_MOUSELEAVE, now at screen [%d,%d]"), GET_X_LPARAM(mousepos), GET_Y_LPARAM(mousepos));
 
 		vaSetDlgItemText(m_hdlgMe, IDC_STATIC2, _T("Mouse outside the dialog-box area."));
 
