@@ -167,7 +167,7 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRe
 	}
 	else if (uMsg == WM_DESTROY)
 	{
-		// [2025-05-10] Q: Why I can not see this?
+		// [2025-06-02] Q: Why I can not see this?
 		// Neither in debug-message of BaseDlgProc().
 		return Actioned_no;
 	}
@@ -177,9 +177,11 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRe
 		// -- This is important, it stops further dialog WM_xxx message from calling 
 		// this virtual DlgProc(). See CModelessChild::BaseDlgProc().
 
-		vaDBG(_T("%s (hdlg=0x%08X) EndDialog()."), msz_name, m_hdlgMe);
+		vaDBG(_T("%s DestroyWindow(hdlg=0x%08X)."), msz_name, m_hdlgMe);
 
-		EndDialog(m_hdlgMe, 0);
+		DestroyWindow(m_hdlgMe); 
+		// -- Cannot merely use EndDialog(m_hdlgMe, 0);, that is the rule.
+		// If merely use EndDialog(), the dlgbox vanishes but the HWND remains in system.
 
 		// Tell parent that I have destroyed myself.
 		mr_ptrme_by_parent = NULL;

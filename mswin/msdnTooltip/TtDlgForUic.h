@@ -45,7 +45,7 @@ HWND CreateToolTip_ForUic(HWND hDlg, int toolID, PCTSTR pszText)
 		TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
-		hwndOwner, // tooltip-window's owner, receiving WM_NOTIFY
+		hwndOwner,
 		NULL,
 		g_hinstExe, NULL);
 
@@ -56,7 +56,7 @@ HWND CreateToolTip_ForUic(HWND hDlg, int toolID, PCTSTR pszText)
 
 	// Associate the tooltip with the tool.
 	TOOLINFO ti = { sizeof(TOOLINFO) };
-	ti.hwnd = hDlg;
+	ti.hwnd = hDlg; // TTN_xxx will be sent to this HWND.
 	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS | flag_TTF_CENTERTIP();
 	ti.uId = (UINT_PTR)hwndTool;
 	ti.lpszText = (PTSTR)pszText; // I believe tooltip internal code will make a string copy.
