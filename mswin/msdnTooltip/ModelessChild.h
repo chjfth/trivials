@@ -185,7 +185,13 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRe
 
 		// Tell parent that I have destroyed myself.
 		mr_ptrme_by_parent = NULL;
-		delete this;
+		
+		// delete this; // Shall not delete since v1.5.7
+		// Instead:
+		m_hdlgMe = NULL;
+		m_hdlgParent = NULL;
+		msz_name = NULL;
+		msd_name = nullptr;
 
 		return Actioned_yes;
 	}

@@ -28,17 +28,35 @@ BOOL g_isTTS_BALLOON = FALSE;
 BOOL g_isTTF_CENTERTIP = FALSE;
 BOOL g_isWS_EX_TRANSPARENT = TRUE;
 
-
 struct DlgPrivate_st
 {
-	int clicks;
-	CModelessChild *ptdForUic; // HWND hdlgTtForUic;
-	CModelessChild *ptdForRectArea; // HWND hdlgTtForRectArea;
-	CModelessChild *ptdMultiline;
-	CModelessChild *ptdTrackingTooltip1;
-	CModelessChild *ptdTrackingTooltipMisc;
-	CModelessChild *ptdInplaceSimplest;
-	CModelessChild *ptdInplaceTooltip;
+	int clicks_null;
+
+	CTtDlgForUic TtDlgForUic;
+	CTtDlgForRectArea TtDlgForRectArea;
+	CTtDlgMultiline TtDlgMultiline;
+	CTtDlgTrackingTooltip_concise TtDlgTrackingTooltip_concise;
+	CTtDlgTrackingTooltip_misc TtDlgTrackingTooltip_misc;
+	CTtDlgInplaceSimplest TtDlgInplaceSimplest;
+	CTtDlgInplaceTooltip TtDlgInplaceTooltip;
+
+	CModelessChild *ptdForUic = nullptr;
+	CModelessChild *ptdForRectArea = nullptr;
+	CModelessChild *ptdMultiline = nullptr;
+	CModelessChild *ptdTrackingTooltip1 = nullptr;
+	CModelessChild *ptdTrackingTooltipMisc = nullptr;
+	CModelessChild *ptdInplaceSimplest = nullptr;
+	CModelessChild *ptdInplaceTooltip = nullptr;
+
+	DlgPrivate_st() :
+		TtDlgForUic(&ptdForUic),
+		TtDlgForRectArea(&ptdForRectArea),
+		TtDlgMultiline(&ptdMultiline),
+		TtDlgTrackingTooltip_concise(&ptdTrackingTooltip1),
+		TtDlgTrackingTooltip_misc(&ptdTrackingTooltipMisc),
+		TtDlgInplaceSimplest(&ptdInplaceSimplest),
+		TtDlgInplaceTooltip(&ptdInplaceTooltip)
+	{}
 };
 
 
@@ -51,31 +69,31 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	switch (id) 
 	{{
 	case IDB_TooltipForUic:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgForUic>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgForUic,
 			_T("IDD_TooltipForUic"), IDD_TooltipForUic, hdlgMain, &ctx.ptdForUic);
 		break;
 	case IDB_TooltipForRectArea:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgForRectArea>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgForRectArea,
 			_T("IDD_TooltipForRectArea"), IDD_TooltipForRectArea, hdlgMain, &ctx.ptdForRectArea);
 		break;
 
 	case IDB_MultilineTooltip:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgMultiline>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgMultiline,
 			_T("IDD_TooltipMultiline"), IDD_TooltipMultiline, hdlgMain, &ctx.ptdMultiline);
 		break;
 
 	case IDB_TrackingTooltipConcise:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_concise>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgTrackingTooltip_concise,
 			_T("IDD_TrackingTooltip1"), IDD_TrackingConcise, hdlgMain, &ctx.ptdTrackingTooltip1);
 		break;
 
 	case IDB_TrackingTooltipMisc:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgTrackingTooltip_misc>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgTrackingTooltip_misc,
 			_T("IDD_TrackingTooltipMisc"), IDD_TrackingMisc, hdlgMain, &ctx.ptdTrackingTooltipMisc);
 		break;
 
 	case IDB_InplaceSimplest:
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgInplaceSimplest>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgInplaceSimplest,
 			_T("IDD_InplaceSimplest"), IDD_InplaceSimplest, hdlgMain, &ctx.ptdInplaceSimplest);
 		break;
 
@@ -90,7 +108,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			assert(dlgtmpl);
 		}
 
-		CModelessTtDemo::LaunchTootipDemoChildDlg<CTtDlgInplaceTooltip>(
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgInplaceTooltip,
 			_T("IDD_InplaceTooltip"), IDD_InplaceComplex, hdlgMain, &ctx.ptdInplaceTooltip);
 		break;
 	}

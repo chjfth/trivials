@@ -44,6 +44,8 @@ protected:
 
 	HWND m_hwndTooltip = NULL;
 
+	POINT m_dlgpos = { -1, -1 }; // remember previous window position
+
 public:
 
 	using CModelessChild::CModelessChild; // this requires C++11, VC2015+
@@ -58,6 +60,13 @@ public:
 		if (uMsg == WM_INITDIALOG)
 		{
 			DlgTitle_add_BCT();
+
+			if (m_dlgpos.x != -1)
+			{
+				// restore previous dlg position
+				SetWindowPos(m_hdlgMe, 0, m_dlgpos.x, m_dlgpos.y, 0, 0,
+					SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOZORDER);
+			}
 		}
 
 		return actioned;
@@ -65,6 +74,11 @@ public:
 
 	virtual void DlgClosing() override
 	{
+		// save current dlg position
+		RECT rc = {};
+		GetWindowRect(m_hdlgMe, &rc);
+		m_dlgpos.x = rc.left; m_dlgpos.y = rc.top;
+
 		if (m_hwndTooltip)
 		{
 			vaDbgTs(_T("In %s, destroy tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
@@ -102,14 +116,15 @@ public:
 
 public:
 	template<typename T_TtDemoDlg> // T_TtDemoDlg is CTtDlgForUic etc.
-	static BOOL LaunchTootipDemoChildDlg(const TCHAR *name, UINT iddlg_child, 
+	static BOOL LaunchTootipDemoChildDlg(T_TtDemoDlg &ttdlg,
+		const TCHAR *name, UINT iddlg_child, 
 		HWND hwndParent, CModelessChild **pptd)
 	{
 		BOOL succ = 0;
 		CModelessChild* &ptd = *pptd;
 		if (!ptd)
 		{
-			CModelessChild *ptdnew = new T_TtDemoDlg(&ptd);
+			CModelessChild *ptdnew = &ttdlg;
 
 			succ = ptdnew->CreateTheDialog(name, g_hinstExe, iddlg_child, hwndParent);
 			assert(succ);
