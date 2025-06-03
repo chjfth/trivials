@@ -84,7 +84,7 @@ CTtDlgInplaceSimplest::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR 
 		GetWindowRect(hwndLabel, &rcsLabel);
 		vaSetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("Label: %s"), RECTtext(rcsLabel, szRectLabel));
 
-		SetFocus(NULL);
+		SetFocus(GetDlgItem(m_hdlgMe, IDOK));
 		*pMsgRet = AcceptDefaultFocus_FALSE;
 		return Actioned_yes;
 	}

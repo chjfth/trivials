@@ -127,10 +127,10 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		g_isWS_EX_TRANSPARENT = IsDlgButtonChecked(hdlg, IDCK_WsexTransparent);
 		break;
 	}
-	case IDOK:
 	case IDCANCEL:
 	{
-		PostQuitMessage(0); // EndDialog(hdlg, id);
+		// Do nothing, so ESC will not close the main UI.
+		// Closing main UI is handled by SC_CLOSE.
 		break;
 	}
 	}}
@@ -199,6 +199,15 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
+void Dlg_OnSysCommand(HWND hdlg, UINT cmd, int x, int y)
+{
+	if (cmd == SC_CLOSE)
+	{
+		PostQuitMessage(0);
+		return;
+	}
+}
+
 INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
 	DlgPrivate_st &ctx = *(DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -207,9 +216,14 @@ INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{{
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+
+		HANDLE_MSG(hdlg, WM_SYSCOMMAND, Dlg_OnSysCommand); // not HANDLE_dlgMSG
 	}}
 	return FALSE;
 }
+
+#define MY_CHECK_MODELESS_DLGMSG(who) \
+		if((who) && IsDialogMessage((who)->GetHdlg(), &msg)) continue;
 
 
 int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int nCmdShow) 
@@ -237,13 +251,16 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int nCmdShow
 		if(IsDialogMessage(hdlgMain, &msg))
 			continue;
 
-		// If some demo dlg needs Tab-key switching focus, we should add these:
-
-		if(ctx.ptdForUic && IsDialogMessage(ctx.ptdForUic->GetHdlg(), &msg))
-			continue;
-
-		if(ctx.ptdMultiline && IsDialogMessage(ctx.ptdMultiline->GetHdlg(), &msg))
-			continue;
+		// If some demo dlg needs Tab-key switching focus, we should Check IsDialogMessage() for it.
+		// If we desire ESC-key closing the dlg, we also need to check IsDialogMessage().
+		//
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdForUic);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdForRectArea);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdMultiline);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdTrackingTooltip1);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdTrackingTooltipMisc);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdInplaceSimplest);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdInplaceTooltip);
 
 		TranslateMessage (&msg) ;
 		DispatchMessage (&msg) ;
