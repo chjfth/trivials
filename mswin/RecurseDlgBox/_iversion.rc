@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    RecurseDlgBox_VMAJOR, RecurseDlgBox_VMINOR, RecurseDlgBox_VPATCH, RecurseDlgBox_VTAIL
+ProductVersion RecurseDlgBox_VMAJOR, RecurseDlgBox_VMINOR, RecurseDlgBox_VPATCH, RecurseDlgBox_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     RecurseDlgBox_NAME
+            VALUE "FileDescription", RecurseDlgBox_NAME
+            VALUE "FileVersion",    RecurseDlgBox_VMAJORs "." RecurseDlgBox_VMINORs "." RecurseDlgBox_VPATCHs
+            VALUE "ProductVersion",    RecurseDlgBox_VMAJORs "." RecurseDlgBox_VMINORs "." RecurseDlgBox_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , RecurseDlgBox_NAME ".exe"
+            VALUE "InternalName", RecurseDlgBox_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
