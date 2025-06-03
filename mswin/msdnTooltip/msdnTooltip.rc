@@ -49,14 +49,14 @@ BEGIN
     CONTROL         "TTF_CENTERTIP",IDCK_TTF_CENTERTIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,73,19,66,10
     CONTROL         "WS_EX_TRANSPARENT",IDCK_WsexTransparent,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,144,19,90,10
     PUSHBUTTON      "<A> Tooltip for a control(Uic)",IDB_TooltipForUic,4,38,111,14
-    PUSHBUTTON      "<B> Tooltip for a Rect area",IDB_TooltipForRectArea,124,38,111,14
+    PUSHBUTTON      "<B> Tooltip for a Rect-area",IDB_TooltipForRectArea,124,38,111,14
     GROUPBOX        "Multiline tooltip dynamic text",IDGB_MultilineTooltip,4,58,236,53
     CONTROL         "Multiline",IDCK_EnableMultiline,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,70,40,10
     EDITTEXT        IDE_LineWidth,50,69,28,13,ES_AUTOHSCROLL
     LTEXT           "line-width",IDS_LineWidth,81,71,32,8
     EDITTEXT        IDE_MultilineText,116,69,119,38,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
     PUSHBUTTON      "<C> Multiline tooltip",IDB_MultilineTooltip,9,94,100,14
-    PUSHBUTTON      "<D> Tracking tooltip concise way",IDB_TrackingTooltipConcise,4,122,135,14
+    PUSHBUTTON      "<D> Tracking tooltip concise",IDB_TrackingTooltipConcise,4,122,135,14
     LTEXT           "offset X:",IDS_TttOffsetX,144,125,29,8
     EDITTEXT        IDE_TttOffsetX,173,123,22,13,ES_AUTOHSCROLL
     LTEXT           "Y:",IDS_TttOffsetY,199,125,8,8
@@ -79,7 +79,7 @@ END
 IDD_TooltipForUic DIALOGEX 0, 0, 159, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "<A> Tooltip for a Uic"
+CAPTION "<A> Tooltip for a control"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "&No tooltip on me",IDB_BtnNoTooltip,7,6,94,14
@@ -99,7 +99,7 @@ END
 IDD_TooltipMultiline DIALOGEX 0, 0, 159, 66
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "<C> Multiline Tooltip"
+CAPTION "<C> Multiline tooltip"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "&No tooltip on me",IDB_BtnNoTooltip,7,6,94,14
@@ -110,7 +110,7 @@ END
 IDD_TrackingConcise DIALOGEX 0, 0, 195, 82
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "<D> Tracking-Tooltip concise"
+CAPTION "<D> Tracking tooltip concise"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "To be filled by code",IDC_STATIC1,19,11,155,36
@@ -119,7 +119,7 @@ END
 IDD_TrackingMisc DIALOGEX 0, 0, 195, 94
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "<E> Tracking-Tooltip misc"
+CAPTION "<E> Tracking tooltip misc"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "To be filled by code",IDC_STATIC1,19,11,155,52
