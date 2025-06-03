@@ -8,7 +8,7 @@
 
 enum { OffScreenX = -32000, OffScreenY = -32000 };
 
-class CTtDlgInplaceTooltip : public CModelessTtDemo
+class CTtDlgInplaceComplex : public CModelessTtDemo
 {
 public:
 	using CModelessTtDemo::CModelessTtDemo; // this requires C++11, VC2015+
@@ -101,9 +101,9 @@ void RefreshUI_Datetime(HWND hdlg)
 		longDate, szTime, slen);
 }
 
-const int CTtDlgInplaceTooltip::sar_OptUic[] = { IDS_FontsizePt, IDE_FontsizePt };
+const int CTtDlgInplaceComplex::sar_OptUic[] = { IDS_FontsizePt, IDE_FontsizePt };
 
-const int CTtDlgInplaceTooltip::sar_UicsToReveal[] = {
+const int CTtDlgInplaceComplex::sar_UicsToReveal[] = {
 	IDL_ShortDate, IDL_LongDate };
 
 static void enable_Julayout(HWND hdlg)
@@ -207,7 +207,7 @@ bool my_RepositionTooltipOnLabel(HWND hdlg, HWND hwndLabel, HWND hwndTooltip)
 }
 
 CModelessChild::Actioned_et
-CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
+CTtDlgInplaceComplex::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
 	SETTLE_OUTPUT_PTR(INT_PTR, pMsgRet, 0);
 
@@ -278,7 +278,7 @@ CTtDlgInplaceTooltip::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 }
 
 
-void CTtDlgInplaceTooltip::DlgClosing()
+void CTtDlgInplaceComplex::DlgClosing()
 {
 	__super::DlgClosing();
 

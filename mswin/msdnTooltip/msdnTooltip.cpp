@@ -38,24 +38,24 @@ struct DlgPrivate_st
 	CTtDlgTrackingTooltip_concise TtDlgTrackingTooltip_concise;
 	CTtDlgTrackingTooltip_misc TtDlgTrackingTooltip_misc;
 	CTtDlgInplaceSimplest TtDlgInplaceSimplest;
-	CTtDlgInplaceTooltip TtDlgInplaceTooltip;
+	CTtDlgInplaceComplex TtDlgInplaceComplex;
 
 	CModelessChild *ptdForUic = nullptr;
 	CModelessChild *ptdForRectArea = nullptr;
 	CModelessChild *ptdMultiline = nullptr;
-	CModelessChild *ptdTrackingTooltip1 = nullptr;
+	CModelessChild *ptdTrackingTooltipConcise = nullptr;
 	CModelessChild *ptdTrackingTooltipMisc = nullptr;
 	CModelessChild *ptdInplaceSimplest = nullptr;
-	CModelessChild *ptdInplaceTooltip = nullptr;
+	CModelessChild *ptdInplaceComplex = nullptr;
 
 	DlgPrivate_st() :
 		TtDlgForUic(&ptdForUic),
 		TtDlgForRectArea(&ptdForRectArea),
 		TtDlgMultiline(&ptdMultiline),
-		TtDlgTrackingTooltip_concise(&ptdTrackingTooltip1),
+		TtDlgTrackingTooltip_concise(&ptdTrackingTooltipConcise),
 		TtDlgTrackingTooltip_misc(&ptdTrackingTooltipMisc),
 		TtDlgInplaceSimplest(&ptdInplaceSimplest),
-		TtDlgInplaceTooltip(&ptdInplaceTooltip)
+		TtDlgInplaceComplex(&ptdInplaceComplex)
 	{}
 };
 
@@ -84,7 +84,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 	case IDB_TrackingTooltipConcise:
 		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgTrackingTooltip_concise,
-			_T("IDD_TrackingTooltip1"), IDD_TrackingConcise, hdlgMain, &ctx.ptdTrackingTooltip1);
+			_T("IDD_TrackingTooltip1"), IDD_TrackingConcise, hdlgMain, &ctx.ptdTrackingTooltipConcise);
 		break;
 
 	case IDB_TrackingTooltipMisc:
@@ -108,8 +108,8 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			assert(dlgtmpl);
 		}
 
-		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgInplaceTooltip,
-			_T("IDD_InplaceTooltip"), IDD_InplaceComplex, hdlgMain, &ctx.ptdInplaceTooltip);
+		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgInplaceComplex,
+			_T("IDD_InplaceTooltip"), IDD_InplaceComplex, hdlgMain, &ctx.ptdInplaceComplex);
 		break;
 	}
 	case IDCK_TTS_BALLOON:
@@ -257,10 +257,10 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int nCmdShow
 		MY_CHECK_MODELESS_DLGMSG(ctx.ptdForUic);
 		MY_CHECK_MODELESS_DLGMSG(ctx.ptdForRectArea);
 		MY_CHECK_MODELESS_DLGMSG(ctx.ptdMultiline);
-		MY_CHECK_MODELESS_DLGMSG(ctx.ptdTrackingTooltip1);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdTrackingTooltipConcise);
 		MY_CHECK_MODELESS_DLGMSG(ctx.ptdTrackingTooltipMisc);
 		MY_CHECK_MODELESS_DLGMSG(ctx.ptdInplaceSimplest);
-		MY_CHECK_MODELESS_DLGMSG(ctx.ptdInplaceTooltip);
+		MY_CHECK_MODELESS_DLGMSG(ctx.ptdInplaceComplex);
 
 		TranslateMessage (&msg) ;
 		DispatchMessage (&msg) ;
