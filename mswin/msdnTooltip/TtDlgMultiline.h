@@ -125,11 +125,12 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 			if(pnmh->code == (TTN_NEEDTEXT|TTN_GETDISPINFO)) // same value
 			{
 				delete m_pszTooltipText; // delete old text buffer
+				m_pszTooltipText = nullptr;
 
 				HWND hwndDyntext = GetDlgItem(m_hdlgParent, IDE_MultilineText);
 				int slen = SendMessage(hwndDyntext, WM_GETTEXTLENGTH, 0, 0);
 				if (slen <= 0)
-					return Actioned_no;
+					return Actioned_no; // when editbox is cleared
 
 				m_pszTooltipText = new TCHAR[slen + 1];
 				GetDlgItemText(m_hdlgParent, IDE_MultilineText, m_pszTooltipText, slen+1);
@@ -137,8 +138,17 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 				NMTTDISPINFO *pdi = (NMTTDISPINFO *)pnmh;
 				pdi->lpszText = m_pszTooltipText;
 
+				vaDbgTs(_T("TTN_NEEDTEXT: We return %d+1 TCHARs."), slen);
+
 				*pMsgRet = TRUE;
 				return Actioned_yes;
+			}
+			else if (pnmh->code == TTN_SHOW)
+			{
+				RECT rctt = {};
+				TCHAR recttext[80] = _T("");
+				GetWindowRect(m_hwndTooltip, &rctt);
+				vaDbgTs(_T("TTN_SHOW: tooltip screen-rect: %s"), RECTtext(rctt, recttext));
 			}
 		}
 
@@ -164,6 +174,7 @@ CTtDlgMultiline::DlgClosing()
 	__super::DlgClosing();
 
 	delete m_pszTooltipText;
+	m_pszTooltipText = nullptr;
 
 	Enable_Uics(TRUE, m_hdlgParent, sar_OptUic);
 }
