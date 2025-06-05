@@ -8,6 +8,8 @@
 
 enum { OffScreenX = -32000, OffScreenY = -32000 };
 
+enum { TooltipText_Max = 200 };
+
 class CTtDlgInplaceComplex : public CModelessTtDemo
 {
 public:
@@ -18,12 +20,14 @@ public:
 
 	virtual void DlgClosing() override;
 
+	TCHAR m_szTooltip[TooltipText_Max];
+
 private:
 	static const int sar_OptUic[];
 
 private:
 	static const int sar_UicsToReveal[];
-	UINT_PTR s_timerId = 1;
+	static const UINT_PTR s_timerId = 1;
 };
 
 #ifdef TtDlgInplaceTooltip_IMPL
@@ -49,7 +53,7 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 	TOOLINFO ti = { sizeof(TOOLINFO) };
 	ti.hwnd = hdlg;
 	ti.uFlags = TTF_IDISHWND | TTF_SUBCLASS | ((TTF_TRANSPARENT));
-	ti.lpszText = _T("Uic-init tooltip text");
+	ti.lpszText = LPSTR_TEXTCALLBACK;
 
 	for (int i = 0; i < nUics; i++)
 	{
@@ -146,60 +150,56 @@ bool my_RepositionTooltipOnLabel(HWND hdlg, HWND hwndLabel, HWND hwndTooltip)
 	HFONT hfont = GetWindowFont(hwndLabel);
 	SelectFont(hdc, hfont);
 
-	// let tooltip use the same font as target label. 
-	SetWindowFont(hwndTooltip, hfont, FALSE);
-
 	SIZE size_req = {};
 	GetTextExtentPoint32(hdc, szLabel, lenLabel, &size_req);
 
 	ReleaseDC(hwndLabel, hdc);
 
 	RECT rc_label = {};
-	GetClientRect(hwndLabel, &rc_label);
+	GetWindowRect(hwndLabel, &rc_label);
 	int label_width = rc_label.right - rc_label.left;
 
 	// Check whether display extent overflows
-	TOOLINFO ti = { sizeof(TOOLINFO) };
-	ti.hwnd = hdlg;
-	ti.uId = (UINT_PTR)hwndLabel;
+
 	if (size_req.cx > label_width)
 	{
 		// Yes, need update text.
 
-		vaDbgTs(_T("Text-extent > label-width (%d > %d), will show inplace-tootlip."), size_req.cx, label_width);
-
-		ti.lpszText = szLabel;
-		SendMessage(hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
+		TOOLINFO ti = { sizeof(TOOLINFO) };
+		ti.hwnd = hdlg;
+		ti.uId = (UINT_PTR)hwndLabel;
 
 		// And reposition the tooltip "in-place".
-		RECT rc_label_ext = {};
-		GetWindowRect(hwndLabel, &rc_label_ext);
-		rc_label_ext.right = rc_label_ext.left + size_req.cx;
-		rc_label_ext.bottom = rc_label_ext.top + size_req.cy;
+		rc_label.right = rc_label.left + size_req.cx;
+		rc_label.bottom = rc_label.top + size_req.cy;
+		RECT rc_label_ext = rc_label;
 
 		SendMessage(hwndTooltip, TTM_ADJUSTRECT, TRUE, (LPARAM)&rc_label_ext);
 		// -- This make rc_label_ext nudge a bit towards left and top. 
 		// On a Win7 1280x1024 screen:
-		// From {LT(551, 545) RB(773, 558)  [222 x 13]}
-		//   to {LT(545, 543) RB(778, 559)  [233 x 16]}
+		// TTM_ADJUSTRECT: LT(547,545)RB(735,558)[188*13] 
+		//              -> LT(541,543)RB(740,559)[199*16]
 
 		SetWindowPos(hwndTooltip, NULL,
-			rc_label_ext.left, rc_label_ext.top, RECTwidth(rc_label_ext), RECTheight(rc_label_ext),
-			SWP_NOZORDER | SWP_NOACTIVATE);
-		// -- Must not include SWP_NOSIZE, bcz tooltip's width may have changed 
-		// due to new text, and the new size has been calculated in rc_label_ext .
+			rc_label_ext.left, rc_label_ext.top, 0, 0,
+			SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+
+		TCHAR rctext1[40], rctext2[40];
+		vaDbgTs(_T("Text-extent > label-width (%d > %d). TTM_ADJUSTRECT: %s -> %s"),
+			size_req.cx, label_width,
+			RECTtext(rc_label, rctext1), RECTtext(rc_label_ext, rctext2));
 	}
 	else
 	{
 		// No. We will "suppress" the tooltip by moving it off-screen.
 
-		vaDbgTs(_T("Text-extent < label-width (%d < %d), will hide inplace-tootlip."), size_req.cx, label_width);
+		vaDbgTs(_T("Text-extent < label-width (%d < %d). No show inplace-tootlip."), size_req.cx, label_width);
 
 		SetWindowPos(hwndTooltip, NULL,
 			OffScreenX, OffScreenY, 0, 0,
 			SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 
-		// ti.lpszText = _T(""); // wrong way
+		// ti.lpszText = _T(""); // wrong way (todo-confirm)
 		// -- NOTE: Don't set empty text, which will cause later TTN_SHOW to never come up.
 	}
 	
@@ -254,7 +254,24 @@ CTtDlgInplaceComplex::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 		// Here we determine whether to pop-up the in-place tooltip.
 
 		NMHDR *pnmh = (NMHDR *)lParam;
-		if (pnmh->code == TTN_SHOW)
+		if (pnmh->code == TTN_NEEDTEXT)
+		{
+			// Memo: TTN_NEEDTEXT comes first, then TTN_SHOW follows.
+			
+			// Prepare dynamic text for the tooltip.
+			HWND hwndLabel = (HWND)pnmh->idFrom;
+
+			GetWindowText(hwndLabel, m_szTooltip, TooltipText_Max);
+
+			NMTTDISPINFO *pdi = (NMTTDISPINFO *)pnmh;
+			pdi->lpszText = m_szTooltip;
+
+			// Tell tooltip to use the same font as the static label.
+			//
+			HFONT hfont = GetWindowFont(hwndLabel);
+			SetWindowFont(m_hwndTooltip, hfont, FALSE);
+		}
+		else if (pnmh->code == TTN_SHOW)
 		{
 			HWND hwndLabel = (HWND)(pnmh->idFrom);
 

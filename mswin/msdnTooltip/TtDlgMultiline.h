@@ -140,7 +140,7 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 
 				vaDbgTs(_T("TTN_NEEDTEXT: We return %d+1 TCHARs."), slen);
 
-				*pMsgRet = TRUE;
+				*pMsgRet = TRUE; // no use?
 				return Actioned_yes;
 			}
 			else if (pnmh->code == TTN_SHOW)
