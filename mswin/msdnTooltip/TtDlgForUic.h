@@ -93,6 +93,19 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 	if (uMsg == WM_NOTIFY)
 	{
 		dbg_WM_NOTIFY(wParam, lParam);
+
+#if 0
+		// Test-code to show that TTM_UPDATETIPTEXT behaves wacky in TTN_SHOW.
+		NMHDR *pnmh = (NMHDR *)lParam;
+		if (pnmh->code == TTN_SHOW)
+		{
+			TOOLINFO ti = { sizeof(TOOLINFO) };
+			ti.hwnd = m_hdlgMe;
+			ti.uId = pnmh->idFrom;
+			ti.lpszText = _T("New tooltip text: The quick brown fox jumps over the lazy dog.");
+			SendMessage(m_hwndTooltip, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
+		}
+#endif
 		return Actioned_no;
 	}
 	if (uMsg == WM_COMMAND)
