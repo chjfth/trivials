@@ -50,9 +50,12 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ShowWindow (hwnd, nCmdShow) ;
 	UpdateWindow (hwnd) ;
 	
+	int mcount = 0;
+
 	while (1)
 	{
-		vaDbgTs(_T(">>> Calling  GetMessage()."));
+		mcount++;
+		vaDbgTs(_T(">>>[#%d] Calling  GetMessage()."), mcount);
 
 		BOOL succ = GetMessage (&msg, NULL, 0, 0);
 
@@ -62,7 +65,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			break;
 		}
 
-		vaDbgTs(_T("<<< Returned GetMessage(), %s for HWND=0x%X."), 
+		vaDbgTs(_T("<<<[#%d] Returned GetMessage(), %s for HWND=0x%X."), mcount,
 			ITCSv(msg.message, WM_xxx), msg.hwnd);
 
 		TranslateMessage (&msg) ;
@@ -99,7 +102,10 @@ void Cls_OnDestroy(HWND hwnd)
 
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	vaDbgTs(_T("See WndProc(), %s , hwnd=0x%X"), ITCSv(message, WM_xxx), hwnd);
+	static int s_count = 0;
+	
+	vaDbgTs(_T("[*%d] See WndProc(), %s , hwnd=0x%X"), ++s_count,
+		ITCSv(message, WM_xxx), hwnd);
 	
 	switch (message)
 	{{
