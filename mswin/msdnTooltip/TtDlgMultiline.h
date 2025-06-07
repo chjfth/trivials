@@ -128,7 +128,7 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 				m_pszTooltipText = nullptr;
 
 				HWND hwndDyntext = GetDlgItem(m_hdlgParent, IDE_MultilineText);
-				int slen = SendMessage(hwndDyntext, WM_GETTEXTLENGTH, 0, 0);
+				int slen = (int)SendMessage(hwndDyntext, WM_GETTEXTLENGTH, 0, 0);
 				if (slen <= 0)
 					return Actioned_no; // when editbox is cleared
 
@@ -157,10 +157,27 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 	if (uMsg == WM_COMMAND)
 	{
 		UINT uic = GET_WM_COMMAND_ID(wParam, lParam);
-		if (uic == IDB_BtnNoTooltip)
-			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_BtnNoTooltip clicked."));
-		else if (uic == IDB_BtnHasTooltip)
-			SetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("IDB_BtnHasTooltip clicked."));
+		if (uic == IDB_BtnNoTooltip || uic == IDB_BtnHasTooltip)
+		{
+			// Execute TTM_ENUMTOOLS to see whether we suffer buffer-overflow.
+
+			TCHAR textbuf[100] = _T("No-touch");
+
+			TOOLINFO ti = { sizeof(ti) };
+			ti.hwnd = m_hdlgMe;
+			ti.uId = (UINT_PTR)GetDlgItem(m_hdlgMe, IDB_BtnHasTooltip);
+			ti.lpszText = textbuf;
+			int idxHottool = 0;
+			LRESULT lre = SendMessage(m_hwndTooltip, TTM_ENUMTOOLS, idxHottool, (LPARAM)&ti);
+			assert(lre == TRUE);
+
+			int slen = (int)_tcslen(textbuf);
+			vaSetDlgItemText(m_hdlgMe, IDC_EDIT1, _T("TTM_ENUMTOOLS got textlen=%d"), slen);
+			// -- Note: Since we let TOOLINFO.lpszText=LPSTR_TEXTCALLBACK in TTM_ADDTOOL, 
+			//    we'll see that textbuf[] remains untouched, which is good, no buffer-overflow danger.
+			//    But if we used TOOLINFO.lpszText="some concrete long string", that
+			//    long string will be returned in textbuf[] and buffer-overflow may occur.
+		}
 
 		return Actioned_yes;
 	}
