@@ -47,21 +47,42 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+const TCHAR* my_DlgtteGetText(void *userctx)
+{
+	HWND hUic = (HWND)userctx;
+
+	static TCHAR stext[200];
+
+	TCHAR szWndcls[80];
+	GetClassName(hUic, szWndcls, ARRAYSIZE(szWndcls));
+
+	_sntprintf_s(stext, _TRUNCATE, _T("EasyTooltip: {%s} hwnd=0x%X"), szWndcls, (UINT)hUic);
+
+	return stext;
+}
+
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st &prdata = *(DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR textbuf[200];
+//	TCHAR textbuf[200];
 
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDB_AddEasyTooltip:
 	{
-		++(prdata.clicks);
-		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata.clicks);
-		SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, textbuf);
-
-		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
+		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
+		Dlgtte_EnableTooltip(hwndBtn, my_DlgtteGetText, hwndBtn, nullptr, 0);
+		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+		Dlgtte_EnableTooltip(hwndEdt, my_DlgtteGetText, hwndEdt, nullptr, 0);
+		break;
+	}
+	case IDB_DelEasyTooltip:
+	{
+		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
+		Dlgtte_RemoveTooltip(hwndBtn);
+		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+		Dlgtte_RemoveTooltip(hwndEdt);
 		break;
 	}
 	case IDOK:
@@ -85,11 +106,6 @@ static void Dlg_EnableJULayout(HWND hdlg)
 }
 
 
-const TCHAR* my_DlgtteGetText(void *userctx)
-{
-	return _T("mytooltip1");
-}
-
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
 	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
@@ -105,10 +121,6 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata.mystr);
 
 	Dlg_EnableJULayout(hdlg);
-
-	// test code
-	HWND hwndBtn = GetDlgItem(hdlg, IDC_BUTTON1);
-	Dlgtte_EnableTooltip(hwndBtn, my_DlgtteGetText, 0, nullptr, 0); 
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
