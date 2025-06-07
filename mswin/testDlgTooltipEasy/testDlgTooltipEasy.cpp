@@ -100,7 +100,8 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
+	jul->AnchorControl(50,100, 50,100, IDB_AddEasyTooltip);
+	jul->AnchorControl(50,100, 50,100, IDB_DelEasyTooltip);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
