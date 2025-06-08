@@ -47,33 +47,30 @@ struct DlgPrivate_st
 	int clicks;
 };
 
-const TCHAR* my_DlgttGetUsageText(void *userctx)
+const TCHAR* my_DlgttGetUsageText(HWND hwndUic, void *userctx)
 {
-	HWND hUic = (HWND)userctx;
-
 	static TCHAR stext[200];
 
 	TCHAR szWndcls[80];
-	GetClassName(hUic, szWndcls, ARRAYSIZE(szWndcls));
+	GetClassName(hwndUic, szWndcls, ARRAYSIZE(szWndcls));
 
-	_sntprintf_s(stext, _TRUNCATE, _T("Usage tip here: {%s} hwnd=0x%X"), szWndcls, (UINT)hUic);
+	_sntprintf_s(stext, _TRUNCATE, _T("Usage tip here: {%s} hwnd=0x%X"), szWndcls, PtrToUint(hwndUic)); 
 
 	return stext;
 }
 
-const TCHAR* my_DlgttGetContentText(void *userctx)
+const TCHAR* my_DlgttGetContentText(HWND hwndUic, void *userctx)
 {
-	HWND hUic = (HWND)userctx;
-
 	static TCHAR stext[200];
 
-	TCHAR szWndcls[80];
-	GetClassName(hUic, szWndcls, ARRAYSIZE(szWndcls));
+	TCHAR szWndclass[80];
+	GetClassName(hwndUic, szWndclass, ARRAYSIZE(szWndclass));
 
 	_sntprintf_s(stext, _TRUNCATE, 
-		_T("Content tip here: {%s} hwnd=0x%X\r\n\r\n")
+		_T("Content tip here: {%s} hwnd=0x%X\r\n")
+		_T("\r\n\r\n\r\n")
 		_T("Content end.")
-		, szWndcls, (UINT)hUic);
+		, szWndclass, PtrToUint(hwndUic));
 
 	return stext;
 }
@@ -87,9 +84,9 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_AddEasyTooltip:
 	{
 		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
-		Dlgtte_EnableTooltip(hwndBtn, my_DlgttGetUsageText, hwndBtn, my_DlgttGetContentText, hwndBtn);
+		Dlgtte_EnableTooltip(hwndBtn, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL);
 		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-		Dlgtte_EnableTooltip(hwndEdt, my_DlgttGetUsageText, hwndEdt, my_DlgttGetContentText, hwndEdt);
+		Dlgtte_EnableTooltip(hwndEdt, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL);
 		break;
 	}
 	case IDB_DelEasyTooltip:
