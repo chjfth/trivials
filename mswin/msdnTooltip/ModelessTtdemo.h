@@ -44,7 +44,8 @@ protected:
 
 	HWND m_hwndTooltip = NULL;
 
-	POINT m_dlgpos = { -1, -1 }; // remember previous window position
+	enum { BadPos = -32000 };
+	RECT m_dlgrect = { BadPos, 0, 0, 0 }; // to remember previous window position
 
 public:
 
@@ -60,12 +61,20 @@ public:
 		if (uMsg == WM_INITDIALOG)
 		{
 			DlgTitle_add_BCT();
+		}
+		if (uMsg == WM_WINDOWPOSCHANGED)
+		{
+			// WM_WINDOWPOSCHANGED appears *after* CModelessTtDemo's child-class's WM_INITDIALOG,
+			// so this executes *after* child-class's enable_Julayout().
 
-			if (m_dlgpos.x != -1)
+			if (m_dlgrect.left != BadPos)
 			{
 				// restore previous dlg position
-				SetWindowPos(m_hdlgMe, 0, m_dlgpos.x, m_dlgpos.y, 0, 0,
-					SWP_NOACTIVATE|SWP_NOSIZE|SWP_NOZORDER);
+				MoveWindow(m_hdlgMe,
+					m_dlgrect.left, m_dlgrect.top, RECTwidth(m_dlgrect), RECTheight(m_dlgrect),
+					TRUE);
+
+				m_dlgrect.left = BadPos; // must, avoid pinning the window to this pos
 			}
 		}
 
@@ -76,8 +85,7 @@ public:
 	{
 		// save current dlg position
 		RECT rc = {};
-		GetWindowRect(m_hdlgMe, &rc);
-		m_dlgpos.x = rc.left; m_dlgpos.y = rc.top;
+		GetWindowRect(m_hdlgMe, &m_dlgrect);
 
 		if (m_hwndTooltip)
 		{

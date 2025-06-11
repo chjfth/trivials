@@ -99,7 +99,7 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 
 void CTtDlgTrackingTooltip_concise::enable_Julayout()
 {
-	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 600);
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 1600);
 
 	jul->AnchorControl(0,0, 100,100, IDC_STATIC1);
 //	jul->AnchorControl(0,100, 100,100, IDC_STATIC2);
@@ -275,7 +275,7 @@ const int CTtDlgTrackingTooltip_misc::sar_OptUic[] = {
 
 void CTtDlgTrackingTooltip_misc::enable_Julayout()
 {
-	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 600);
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 1600);
 
 	jul->AnchorControl(0,0, 100,100, IDC_STATIC1);
 	jul->AnchorControl(0,100, 100,100, IDC_STATIC2);

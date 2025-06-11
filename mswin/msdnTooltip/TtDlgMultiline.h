@@ -86,7 +86,7 @@ const int CTtDlgMultiline::sar_OptUic[] = {
 
 void CTtDlgMultiline::enable_Julayout()
 {
-	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 200, 100, 32000, 600);
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 200, 100, 32000, 1600);
 
 	jul->AnchorControl(0,0, 100,0, IDC_EDIT1);
 }

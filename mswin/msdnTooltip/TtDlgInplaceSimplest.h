@@ -66,7 +66,7 @@ HWND CreateToolTip_InplaceSimplest(HWND hwndOwner, int uicHottool)
 
 void CTtDlgInplaceSimplest::enable_Julayout()
 {
-	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 600);
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 1600);
 
 	jul->AnchorControl(0,0, 0,100, IDC_STATIC1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT1);
