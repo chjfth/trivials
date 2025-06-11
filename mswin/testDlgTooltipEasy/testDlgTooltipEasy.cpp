@@ -83,18 +83,27 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{{
 	case IDB_AddEasyTooltip:
 	{
-		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
-		Dlgtte_EnableTooltip(hwndBtn, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL);
 		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-		Dlgtte_EnableTooltip(hwndEdt, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL);
+		Dlgtte_EnableTooltip(hwndEdt, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL,
+			Dlgtte_AutoContentTipOnFocus | Dlgtte_BalloonUp
+			);
+
+		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
+		Dlgtte_EnableTooltip(hwndBtn, my_DlgttGetUsageText, NULL, 
+			my_DlgttGetContentText, NULL, 
+			Dlgtte_AutoContentTipOnFocus | Dlgtte_BalloonDown
+		);
+
 		break;
 	}
 	case IDB_DelEasyTooltip:
 	{
-		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
-		Dlgtte_RemoveTooltip(hwndBtn);
 		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 		Dlgtte_RemoveTooltip(hwndEdt);
+
+		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
+		Dlgtte_RemoveTooltip(hwndBtn);
+		
 		break;
 	}
 	case IDOK:
