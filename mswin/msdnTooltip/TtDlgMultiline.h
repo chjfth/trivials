@@ -14,6 +14,9 @@ public:
 		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 
 	virtual void DlgClosing() override;
+	
+private:
+	void enable_Julayout();
 
 private:
 	static const int sar_OptUic[];
@@ -80,6 +83,13 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 
 const int CTtDlgMultiline::sar_OptUic[] = {
 	IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth };
+
+void CTtDlgMultiline::enable_Julayout()
+{
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 200, 100, 32000, 600);
+
+	jul->AnchorControl(0,0, 100,0, IDC_EDIT1);
+}
 
 
 CModelessChild::Actioned_et

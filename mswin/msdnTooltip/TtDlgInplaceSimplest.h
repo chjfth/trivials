@@ -10,6 +10,9 @@ public:
 
 	Actioned_et DlgProc(
 		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
+
+private:
+	void enable_Julayout();
 };
 
 #ifdef TtDlgInplaceSimplest_IMPL
@@ -61,6 +64,15 @@ HWND CreateToolTip_InplaceSimplest(HWND hwndOwner, int uicHottool)
 	return hwndTT;
 }
 
+void CTtDlgInplaceSimplest::enable_Julayout()
+{
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 600);
+
+	jul->AnchorControl(0,0, 0,100, IDC_STATIC1);
+	jul->AnchorControl(0,0, 100,100, IDC_EDIT1);
+	jul->AnchorControl(50,100, 50,100, IDOK);
+}
+
 
 CModelessChild::Actioned_et
 CTtDlgInplaceSimplest::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
@@ -75,6 +87,8 @@ CTtDlgInplaceSimplest::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR 
 	if (uMsg == WM_INITDIALOG)
 	{
 		// Create the tooltip window.
+
+		enable_Julayout();
 
 		m_hwndTooltip = CreateToolTip_InplaceSimplest(m_hdlgMe, IDC_STATIC1);
 

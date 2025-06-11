@@ -18,6 +18,9 @@ public:
 	virtual void DlgClosing() override;
 
 private:
+	void enable_Julayout();
+
+private:
 	CWmMouseleaveHelper m_mouseleave;
 	int m_oldX = 0, m_oldY = 0;
 
@@ -34,6 +37,9 @@ public:
 		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 
 	virtual void DlgClosing() override;
+
+private:
+	void enable_Julayout();
 
 private:
 	CWmMouseleaveHelper m_mouseleave;
@@ -91,6 +97,14 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 	return hwndTT;
 }
 
+void CTtDlgTrackingTooltip_concise::enable_Julayout()
+{
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 600);
+
+	jul->AnchorControl(0,0, 100,100, IDC_STATIC1);
+//	jul->AnchorControl(0,100, 100,100, IDC_STATIC2);
+}
+
 
 CModelessChild::Actioned_et
 CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
@@ -101,6 +115,8 @@ CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 
 	if (uMsg == WM_INITDIALOG)
 	{
+		enable_Julayout();
+
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateTrackingTooltip_FreeOnScreen(m_hdlgMe);
@@ -207,7 +223,9 @@ void CTtDlgTrackingTooltip_concise::DlgClosing()
 	EnableDlgItem(m_hdlgParent, IDE_TttOffsetY);
 }
 
+
 //////////////////////////////////////////////////////////////////////////
+
 
 HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 	BOOL isTTF_TRANSPARENT, BOOL isTTF_TRACK, BOOL isTTF_ABSOLUTE)
@@ -255,6 +273,15 @@ const int CTtDlgTrackingTooltip_misc::sar_OptUic[] = {
 	IDCK_ClientToScreen, IDCK_TTF_ABSOLUTE
 };
 
+void CTtDlgTrackingTooltip_misc::enable_Julayout()
+{
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 0, 0, 32000, 600);
+
+	jul->AnchorControl(0,0, 100,100, IDC_STATIC1);
+	jul->AnchorControl(0,100, 100,100, IDC_STATIC2);
+}
+
+
 CModelessChild::Actioned_et
 CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
@@ -267,6 +294,10 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 
 	if (uMsg == WM_INITDIALOG)
 	{
+		enable_Julayout();
+
+		// Prepare tooltip-creation params
+
 		BOOL isTTF_TRANSPARENT = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRANSPARENT);
 
 		m_cksTTF_TRACK = IsDlgButtonChecked(m_hdlgParent, IDCK_TTF_TRACK);

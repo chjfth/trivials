@@ -25,6 +25,9 @@ public:
 	TCHAR m_szTooltip[TooltipText_Max];
 
 private:
+	void enable_Julayout();
+
+private:
 	static const int sar_OptUic[];
 
 private:
@@ -112,9 +115,9 @@ const int CTtDlgInplaceComplex::sar_OptUic[] = { IDS_FontsizePt, IDE_FontsizePt 
 const int CTtDlgInplaceComplex::sar_UicsToReveal[] = {
 	IDL_ShortDate, IDL_LongDate };
 
-static void enable_Julayout(HWND hdlg)
+void CTtDlgInplaceComplex::enable_Julayout()
 {
-	JULayout *jul = JULayout::EnableJULayout(hdlg, 130, 0, 32000, 600);
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 130, 0, 32000, 600);
 
 	jul->AnchorControl(0, 0, 100, 100, IDC_STATIC1);
 
@@ -226,7 +229,7 @@ CTtDlgInplaceComplex::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *
 
 	if (uMsg == WM_INITDIALOG)
 	{
-		enable_Julayout(m_hdlgMe);
+		enable_Julayout();
 
 		SetDlgItemText(m_hdlgMe, IDC_STATIC1,
 			_T("To see datetime text in full, either hover your mouse over the text label ")

@@ -10,6 +10,9 @@ public:
 
 	Actioned_et DlgProc(
 		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
+
+private:
+	void enable_Julayout();
 };
 
 #ifdef TtDlgForRectArea_IMPL
@@ -48,6 +51,13 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 	return hwndTT;
 }
 
+void CTtDlgForRectArea::enable_Julayout()
+{
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 200, 100, 32000, 600);
+
+	jul->AnchorControl(12,33, 88,67, IDC_STATIC1);
+}
+
 
 CModelessChild::Actioned_et
 CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
@@ -58,6 +68,8 @@ CTtDlgForRectArea::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMs
 
 	if (uMsg == WM_INITDIALOG)
 	{
+		enable_Julayout();
+
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateToolTipForRectArea(m_hdlgMe,

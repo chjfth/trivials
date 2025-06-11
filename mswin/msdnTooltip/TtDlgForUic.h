@@ -11,6 +11,9 @@ public:
 	Actioned_et DlgProc(
 		UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet=nullptr) override;
 
+private:
+	void enable_Julayout();
+
 	virtual void DlgClosing() override;
 };
 
@@ -69,6 +72,14 @@ HWND CreateToolTip_ForUic(HWND hDlg, int toolID, PCTSTR pszText)
 	return hwndTT;
 }
 
+void CTtDlgForUic::enable_Julayout()
+{
+	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 200, 100, 32000, 600);
+
+	jul->AnchorControl(0,0, 100,0, IDC_EDIT1);
+}
+
+
 CModelessChild::Actioned_et
 CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 {
@@ -78,6 +89,8 @@ CTtDlgForUic::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRet)
 
 	if (uMsg == WM_INITDIALOG)
 	{
+		enable_Julayout();
+
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateToolTip_ForUic(m_hdlgMe, IDB_BtnHasTooltip,
