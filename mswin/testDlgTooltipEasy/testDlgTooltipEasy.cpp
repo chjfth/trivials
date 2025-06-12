@@ -67,13 +67,26 @@ const TCHAR* my_DlgttGetContentText(HWND hwndUic, void *userctx)
 	GetClassName(hwndUic, szWndclass, ARRAYSIZE(szWndclass));
 
 	_sntprintf_s(stext, _TRUNCATE, 
-		_T("Content tip here: {%s} hwnd=0x%X\r\n")
-		_T("\r\n\r\n\r\n")
+		_T("Content tip here: {%s} hwnd=0x%X\r\n\r\n")
+		_T("Line1\r\n\r\n")
+		_T("Line2\r\n\r\n")
+		_T("Line3\r\n\r\n")
+ 		_T("Line4\r\n\r\n")
+		_T("Line5\r\n\r\n")
+		_T("Line6\r\n\r\n")
+		_T("Line7\r\n\r\n")
+		_T("Line8\r\n\r\n")
+		_T("Line9\r\n\r\n")
+// 		_T("Line10\r\n\r\n")
+// 		_T("Line11\r\n\r\n")
+// 		_T("Line12\r\n\r\n")
+// 		_T("Line13\r\n\r\n")
 		_T("Content end.")
 		, szWndclass, PtrToUint(hwndUic));
 
 	return stext;
 }
+
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
@@ -83,15 +96,17 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{{
 	case IDB_AddEasyTooltip:
 	{
+		BOOL bAutoTip = IsDlgButtonChecked(hdlg, IDCK_AutoFocusTip);
+
 		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 		Dlgtte_EnableTooltip(hwndEdt, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL,
-			Dlgtte_AutoContentTipOnFocus | Dlgtte_BalloonUp
+			Dlgtte_BalloonUp | (bAutoTip ? Dlgtte_AutoContentTipOnFocus :Dlgtte_Flags0)
 			);
 
 		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
 		Dlgtte_EnableTooltip(hwndBtn, my_DlgttGetUsageText, NULL, 
 			my_DlgttGetContentText, NULL, 
-			Dlgtte_AutoContentTipOnFocus | Dlgtte_BalloonDown
+			Dlgtte_BalloonDown | (bAutoTip ? Dlgtte_AutoContentTipOnFocus : Dlgtte_Flags0)
 		);
 
 		break;
@@ -104,6 +119,57 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
 		Dlgtte_RemoveTooltip(hwndBtn);
 		
+		break;
+	}
+	case IDCK_AutoFocusTip:
+	{
+		BOOL bAuto = IsDlgButtonChecked(hdlg, IDCK_AutoFocusTip);
+		
+		HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+		HWND hbtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
+
+		Dlgtte_BitFlags_et flagsEdit = Dlgtte_Flags0;
+		Dlgtte_BitFlags_et flagsBtn = Dlgtte_Flags0;
+		
+		Dlgtte_err err = Dlgtte_GetFlags(hedit, &flagsEdit);
+		if (err) {
+			vaMsgBox(hdlg, MB_OK | MB_ICONWARNING, NULL,
+				_T("[Editbox] Dlgtte_GetFlags()=%d\n\nEasyTooltip not enabled yet."), err);
+			break;
+		}
+
+		err = Dlgtte_GetFlags(hbtn, &flagsBtn);
+		if (err) {
+			vaMsgBox(hdlg, MB_OK | MB_ICONWARNING, NULL,
+				_T("[Button] Dlgtte_GetFlags()=%d\n\nEasyTooltip not enabled yet."), err);
+			break;
+		}
+
+		auto newflagsEdit = flagsEdit;
+		auto newflagsBtn = flagsBtn;
+		if(bAuto) {
+			newflagsEdit = flagsEdit | Dlgtte_AutoContentTipOnFocus;
+			newflagsBtn  = flagsBtn  | Dlgtte_AutoContentTipOnFocus;
+		}
+		else {
+			newflagsEdit = flagsEdit & (Dlgtte_BitFlags_et)~Dlgtte_AutoContentTipOnFocus;
+			newflagsBtn  = flagsBtn  & (Dlgtte_BitFlags_et)~Dlgtte_AutoContentTipOnFocus;
+		}
+		Dlgtte_SetFlags(hedit, newflagsEdit);
+		Dlgtte_SetFlags(hbtn , newflagsBtn);
+
+		break;
+	}
+	case IDB_TipShow:
+	{
+		HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+		Dlgtte_ShowContentTooltip(hedit, true);
+		break;
+	}
+	case IDB_TipHide:
+	{
+		HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+		Dlgtte_ShowContentTooltip(hedit, false);
 		break;
 	}
 	case IDOK:
@@ -141,6 +207,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemText(hdlg, IDC_LABEL1, textbuf);
 	
 	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata.mystr);
+
+	CheckDlgButton(hdlg, IDCK_AutoFocusTip, TRUE);
 
 	Dlg_EnableJULayout(hdlg);
 
