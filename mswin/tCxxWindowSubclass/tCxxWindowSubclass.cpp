@@ -4,6 +4,8 @@
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <crtdbg.h>
+
 #include "resource.h"
 
 #include "iversion.h"
@@ -39,31 +41,21 @@ using namespace itc;
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-class CxxSubclassUic : public CxxWindowSubclass
+class CEditboxPeeker : public CxxWindowSubclass
 {
 public:
-	CxxSubclassUic()
-	{
-		m_szClassname[0] = '\0';
-	}
-
-	ReCode_et AttachHwnd_SniffMsg(HWND hwnd)
-	{
-		GetClassName(hwnd, m_szClassname, ARRAYSIZE(m_szClassname));
-
-		ReCode_et err = AttachHwnd(hwnd, _T("SniffMsg"), true); 
-		return err;
-	}
+	CEditboxPeeker()
+	{}
 
 	virtual LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		vaDbgTs(_T("{%s 0x%X} sees %s"), m_szClassname, hwnd, ITCSv(uMsg, WM_xxx));
+		vaDbgTs(_T("{0x%X} sees %s"), hwnd, ITCSv(uMsg, WM_xxx));
 
 		return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 	}
 
 private:
-	TCHAR m_szClassname[80];
+//	TCHAR m_szClassname[80];
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -80,17 +72,41 @@ struct DlgPrivate_st
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st &prdata = *(DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
-	TCHAR textbuf[200];
+	
+	CxxWindowSubclass::ReCode_et err = CxxWindowSubclass::E_Fail;
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 
 	switch (id) 
 	{{
-	case IDC_BUTTON1:
+	case IDB_StartSubclass:
 	{
-		++(prdata.clicks);
-		_sntprintf_s(textbuf, _TRUNCATE, _T("Clicks: %d"), prdata.clicks);
-		SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, textbuf);
+		vaDbgTs(_T("IDB_StartSubclass dump memleak:"));
+		_CrtDumpMemoryLeaks();
 
-		InvalidateRect(GetDlgItem(hdlg, IDC_LABEL1), NULL, TRUE);
+		CEditboxPeeker *ptm = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
+			hedit, _T("sig_CEditboxPeeker"), TRUE, &err);
+
+		assert(ptm);
+
+		break;
+	}
+	case IDB_StopSubclass:
+	{
+		CEditboxPeeker *ptm = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
+			hedit, _T("sig_CEditboxPeeker"), FALSE, &err);
+		
+		if(ptm)
+		{
+			ptm->DetachHwnd(true);
+		}
+		else
+		{
+			vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, NULL, _T("Invalid op, CEditboxPeeker not exists."));
+		}
+
+		vaDbgTs(_T("IDB_StopSubclass dump memleak:"));
+		_CrtDumpMemoryLeaks();
+
 		break;
 	}
 	case IDOK:
@@ -126,19 +142,12 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemText(hdlg, IDC_LABEL1, textbuf);
 	
 	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
+		_T("Press [Start] button to subclass this editbox.")
+		_T("\r\n\r\n")
 		_T("Use DbgView.exe, you can see window-messages for this editbox and the button.")
 		);
 
 	Dlg_EnableJULayout(hdlg);
-
-	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-	HWND hbtn = GetDlgItem(hdlg, IDC_BUTTON1);
-
-	CxxSubclassUic *psc = new CxxSubclassUic;
-	CxxSubclassUic::ReCode_et err = psc->AttachHwnd_SniffMsg(hedit);
-
-	psc = new CxxSubclassUic;
-	err = psc->AttachHwnd_SniffMsg(hbtn);
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().

@@ -4,6 +4,7 @@
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <crtdbg.h>
 #include "resource.h"
 
 #include "iversion.h"
@@ -96,6 +97,9 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{{
 	case IDB_AddEasyTooltip:
 	{
+		vaDbgTs(_T("======== IDB_AddEasyTooltip Dump-memleaks:"));
+		_CrtDumpMemoryLeaks();
+
 		BOOL bAutoTip = IsDlgButtonChecked(hdlg, IDCK_AutoFocusTip);
 
 		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
@@ -119,6 +123,9 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
 		Dlgtte_RemoveTooltip(hwndBtn);
 		
+		vaDbgTs(_T("======== IDB_DelEasyTooltip Dump-memleaks:"));
+		_CrtDumpMemoryLeaks();
+
 		break;
 	}
 	case IDCK_AutoFocusTip:
@@ -169,6 +176,11 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_TipHide:
 	{
 		HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+
+		HWND hwndUsageTooltip, hwndContentTooltip;
+		Dlgtte_GetTooltipHwnd(hedit, &hwndUsageTooltip, &hwndContentTooltip);
+		vaDbgTs(_T("In IDB_TipHide: hwndUsageTooltip=0x%X, hwndContentTooltip=0x%X"), hwndUsageTooltip, hwndContentTooltip);
+
 		Dlgtte_ShowContentTooltip(hedit, false);
 		break;
 	}

@@ -237,6 +237,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\CxxWindowSubclass.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\Tooltip-helper.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\DlgTooltipEasy.h" />
 <!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
