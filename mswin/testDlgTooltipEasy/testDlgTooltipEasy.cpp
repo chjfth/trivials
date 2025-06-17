@@ -25,8 +25,9 @@ void vaDBG(...)
 {
 	vaDbgTs(_T("Not C++11 compiled, vaDBG() is nullop."));
 };
-#endif
-
+#endif // CXX11_OR_NEWER
+#define vaDBG1 vaDBG
+#define vaDBG2 vaDBG
 
 #define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
@@ -97,8 +98,8 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{{
 	case IDB_AddEasyTooltip:
 	{
-		vaDbgTs(_T("======== IDB_AddEasyTooltip Dump-memleaks:"));
-		_CrtDumpMemoryLeaks();
+//		vaDbgTs(_T("======== IDB_AddEasyTooltip Dump-memleaks:"));
+//		_CrtDumpMemoryLeaks();
 
 		BOOL bAutoTip = IsDlgButtonChecked(hdlg, IDCK_AutoFocusTip);
 
@@ -123,8 +124,8 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
 		Dlgtte_RemoveTooltip(hwndBtn);
 		
-		vaDbgTs(_T("======== IDB_DelEasyTooltip Dump-memleaks:"));
-		_CrtDumpMemoryLeaks();
+//		vaDbgTs(_T("======== IDB_DelEasyTooltip Dump-memleaks:"));
+//		_CrtDumpMemoryLeaks();
 
 		break;
 	}
