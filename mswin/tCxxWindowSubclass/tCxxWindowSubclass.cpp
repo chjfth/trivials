@@ -83,21 +83,22 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		vaDbgTs(_T("IDB_StartSubclass dump memleak:"));
 		_CrtDumpMemoryLeaks();
 
-		CEditboxPeeker *ptm = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
+		CEditboxPeeker *psp = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
 			hedit, _T("sig_CEditboxPeeker"), TRUE, &err);
+		// -- psp: pointer to subclass-peeker
 
-		assert(ptm);
+		assert(psp);
 
 		break;
 	}
 	case IDB_StopSubclass:
 	{
-		CEditboxPeeker *ptm = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
+		CEditboxPeeker *psp = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
 			hedit, _T("sig_CEditboxPeeker"), FALSE, &err);
 		
-		if(ptm)
+		if(psp)
 		{
-			ptm->DetachHwnd(true);
+			psp->DetachHwnd(true);
 		}
 		else
 		{
