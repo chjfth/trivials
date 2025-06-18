@@ -2,9 +2,9 @@
 #define __tCxxWindowSubclass_iversion_h_
 
 #define tCxxWindowSubclass_VMAJOR 1
-#define tCxxWindowSubclass_VMINOR 0
+#define tCxxWindowSubclass_VMINOR 1
 #define tCxxWindowSubclass_VPATCH 0
-#define tCxxWindowSubclass_VTAIL  1
+#define tCxxWindowSubclass_VTAIL  0
 
 #define tCxxWindowSubclassstr__(n) #n
 #define tCxxWindowSubclassstr(n) tCxxWindowSubclassstr__(n)

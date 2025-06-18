@@ -8,8 +8,11 @@
 #define IDC_EDIT_LOGMSG                 1001
 #define IDC_BUTTON1                     1002
 #define IDB_StartSubclass               1002
-#define IDC_BUTTON2                     1003
 #define IDB_StopSubclass                1003
+#define IDB_CreateUnnamed               1004
+#define IDS_count                       1005
+#define IDS_NamedState                  1006
+#define IDC_STATIC                      -1
 
 // Next default values for new objects
 // 
@@ -17,7 +20,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

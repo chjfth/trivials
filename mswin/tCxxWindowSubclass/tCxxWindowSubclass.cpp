@@ -49,13 +49,12 @@ public:
 
 	virtual LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		vaDbgTs(_T("{0x%X} sees %s"), hwnd, ITCSv(uMsg, WM_xxx));
+		vaDbgTs(_T("[cxxobj %p] Hwnd=0x%X sees %s"), this, hwnd, ITCSv(uMsg, WM_xxx));
 
 		return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 	}
 
 private:
-//	TCHAR m_szClassname[80];
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -73,40 +72,93 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 {
 	DlgPrivate_st &prdata = *(DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 	
+	static int s_UnnamedCount = 0;
+
 	CxxWindowSubclass::ReCode_et err = CxxWindowSubclass::E_Fail;
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+
+	const TCHAR *SIGSTR = _T("CEditboxPeeker");
+	// -- Note: In order to DetachHwnd() later manually, user need to explicitly assign a sigstr.
 
 	switch (id) 
 	{{
 	case IDB_StartSubclass:
 	{
-		vaDbgTs(_T("IDB_StartSubclass dump memleak:"));
-		_CrtDumpMemoryLeaks();
+//		vaDbgTs(_T("IDB_StartSubclass dump memleak:"));
+//		_CrtDumpMemoryLeaks();
 
 		CEditboxPeeker *psp = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
-			hedit, _T("sig_CEditboxPeeker"), TRUE, &err);
+			hedit, SIGSTR, TRUE, &err);
 		// -- psp: pointer to subclass-peeker
 
 		assert(psp);
+
+		if(err==CxxWindowSubclass::E_Success)
+		{
+			SetDlgItemText(hdlg, IDS_NamedState, _T("Started"));
+
+			vaMsgBox(hdlg, MB_OK|MB_ICONINFORMATION, NULL, 
+				_T("Start success. \r\n\r\n")
+				_T("Cxxobj address: %p")
+				, psp);
+		}
+		else if(err==CxxWindowSubclass::E_Existed)
+		{
+			vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, NULL,
+				_T("Already started, returning old CxxObj.\r\n\r\n")
+				_T("CxxObj address: %p")
+				, psp);
+		}
+		else
+			assert(0);
 
 		break;
 	}
 	case IDB_StopSubclass:
 	{
 		CEditboxPeeker *psp = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
-			hedit, _T("sig_CEditboxPeeker"), FALSE, &err);
+			hedit, SIGSTR, FALSE, &err);
 		
 		if(psp)
 		{
 			psp->DetachHwnd(true);
+
+			SetDlgItemText(hdlg, IDS_NamedState, _T("Stopped"));
 		}
 		else
 		{
 			vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, NULL, _T("Invalid op, CEditboxPeeker not exists."));
 		}
 
-		vaDbgTs(_T("IDB_StopSubclass dump memleak:"));
-		_CrtDumpMemoryLeaks();
+//		vaDbgTs(_T("IDB_StopSubclass dump memleak:")); 	
+//		_CrtDumpMemoryLeaks();
+
+		break;
+	}
+	case IDB_CreateUnnamed:
+	{
+		// This time, we use nullptr for subclassing-sigstr.
+		// Each time CxxWindowSubclass libcode will generate one for us, crazy reproduction.
+
+		CEditboxPeeker *psp2 = CxxWindowSubclass::FetchCxxobjFromHwnd<CEditboxPeeker>(
+			hedit, nullptr, TRUE, &err);
+
+		if(psp2)
+		{
+			vaMsgBox(hdlg, MB_OK, NULL, 
+				_T("One more subclass-instance created. \r\n\r\n")
+				_T("CxxObj address: %p")
+				, psp2);
+
+			s_UnnamedCount++;
+
+			vaSetDlgItemText(hdlg, IDS_count, _T("count: %d"), s_UnnamedCount);
+		}
+		else
+		{	// Not likely to see, unless no-mem.
+			vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, NULL, 
+				_T("[ERROR] CxxWindowSubclass::ReCode_et = %d"), err);
+		}
 
 		break;
 	}
@@ -130,6 +182,23 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
 
+
+
+
+bool test(HWND hdlg)
+{
+	CxxWindowSubclass::ReCode_et err1, err2, errX;
+	CEditboxPeeker *psp1 = new CEditboxPeeker;
+	CEditboxPeeker *psp2 = new CEditboxPeeker;
+
+	err1 = psp1->AttachHwnd(hdlg, _T("ChjSig1"));
+	errX = psp2->AttachHwnd(hdlg, _T("ChjSig1")); // got E_CxxObjConflict
+
+	err2 = psp2->AttachHwnd(hdlg, _T("ChjSig2")); // ok
+
+	return true;
+}
+
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
 	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
@@ -149,6 +218,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		);
 
 	Dlg_EnableJULayout(hdlg);
+
+	SetDlgItemText(hdlg, IDS_NamedState, _T("Stopped"));
+
+//	test(hdlg);
 
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
