@@ -13,6 +13,25 @@
 
 #include "utils.h"
 
+#include <utility>       // to have std::forward
+#include <CxxVerCheck.h> // to see CXX11_OR_NEWER
+//
+#ifdef CXX11_OR_NEWER
+template<typename... Args>
+void vaDBG(Args&&... args) // forwards all arguments
+{
+	vaDbgTs(std::forward<Args>(args)...);
+}
+#else
+void vaDBG(...)
+{
+	vaDbgTs(_T("Not C++11 compiled, vaDBG() is nullop."));
+};
+#endif // CXX11_OR_NEWER
+#define vaDBG1 vaDBG
+#define vaDBG2 vaDBG
+
+
 #include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinBase.itc.h>
@@ -30,6 +49,9 @@ typedef JAutoBuf<TCHAR, sizeof(TCHAR), 1> AutoTCHARs;
 
 #define Combobox_EnableWideDrop_IMPL
 #include <mswin/Combobox_EnableWideDrop.h>
+
+#define DlgTooltipEasy_IMPL
+#include <mswin/DlgTooltipEasy.h>
 
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -99,6 +121,112 @@ DWORD get_EditboxValue(HWND hdlg, UINT idedit)
 	return _tcstoul(tbuf, nullptr, 0); // could be (-1), if bad string
 }
 
+
+
+const TCHAR* Cf_GetContentTooltipText(HWND hwndUic, 
+	const TCHAR *valfmt=nullptr, const TCHAR *sep=nullptr)
+{
+	static TCHAR s_text[2000] = _T(""); 
+	// -- must be static to be persistent on return, required by callback_GetContentTooltipText().
+
+	HWND hdlg = GetParent(hwndUic);
+	int uic = GetDlgCtrlID(hwndUic);
+	
+	// dwDesiredAccess
+
+	if(uic==IDE_dwDesiredAccess)
+	{
+		HWND hcbx = GetDlgItem(hdlg, IDCB_ObjectType);
+		int idx = ComboBox_GetCurSel(hcbx);
+		ObjtypeToItc_st &o2i = *(ObjtypeToItc_st*)ComboBox_GetItemData(hcbx, idx);
+
+		DWORD dwDesiredAccess = get_EditboxValue(hdlg, IDE_dwDesiredAccess);
+		if(dwDesiredAccess!=-1)
+		{
+			_sntprintf_s(s_text, _TRUNCATE, 
+				_T("dwDesiredAccess=0x%X (interpret as %s):\r\n")
+				_T("%s")
+				, 
+				dwDesiredAccess, o2i.objtype,
+				ITCSvn_(dwDesiredAccess, *o2i.pitc, valfmt, sep));
+		}
+		else
+		{	// A value larger than 32bit(eg 0xC00012345) could results.
+			_sntprintf_s(s_text, _TRUNCATE, _T("dwDesiredAccess=0x%X (bad value)"), dwDesiredAccess);
+		}
+		return s_text;
+	}
+	
+	// dwShareMode
+
+	if(uic==IDE_dwShareMode)
+	{
+		DWORD dwShareMode = get_EditboxValue(hdlg, IDE_dwShareMode);
+		if(dwShareMode!=-1)
+		{
+			_sntprintf_s(s_text, _TRUNCATE, 
+				_T("dwShareMode=0x%02X:\r\n%s"), 
+				dwShareMode, 
+				ITCSvn_(dwShareMode, itc::dwShareMode, valfmt, sep));
+		}
+		else
+		{
+			_sntprintf_s(s_text, _TRUNCATE, _T("dwShareMode=0x%X (bad value)"), dwShareMode);
+		}
+		return s_text;
+	}
+
+	// dwCreationDisposition
+
+	if(uic==IDE_dwCreationDisposition)
+	{
+		DWORD dwCreationDisposition = get_EditboxValue(hdlg, IDE_dwCreationDisposition);
+		if(dwCreationDisposition!=-1)
+		{
+			_sntprintf_s(s_text, _TRUNCATE, 
+				_T("dwCreationDisposition=%u\r\n%s"), 
+				dwCreationDisposition, 
+				ITCSvn_(dwCreationDisposition, itc::dwCreationDisposition, valfmt, sep));
+		}
+		else
+		{
+			_sntprintf_s(s_text, _TRUNCATE, _T("dwCreationDisposition=0x%X (bad value)"), dwCreationDisposition);
+		}
+		return s_text;
+	}
+
+	// dwFlagsAndAttributes
+
+	if(uic==IDE_dwFlagsAndAttributes)
+	{
+		DWORD dwFlagsAndAttributes = get_EditboxValue(hdlg, IDE_dwFlagsAndAttributes);
+		if(dwFlagsAndAttributes!=-1)
+		{
+			_sntprintf_s(s_text, _TRUNCATE, 
+				_T("dwFlagsAndAttributes=0x%X\r\n%s"),
+				dwFlagsAndAttributes, 
+				ITCSvn_(dwFlagsAndAttributes, itc::dwFlagsAndAttributes, valfmt, sep));
+		}
+		else
+		{
+			_sntprintf_s(s_text, _TRUNCATE, _T("dwFlagsAndAttributes=0x%X (bad value)"), dwFlagsAndAttributes);
+		}
+		return s_text;
+	}
+
+	return _T("<?>");
+}
+
+const TCHAR * callback_GetContentTooltipText(HWND hwndUic, void *userctx)
+{
+	int uic = GetDlgCtrlID(hwndUic);
+	const TCHAR *valfmt = nullptr;
+	if(uic==IDE_dwDesiredAccess)
+		valfmt = _T("0x%08X");
+
+	return Cf_GetContentTooltipText(hwndUic, valfmt, _T("\r\n"));
+}
+
 void Cf_InterpretParams(HWND hdlg)
 {
 	HWND hcbx = GetDlgItem(hdlg, IDCB_ObjectType);
@@ -118,56 +246,23 @@ void Cf_InterpretParams(HWND hdlg)
 
 	// dwDesiredAccess
 
-	DWORD dwDesiredAccess = get_EditboxValue(hdlg, IDE_dwDesiredAccess);
-	if(dwDesiredAccess!=-1)
-	{
-		vaAppendText_mled(hemsg, _T("dwDesiredAccess=0x%X (interpret as %s):\r\n"), 
-			dwDesiredAccess, o2i.objtype);
-		vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwDesiredAccess, *o2i.pitc));
-	}
-	else
-	{	// A value larger than 32bit(eg 0xC00012345) could results.
-		vaAppendText_mled(hemsg, _T("dwDesiredAccess (bad value)\r\n\r\n"));
-	}
+	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), 
+		Cf_GetContentTooltipText(GetDlgItem(hdlg, IDE_dwDesiredAccess)));
 
 	// dwShareMode
 
-	DWORD dwShareMode = get_EditboxValue(hdlg, IDE_dwShareMode);
-	if(dwShareMode!=-1)
-	{
-		vaAppendText_mled(hemsg, _T("dwShareMode=0x%02X:\r\n"), dwShareMode);
-		vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwShareMode, itc::dwShareMode));
-	}
-	else
-	{
-		vaAppendText_mled(hemsg, _T("dwShareMode (bad value)\r\n\r\n"));
-	}
+	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), 
+		Cf_GetContentTooltipText(GetDlgItem(hdlg, IDE_dwShareMode)));
 
 	// dwCreationDisposition
 
-	DWORD dwCreationDisposition = get_EditboxValue(hdlg, IDE_dwCreationDisposition);
-	if(dwCreationDisposition!=-1)
-	{
-		vaAppendText_mled(hemsg, _T("dwCreationDisposition=%u\r\n"), dwCreationDisposition);
-		vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), ITCSv(dwCreationDisposition, itc::dwCreationDisposition));
-	}
-	else
-	{
-		vaAppendText_mled(hemsg, _T("dwCreationDisposition (bad value)\r\n\r\n"));
-	}
+	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), 
+		Cf_GetContentTooltipText(GetDlgItem(hdlg, IDE_dwCreationDisposition)));
 
 	// dwFlagsAndAttributes
 
-	DWORD dwFlagsAndAttributes = get_EditboxValue(hdlg, IDE_dwFlagsAndAttributes);
-	if(dwFlagsAndAttributes!=-1)
-	{
-		vaAppendText_mled(hemsg, _T("dwFlagsAndAttributes=0x%X\r\n"), dwFlagsAndAttributes);
-		vaAppendText_mled(hemsg, _T("%s"), ITCSv(dwFlagsAndAttributes, itc::dwFlagsAndAttributes));
-	}
-	else
-	{
-		vaAppendText_mled(hemsg, _T("dwFlagsAndAttributes (bad value)\r\n\r\n"));
-	}
+	vaAppendText_mled(hemsg, _T("%s\r\n\r\n"), 
+		Cf_GetContentTooltipText(GetDlgItem(hdlg, IDE_dwFlagsAndAttributes)));
 }
 
 static void enable_DlgItem(HWND hdlg, UINT idUic, bool enable)
@@ -516,6 +611,8 @@ void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify)
 	{
 		if(prdata->isInitialized && idCtrl!=IDE_Interpret && idCtrl!=IDE_LogMsg)
 		{
+			Dlgtte_ShowContentTooltip(hwndCtl, true);
+
 			Cf_InterpretParams(hdlg);
 		}
 
@@ -601,6 +698,20 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	Dlgbox_EnableComboboxWideDrop(hdlg);
 
 	DragAcceptFiles(hdlg, TRUE);
+
+	//////
+
+	int arTipUic[] = {IDE_dwDesiredAccess, IDE_dwShareMode, 
+		IDE_dwCreationDisposition, IDE_dwFlagsAndAttributes};
+	for(int i=0; i<ARRAYSIZE(arTipUic); i++)
+	{
+		HWND hwndEdt = GetDlgItem(hdlg, arTipUic[i]);
+		Dlgtte_EnableTooltip(hwndEdt, 
+			NULL, NULL, 
+			callback_GetContentTooltipText, NULL, 
+			Dlgtte_AutoContentTipOnFocus);
+	}
+
 
 	SetFocus(GetDlgItem(hdlg, IDB_CreateFile));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().

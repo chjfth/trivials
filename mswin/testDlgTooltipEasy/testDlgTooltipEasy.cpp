@@ -51,7 +51,7 @@ struct DlgPrivate_st
 
 const TCHAR* my_DlgttGetUsageText(HWND hwndUic, void *userctx)
 {
-	static TCHAR stext[200];
+	static TCHAR stext[2000];
 
 	TCHAR szWndcls[80];
 	GetClassName(hwndUic, szWndcls, ARRAYSIZE(szWndcls));
@@ -63,28 +63,39 @@ const TCHAR* my_DlgttGetUsageText(HWND hwndUic, void *userctx)
 
 const TCHAR* my_DlgttGetContentText(HWND hwndUic, void *userctx)
 {
-	static TCHAR stext[200];
+	static TCHAR stext[2000];
+
+	HWND hdlg = GetParent(hwndUic);
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 
 	TCHAR szWndclass[80];
 	GetClassName(hwndUic, szWndclass, ARRAYSIZE(szWndclass));
 
-	_sntprintf_s(stext, _TRUNCATE, 
-		_T("Content tip here: {%s} hwnd=0x%X\r\n\r\n")
-		_T("Line1\r\n\r\n")
-		_T("Line2\r\n\r\n")
-		_T("Line3\r\n\r\n")
- 		_T("Line4\r\n\r\n")
-		_T("Line5\r\n\r\n")
-		_T("Line6\r\n\r\n")
-		_T("Line7\r\n\r\n")
-		_T("Line8\r\n\r\n")
-		_T("Line9\r\n\r\n")
-// 		_T("Line10\r\n\r\n")
-// 		_T("Line11\r\n\r\n")
-// 		_T("Line12\r\n\r\n")
-// 		_T("Line13\r\n\r\n")
-		_T("Content end.")
-		, szWndclass, PtrToUint(hwndUic));
+	if (hwndUic == hedit)
+	{
+		GetDlgItemText(hdlg, IDC_EDIT_LOGMSG, stext, ARRAYSIZE(stext));
+		//_sntprintf_s(stext, _TRUNCATE, _T("%s"), );
+	}
+	else
+	{
+		_sntprintf_s(stext, _TRUNCATE,
+			_T("Content tip here: {%s} hwnd=0x%X\r\n\r\n")
+			_T("Line1\r\n\r\n")
+			_T("Line2\r\n\r\n")
+			_T("Line3\r\n\r\n")
+			_T("Line4\r\n\r\n")
+			_T("Line5\r\n\r\n")
+			_T("Line6\r\n\r\n")
+			_T("Line7\r\n\r\n")
+			_T("Line8\r\n\r\n")
+			_T("Line9\r\n\r\n")
+			// 		_T("Line10\r\n\r\n")
+			// 		_T("Line11\r\n\r\n")
+			// 		_T("Line12\r\n\r\n")
+			// 		_T("Line13\r\n\r\n")
+			_T("Content end.")
+			, szWndclass, PtrToUint(hwndUic));
+	}
 
 	return stext;
 }

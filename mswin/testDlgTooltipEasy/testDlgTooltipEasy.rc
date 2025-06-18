@@ -46,11 +46,11 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CTEXT           "Demo",IDC_LABEL1,4,4,245,12,SS_CENTERIMAGE
     EDITTEXT        IDC_EDIT_LOGMSG,4,20,257,76,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "Add EasyTooltip",IDB_AddEasyTooltip,6,100,69,14
-    PUSHBUTTON      "Del EasyTooltip",IDB_DelEasyTooltip,79,100,63,14
+    PUSHBUTTON      "&Add EasyTooltip",IDB_AddEasyTooltip,6,100,69,14
+    PUSHBUTTON      "&Del EasyTooltip",IDB_DelEasyTooltip,79,100,63,14
     CONTROL         "Auto focus-tip",IDCK_AutoFocusTip,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,164,102,61,10
-    PUSHBUTTON      "Editbox Tip show",IDB_TipShow,162,117,64,14
-    PUSHBUTTON      "Tip hide",IDB_TipHide,227,117,34,14
+    PUSHBUTTON      "Editbox Tip &show",IDB_TipShow,162,117,64,14
+    PUSHBUTTON      "Tip &hide",IDB_TipHide,227,117,34,14
 END
 
 
