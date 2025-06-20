@@ -77,7 +77,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	CxxWindowSubclass::ReCode_et err = CxxWindowSubclass::E_Fail;
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 
-	const TCHAR *SIGSTR = _T("CEditboxPeeker");
+	const TCHAR *SIGSTR = _T("sig_CEditboxPeeker");
 	// -- Note: In order to DetachHwnd() later manually, user need to explicitly assign a sigstr.
 
 	switch (id) 
