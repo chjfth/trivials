@@ -207,7 +207,7 @@ inline void ui_TooltipAddtitle(HWND hdlgSubtt, HWND hwndTT)
 	{
 		LRESULT succ = SendMessage(hwndTT, TTM_SETTITLE,
 			(WPARAM)TTI_NONE,
-			(LPARAM)_T("")); // Explicitly no title string
+			(LPARAM)_T("")); // Empty string means no title string. NULL will return FALSE.
 		assert(succ);
 	}
 }
