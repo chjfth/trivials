@@ -78,6 +78,8 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 
 	dbg_TTM_ADDTOOL(_T("CreateToolTip_Multiline()"), ti, (BOOL)succ);
 
+	ui_TooltipAddtitle(hwndOwner, hwndTT);
+
 	return hwndTT;
 }
 

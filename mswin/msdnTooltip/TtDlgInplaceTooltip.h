@@ -76,6 +76,8 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 		SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_INITIAL, 10);
 	}
 	
+	ui_TooltipAddtitle(hdlg, hwndTT);
+
 	return hwndTT;
 }
 

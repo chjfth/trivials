@@ -65,7 +65,7 @@ private:
 #ifdef TtDlgTrackingToolTip_IMPL
 
 
-HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
+HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner)
 {
 	// FreeOnScreen implies: TOOLINFO.hwnd and TOOLINFO.uId are both NULL;
 
@@ -93,6 +93,8 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner=nullptr)
 	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
 	dbg_TTM_ADDTOOL(_T("CreateTrackingTooltip_FreeOnScreen()"), ti, (BOOL)succ);
+
+	ui_TooltipAddtitle(hwndOwner, hwndTT);
 
 	return hwndTT;
 }
@@ -263,6 +265,8 @@ HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 	LRESULT succ = SendMessage(hwndTT, TTM_ADDTOOL, 0, (LPARAM)&ti);
 
 	dbg_TTM_ADDTOOL(_T("CreateTrackingToolTip_misc()"), ti, (BOOL)succ);
+
+	ui_TooltipAddtitle(hwndOwner, hwndTT);
 
 	return hwndTT;
 }

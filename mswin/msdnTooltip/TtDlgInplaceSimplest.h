@@ -61,6 +61,8 @@ HWND CreateToolTip_InplaceSimplest(HWND hwndOwner, int uicHottool)
 	// Make the tooltip appear immediately (10ms), instead of delaying 500ms.
 	SendMessage(hwndTT, TTM_SETDELAYTIME, TTDT_INITIAL, 10);
 
+	ui_TooltipAddtitle(hwndOwner, hwndTT);
+
 	return hwndTT;
 }
 

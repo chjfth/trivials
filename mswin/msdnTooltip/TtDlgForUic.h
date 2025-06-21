@@ -69,6 +69,8 @@ HWND CreateToolTip_ForUic(HWND hDlg, int toolID, PCTSTR pszText)
 
 	dbg_TTM_ADDTOOL(_T("CreateToolTip_ForUic()"), ti, (BOOL)succ);
 
+	ui_TooltipAddtitle(hDlg, hwndTT);
+
 	return hwndTT;
 }
 

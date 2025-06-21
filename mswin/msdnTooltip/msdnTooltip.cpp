@@ -10,6 +10,9 @@
 
 #include <mswin/winuser.itc.h>
 
+#define Combobox_EnableWideDrop_IMPL
+#include <mswin/Combobox_EnableWideDrop.h>
+
 //#include "ModelessTtdemo.h"
 #include "TtDlgForUic.h"
 #include "TtDlgForRectArea.h"
@@ -27,6 +30,7 @@ HINSTANCE g_hinstExe;
 BOOL g_isTTS_BALLOON = FALSE;
 BOOL g_isTTF_CENTERTIP = FALSE;
 BOOL g_isWS_EX_TRANSPARENT = TRUE;
+int g_TTI_value = -1; // TTI_INFO, TTI_WARNING etc
 
 struct DlgPrivate_st
 {
@@ -127,6 +131,15 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		g_isWS_EX_TRANSPARENT = IsDlgButtonChecked(hdlg, IDCK_WsexTransparent);
 		break;
 	}
+	case IDCB_TooltipTitle:
+	{
+		if(codeNotify==CBN_SELCHANGE)
+		{
+			int index = ComboBox_GetCurSel(hwndCtl);
+			g_TTI_value = ComboBox_GetItemData(hwndCtl, index);
+		}
+		break;
+	}
 	case IDCANCEL:
 	{
 		// Do nothing, so ESC will not close the main UI.
@@ -139,6 +152,9 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 static void Dlg_EnableJULayout(HWND hdlg)
 {
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
+
+	jul->AnchorControl(0,0, 40,0, IDCB_TooltipTitle);
+	jul->AnchorControl(40,0, 100,0, IDE_TtTitleText);
 
 	jul->AnchorControls(0, 0, 0, 0,
 		IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth, 
@@ -158,8 +174,36 @@ static void Dlg_EnableJULayout(HWND hdlg)
 		IDB_InplaceSimplest, IDB_InplaceComplex, IDS_FontsizePt, IDE_FontsizePt,
 		-1);
 
-
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
+}
+
+static void fill_TooltipTitleCombobox(HWND hdlg)
+{
+	static const Enum2Val_st s2v[] =
+	{
+		{ _T("No tooltip title"), (CONSTVAL_t)-1 },
+		ITC_NAMEPAIR(TTI_NONE),
+		ITC_NAMEPAIR(TTI_INFO),
+		ITC_NAMEPAIR(TTI_WARNING),
+		ITC_NAMEPAIR(TTI_ERROR),
+		ITC_NAMEPAIR(TTI_INFO_LARGE),
+		ITC_NAMEPAIR(TTI_WARNING_LARGE),
+		ITC_NAMEPAIR(TTI_ERROR_LARGE),
+	};
+
+	HWND hcbx = GetDlgItem(hdlg, IDCB_TooltipTitle);
+
+	for(int i=0; i<ARRAYSIZE(s2v); i++)
+	{ 
+		int index = ComboBox_AddString(hcbx, s2v[i].EnumName);
+		ComboBox_SetItemData(hcbx, i, s2v[i].ConstVal);
+	}
+
+	ComboBox_SetCurSel(hcbx, 0); // "No tooltip title" as default
+
+	Dlgbox_EnableComboboxWideDrop(hdlg);
+
+	SetDlgItemText(hdlg, IDE_TtTitleText, _T("My tooltip title"));
 }
 
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
@@ -192,6 +236,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemText(hdlg, IDE_DelayAfterTooltipText, _T("0"));
 
 	SetDlgItemText(hdlg, IDE_FontsizePt, _T("8"));
+
+	fill_TooltipTitleCombobox(hdlg);
 
 	Dlg_EnableJULayout(hdlg);
 

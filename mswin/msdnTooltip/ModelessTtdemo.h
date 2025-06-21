@@ -18,6 +18,7 @@ using namespace itc;
 extern BOOL g_isTTS_BALLOON;
 extern BOOL g_isTTF_CENTERTIP;
 extern BOOL g_isWS_EX_TRANSPARENT;
+extern int g_TTI_value;
 
 inline DWORD flag_TTS_BALLOON()
 {
@@ -107,6 +108,8 @@ public:
 			_sntprintf_s(suffix, _TRUNCATE, _T("%sC."), suffix);
 		if (g_isWS_EX_TRANSPARENT)
 			_sntprintf_s(suffix, _TRUNCATE, _T("%sT."), suffix);
+		if (g_TTI_value>=TTI_NONE)
+			_sntprintf_s(suffix, _TRUNCATE, _T("%sH."), suffix); // H: heading, implies title
 
 		int slen = (int)_tcslen(suffix);
 		if(slen==0)
@@ -183,5 +186,28 @@ inline void dbg_WM_NOTIFY(WPARAM wParam, LPARAM lParam)
 		uic, (UINT64)pnmh->idFrom, ITCSv(pnmh->code, TTN_xxx));
 }
 
+inline void ui_TooltipAddtitle(HWND hdlgSubtt, HWND hwndTT)
+{
+	HWND hdlgMain = GetParent(hdlgSubtt);
+	HWND hcbx = GetDlgItem(hdlgMain, IDCB_TooltipTitle);
 
+	TCHAR szTtTitle[200] = {}; // User can test length >100 case
+	GetDlgItemText(hdlgMain, IDE_TtTitleText, szTtTitle, ARRAYSIZE(szTtTitle));
+	
+	int tti = g_TTI_value; // set in main-dlg Dlg_OnCommand()
 
+	if (tti >= TTI_NONE)
+	{
+		LRESULT succ = SendMessage(hwndTT, TTM_SETTITLE, 
+			(WPARAM)tti, 
+			(LPARAM)szTtTitle); 
+		assert(succ);
+	}
+	else
+	{
+		LRESULT succ = SendMessage(hwndTT, TTM_SETTITLE,
+			(WPARAM)TTI_NONE,
+			(LPARAM)_T("")); // Explicitly no title string
+		assert(succ);
+	}
+}

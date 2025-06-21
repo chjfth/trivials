@@ -48,6 +48,8 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 
 	dbg_TTM_ADDTOOL(_T("CreateToolTipForRectArea()"), ti, (BOOL)succ);
 
+	ui_TooltipAddtitle(hwndOwner, hwndTT);
+
 	return hwndTT;
 }
 
