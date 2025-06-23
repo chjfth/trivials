@@ -93,6 +93,7 @@ const TCHAR* my_DlgttGetContentText(HWND hwndUic, void *userctx)
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st &prdata = *(DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
+	Dlgtte_err terr1, terr2;
 
 	switch (id) 
 	{{
@@ -104,26 +105,38 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		BOOL bAutoTip = IsDlgButtonChecked(hdlg, IDCK_AutoFocusTip);
 
 		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-		Dlgtte_EnableTooltip(hwndEdt, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL,
+		terr1 = Dlgtte_EnableTooltip(hwndEdt, my_DlgttGetUsageText, NULL, my_DlgttGetContentText, NULL,
 			Dlgtte_BalloonUp | (bAutoTip ? Dlgtte_AutoContentTipOnFocus :Dlgtte_Flags0)
 			);
 
 		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
-		Dlgtte_EnableTooltip(hwndBtn, my_DlgttGetUsageText, NULL, 
+		terr2 = Dlgtte_EnableTooltip(hwndBtn, my_DlgttGetUsageText, NULL, 
 			my_DlgttGetContentText, NULL, 
 			Dlgtte_BalloonDown | (bAutoTip ? Dlgtte_AutoContentTipOnFocus : Dlgtte_Flags0)
 		);
+
+		if (terr1 || terr2) // will not happen, as soon as input HWND exists
+		{
+			vaMsgBox(hdlg, MB_OK|MB_ICONERROR, NULL,
+				_T("ERROR occurred. Editbox err=%d , Button err=%d"), terr1, terr2);
+		}
 
 		break;
 	}
 	case IDB_DelEasyTooltip:
 	{
 		HWND hwndEdt = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-		Dlgtte_RemoveTooltip(hwndEdt);
+		terr1 = Dlgtte_RemoveTooltip(hwndEdt);
 
 		HWND hwndBtn = GetDlgItem(hdlg, IDB_AddEasyTooltip);
-		Dlgtte_RemoveTooltip(hwndBtn);
+		terr2 = Dlgtte_RemoveTooltip(hwndBtn);
 		
+		if (terr1 || terr2) // will not happen, as soon as input HWND exists
+		{
+			vaMsgBox(hdlg, MB_OK | MB_ICONERROR, NULL,
+				_T("ERROR occurred. Editbox err=%d , Button err=%d"), terr1, terr2);
+		}
+
 //		vaDbgTs(_T("======== IDB_DelEasyTooltip Dump-memleaks:"));
 //		_CrtDumpMemoryLeaks();
 
