@@ -244,7 +244,12 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	const TCHAR *szfullcmdline = GetCommandLine();
 	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
 
-	DlgPrivate_st dlgdata = { _T("Hello.\r\nPrivate string here.") };
+	DlgPrivate_st dlgdata = { 
+		_T("Click [Add EasyTooltip] button to start.\r\n\r\n")
+		_T("Only [Add EasyTooltip] and the editbox contains tooltips. The two are called hottools.\r\n\r\n")
+		_T("Text inside this editbox will become this editbox's content-tooltip.\r\n\r\n")
+		_T("If [Auto focus-tip] is checked, content-tooltip will show automatically when a hottool has focus.")
+	};
 	DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL, UserDlgProc, (LPARAM)&dlgdata);
 
 	return 0;
