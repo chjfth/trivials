@@ -3,7 +3,7 @@
 
 #define testDlgTooltipEasy_VMAJOR 1
 #define testDlgTooltipEasy_VMINOR 0
-#define testDlgTooltipEasy_VPATCH 1
+#define testDlgTooltipEasy_VPATCH 2
 #define testDlgTooltipEasy_VTAIL  0
 
 #define testDlgTooltipEasystr__(n) #n

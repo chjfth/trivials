@@ -33,6 +33,11 @@ struct DlgPrivate_st
 	int clicks;
 };
 
+const TCHAR *StartButton_UsageTooltip(HWND hwndUic, void *userctx)
+{
+	return _T("Click this button to start.");
+}
+
 const TCHAR* my_DlgttGetUsageText(HWND hwndUic, void *userctx)
 {
 	static TCHAR stext[2000];
@@ -73,10 +78,10 @@ const TCHAR* my_DlgttGetContentText(HWND hwndUic, void *userctx)
 			_T("Line7\r\n\r\n")
 			_T("Line8\r\n\r\n")
 			_T("Line9\r\n\r\n")
-			// 		_T("Line10\r\n\r\n")
-			// 		_T("Line11\r\n\r\n")
-			// 		_T("Line12\r\n\r\n")
-			// 		_T("Line13\r\n\r\n")
+	// 		_T("Line10\r\n\r\n")
+	// 		_T("Line11\r\n\r\n")
+	// 		_T("Line12\r\n\r\n")
+	// 		_T("Line13\r\n\r\n")
 			_T("Content end.")
 			, szWndclass, PtrToUint(hwndUic));
 	}
@@ -217,6 +222,9 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, prdata.mystr);
 
 	CheckDlgButton(hdlg, IDCK_AutoFocusTip, TRUE);
+
+	HWND hbtnStart = GetDlgItem(hdlg, IDB_AddEasyTooltip);
+	Dlgtte_EnableTooltip(hbtnStart, StartButton_UsageTooltip, 0);
 
 	Dlg_EnableJULayout(hdlg);
 
