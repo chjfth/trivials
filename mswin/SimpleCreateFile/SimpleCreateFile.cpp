@@ -13,24 +13,7 @@
 
 #include "utils.h"
 
-#include <utility>       // to have std::forward
-#include <CxxVerCheck.h> // to see CXX11_OR_NEWER
-//
-#ifdef CXX11_OR_NEWER
-template<typename... Args>
-void vaDBG(Args&&... args) // forwards all arguments
-{
-	vaDbgTs(std::forward<Args>(args)...);
-}
-#else
-void vaDBG(...)
-{
-	vaDbgTs(_T("Not C++11 compiled, vaDBG() is nullop."));
-};
-#endif // CXX11_OR_NEWER
-#define vaDBG1 vaDBG
-#define vaDBG2 vaDBG
-
+#include <CHIMPL_vaDBG_is_vaDbgTs.h>
 
 #include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
