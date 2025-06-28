@@ -78,7 +78,10 @@ void CTtDlgForUic::enable_Julayout()
 {
 	JULayout *jul = JULayout::EnableJULayout(m_hdlgMe, 200, 100, 32000, 600);
 
-	jul->AnchorControl(0,0, 100,0, IDC_EDIT1);
+	jul->AnchorControl(0,0, 60, 40, IDB_BtnNoTooltip);
+	jul->AnchorControl(0,40, 60, 80, IDB_BtnHasTooltip);
+
+	jul->AnchorControl(0,80, 100,100, IDC_EDIT1);
 }
 
 
