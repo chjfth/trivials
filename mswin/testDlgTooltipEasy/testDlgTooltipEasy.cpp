@@ -33,10 +33,6 @@ struct DlgPrivate_st
 	int clicks;
 };
 
-const TCHAR *StartButton_UsageTooltip(HWND hwndUic, void *userctx)
-{
-	return _T("Click this button to start.");
-}
 
 const TCHAR* my_DlgttGetUsageText(HWND hwndUic, void *userctx)
 {
@@ -238,7 +234,10 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	CheckDlgButton(hdlg, IDCK_AutoFocusTip, TRUE);
 
 	HWND hbtnStart = GetDlgItem(hdlg, IDB_AddEasyTooltip);
-	Dlgtte_EnableTooltip(hbtnStart, StartButton_UsageTooltip, 0);
+	Dlgtte_EnableStaticUsageTooltip(hbtnStart, 
+		_T("Click this button to start.\n\n")
+		_T("(Usage tooltip can be multiline.)")
+	);
 
 	Dlg_EnableJULayout(hdlg);
 
