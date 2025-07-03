@@ -4,6 +4,9 @@
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
+
+#include <mswin/win32cozy.h>
+
 #include "resource.h"
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -12,16 +15,8 @@
 
 #include "../utils.h"
 
-#include <CHHI_vaDBG_is_vaDbgTs.h>
-
-#define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
-
-#define JAutoBuf_IMPL
 #include <JAutoBuf.h>
-
-#define WinMultiMon_IMPL
-#define WinMultiMon_DEBUG
 #include <mswin/WinMultiMon.h>
 
 

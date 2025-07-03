@@ -218,6 +218,7 @@
 
   <ItemGroup>
     <ClCompile Include="testWinMultiMon.cpp" />
+    <ClCompile Include="CHHI.cpp" />
     <ClCompile Include="..\utils.cpp" />
 <!--
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />

@@ -13,7 +13,7 @@
 
 #include "utils.h"
 
-#include <CHIMPL_vaDBG_is_vaDbgTs.h>
+#include <CHHI_vaDBG_is_vaDbgTs.h>
 
 #include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
