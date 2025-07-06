@@ -1,4 +1,5 @@
 #include "shareinc.h"
+#include <crtdbg.h>
 
 #include "resource.h"
 
@@ -254,6 +255,12 @@ void Dlg_OnSysCommand(HWND hdlg, UINT cmd, int x, int y)
 	}
 }
 
+void Dlg_OnRButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
+{
+	_CrtDumpMemoryLeaks();
+}
+
+
 INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
 	DlgPrivate_st &ctx = *(DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
@@ -262,6 +269,7 @@ INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{{
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
+		HANDLE_dlgMSG(hdlg, WM_RBUTTONDOWN,   Dlg_OnRButtonDown);
 
 		HANDLE_MSG(hdlg, WM_SYSCOMMAND, Dlg_OnSysCommand); // not HANDLE_dlgMSG
 	}}
