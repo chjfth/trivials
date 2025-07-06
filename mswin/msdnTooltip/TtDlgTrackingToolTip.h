@@ -77,7 +77,9 @@ HWND CreateTrackingTooltip_FreeOnScreen(HWND hwndOwner)
 		TTS_NOPREFIX | TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, 
-		NULL, g_hinstExe, NULL);
+		NULL, 
+		NULL, // g_hinstExe, using NULL is OK.
+		NULL);
 
 	if (!hwndTT)
 		return NULL;
@@ -241,7 +243,9 @@ HWND CreateTrackingToolTip_misc(HWND hwndOwner, TOOLINFO& ti,
 		TTS_NOPREFIX | TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, 
-		NULL, g_hinstExe, NULL);
+		NULL, 
+		NULL, // g_hinstExe, using NULL is OK.
+		NULL);
 
 	if (!hwndTT)
 		return NULL;

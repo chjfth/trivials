@@ -50,7 +50,8 @@ HWND CreateToolTip_ForUic(HWND hDlg, int toolID, PCTSTR pszText)
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner,
 		NULL,
-		g_hinstExe, NULL);
+		NULL, // g_hinstExe, using NULL is OK.
+		NULL);
 
 	if (!hwndTool || !hwndTT)
 	{

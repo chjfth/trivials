@@ -26,10 +26,10 @@ HWND CreateToolTipForRectArea(HWND hwndOwner, PCTSTR pszText)
 		NULL, // window title
 		TTS_NOPREFIX | TTS_ALWAYSTIP | flag_TTS_BALLOON(),
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-		hwndOwner, NULL, g_hinstExe, NULL);
-
-//	SetWindowPos(hwndTT, HWND_TOPMOST, 0, 0, 0, 0,
-//		SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE); // no use
+		hwndOwner, 
+		NULL, 
+		NULL, // g_hinstExe, using NULL is OK.
+		NULL);
 
 	// Set up "tool" information. In this case, the "tool" is the entire parent window.
 

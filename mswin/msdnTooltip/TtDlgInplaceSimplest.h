@@ -36,7 +36,9 @@ HWND CreateToolTip_InplaceSimplest(HWND hwndOwner, int uicHottool)
 		CW_USEDEFAULT, CW_USEDEFAULT, 
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, 
-		NULL, g_hinstExe, NULL);
+		NULL, 
+		NULL, // g_hinstExe, using NULL is OK.
+		NULL);
 
 	// Set up "tool" information. In this case, the "tool" is the entire parent window.
 

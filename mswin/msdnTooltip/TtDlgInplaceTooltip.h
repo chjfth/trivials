@@ -49,7 +49,9 @@ HWND CreateInplaceTooltip_ForUics(HWND hdlg, const int arUics[], int nUics)
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		hdlg, // tooltip-window's owner
-		NULL, NULL, NULL);
+		NULL, 
+		NULL, // g_hinstExe, using NULL is OK.
+		NULL);
 
 	if (!hwndTT)
 		return NULL;

@@ -48,7 +48,8 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, // tooltip-window's owner
 		NULL,
-		g_hinstExe, NULL);
+		NULL, // g_hinstExe, using NULL is OK.
+		NULL);
 
 	assert(hwndTT);
 	if (!hwndTT)
