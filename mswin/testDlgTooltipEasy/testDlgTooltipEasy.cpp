@@ -11,9 +11,9 @@
 
 #include "../utils.h"
 
-#include <CHIMPL_vaDBG_is_vaDbgTs.h>
+#include <CHHI_vaDBG_is_vaDbgTs.h>
 
-#define JULAYOUT_IMPL
+#define JULayout2_IMPL
 #include <mswin/JULayout2.h>
 
 #define CxxWindowSubclass_IMPL
