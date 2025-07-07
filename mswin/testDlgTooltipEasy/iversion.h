@@ -2,8 +2,8 @@
 #define __testDlgTooltipEasy_iversion_h_
 
 #define testDlgTooltipEasy_VMAJOR 1
-#define testDlgTooltipEasy_VMINOR 0
-#define testDlgTooltipEasy_VPATCH 5
+#define testDlgTooltipEasy_VMINOR 1
+#define testDlgTooltipEasy_VPATCH 0
 #define testDlgTooltipEasy_VTAIL  0
 
 #define testDlgTooltipEasystr__(n) #n
