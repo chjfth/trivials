@@ -166,7 +166,7 @@ CTtDlgTrackingTooltip_concise::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 			m_oldY = newY;
 
 			// Update the text.
-			WCHAR coords[40];
+			TCHAR coords[40];
 			_sntprintf_s(coords, _TRUNCATE, _T("%d, %d"), newX, newY);
 
 			// Set new text of the tooltip.
@@ -369,7 +369,7 @@ CTtDlgTrackingTooltip_misc::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT
 			m_oldY = newY;
 
 			// Update the text.
-			WCHAR coords[40];
+			TCHAR coords[40];
 			_sntprintf_s(coords, _TRUNCATE, _T("mouse: %d, %d"), newX, newY);
 
 			ti.lpszText = coords;
