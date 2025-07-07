@@ -96,8 +96,6 @@ const TCHAR* my_DlgttGetContentText(HWND hwndUic, void *userctx)
 
 void ReshowClockUsageTip::TimerCallback()
 {
-	vaDbgTs(_T("Got timer......"));
-
 	HWND hwndCtl = m_hwnd;
 
 	RECT rcUic = {};
@@ -286,8 +284,6 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	HWND hLabel = GetDlgItem(hdlg, IDC_LABEL1);
 	Dlgtte_EnableTooltip(hLabel, my_DlgttNowTimeStr_Repeat, &prdata.rstimer);
-
-	// prdata.rstimer.StartTimerOnce(hLabel, 500);
 
 	Dlg_EnableJULayout(hdlg);
 
