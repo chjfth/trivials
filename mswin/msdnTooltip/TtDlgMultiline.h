@@ -28,7 +28,7 @@ private:
 #ifdef TtDlgMultiline_IMPL
 
 HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
-	BOOL isMultiline, int LineWidth)
+	BOOL isMultiline, int LineWidth, BOOL isTtsNoPrefix)
 {
 	assert(hwndOwner);
 	assert(uicHottool);
@@ -43,7 +43,7 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 		WS_EX_TOPMOST | flag_WS_EX_TRANSPARENT(),
 		TOOLTIPS_CLASS,
 		NULL, // window title
-		TTS_ALWAYSTIP | flag_TTS_BALLOON(),
+		TTS_ALWAYSTIP | flag_TTS_BALLOON() | (isTtsNoPrefix?TTS_NOPREFIX:0),
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		hwndOwner, // tooltip-window's owner
@@ -85,7 +85,7 @@ HWND CreateToolTip_Multiline(HWND hwndOwner, int uicHottool,
 }
 
 const int CTtDlgMultiline::sar_OptUic[] = {
-	IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth };
+	IDCK_EnableMultiline, IDE_LineWidth, IDS_LineWidth, IDCK_TTS_NOPREFIX };
 
 void CTtDlgMultiline::enable_Julayout()
 {
@@ -104,19 +104,20 @@ CTtDlgMultiline::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgR
 
 	if (uMsg == WM_INITDIALOG)
 	{
-		// Fetch parameter from UI
+		// Fetch extra parameters from UI
 
 		BOOL isMultiline = IsDlgButtonChecked(m_hdlgParent, IDCK_EnableMultiline);
 		BOOL bTrans = 0;
 		int LineWidth = GetDlgItemInt(m_hdlgParent, IDE_LineWidth, &bTrans, bSigned_FALSE);
 		BOOL isWsExTransparent = IsDlgButtonChecked(m_hdlgParent, IDCK_WsexTransparent);
+		BOOL isTtsNoPrefix = IsDlgButtonChecked(m_hdlgParent, IDCK_TTS_NOPREFIX);
 
 		Enable_Uics(FALSE, m_hdlgParent, sar_OptUic);
 
 		// Create the tooltip window.
 
 		m_hwndTooltip = CreateToolTip_Multiline(m_hdlgMe, IDB_BtnHasTooltip,
-			isMultiline, LineWidth);
+			isMultiline, LineWidth, isTtsNoPrefix);
 
 		vaDbgTs(_T("In %s, created tooltip-hwnd=0x%08X."), msz_name, m_hwndTooltip);
 

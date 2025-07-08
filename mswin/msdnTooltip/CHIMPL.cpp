@@ -19,7 +19,7 @@ void vaDBG(...)
 #endif
 
 
-#define JULAYOUT_IMPL
+#define JULayout2_IMPL
 #include <mswin/JULayout2.h>
 
 #define   ModelessChild_DEBUG

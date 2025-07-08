@@ -41,7 +41,7 @@ IDI_WINMAIN             ICON                    "msdnTooltip.ico"
 
 IDD_WINMAIN DIALOGEX 0, 0, 247, 250
 STYLE DS_SETFONT | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
-CAPTION "msdnTooltipDemo"
+CAPTION "S"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Global options when creating a tooltip instance: (B.C.T.H)",IDC_STATIC,7,7,185,8
@@ -57,6 +57,7 @@ BEGIN
     CONTROL         "Multiline",IDCK_EnableMultiline,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,85,40,10
     EDITTEXT        IDE_LineWidth,50,84,28,13,ES_AUTOHSCROLL
     LTEXT           "line-width",IDS_LineWidth,81,86,32,8
+    CONTROL         "TTS_NOPREFIX",IDCK_TTS_NOPREFIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,97,65,10
     EDITTEXT        IDE_MultilineText,116,84,119,38,ES_MULTILINE | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
     PUSHBUTTON      "<C> Multiline tooltip",IDB_MultilineTooltip,9,109,100,14
     PUSHBUTTON      "<D> Tracking tooltip concise",IDB_TrackingTooltipConcise,4,135,135,14
