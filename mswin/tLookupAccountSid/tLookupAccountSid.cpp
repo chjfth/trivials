@@ -5,6 +5,7 @@
 #include <Sddl.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -43,7 +44,7 @@ void Fill_MySID(HWND hdlg)
 	DWORD winerr = 0;
 	HANDLE hToken = nullptr;
 	BOOL succ = OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken);
-	Cec_PTRHANDLE cec_token = hToken;
+	CEC_PTRHANDLE cec_token = hToken;
 	if(!succ)
 	{
 		winerr = GetLastError();
@@ -64,12 +65,12 @@ void Fill_MySID(HWND hdlg)
 	}
 
 	TOKEN_USER *pTokenUser = (TOKEN_USER *)new char[dwSize];
-	Cec_cxx_delete cec_tokenuser = pTokenUser;
+	CEC_raw_delete cec_tokenuser = pTokenUser;
 	succ = GetTokenInformation(hToken, TokenUser, pTokenUser, dwSize, &dwSize);
 
 	TCHAR *sidtext = nullptr;
 	succ = ConvertSidToStringSid(pTokenUser->User.Sid, &sidtext);
-	Cec_LocalFree cec_sidtext = sidtext;
+	CEC_LocalFree cec_sidtext = sidtext;
 	if(!succ)
 	{
 		vaAppendText_mled(hedit, _T("ConvertSidToStringSid() winerr=%s"), ITCSv(winerr, WinError));
@@ -176,7 +177,7 @@ void Do_Query(HWND hdlg)
 	SID *psid = nullptr;
 	GetDlgItemText(hdlg, IDE_SidInput, sidtext, ARRAYSIZE(sidtext));
 	BOOL succ = ConvertStringSidToSid(sidtext, (PSID*)&psid);
-	Cec_LocalFree cec_sid = psid;
+	CEC_LocalFree cec_sid = psid;
 	if(!succ)
 	{
 		winerr = GetLastError();
