@@ -58,7 +58,7 @@ TCHAR* InterpretRights(DWORD rights, void *userctx)
 	if(rights==0x1F01FF)
 	{
 		_sntprintf_s(pbuf, BufChars, _TRUNCATE,
-			_T("%*s (STANDARD_RIGHTS_ALL | FILE_ALL_ACCESS)\r\n"), indents);
+			_T("%*s (STANDARD_RIGHTS_ALL | FILE_ALL_ACCESS)\r\n"), indents, _T(""));
 	
 		return pbuf;
 	}

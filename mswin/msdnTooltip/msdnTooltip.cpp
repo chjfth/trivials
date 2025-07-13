@@ -140,7 +140,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(codeNotify==CBN_SELCHANGE)
 		{
 			int index = ComboBox_GetCurSel(hwndCtl);
-			g_TTI_value = ComboBox_GetItemData(hwndCtl, index);
+			g_TTI_value = (int)ComboBox_GetItemData(hwndCtl, index);
 		}
 		break;
 	}
