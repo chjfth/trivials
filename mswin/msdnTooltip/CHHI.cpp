@@ -1,26 +1,12 @@
 #include "shareinc.h"
 
-#include <utility>       // to have std::forward
-#include <CxxVerCheck.h> // to see CXX11_OR_NEWER
-
-#include "../utils.h"
-
-#ifdef CXX11_OR_NEWER
-template<typename... Args>
-void vaDBG(Args&&... args) // forwards all arguments
-{
-	vaDbgTs(std::forward<Args>(args)...);
-}
-#else
-void vaDBG(...)
-{
-	vaDbgTs(_T("Not C++11 compiled, vaDBG() is nullop."));
-};
-#endif
-
+#include <CHHI_vaDBG_is_vaDbgTs.h>
 
 #define JULayout2_IMPL
 #include <mswin/JULayout2.h>
+
+#define Combobox_EnableWideDrop_IMPL
+#include <mswin/Combobox_EnableWideDrop.h>
 
 #define   ModelessChild_DEBUG
 #define   ModelessChild_IMPL

@@ -31,20 +31,26 @@ DLGTEMPLATE*
 LoadAndPatchDialogTemplate(HINSTANCE hInst, LPCTSTR lpDialogName, WORD newPointSize)
 {
 	// With the help of ChatGPT.
+	// This function makes a copy of the DLGTEMPLATEEX memblock from lpDiaglogName,
+	// and tweaks the dlgbox's font-size to be newPointSize, then return the memblock to caller.
+	// Caller show C++-delete the returned DLGTEMPLATEEX block.
 
     HRSRC hRes = FindResource(hInst, lpDialogName, RT_DIALOG);
     if (!hRes) 
 		return NULL;
 
-    DWORD size = SizeofResource(hInst, hRes);
-    if (!size) 
+    DWORD resbytes = SizeofResource(hInst, hRes);
+	// -- 274 bytes on x86
+    if (!resbytes) 
 		return NULL;
 
     HGLOBAL hGlob = LoadResource(hInst, hRes);
     if (!hGlob) 
 		return NULL;
 
-    DLGTEMPLATEEX* dlgEx = (DLGTEMPLATEEX*)LockResource(hGlob);
+	void *pOrigDlgTemplate = LockResource(hGlob);
+    DLGTEMPLATEEX* dlgEx = (DLGTEMPLATEEX*)new char[resbytes];
+	memcpy(dlgEx, pOrigDlgTemplate, resbytes);
 
     BOOL isEx = (dlgEx->signature == 0xFFFF);
 	assert(isEx); // The resource definition should be DIALOGEX, not DIALOG

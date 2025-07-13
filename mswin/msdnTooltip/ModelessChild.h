@@ -1,5 +1,5 @@
-#ifndef __ModelessChild_h_202502512_
-#define __ModelessChild_h_202502512_
+#ifndef __ModelessChild_h_20250713_
+#define __ModelessChild_h_20250713_
 
 // This .h can be a common library, not just used in a single EXE project.
 
@@ -25,7 +25,7 @@ public:
 	{}
 
 	BOOL CreateTheDialog(const TCHAR *name,
-		HINSTANCE hInstExe, int dlg_resid, HWND hdlgParent);
+		HINSTANCE hInstExe, int dlg_resid, HWND hdlgParent, LPCDLGTEMPLATE pDlgTemplate=NULL);
 
 	HWND GetHdlg() { return m_hdlgMe; } // debug purpose
 
@@ -64,15 +64,18 @@ protected:
 #include <WindowsX.h>
 
 #ifndef ModelessChild_DEBUG
-#define vaDBG(...) // make vaDBG empty, no debugging message
+#include <CHHI_vaDBG_hide.h>
 #else
 #include <mswin/winuser.itc.h>
 #endif
 
 
 BOOL CModelessChild::CreateTheDialog(const TCHAR *name, 
-	HINSTANCE hInstExe, int dlg_resid, HWND hdlgParent)
+	HINSTANCE hInstExe, int dlg_resid, HWND hdlgParent, LPCDLGTEMPLATE pDlgTemplate)
 {
+	// Note: When identifying a dlgbox, user choose between dlg_resid or pDlgTemplate.
+	// If dlg_resid==0, pDlgTemplate is used.
+
 	msd_name = name;
 	msz_name = msd_name;
 
@@ -84,10 +87,20 @@ BOOL CModelessChild::CreateTheDialog(const TCHAR *name,
 	// could trigger m_hdlgMe's WM_COMMAND(EN_UPDATE), where we like to see 
 	// mr_ptrme_by_parent is non-NULL. CTtDlgInplaceSimplest can trigger this.
 
-	m_hdlgMe = CreateDialogParam(hInstExe, MAKEINTRESOURCE(dlg_resid), hdlgParent,
-		StartDlgProc,
-		(LPARAM)this // dlgparam
-	);
+	if(dlg_resid)
+	{
+		m_hdlgMe = CreateDialogParam(hInstExe, MAKEINTRESOURCE(dlg_resid), hdlgParent,
+			StartDlgProc,
+			(LPARAM)this // dlgparam
+		);
+	}
+	else
+	{
+		m_hdlgMe = CreateDialogIndirectParam(hInstExe, pDlgTemplate, hdlgParent,
+			StartDlgProc,
+			(LPARAM)this // dlgparam
+		);
+	}
 
 	m_WM_KillSelf = RegisterWindowMessage(_T("ModelessChild_KillSelf"));
 
@@ -200,7 +213,7 @@ CModelessChild::DlgProc(UINT uMsg, WPARAM wParam, LPARAM lParam, INT_PTR *pMsgRe
 }
 
 #ifndef ModelessChild_DEBUG
-#undef vaDBG       // revoke empty effect
+#include <CHHI_vaDBG_show.h>
 #endif
 
 

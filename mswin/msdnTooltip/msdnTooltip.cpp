@@ -9,9 +9,6 @@
 
 #include <mswin/JULayout2.h>
 
-#include <mswin/winuser.itc.h>
-
-#define Combobox_EnableWideDrop_IMPL
 #include <mswin/Combobox_EnableWideDrop.h>
 
 //#include "ModelessTtdemo.h"
@@ -105,16 +102,22 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_InplaceTooltip:
 	{
 		BOOL bTrans = 0;
-		int pt = GetDlgItemInt(hdlgMain, IDE_FontsizePt, &bTrans, bSigned_FALSE);
-		if(bTrans && pt>0)
+		int pt = GetDlgItemInt(hdlgMain, IDE_FontsizePt, &bTrans, bSigned_TRUE);
+		if (pt <= 0)
 		{
-			void *dlgtmpl = LoadAndPatchDialogTemplate(g_hinstExe, 
-				MAKEINTRESOURCE(IDD_InplaceComplex), pt);
-			assert(dlgtmpl);
+			pt = 8;
+			SetDlgItemInt(hdlgMain, IDE_FontsizePt, pt, bSigned_TRUE);
 		}
 
+		LPCDLGTEMPLATE dlgtmpl = LoadAndPatchDialogTemplate(g_hinstExe,
+			MAKEINTRESOURCE(IDD_InplaceComplex), pt);
+			assert(dlgtmpl);
+
 		CModelessTtDemo::LaunchTootipDemoChildDlg(ctx.TtDlgInplaceComplex,
-			_T("IDD_InplaceTooltip"), IDD_InplaceComplex, hdlgMain, &ctx.ptdInplaceComplex);
+			_T("IDD_InplaceTooltip"), 0, hdlgMain, &ctx.ptdInplaceComplex,
+			dlgtmpl);
+		
+		delete dlgtmpl;
 		break;
 	}
 	case IDCK_TTS_BALLOON:

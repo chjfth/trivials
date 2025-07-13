@@ -218,7 +218,7 @@
 
   <ItemGroup>
     <ClCompile Include="msdnTooltip.cpp" />
-    <ClCompile Include="CHIMPL.cpp" />
+    <ClCompile Include="CHHI.cpp" />
     <ClCompile Include="..\utils.cpp" />
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />

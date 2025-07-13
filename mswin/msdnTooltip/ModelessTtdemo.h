@@ -129,15 +129,18 @@ public:
 	template<typename T_TtDemoDlg> // T_TtDemoDlg is CTtDlgForUic etc.
 	static BOOL LaunchTootipDemoChildDlg(T_TtDemoDlg &ttdlg,
 		const TCHAR *name, UINT iddlg_child, 
-		HWND hwndParent, CModelessChild **pptd)
+		HWND hwndParent, CModelessChild **pptd, LPCDLGTEMPLATE pDlgTemplate=NULL)
 	{
+		// Note: When identifying a dlgbox, user choose between dlg_resid or pDlgTemplate.
+		// If dlg_resid==0, pDlgTemplate is used.
+
 		BOOL succ = 0;
 		CModelessChild* &ptd = *pptd;
 		if (!ptd)
 		{
 			CModelessChild *ptdnew = &ttdlg;
 
-			succ = ptdnew->CreateTheDialog(name, g_hinstExe, iddlg_child, hwndParent);
+			succ = ptdnew->CreateTheDialog(name, g_hinstExe, iddlg_child, hwndParent, pDlgTemplate);
 			assert(succ);
 			assert(ptdnew == ptd);
 
