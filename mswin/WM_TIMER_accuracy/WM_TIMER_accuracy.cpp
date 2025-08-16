@@ -11,7 +11,7 @@
 #include "..\utils.h"
 #include <mswin/dlptr_winapi.h>
 
-#define JULAYOUT_IMPL
+#define JULayout2_IMPL
 #include <mswin/JULayout2.h>
 
 #pragma warning(disable:4800)  // warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
@@ -53,6 +53,7 @@ void DlgItem_Enable(HWND hdlg, int nIDDlgItem, bool en)
 
 void EnableDisableInputUic(HWND hdlg, bool en)
 {
+	DlgItem_Enable(hdlg, IDB_RefreshRes, en);
 	DlgItem_Enable(hdlg, IDC_EDIT_TimerMillisec, en);
 	DlgItem_Enable(hdlg, IDC_EDIT_RunCount, en);
 	DlgItem_Enable(hdlg, IDC_CHECK_ReportHustleTick, en);
@@ -121,12 +122,20 @@ void DoTimerStop(HWND hdlg, DlgPrivate_st *prdata)
 	SetDlgItemText(hdlg, IDOK, _T("&Start Probe"));
 }
 
+void show_timer_resolution(HWND hdlg);
+
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	DlgPrivate_st *prdata = (DlgPrivate_st*)GetWindowLongPtr(hdlg, DWLP_USER);
 
 	switch (id) 
 	{{
+	case IDB_RefreshRes:
+	{
+		SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, _T(""));
+		show_timer_resolution(hdlg);
+		break;
+	}
 	case IDOK:
 	{
 		if(!prdata->isProbeStarted)
@@ -180,8 +189,8 @@ void Tell_HardIntr_TimerResolution(HWND hdlg)
 		if(!ntserr)
 		{
 			_sntprintf_s(textbuf, _TRUNCATE, 
-				_T("NtQueryTimerResolution(millisec): current: %g  (min: %g , max: %g)"),
-				curRes/10000.0, minRes/10000.0, maxRes/10000.0);
+				_T("NtQueryTimerResolution(millisec): [min: %g , max: %g] current: %g"),
+				minRes/10000.0, maxRes/10000.0, curRes/10000.0);
 		}
 		else
 		{
@@ -328,7 +337,9 @@ static void show_timer_resolution(HWND hdlg)
 	DWORD ms2 = wait_tickcount_change();
 	
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_RUNINFO);
-	vaAppendText_mled(hedit, _T("\r\nGetTickCount() resolution is: %d millisec.\r\n"), ms2-ms1);
+	vaAppendText_mled(hedit, _T("\r\n"));
+	vaAppendText_mled(hedit, _T("[ Live probing result ]\r\n"));
+	vaAppendText_mled(hedit, _T("GetTickCount() resolution is: %d millisec.\r\n"), ms2-ms1);
 
 	UINT64 us1 = wait_perft_change();
 	UINT64 us2 = wait_perft_change();
@@ -362,7 +373,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 		_T("Parameter hint: \r\n")
 		_T("- If Sleep millisec is -1, then I will NOT call Sleep() in WM_TIMER callback.\r\n")
 		_T("- If Sleep millisec is 0, then I will call Sleep(0) in WM_TIMER callback.\r\n")
-		_T("- If Sleep millisec is 500, then I will call Sleep(500) in WM_TIMER callback, just before our DlgProc returns.\r\n")
+		_T("- If Sleep millisec is 500, then I will call Sleep(500) in WM_TIMER callback, just before our DialogProc returns.\r\n")
 		);
 
 	show_timer_resolution(hdlg);
@@ -370,6 +381,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
 	jul->AnchorControl(0,0, 100,0, IDC_LBL_TimerResolution);
+	jul->AnchorControl(100,0, 100,0, IDB_RefreshRes);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_RUNINFO);
 	jul->AnchorControl(0,100, 0,100, IDC_LBL_MinMax);
 	jul->AnchorControl(50,100, 50,100, IDOK);
