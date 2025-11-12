@@ -84,6 +84,12 @@
     <ProjectName>GuiRcManifest</ProjectName>
      <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
+
+      <!--[20251112.m1] Chj: Enable this option to fix the problem.  -->
+      <!-- 
+      <GenerateManifest>false</GenerateManifest>
+      -->
+      
   </PropertyGroup>
   
   <!-- Microsoft.Cpp.Default.props 
