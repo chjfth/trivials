@@ -839,6 +839,93 @@ void see_LookupAccountName()
 	REPORT_API_TRAITS(LookupAccountName);
 }
 
+enum RegQueryOrGet_et
+{
+	RegQuery = 1,
+	RegGet = 2,
+};
+
+static int myReadRegitem_REG_SZ(RegQueryOrGet_et qorg, TCHAR *buf, int buf_tchars)
+{
+	const TCHAR *keypath = _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon");
+	const TCHAR *keyname = _T("Shell");	// -- will get "explorer.exe"
+
+	HKEY regkey = nullptr;
+	DWORD winerr = RegOpenKeyEx(HKEY_LOCAL_MACHINE, keypath, 0, KEY_READ, &regkey);
+	if(winerr)
+	{
+		ErrorExist(_T("[ERROR]Open registry-key 'HKLM\\%s' fails with winerr=%d."), keypath, winerr);
+	}
+
+	DWORD regitemType = 0;
+	DWORD cbData = buf_tchars*sizeof(TCHAR);
+	if(qorg==RegQuery)
+	{
+		winerr = RegQueryValueEx(regkey, keyname,
+			0, // reserved
+			&regitemType,
+			(BYTE*)buf, 
+			&cbData);
+	}
+	else
+	{
+		winerr = RegGetValue(regkey, 
+			NULL, // Subkey
+			keyname, 
+			RRF_RT_ANY,
+			&regitemType,
+			(BYTE*)buf, 
+			&cbData);
+	}
+
+	if(winerr && winerr!=ERROR_MORE_DATA)
+	{
+		ErrorExist(_T("[ERROR]Read registry-item 'HKLM\\%s\\%s' fails with winerr=%d."), keypath, keyname, winerr);
+	}
+	if(regitemType!=REG_SZ)
+	{
+		ErrorExist(_T("[ERROR]Registry-item 'HKLM\\%s\\%s' does not have REG_SZ type."), keypath, keyname);
+	}
+
+	RegCloseKey(regkey);
+
+	int myret = cbData/sizeof(TCHAR);
+	SetLastError(winerr);
+	return myret;
+}
+
+void see_RegQueryValueEx_REG_SZ()
+{
+	RESET_OUTPUT;
+
+	g_sret_len = myReadRegitem_REG_SZ(RegQuery, soutput, MAX_PATH);
+	
+	g_eret_len = myReadRegitem_REG_SZ(RegQuery, eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	SetLastError(0);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = myReadRegitem_REG_SZ(RegQuery, edge_output, g_edge_len);
+
+	REPORT_API_TRAITS_s(_T("RegQueryValueEx(REG_SZ)"));
+}
+
+void see_RegGetValue_REG_SZ()
+{
+	RESET_OUTPUT;
+
+	g_sret_len = myReadRegitem_REG_SZ(RegGet, soutput, MAX_PATH);
+
+	g_eret_len = myReadRegitem_REG_SZ(RegGet, eoutput, SMALL_Usersize);
+	winerr = GetLastError();
+
+	SetLastError(0);
+	g_edge_len = STRLEN(soutput);
+	g_edgeret_len = myReadRegitem_REG_SZ(RegGet, edge_output, g_edge_len);
+
+	REPORT_API_TRAITS_s(_T("RegGetValue(REG_SZ)"));
+}
+
 
 void check_apis()
 {
@@ -901,4 +988,7 @@ void check_apis()
 	see_GetUserName();
 
 	see_LookupAccountName();
+
+	see_RegQueryValueEx_REG_SZ();
+	see_RegGetValue_REG_SZ();
 }
