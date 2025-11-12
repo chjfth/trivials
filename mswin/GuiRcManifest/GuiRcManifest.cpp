@@ -46,7 +46,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	RegisterClass (&wndclass);
 	 
 	hwnd = CreateWindow (szAppName,    // window class name
-		TEXT ("GuiRcManifest - Click mouse to see a dialogbox"), // window caption
+		TEXT ("GuiRcManifest"), // window caption
 		WS_OVERLAPPEDWINDOW,           // window style
 		CW_USEDEFAULT,   // initial x position
 		CW_USEDEFAULT,   // initial y position
@@ -76,7 +76,7 @@ BOOL Cls_OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 
 void Cls_OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags)
 {
-	MessageBox(hwnd, _T("Do you see dialogbox OK button in Visual-style?"), 
+	MessageBox(hwnd, _T("Do you see dialogbox [OK] button in Visual-style?"), 
 		_T("Hello"), MB_OK);
 }
 
@@ -88,7 +88,7 @@ void Cls_OnPaint(HWND hwnd)
 
 	GetClientRect (hwnd, &rect) ;          
 	Ellipse(hdc, 0,0, rect.right, rect.bottom);
-	DrawText (hdc, TEXT ("Hello, WindowsX !"), -1, &rect,
+	DrawText (hdc, TEXT ("Click mouse to see a dialogbox!"), -1, &rect,
 		DT_SINGLELINE | DT_CENTER | DT_VCENTER) ;
 
 	EndPaint (hwnd, &ps) ;
