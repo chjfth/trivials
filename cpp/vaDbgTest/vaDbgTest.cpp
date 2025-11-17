@@ -19,11 +19,16 @@
 #define vaDbgTs_DEBUG1
 #define vaDbgTs_DEBUG2
 #include <vaDbgTs.h>
+//#include "D:\gitw\bookcode-mswin\__chjcxx\common-include\include\vaDbgTs.h"
 
-void do_printf(const TCHAR *dbgstr, void *ctx)
+void do_printf(vaDbg_level_et lvl, const TCHAR *dbgstr, void *ctx)
 {
 	(void)ctx;
-	_tprintf(_T("%s"), dbgstr);
+	
+	if(lvl>=0)
+		_tprintf(_T("<Lv%d>%s"), lvl, dbgstr);
+	else
+		_tprintf(_T("%s"), dbgstr);
 }
 
 
@@ -34,6 +39,8 @@ int _tmain(int argc, TCHAR* argv[])
 	_tprintf(_T("Hello, vaDbgTest!\n"));
 	
 	vaDbg_set_output(do_printf, 0);
+
+//	vaDbgTs_options(vaDbg_seq | vaDbg_newline); // want sequence & HMS only
 
 #ifdef _WIN32
 	vaDbgTs_bias_check_interval(2);
