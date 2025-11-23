@@ -217,12 +217,14 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 
-  <!-- import VSPG start -->
-  <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>..\..\..\__VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
-  </PropertyGroup>
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
-  </ImportGroup>
-  <!-- import VSPG end -->
+  <!-- Special Stuff here: -->
+
+  <Target Name="Chj_extra1" BeforeTargets="PrepareForBuild">
+    <Message Text="########Chj $(ConfigurationType) project: Do this before PrepareForBuild. $(ProjectGuid)" />
+  </Target>
+
+  <Target Name="Chj_extra2" BeforeTargets="Build">
+    <Message Text="########Chj $(ConfigurationType) project: Do this before Build." />
+  </Target>
+
 </Project>

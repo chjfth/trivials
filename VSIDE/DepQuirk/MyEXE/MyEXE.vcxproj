@@ -226,25 +226,13 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 
-  <!-- import VSPG start -->
+  <!-- Special Stuff here: -->
 
-  <!--
-  <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>..\..\..\__VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
-  </PropertyGroup>
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
-  </ImportGroup>
-  -->
+  <Target Name="Chj_extra1" BeforeTargets="PrepareForBuild">
+    <Message Text="########Chj $(ConfigurationType) project: Do this before PrepareForBuild. $(ProjectGuid)" />
+  </Target>
 
-  <!-- 
-  	Deliberately NOT importing _VSPG.props, But child vcxproj's MSBuild still ghosts this project.
-  	We can see:
-  		
-  	  VSPG_ShowLoaded:
-  		VSPG version 608 loaded from: D:\gitw\trivials\__VSPG\_VSPG\boots
-  	
-  	after this project's ClCompile task.
-  -->
-  <!-- import VSPG end -->
+  <Target Name="Chj_extra2" BeforeTargets="Build">
+    <Message Text="########Chj $(ConfigurationType) project: Do this before Build." />
+  </Target>
 </Project>
