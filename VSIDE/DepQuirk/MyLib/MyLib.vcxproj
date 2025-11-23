@@ -84,6 +84,8 @@
     <ProjectName>MyLib</ProjectName>
      <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>StaticLibrary</ConfigurationType>
+
+    <showvars>TargetName;TargetPath;ProjectGuid</showvars>
   </PropertyGroup>
   
   <!-- Microsoft.Cpp.Default.props 

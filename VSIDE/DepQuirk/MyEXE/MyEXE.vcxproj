@@ -75,6 +75,8 @@
     <!-- Define PlatformX var, using 'x86' instead of 'Win32'. The 'X' refers to the X in x86 & x64. -->
     <PlatformX>$(Platform)</PlatformX>
     <PlatformX Condition="'$(Platform)'=='Win32'">x86</PlatformX>
+    
+    <showvars>TargetName;TargetPath;ProjectGuid</showvars>
   </PropertyGroup>
 
   <!-- User project properties -->
@@ -225,6 +227,16 @@
   </ImportGroup>
 
   <!-- import VSPG start -->
+
+  <!--
+  <PropertyGroup>
+    <VSPG_BootsDir_NoTBS>..\..\..\__VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
+  </ImportGroup>
+  -->
+
   <!-- 
   	Deliberately NOT importing _VSPG.props, But child vcxproj's MSBuild still ghosts this project.
   	We can see:
