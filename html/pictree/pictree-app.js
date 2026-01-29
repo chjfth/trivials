@@ -2,6 +2,9 @@ import Split from './split.js';
 
 import { PICTREE_DATA } from './pictree-userdata.js';
 
+const IMAGE_BASE = getImageBasePath();
+
+
 function initTree() {
 
   validateTree(PICTREE_DATA);
@@ -39,8 +42,16 @@ function initTree() {
 
 
 function showNode(node) {
-  document.getElementById('image-viewer').src = node.image;
-  document.getElementById('annotation').textContent = node.annotation;
+  const img = document.getElementById('image-viewer');
+  const ann = document.getElementById('annotation');
+  
+  if (!node.image)
+  	return;
+  
+  img.src = IMAGE_BASE + node.image;
+  img.title = img.src;
+  ann.textContent = node.annotation || '';
+
 }
 
 function validateTree(nodes, path = 'root') {
@@ -85,10 +96,21 @@ function findFirstImageNode(nodes) {
 }
 
 
+function getImageBasePath() {
+  const params = new URLSearchParams(window.location.search);
+  const dir = params.get('imgdir');
+
+  // No imgdir → current directory
+  if (!dir) return '';
+
+  // Normalize: remove leading/trailing slashes
+  return dir.replace(/^\/+|\/+$/g, '') + '/';
+}
+
 
 function initLayout() {
   Split(['#tree-pane', '#viewer-pane'], {
-    sizes: [30, 70],
+    sizes: [20, 80],
     minSize: 150,
     gutterSize: 6
   });
@@ -100,6 +122,10 @@ function initViewer() {
 
   img.src = '';
   ann.textContent = 'Select a node from the tree.';
+
+  img.onerror = () => {
+    ann.textContent = 'Image not found: ' + img.src;
+  };
 }
 
 
