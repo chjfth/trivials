@@ -1,16 +1,35 @@
 import Split from './split.js';
 
-import { PICTREE_DATA } from './pictree-userdata.js';
+function getDatasetBase() {
+  const params = new URLSearchParams(window.location.search);
+  const dir = params.get('imgdir');
+  return dir ? dir.replace(/^\/+|\/+$/g, '') + '/' : '';
+}
 
-const IMAGE_BASE = getImageBasePath();
+const IMAGE_BASE = getDatasetBase();
 
 
-function initTree() {
+async function loadUserData() {
+  const modulePath = IMAGE_BASE + 'pictree-userdata.js';
 
-  validateTree(PICTREE_DATA);
+  try {
+    const mod = await import(`./${modulePath}`);
+    return mod.PICTREE_DATA;
+  } catch (err) {
+    console.error('Failed to load user data:', modulePath, err);
+    alert('Cannot load pictree-userdata.js from ' + modulePath);
+    throw err;
+  }
+}
+
+
+
+function initTree(treeData) {
+
+  // validateTree(PICTREE_DATA); xxx
 
   const container = document.getElementById('tree-pane');
-  const tree = new TreeView(PICTREE_DATA, container);
+  const tree = new TreeView(treeData, container);
   
   tree.on('select', evt => {
     // evt = { target, data }
@@ -33,7 +52,7 @@ function initTree() {
   });
   
   // Auto-show first image node on load
-  const first = findFirstImageNode(PICTREE_DATA);
+  const first = findFirstImageNode(treeData);
   if (first) {
     showNode(first);
     // tree.select(first);   // keeps tree selection in sync
@@ -129,9 +148,14 @@ function initViewer() {
 }
 
 
+async function main() {
+  initLayout();
+  initViewer();
 
+  const treeData = await loadUserData();
+  initTree(treeData);
+}
 
-initLayout();
-initViewer();
-initTree();
+main();
+
 
