@@ -8,7 +8,9 @@ function initTree() {
 
   const container = document.getElementById('tree-pane');
   const tree = new TreeView(PICTREE_DATA, container);
-
+  
+  container
+  
   tree.on('select', evt => {
     // evt = { target, data }
     const item = evt.data;
@@ -17,6 +19,13 @@ function initTree() {
       showNode(item);
     }
   });
+  
+  // Auto-show first image node on load
+  const first = findFirstImageNode(PICTREE_DATA);
+  if (first) {
+    showNode(first);
+    tree.select(first);   // keeps tree selection in sync
+  }  
 }
 
 
@@ -51,6 +60,21 @@ function validateTree(nodes, path = 'root') {
     }
   });
 }
+
+
+function findFirstImageNode(nodes) {
+  for (const node of nodes) {
+    if (node.image) {
+      return node;
+    }
+    if (node.children) {
+      const found = findFirstImageNode(node.children);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 
 
 function initLayout() {
