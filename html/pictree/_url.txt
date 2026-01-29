@@ -1,0 +1,8 @@
+
+URL:
+
+* Resizable split view: https://github.com/nathancahill/split
+* Tree control: https://github.com/justinchmura/js-treeview
+	* Yes: that tree.js is not an ES module. It¡¯s a UMD bundle (Universal Module Definition).
+
+
