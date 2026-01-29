@@ -1,0 +1,37 @@
+
+/* Selected node highlight */
+
+.tree-leaf-content.selected {
+  background-color: #ffedd5;   /* soft orange */
+  border-radius: 4px;
+}
+
+.tree-leaf-text {
+  font-size: 18px;
+  line-height: 1.4;
+  padding: 6px 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.tree-leaf-content {
+  padding: 4px 6px;
+}
+
+/********* Let root node has larger font then child node. *********/
+
+/* Root-level nodes */
+#tree-pane > .tree-leaf > .tree-leaf-content .tree-leaf-text {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* First-level children */
+.tree-child-leaves > .tree-leaf > .tree-leaf-content .tree-leaf-text {
+  font-size: 17px;
+}
+
+/* Deeper levels (optional) */
+.tree-child-leaves .tree-child-leaves .tree-leaf-text {
+  font-size: 16px;
+}

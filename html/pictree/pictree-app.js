@@ -9,11 +9,20 @@ function initTree() {
   const container = document.getElementById('tree-pane');
   const tree = new TreeView(PICTREE_DATA, container);
   
-  container
-  
   tree.on('select', evt => {
     // evt = { target, data }
     const item = evt.data;
+
+	// Remove previous selection
+	document
+		.querySelectorAll('.tree-leaf-content.selected')
+		.forEach(el => el.classList.remove('selected'));
+
+	// Highlight newly selected node
+	const content = evt.target.target.closest('.tree-leaf-content');
+	if (content) {
+		content.classList.add('selected');
+	}
 
     if (item) {
       showNode(item);
@@ -24,7 +33,7 @@ function initTree() {
   const first = findFirstImageNode(PICTREE_DATA);
   if (first) {
     showNode(first);
-    tree.select(first);   // keeps tree selection in sync
+    // tree.select(first);   // keeps tree selection in sync
   }  
 }
 
@@ -97,6 +106,6 @@ function initViewer() {
 
 
 initLayout();
+initViewer();
 initTree();
 
-initViewer();
