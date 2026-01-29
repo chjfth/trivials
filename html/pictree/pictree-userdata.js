@@ -1,23 +1,28 @@
-const PICTREE_DATA = {
-	title: "My Picture Tree",
-	tree: [
+export const PICTREE_DATA = [
 	{
-		id: "vacation",
-		label: "Vacation",
+		name: 'Beach',
+		image: 'images/beach.jpg',
+		annotation: 'A beach.'
+	},
+	{
+		name: 'Mountain',
+		image: 'images/mountain.jpg',
+		annotation: 'Mountain hiking.'
+	},
+	{
+		name: 'Animals',
 		children: [
 			{
-				id: "beach",
-				label: "Beach",
-				image: "images/beach.jpg",
-				annotation: "Sunny afternoon at the beach."
+				name: 'Cat',
+				image: 'images/cat.jpg',
+				annotation: 'A cat.'
 			},
 			{
-				id: "mountain",
-				label: "Mountain",
-				image: "images/mountain.jpg",
-				annotation: "Cold morning hike."
+			name: 'Dog',
+				image: 'images/dog.jpg',
+				annotation: 'A dog.'
 			}
 		]
-	}
-	]
-};
+	},
+];
+

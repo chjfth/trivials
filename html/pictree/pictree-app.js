@@ -1,38 +1,13 @@
 import Split from './split.js';
 
-const DEMO_TREE = [
-	{
-		name: 'Beach',
-		image: 'images/beach.jpg',
-		annotation: 'A beach.'
-	},
-	{
-		name: 'Mountain',
-		image: 'images/mountain.jpg',
-		annotation: 'Mountain hiking.'
-	},
-	{
-		name: 'Animals',
-		children: [
-			{
-				name: 'Cat',
-				image: 'images/cat.jpg',
-				annotation: 'A cat.'
-			},
-			{
-			name: 'Dog',
-				image: 'images/dog.jpg',
-				annotation: 'A dog.'
-			}
-		]
-	},
-];
-
+import { PICTREE_DATA } from './pictree-userdata.js';
 
 function initTree() {
-  const container = document.getElementById('tree-pane');
 
-  const tree = new TreeView(DEMO_TREE, container);
+  validateTree(PICTREE_DATA);
+
+  const container = document.getElementById('tree-pane');
+  const tree = new TreeView(PICTREE_DATA, container);
 
   tree.on('select', evt => {
     // evt = { target, data }
@@ -50,6 +25,34 @@ function showNode(node) {
   document.getElementById('annotation').textContent = node.annotation;
 }
 
+function validateTree(nodes, path = 'root') {
+  if (!Array.isArray(nodes)) {
+    throw new Error(`Tree data at ${path} must be an array`);
+  }
+
+  nodes.forEach((node, index) => {
+    const here = `${path}[${index}]`;
+
+    if (!node.name) {
+      throw new Error(`Missing "name" at ${here}`);
+    }
+
+    const hasImage = 'image' in node;
+    const hasChildren = Array.isArray(node.children);
+
+    if (hasChildren) {
+      validateTree(node.children, `${here}.children`);
+    } else {
+      if (!hasImage) {
+        throw new Error(
+          `Leaf node "${node.name}" at ${here} must have an "image"`
+        );
+      }
+    }
+  });
+}
+
+
 function initLayout() {
   Split(['#tree-pane', '#viewer-pane'], {
     sizes: [30, 70],
@@ -65,6 +68,8 @@ function initViewer() {
   img.src = '';
   ann.textContent = 'Select a node from the tree.';
 }
+
+
 
 
 initLayout();
