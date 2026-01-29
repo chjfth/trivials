@@ -1,4 +1,8 @@
 
+body {
+	font-family: Sans-serif;
+}
+
 /* Selected node highlight */
 
 .tree-leaf-content.selected {
@@ -18,6 +22,10 @@
   padding: 4px 6px;
 }
 
+.tree-leaf .tree-leaf-text:hover {
+    color: inherit;
+}
+
 /********* Let root node has larger font then child node. *********/
 
 /* Root-level nodes */
@@ -35,3 +43,39 @@
 .tree-child-leaves .tree-child-leaves .tree-leaf-text {
   font-size: 16px;
 }
+
+
+/********** Touch friendly tree nodes ************/
+
+.tree-leaf .tree-expando {
+  display: inline-block;
+  width: 30px;      /* bigger tappable area */
+  height: 30px;
+  line-height: 30px; /* center the + / - vertically */
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;   /* more visible */
+  cursor: pointer;
+  user-select: none;
+  margin-right: 6px; /* spacing from text */
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.tree-leaf .tree-expando:hover,
+.tree-leaf .tree-expando:active {
+  background-color: #fbbf24;  /* light orange on tap/hover */
+  color: white;
+}
+
+
+/* ???
+On mobile, small children might collapse too easily. We can increase the container padding:
+.tree-leaf-content {
+  padding: 6px 6px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+*/
+
