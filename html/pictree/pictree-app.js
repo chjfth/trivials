@@ -60,6 +60,12 @@ function initTree(treeData) {
 }
 
 
+function setAnnotationHTML(el, html) {
+  // Very lightweight sanitation, remove <script> from HTML raw text.
+  el.innerHTML = html.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+}
+
+
 function showNode(node) {
   const img = document.getElementById('image-viewer');
   img.onload = fitImageWithAnnotation;
@@ -71,7 +77,7 @@ function showNode(node) {
   
   img.src = IMAGE_BASE + node.image;
   img.title = img.src;
-  ann.textContent = node.annotation || '';
+  setAnnotationHTML(ann, node.annotation || '');
   
   // Let layout settle, then measure
   requestAnimationFrame(fitImageWithAnnotation);
@@ -167,6 +173,8 @@ function initViewer() {
   img.onerror = () => {
     ann.textContent = 'Image not found: ' + img.src;
   };
+
+  window.addEventListener('resize', fitImageWithAnnotation);
 }
 
 
