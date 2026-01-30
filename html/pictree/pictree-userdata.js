@@ -6,8 +6,13 @@ export const PICTREE_DATA = [
 	},
 	{
 		name: 'Mountain',
-		image: 'images/mountain.jpg',
-		annotation: 'Mountain hiking.'
+		image: 'images/mountain-wide.jpg',
+		annotation: 'Mountain wide landscape.'
+	},
+	{
+		name: 'Castle',
+		image: 'images/castle-high.jpg',
+		annotation: 'Castle high portrait.'
 	},
 	{
 		name: 'Animals',
