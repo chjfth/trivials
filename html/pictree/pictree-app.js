@@ -1,12 +1,12 @@
 import Split from './split.js';
 
-function getDatasetBase() {
+function getImageBase() {
   const params = new URLSearchParams(window.location.search);
   const dir = params.get('imgdir');
   return dir ? dir.replace(/^\/+|\/+$/g, '') + '/' : '';
 }
 
-const IMAGE_BASE = getDatasetBase();
+const IMAGE_BASE = getImageBase();
 
 
 async function loadUserData() {
