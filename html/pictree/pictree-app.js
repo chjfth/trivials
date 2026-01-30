@@ -62,6 +62,8 @@ function initTree(treeData) {
 
 function showNode(node) {
   const img = document.getElementById('image-viewer');
+  img.onload = fitImageWithAnnotation;
+  
   const ann = document.getElementById('annotation');
   
   if (!node.image)
@@ -70,7 +72,9 @@ function showNode(node) {
   img.src = IMAGE_BASE + node.image;
   img.title = img.src;
   ann.textContent = node.annotation || '';
-
+  
+  // Let layout settle, then measure
+  requestAnimationFrame(fitImageWithAnnotation);
 }
 
 function validateTree(nodes, path = 'root') {
@@ -115,16 +119,34 @@ function findFirstImageNode(nodes) {
 }
 
 
-function getImageBasePath() {
-  const params = new URLSearchParams(window.location.search);
-  const dir = params.get('imgdir');
+function fitImageWithAnnotation() {
+  const pane = document.getElementById('viewer-pane');
+  const img  = document.getElementById('image-viewer');
+  const ann  = document.getElementById('annotation');
 
-  // No imgdir → current directory
-  if (!dir) return '';
+  if (!img.src) return;
 
-  // Normalize: remove leading/trailing slashes
-  return dir.replace(/^\/+|\/+$/g, '') + '/';
+  const paneHeight = pane.clientHeight;
+  const annHeight  = ann.scrollHeight;
+
+  // Annotation capped to half viewport
+  const maxAnnHeight = paneHeight / 2;
+  const effectiveAnnHeight = Math.min(annHeight, maxAnnHeight);
+
+  const availableForImage = paneHeight - effectiveAnnHeight - 8;
+  img.style.maxHeight = `${availableForImage}px`;
+
+  // Decide whether to center or top-align
+  const imgHeight = img.getBoundingClientRect().height;
+  const totalContentHeight = imgHeight + annHeight + 8;
+
+  if (totalContentHeight < paneHeight) {
+    pane.classList.add('centered');
+  } else {
+    pane.classList.remove('centered');
+  }
 }
+
 
 
 function initLayout() {
