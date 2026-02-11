@@ -1,0 +1,67 @@
+<HTML>
+<HEAD>
+<TITLE>Calibre test from InD3D2000 chm</TITLE>
+<link rel="STYLESHEET" type="text/css" href="test.css">
+</HEAD>
+<BODY bgcolor="#ffffff" text="#000000">
+
+
+<H1>(H1) The Viewport</H1>
+
+<p>As you saw earlier in this chapter, the last stage of the T&amp;L pipeline is to transform the vertices from projection space into screen space based on the viewport. In screen space, the <i>x</i> and <i>y</i> coordinates of the vertices correspond to pixels, and the <i>z</i> coordinate is the value that will be stored in the z-buffer. Before sending any vertices through the T&amp;L pipeline, you need to pass Direct3D a structure that specifies the viewport parameters.</p>
+
+<H2>(H2) Creating the Viewport</H2>
+
+<p>With DirectX 7, the viewport rectangle is defined using the D3DVIEWPORT7 structure. This structure, shown earlier, is used by the viewport manipulation methods of the <i>IDirect3DDevice7</i> interface: <i>IDirect3DDevice7::SetViewport</i> and <i>IDirect3DDevice7::GetViewport</i>.</p>
+
+<p>The <code>D3DVIEWPORT7</code> structure, specified as the only parameter of the <i>IDirect3DDevice7::SetViewport</i> method, describes the viewport parameters and is defined as follows:</p>
+
+<p><table cellpadding=5 width="95%"><tr><td>
+<PRE>
+<span style="color:#007700">// C++ struct definition</span>
+typedef struct _D3DVIEWPORT7 {
+    DWORD       dwX;
+    DWORD       dwY;
+    DWORD       dwWidth;
+    DWORD       dwHeight;
+    D3DVALUE    dvMinZ;
+    D3DVALUE    dvMaxZ;
+} D3DVIEWPORT7, *LPD3DVIEWPORT7;
+</PRE>
+</td></tr></table></p>
+
+<p><table cellpadding="5" border="0" width="95%">
+<tr><th>Parameter</th><th>Description</th></tr>
+<tr><td valign="top"><i>dwX</i> and <i>dwY</i></td><td valign="top"> The pixel coordinates of the top-left corner of the viewport on the render-target surface. Set these members to 0 unless you want to render to a subset of the surface.</td></tr>
+<tr><td valign="top"><i>dwWidth</i> and <i>dwHeight</i></td><td valign="top">The dimensions, in pixels, of the viewport on the render-target surface. Set these members to the dimensions of the render-target surface unless you're rendering only to a subset of the surface.</td></tr>
+<tr><td valign="top"><i>dvMinZ</i> and<i> dvMaxZ</i></td><td valign="top">These members define the maximum and minimum nonhomogeneous z coordinates that result from the perspective divide and are projected onto the <i>w</i> = 1 plane.</td></tr>
+</table></p>
+
+<P>...</P>
+
+<blockquote><p>FinalColor = SourcePixelColor &middot; SourceBlendFactor + DestPixelColor &middot; DestBlendFactor</p></blockquote>
+
+<p>The variables used in this equation are defined as follows:</p>
+
+<ul>
+<p><li><b>FinalColor</b> The pixel color output to the rendering surface</li></p>
+
+<p><li><b>SourcePixelColor</b> The pixel color computed for the current primitive</li></p>
+
+<p><li><b>SourceBlendFactor</b> The value used to compute the percentage of the source pixel color that will be applied to create the final color (Valid values are 0.0 through 1.0 inclusive.)</li></p>
+
+<p><li><b>DestPixelColor</b> The color of the current pixel in the frame buffer</li></p>
+
+<p><li><b>DestBlendFactor</b> The percentage of the frame buffer's current color that will be used to create the final color (Valid values are 0.0 through 1.0 inclusive.)</li></p>
+</ul>
+
+<H3>(H3) Images</H3>
+
+<p>Narrow image:</p>
+<img src="narrow.jpg"/>
+
+<p>Wide image:</p>
+<img src="wide.png"/>
+
+</BODY>
+</HTML>
