@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="NtfsDumpSD.cpp" />
+    <ClCompile Include="ch10-DumpSD.cpp" />
+    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\utils.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="iversion.h" />
+    <ClInclude Include="ch10-DumpSD.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\utils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\util_WinSecuAPI.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NtfsDumpSD.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NtfsDumpSD.ico" />
+    <None Include="_iversion.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="utils">
+      <UniqueIdentifier>{70eec9a4-02f8-47c3-a1b5-81ac66249a66}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -14,8 +14,10 @@ template<typename T> T Max(T x, T y) { return x>y ? x : y; }
 
 TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd=false, bool add_millisec=true);
 
+void vlDbgTs(const TCHAR *fmt, va_list args);
 void vaDbgTs(const TCHAR *fmt, ...);
 
+void vlDbgS(const TCHAR *fmt, va_list args);
 void vaDbgS(const TCHAR *fmt, ...);
 
 const TCHAR *GetExeFilename(); // the exe filename with .exe suffix
@@ -43,3 +45,5 @@ DWORD TrueGetMillisec();
 const TCHAR *str_ANSIorUnicode();
 
 void util_SetDlgDefaultButton(HWND hwndDlg, UINT idDefault);
+
+BOOL Is_UserAnAdmin();

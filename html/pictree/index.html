@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PicTree</title>
+
+  <link rel="stylesheet" href="./tree.css">
+  
+  <!-- Chj styles in pictree.css -->
+  <link rel="stylesheet" href="./pictree.css">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    #container {
+      display: flex;
+      height: 100%;
+    }
+
+    #tree-pane {
+      background: #f4f4f4;
+      overflow: auto;
+    }
+
+    .gutter {
+      background-color: #ccc;
+      cursor: col-resize;
+    }
+
+    #viewer-pane {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+    
+    #viewer-pane.centered {
+	  justify-content: center;
+	}
+
+
+	/* Auto-fit image inside viewport.
+	- Image shrinks only if needed
+	- Aspect ratio preserved
+	- No distortion
+	 */
+	#image-viewer {
+	  max-width: 100%;
+	  height: auto;
+	  object-fit: contain;
+	}
+
+	/* #annotation takes bottom (<50%) space first. */
+	#annotation {
+	  margin-top: 8px;
+	  padding: 4px 8px;
+	  text-align: left;
+
+	  font-size: 14px;
+	  color: #666;
+	}
+  </style>
+  
+</head>
+
+<body>
+  <div id="container">
+    <div id="tree-pane">Tree goes here</div>
+    <div id="viewer-pane">
+      <img id="image-viewer" />
+      <div id="annotation"></div>
+    </div>
+  </div>
+
+
+  <script src="./tree.js"></script>
+
+  <!-- App entry point -->
+  <script type="module" src="./pictree-app.js"></script>
+
+</body>
+</html>

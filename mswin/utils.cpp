@@ -1,11 +1,16 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <Psapi.h>
 #include <windowsx.h>
+#include <Psapi.h>
+#include <ShlObj.h> // IsUserAnAdmin()
 #include <assert.h>
 #include <stdio.h>
 
 #include "utils.h"
+
+#pragma comment(lib, "Psapi.lib") // GetModuleBaseName
+#pragma comment(lib, "Shell32.lib") // IsUserAnAdmin
+
 
 TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd, bool add_millisec)
 {
@@ -33,7 +38,7 @@ TCHAR* now_timestr(TCHAR buf[], int bufchars, bool ymd, bool add_millisec)
 
 static int s_dbgcount = 0;
 
-void vaDbgTs(const TCHAR *fmt, ...)
+void vlDbgTs(const TCHAR *fmt, va_list args)
 {
 	// Note: Each calling outputs one line, with timestamp prefix.
 	// A '\n' will be added automatically at end.
@@ -62,12 +67,7 @@ void vaDbgTs(const TCHAR *fmt, ...)
 
 	int prefixlen = (int)_tcslen(buf);
 
-	va_list args;
-	va_start(args, fmt);
-
 	_vsntprintf_s(buf+prefixlen, ARRAYSIZE(buf)-3-prefixlen, _TRUNCATE, fmt, args);
-
-	va_end(args);
 
 	// add trailing \n
 	int slen = (int)_tcslen(buf);
@@ -82,7 +82,15 @@ void vaDbgTs(const TCHAR *fmt, ...)
 	s_prev_msec = now_msec;
 }
 
-void vaDbgS(const TCHAR *fmt, ...)
+void vaDbgTs(const TCHAR *fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	vlDbgTs(fmt, args);
+	va_end(args);
+}
+
+void vlDbgS(const TCHAR *fmt, va_list args)
 {
 	// This only has Sequential prefix.
 
@@ -92,15 +100,7 @@ void vaDbgS(const TCHAR *fmt, ...)
 
 	int prefixlen = (int)_tcslen(buf);
 
-	va_list args;
-	va_start(args, fmt);
-
 	_vsntprintf_s(buf+prefixlen, ARRAYSIZE(buf)-3-prefixlen, _TRUNCATE, fmt, args);
-
-	prefixlen = (int)_tcslen(buf);
-	_tcsncpy_s(buf+prefixlen, 2, TEXT("\r\n"), _TRUNCATE); // add trailing \r\n
-
-	va_end(args);
 
 	// add trailing \n
 	int slen = (int)_tcslen(buf);
@@ -112,6 +112,15 @@ void vaDbgS(const TCHAR *fmt, ...)
 
 	OutputDebugString(buf);
 }
+
+void vaDbgS(const TCHAR *fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	vlDbgS(fmt, args);
+	va_end(args);
+}
+
 
 const TCHAR *GetExeFilename() // the exe filename with .exe suffix
 {
@@ -313,4 +322,28 @@ void util_SetDlgDefaultButton(HWND hwndDlg, UINT idDefault)
 	SendDlgItemMessage(hwndDlg, idDefault, BM_SETSTYLE, 
 		BS_DEFPUSHBUTTON, // make it a stand-out button
 		(LPARAM) TRUE); 
+}
+
+#pragma comment(lib, "Shell32.lib")
+
+BOOL Is_UserAnAdmin()
+{
+	// Define this wrapper instead of using IsUserAnAdmin(), bcz on VC2015 blames warning on a buggy line from ShlObj.h:
+	/*
+1>C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\include\ShlObj.h(1151): warning C4091: 'typedef ': ignored on left of 'tagGPFIDL_FLAGS' when no variable is declared
+1>         utils.cpp
+
+The buggy line is(L#1146):
+
+typedef enum tagGPFIDL_FLAGS
+{
+	GPFIDL_DEFAULT    = 0x0000,      // normal Win32 file name, servers and drive roots included
+	GPFIDL_ALTNAME    = 0x0001,      // short file name
+	GPFIDL_UNCPRINTER = 0x0002,      // include UNC printer names too (non file system item)
+};
+
+WinSDK 8.1 has fixed it.
+	*/
+	
+	return IsUserAnAdmin();
 }

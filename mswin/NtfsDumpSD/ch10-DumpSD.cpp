@@ -10,6 +10,7 @@
 
 #include <itc/InterpretConst.h>
 #include <mswin/winnt.itc.h>
+#include <mswin/WinError.itc.h>
 
 #include "ch10-DumpSD.h"
 
@@ -86,7 +87,8 @@ TCHAR * SID2Repr(PSID pvSid, TCHAR buf[], int buflen)
 	{
 		DWORD winerr = GetLastError();
 		assert(!succ && winerr==ERROR_NONE_MAPPED);
-		_sntprintf_s(buf, buflen, _TRUNCATE, _T("( no mapped name )"));
+		_sntprintf_s(buf, buflen, _TRUNCATE, 
+			_T("%s ( no mapped name )"), pszSid);
 	}
 
 	LocalFree(pszSid);
@@ -130,7 +132,9 @@ bool Is_OBJCT_ACE_TYPE(BYTE acetype)
 
 void CH10_DumpACL( PACL pACL, FUNC_InterpretRights *procItr, void *userctx )
 {
-	// Due to using ITCS(), we cannot use __try{} here.
+	// input ACL can be DACL or SACL.
+	// This function has special treatment for AceType=SYSTEM_MANDATORY_LABEL_ACE_TYPE
+	// as defined by WinSDK doc.
 
 	if (pACL == NULL){
 		vaDbgS(TEXT("NULL DACL"));
@@ -141,7 +145,7 @@ void CH10_DumpACL( PACL pACL, FUNC_InterpretRights *procItr, void *userctx )
 	if (!GetAclInformation(pACL, &aclSize, sizeof(aclSize), AclSizeInformation))
 		return;
 
-	vaDbgS(TEXT("ACL ACE count: %d %s"), 
+	vaDbgS(TEXT("ACE count: %d %s"), 
 		aclSize.AceCount, 
 		aclSize.AceCount==0 ? _T("(=empty ACL)") : _T("")
 		);
@@ -171,27 +175,38 @@ void CH10_DumpACL( PACL pACL, FUNC_InterpretRights *procItr, void *userctx )
 		SID2Repr(pSID, szSidRepr, ARRAYSIZE(szSidRepr));
 		vaDbgS(TEXT("  ACE SID = %s"), szSidRepr);
 
-		vaDbgS(TEXT("  ACE Type = %s"), ITCSv(pACE->Header.AceType, xxx_ACE_TYPE));
-		vaDbgS(TEXT("  ACE Flags = %s"), ITCSv(pACE->Header.AceFlags, xxx_ACE_flags));
+		vaDbgS(TEXT("  ACE Type = %s"), ITCSv(pACE->Header.AceType, AceType));
+		vaDbgS(TEXT("  ACE Flags = 0x%X , %s"), 
+			pACE->Header.AceFlags, ITCSv(pACE->Header.AceFlags, itc::AceFlags));
 
-		DWORD rights = pACE->Mask;
-
-		TCHAR bitbufs[40] = {};
-		ULONG lIndex2 = (ULONG)1<<31;
-		for(int i=0, j=0; i<32; i++){
-			bitbufs[j++] = ((rights & lIndex2) != 0)?TEXT('1'):TEXT('0');
-			lIndex2 >>= 1;
-
-			if((i+1)%8==0)
-				bitbufs[j++] = ' '; // extra space-char every 8 bits
+		if(pACE->Header.AceType==SYSTEM_MANDATORY_LABEL_ACE_TYPE) 
+		{	// Vista+: Integrity-level special
+			vaDbgS(TEXT("  ACE Mask 0x%X : %s"), 
+				pACE->Mask,
+				ITCSv(pACE->Mask, SYSTEM_MANDATORY_LABEL_NO_xxx));
 		}
-		vaDbgS(TEXT("  ACE Mask 0x%X , (bit 31->0) = %s"), rights, bitbufs);
+		else
+		{	// WinXP+: Access-right bits interpretation
+			DWORD rights = pACE->Mask;
 
-		if(procItr)
-		{
-			TCHAR * ptext_to_delete = procItr(rights, userctx);
-			vaDbgS(TEXT("%s"), ptext_to_delete);
-			delete ptext_to_delete;
+			TCHAR bitbufs[40] = {};
+			ULONG lIndex2 = (ULONG)1<<31;
+			for(int i=0, j=0; i<32; i++) {
+				bitbufs[j++] = ((rights & lIndex2) != 0)?TEXT('1'):TEXT('0');
+				lIndex2 >>= 1;
+
+				if((i+1)%8==0)
+					bitbufs[j++] = ' '; // extra space-char every 8 bits
+			}
+
+			vaDbgS(TEXT("  ACE Mask 0x%X , (bit 31->0) = %s"), rights, bitbufs);
+
+			if(procItr)
+			{
+				TCHAR * ptext_to_delete = procItr(rights, userctx);
+				vaDbgS(TEXT("%s"), ptext_to_delete);
+				delete ptext_to_delete;
+			}
 		}
 
 	}
@@ -234,28 +249,33 @@ void CH10_DumpSD( PSECURITY_DESCRIPTOR pvsd, FUNC_InterpretRights *procItr, void
 	vaDbgS(
 		_T("SECURITY_DESCRIPTOR at address: 0x%p\r\n")
 		_T("  .Revision=%d, length=%d\r\n")
-		_T("  Control(flags) = %s\r\n")
+		_T("  .Control(flags) = 0x%X , %s\r\n")
 		_T("  OwnerSID = %s\r\n")
 		_T("  GroupSID = %s\r\n")
 		_T("  DACL: %s ; SACL: %s")
 		,
-		(void*)psd, psd->Revision, sdlen,
-		ITCSv(psd->Control, SE_xxx_sdControl),
+		(void*)psd, 
+		psd->Revision, sdlen,
+		psd->Control, ITCSv(psd->Control, SE_xxx_sdControl),
 		SID2Repr(psidOwner, szOwnerRepr, BUFSIZ1), 
 		SID2Repr(psidGroup, szGroupRepr, BUFSIZ1),
 		ACL2ReprShort(fPresentDacl, pDACL, szDACL, BUF20), ACL2ReprShort(fPresentSacl, pSACL, szSACL, BUF20)
 		);
 
+	vaDbgS(_T("")); // blank line
+
 	if(pDACL)
 	{
-		vaDbgS(_T("Dump DACL below:"));
+		vaDbgS(_T("====Dump DACL below:"));
 		CH10_DumpACL(pDACL, procItr, userctx);
 	}
 	if(pSACL)
 	{
-		vaDbgS(_T("Dump SACL below:"));
-		CH10_DumpACL(pSACL, nullptr, nullptr);
+		vaDbgS(_T("====Dump SACL below:"));
+		CH10_DumpACL(pSACL, procItr, userctx);
 	}
+
+	vaDbgS(_T("")); // blank line
 
 	// Show string-form Security-descriptor 
 	TCHAR *pTextSD = nullptr;
@@ -268,11 +288,12 @@ void CH10_DumpSD( PSECURITY_DESCRIPTOR pvsd, FUNC_InterpretRights *procItr, void
 	Cec_LocalFree cec_textsd = pTextSD;
 	if(succ)
 	{
-		vaDbgS(_T("Text-form SD:\r\n%s"), pTextSD);
+		vaDbgS(_T("Text-form SD (SDDL):\r\n%s"), pTextSD);
 	}
 	else
 	{
 		DWORD winerr = GetLastError();
-		vaDbgS(_T("Unexpect! ConvertSecurityDescriptorToStringSecurityDescriptor() error, winerr=%d"), winerr);
+		vaDbgS(_T("Unexpect! ConvertSecurityDescriptorToStringSecurityDescriptor() error, winerr=%s\r\n"), 
+			ITCSv(winerr, WinError));
 	}
 }

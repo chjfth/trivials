@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    testDlgTooltipEasy_VMAJOR, testDlgTooltipEasy_VMINOR, testDlgTooltipEasy_VPATCH, testDlgTooltipEasy_VTAIL
+ProductVersion testDlgTooltipEasy_VMAJOR, testDlgTooltipEasy_VMINOR, testDlgTooltipEasy_VPATCH, testDlgTooltipEasy_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     testDlgTooltipEasy_NAME
+            VALUE "FileDescription", testDlgTooltipEasy_NAME
+            VALUE "FileVersion",    testDlgTooltipEasy_VMAJORs "." testDlgTooltipEasy_VMINORs "." testDlgTooltipEasy_VPATCHs
+            VALUE "ProductVersion",    testDlgTooltipEasy_VMAJORs "." testDlgTooltipEasy_VMINORs "." testDlgTooltipEasy_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , testDlgTooltipEasy_NAME ".exe"
+            VALUE "InternalName", testDlgTooltipEasy_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}

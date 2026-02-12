@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    test_SS_NOTIFY_VMAJOR, test_SS_NOTIFY_VMINOR, test_SS_NOTIFY_VPATCH, test_SS_NOTIFY_VTAIL
+ProductVersion test_SS_NOTIFY_VMAJOR, test_SS_NOTIFY_VMINOR, test_SS_NOTIFY_VPATCH, test_SS_NOTIFY_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     test_SS_NOTIFY_NAME
+            VALUE "FileDescription", test_SS_NOTIFY_NAME
+            VALUE "FileVersion",    test_SS_NOTIFY_VMAJORs "." test_SS_NOTIFY_VMINORs "." test_SS_NOTIFY_VPATCHs
+            VALUE "ProductVersion",    test_SS_NOTIFY_VMAJORs "." test_SS_NOTIFY_VMINORs "." test_SS_NOTIFY_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , test_SS_NOTIFY_NAME ".exe"
+            VALUE "InternalName", test_SS_NOTIFY_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}

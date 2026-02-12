@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    testWinMultiMon_VMAJOR, testWinMultiMon_VMINOR, testWinMultiMon_VPATCH, testWinMultiMon_VTAIL
+ProductVersion testWinMultiMon_VMAJOR, testWinMultiMon_VMINOR, testWinMultiMon_VPATCH, testWinMultiMon_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     testWinMultiMon_NAME
+            VALUE "FileDescription", testWinMultiMon_NAME
+            VALUE "FileVersion",    testWinMultiMon_VMAJORs "." testWinMultiMon_VMINORs "." testWinMultiMon_VPATCHs
+            VALUE "ProductVersion",    testWinMultiMon_VMAJORs "." testWinMultiMon_VMINORs "." testWinMultiMon_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , testWinMultiMon_NAME ".exe"
+            VALUE "InternalName", testWinMultiMon_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}

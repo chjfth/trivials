@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    DlgItemTooltip_VMAJOR, DlgItemTooltip_VMINOR, DlgItemTooltip_VPATCH, DlgItemTooltip_VTAIL
+ProductVersion DlgItemTooltip_VMAJOR, DlgItemTooltip_VMINOR, DlgItemTooltip_VPATCH, DlgItemTooltip_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     DlgItemTooltip_NAME
+            VALUE "FileDescription", DlgItemTooltip_NAME
+            VALUE "FileVersion",    DlgItemTooltip_VMAJORs "." DlgItemTooltip_VMINORs "." DlgItemTooltip_VPATCHs
+            VALUE "ProductVersion",    DlgItemTooltip_VMAJORs "." DlgItemTooltip_VMINORs "." DlgItemTooltip_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , DlgItemTooltip_NAME ".exe"
+            VALUE "InternalName", DlgItemTooltip_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}

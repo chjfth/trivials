@@ -80,3 +80,18 @@ inline const TCHAR *app_GetWindowsVersionStr3()
 
 	return s_verstr;
 }
+
+inline void ErrorExist(const TCHAR *szfmtMsg, ...)
+{
+	va_list args;
+	va_start(args, szfmtMsg);
+
+	_vtprintf(szfmtMsg, args);
+
+	va_end(args);
+
+	_tprintf(_T("\n"));
+
+	exit(1);
+
+}

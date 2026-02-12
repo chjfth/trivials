@@ -10,10 +10,11 @@
 
 #include "utils.h"
 
-#define JULAYOUT_IMPL
+#include <CHHI_vaDBG_is_vaDbgTs.h>
+
+#define JULayout2_IMPL
 #include <mswin/JULayout2.h>
 
-#define vaDBG vaDbgTs
 #include <mswin/winuser.itc.h>
 
 #define Combobox_EnableWideDrop_IMPL

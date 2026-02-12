@@ -8,6 +8,8 @@
 #include <stdarg.h>
 #include <locale.h>
 
+#include <mswin/win32cozy.h>
+
 #include <mswin/winuser.itc.h>
 #include <mswin/commctrl.itc.h>
 
@@ -163,8 +165,14 @@ BOOL CALLBACK PROC_GotWindow(HWND hwnd,	LPARAM cbextra)
 		cbe.NestLevel==0 ? _T("") : cbe.pParentSeqs,
 		cbe.idxChildHwnd+1);
 
-	PrnLv(cbe.NestLevel, _T("[%s] HWND=0x%08X <%s> \"%s\""), 
-		szSeq, hwnd, wndclass, szwndtext);
+	RECT rect = {-1, -1, -1, -1};
+	GetWindowRect(hwnd, &rect);
+
+	TCHAR rtext[60] = {};
+	PrnLv(cbe.NestLevel, _T("[%s] HWND=0x%08X <%s> \"%s\" Rect:%s" ), 
+		szSeq, hwnd,  wndclass, szwndtext,
+		RECTtext(rect, rtext, ARRAYSIZE(rtext))
+		);
 
 	// Print window "class" and style info
 	myPrnWndInfo(cbe.NestLevel+1, hwnd, wndclass);
@@ -198,6 +206,8 @@ void do_work()
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
+
+	_tprintf(_T("EnumWindows1.exe v1.1\n"));
 
 	auto s = itc::WS_xxx_Button.Interpret(0x50000000, itc::DF_NameAndValue);
 

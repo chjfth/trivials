@@ -195,7 +195,7 @@
 
   <ItemDefinitionGroup Condition="$(Configuration.StartsWith('Release'))">
     <ClCompile>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PreprocessorDefinitions>NDEBUG;DBG=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -229,6 +229,7 @@
     <ClInclude Include="ch10-DumpSD.h" />
     <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\util_WinSecuAPI.h" />
   </ItemGroup>
  
   <!-- MSBuild system stock Cpp.targets -->

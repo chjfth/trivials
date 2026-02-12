@@ -1,0 +1,10 @@
+[2026-01-29] 
+ChatGPT assists writing this code.
+
+URL:
+
+* Resizable split view: https://github.com/nathancahill/split (split.js)
+* Tree control: https://github.com/justinchmura/js-treeview (tree.js)
+	* Yes: that tree.js is not an ES module. It's a UMD bundle (Universal Module Definition).
+
+

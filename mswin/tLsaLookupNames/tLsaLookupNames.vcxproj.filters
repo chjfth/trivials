@@ -9,6 +9,9 @@
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp">
       <Filter>chjutils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp">
+      <Filter>chjutils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iversion.h" />
@@ -21,6 +24,9 @@
       <Filter>chjutils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h">
+      <Filter>chjutils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\__chjcxx\common-include\include\StringHelper.h">
       <Filter>chjutils</Filter>
     </ClInclude>
   </ItemGroup>

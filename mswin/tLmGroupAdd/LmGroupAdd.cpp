@@ -5,9 +5,9 @@
 #include <tchar.h>
 #include <locale.h>
 
-#include "D:\gitw\chjcxx\common-include\include\EnsureClnup_mswin.h"
-
-MakeCleanupPtrClass_winapi(Cec_NetApi, NET_API_STATUS, NetApiBufferFree, void*)
+#include <EnsureClnup_mswin.h>
+#include <mswin/LMErr.itc.h>
+using namespace itc;
 
 void test_NetLocalGroupAdd(const TCHAR *servername, const TCHAR *username)
 {
@@ -23,7 +23,7 @@ void test_NetLocalGroupAdd(const TCHAR *servername, const TCHAR *username)
 	NET_API_STATUS neterr = NetLocalGroupAdd(servername, 1, (PBYTE)&gi, &ErrParm);
 	if(neterr)
 	{
-		_tprintf(_T("NetLocalGroupAdd() exec fail, neterr=%d.\n"), neterr);
+		_tprintf(_T("NetLocalGroupAdd() exec fail, neterr=%s.\n"), ITCSv(neterr, NERR_xxx));
 		if(neterr==ERROR_INVALID_PARAMETER) // 87
 			_tprintf(_T("ErrParam = %d.\n"), ErrParm);
 	}
@@ -54,6 +54,7 @@ int _tmain(int argc, TCHAR* argv[])
 
 	if(argc==1)
 	{
+		printf("tLmGroupAdd v1.1\n");
 		printf("Usage:\n");
 		printf("    tLmGroupAdd <groupname>\n");
 		printf("    tLmGroupAdd <groupname> [servername]\n");

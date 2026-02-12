@@ -63,6 +63,8 @@ BEGIN
     COMBOBOX        IDCB_IniList,147,252,90,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "&Load",IDB_Load,241,251,30,14
     PUSHBUTTON      "&Save",IDB_Save,273,251,30,14
+    CONTROL         "make sparse file (FSCTL_SET_SPARSE)",IDCKB_MakeSparse,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,168,88,135,10
 END
 
 

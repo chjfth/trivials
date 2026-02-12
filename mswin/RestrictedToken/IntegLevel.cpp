@@ -8,6 +8,9 @@
 #include <tchar.h>
 #include <locale.h>
 
+#include <mswin/WinError.itc.h>
+#include <mswin/winnt.itc.h>
+
 struct MapILstr_st
 {
 	DWORD subauth;
@@ -112,8 +115,8 @@ void show_IntegrityLevel(const TCHAR *szfn)
 	
 	if(winerr!=0)
 	{
-		_tprintf(_T("GetNamedSecurityInfo(\"%s\") fail with winerr=%d\n"),
-			szfn, winerr);
+		_tprintf(_T("GetNamedSecurityInfo(\"%s\") fail with winerr=%s\n"),
+			szfn, ITCSv(winerr, itc::WinError));
 		exit(4);
 	}
 
@@ -139,6 +142,7 @@ void show_IntegrityLevel(const TCHAR *szfn)
 			isInherited ? _T("inherited from parent") : _T("defined on itself, not inherited")
 			);
 		_tprintf(_T("IL-Policies    : %s\n"), ILPolicies2Str(pAce->Mask));
+		_tprintf(_T(".AceFlags      : %s\n"), ITCSv(pAce->Header.AceFlags, itc::AceFlags));
 	}
 	else
 	{
@@ -173,7 +177,7 @@ void change_IntegrityLevel(const TCHAR *szfn, DWORD il, DWORD ilpolicies)
 		psidIL);
 	if(!succ)
 	{
-		_tprintf(_T("AddMandatoryAce() fail with winerr=%d\n"), GetLastError());
+		_tprintf(_T("AddMandatoryAce() fail with winerr=%s\n"), ITCS_WinError);
 		exit(4);
 	}
 
@@ -191,8 +195,8 @@ void change_IntegrityLevel(const TCHAR *szfn, DWORD il, DWORD ilpolicies)
 	}
 	else
 	{
-		_tprintf(_T("SetNamedSecurityInfo(\"%s\") fail with winerr=%d\n"),
-			szfn, winerr);
+		_tprintf(_T("SetNamedSecurityInfo(\"%s\") fail with winerr=%s\n"),
+			szfn, ITCSv(winerr, itc::WinError));
 		exit(4);
 	}
 
@@ -208,8 +212,9 @@ int _tmain(int argc, TCHAR* argv[])
 	if(argc==1)
 	{
 		const TCHAR *s = _T("D:\\test\\foo.txt");
+		_tprintf(_T("IntegLevel v1.2, see/change NTFS file/dir's Integrity-level.\n"));
 		_tprintf(_T("Missing parameters.\n"));
-		_tprintf(_T("    IntegLevel <filepath> <integrity-level> <il-policy>\n"));
+		_tprintf(_T("    IntegLevel <filepath> [integrity-level] [il-policy]\n"));
 		_tprintf(_T("Example:\n"));
 		_tprintf(_T("    IntegLevel %s\n"), s);
 		_tprintf(_T("    IntegLevel %s Low\n"), s);
