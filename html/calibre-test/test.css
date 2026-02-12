@@ -5,6 +5,7 @@ BODY
     FONT-FAMILY: Verdana, Arial, Helvetica, "Sans Serif";
     FONT-SIZE: 90%;
     
+    margin: 0px;
     border: 1px dashed #00CCEE;
 }
 H1
