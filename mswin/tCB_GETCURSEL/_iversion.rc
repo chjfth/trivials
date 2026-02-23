@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    tCB_GETCURSEL_VMAJOR, tCB_GETCURSEL_VMINOR, tCB_GETCURSEL_VPATCH, tCB_GETCURSEL_VTAIL
+ProductVersion tCB_GETCURSEL_VMAJOR, tCB_GETCURSEL_VMINOR, tCB_GETCURSEL_VPATCH, tCB_GETCURSEL_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     tCB_GETCURSEL_NAME
+            VALUE "FileDescription", tCB_GETCURSEL_NAME
+            VALUE "FileVersion",    tCB_GETCURSEL_VMAJORs "." tCB_GETCURSEL_VMINORs "." tCB_GETCURSEL_VPATCHs
+            VALUE "ProductVersion",    tCB_GETCURSEL_VMAJORs "." tCB_GETCURSEL_VMINORs "." tCB_GETCURSEL_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , tCB_GETCURSEL_NAME ".exe"
+            VALUE "InternalName", tCB_GETCURSEL_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
