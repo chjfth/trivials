@@ -17,9 +17,12 @@
 
 using namespace itc;
 
-#pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+// #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
+// -- [2026-02-23] Chj note: Enabling VisualStyle or not, makes different behavior when [ComboBox_ResetContent each time] is ticked.
 
 HINSTANCE g_hinstExe;
+
+int g_count = 0;
 
 struct DlgPrivate_st
 {
@@ -33,8 +36,10 @@ void myResetCombobox(HWND hdlg, int codeNotify)
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 
 	int selwas = ComboBox_GetCurSel(hcb);
+
 	vaAppendText_mled(hedit, 
-		_T("Before ComboBox_ResetContent(), codeNotify=%d, selwas=%d\r\n"),
+		_T("[#%d]     Before ComboBox_ResetContent(), codeNotify=%d, selwas=%d\r\n"),
+		g_count,
 		codeNotify, selwas
 		);
 
@@ -50,9 +55,6 @@ void myResetCombobox(HWND hdlg, int codeNotify)
 
 void myPeekCombobox(HWND hdlg, int codeNotify)
 {
-	static int s_count = 0;
-	s_count++;
-
 	TCHAR timestr[40];
 
 	HWND hcbx = GetDlgItem(hdlg, IDC_COMBO1);
@@ -60,9 +62,10 @@ void myPeekCombobox(HWND hdlg, int codeNotify)
 
 	int cursel = ComboBox_GetCurSel(hcbx);
 
-	vaAppendText_mled(hedit, _T("[%d]%s codeNotify=%s , cursel=%d\r\n"),
-		s_count, now_timestr(timestr, ARRAYSIZE(timestr)),
-		ITCSnv(codeNotify, CBN_xxx_ComboBox), cursel);
+	vaAppendText_mled(hedit, _T("[#%d]%s codeNotify=%s , cursel=%d\r\n"),
+		g_count, now_timestr(timestr, ARRAYSIZE(timestr)),
+		ITCSvn(codeNotify, CBN_xxx_ComboBox), cursel
+		);
 }
 
 void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
@@ -77,8 +80,13 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	}
 	case IDC_COMBO1:
 	{
+		g_count++;
 
-		myResetCombobox(hdlg, codeNotify);
+		int isChk = Button_GetCheck(GetDlgItem(hdlg, IDC_CHECK1));
+		
+		if(isChk) {
+			myResetCombobox(hdlg, codeNotify);
+		}
 
 		myPeekCombobox(hdlg, codeNotify);
 
