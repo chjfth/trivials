@@ -46,10 +46,13 @@ void ui_refresh(HWND hdlg)
 
 		TCHAR rctext[40] = {};
 		vaAppendText_mled(hedit,
-			_T("[#%d] \"%s\" %s\r\n"),
+			_T("[#%d] \"%s\" %s\r\n")
+			_T("    hMonitor=0x%X , hdcMonitor=0x%X\r\n")
+			,
 			i + 1,
 			mi.szDevice,
-			RECTtext(mi.rcMonitor, rctext)
+			RECTtext(mi.rcMonitor, rctext),
+			mi.hMonitor, mi.hdcMonitor
 		);
 	}
 }

@@ -1,5 +1,6 @@
 #include <windows.h>
-#include "../utils.h" // provides vaDbgTs() declaration
+
+#define vaDbgTs_IMPL
 #include <CHHI_vaDBG_is_vaDbgTs.h> // use vaDbgTs() inside
 
 #define JAutoBuf_IMPL

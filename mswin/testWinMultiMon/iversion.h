@@ -2,9 +2,9 @@
 #define __testWinMultiMon_iversion_h_
 
 #define testWinMultiMon_VMAJOR 1
-#define testWinMultiMon_VMINOR 0
+#define testWinMultiMon_VMINOR 1
 #define testWinMultiMon_VPATCH 0
-#define testWinMultiMon_VTAIL  1
+#define testWinMultiMon_VTAIL  0
 
 #define testWinMultiMonstr__(n) #n
 #define testWinMultiMonstr(n) testWinMultiMonstr__(n)
