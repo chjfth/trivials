@@ -10,6 +10,7 @@
 #include "iversion.h"
 
 #define CHHI_ALL_IMPL
+#define CxxWindowSubclass_DEBUG
 
 #include <CHHI_vaDBG_is_vaDbgTs.h>
 
@@ -19,8 +20,6 @@
 #include <mswin/WinUser.itc.h>
 using namespace itc;
 
-#define CxxWindowSubclass_IMPL
-#define CxxWindowSubclass_DEBUG
 #include <mswin/CxxWindowSubclass.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -34,6 +33,19 @@ public:
 	virtual LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		vaDbgTs(_T("[cxxobj %p] Hwnd=0x%X sees %s"), this, hwnd, ITCSv(uMsg, WM_xxx));
+
+		if(uMsg==WM_NCDESTROY)
+		{
+			// [2026-03-10] Doing DetachHwnd() here is redundant, CxxWindowSubclass library 
+			// code will do it automatically.
+			// This redundant call to DetachHwnd is allowed since CxxWindowSubclass's
+			// _20260310_ update. With older lib code, there was double C++-delete error
+			// in CxxWindowSubclass::DetachHwnd().
+
+			vaDbgTs(_T("CEditboxPeeker() sees WM_NCDESTROY, will DetachHwnd()."));
+			this->DetachHwnd(true);
+			vaDbgTs(_T("CEditboxPeeker() done WM_NCDESTROY, done DetachHwnd()."));
+		}
 
 		return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 	}
