@@ -5,7 +5,8 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
+//#include "../utils.h"
+#include <mswin/utils_wingui.h>
 
 #include <mswin/JULayout2.h>
 

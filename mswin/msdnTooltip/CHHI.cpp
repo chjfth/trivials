@@ -1,5 +1,6 @@
 #include "shareinc.h"
 
+#define CHHI_ALL_IMPL
 #include <CHHI_vaDBG_is_vaDbgTs.h>
 
 #define JULayout2_IMPL

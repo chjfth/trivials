@@ -3,6 +3,7 @@
 #include "resource.h"
 #include "ModelessTtdemo.h"
 
+#include <mswin/utils_wingui.h>
 #include <mswin/WM_MOUSELEAVE_helper.h>
 #include <mswin/win32cozy.h>
 

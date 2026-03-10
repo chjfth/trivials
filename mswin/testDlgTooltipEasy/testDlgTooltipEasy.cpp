@@ -1,4 +1,3 @@
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <CommCtrl.h>
@@ -9,17 +8,17 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
+#define CHHI_ALL_IMPL
 
+#include <vaDbgTs.h>
 #include <CHHI_vaDBG_is_vaDbgTs.h>
 
-#define JULayout2_IMPL
+#include <mswin/utils_wingui.h>
+
 #include <mswin/JULayout2.h>
 
-#define CxxWindowSubclass_IMPL
 #include <mswin/CxxWindowSubclass.h>
 
-#define DlgTooltipEasy_IMPL
 #define DlgTooltipEasy_DEBUG
 #include <mswin/DlgTooltipEasy.h>
 
@@ -122,7 +121,7 @@ const TCHAR* my_DlgttNowTimeStr_Repeat(HWND hwndCtl, void *userctx)
 	ReshowClockUsageTip &rstimer = *(ReshowClockUsageTip*)userctx;
 	rstimer.StartTimer(hwndCtl, 500);
 
-	now_timestr(s_nowtime, ARRAYSIZE(s_nowtime), true, true);
+	va_now_timestr(VaNowtime_ymd, s_nowtime, ARRAYSIZE(s_nowtime));
 	return s_nowtime;
 }
 
@@ -279,7 +278,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	HWND hbtnStart = GetDlgItem(hdlg, IDB_AddEasyTooltip);
 	Dlgtte_EnableStaticUsageTooltip(hbtnStart, 
 		_T("Add Easy-tooltip to this button and the editbox above.\n\n")
-		_T("Right-side [Del EasyTooltip] button does the reverse.)")
+		_T("Right-side [Del EasyTooltip] button does the reverse.")
 	);
 
 	HWND hLabel = GetDlgItem(hdlg, IDC_LABEL1);

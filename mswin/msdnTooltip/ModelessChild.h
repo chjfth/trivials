@@ -8,7 +8,7 @@
 
 #include <commdefs.h>
 #include <mswin/win32clarify.h>
-#include <SdringTCHAR.h>
+#include <Sdring.h> //old
 
 #include <CxxVerCheck.h>
 #ifndef CXX11_OR_NEWER

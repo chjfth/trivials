@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <windows.h>
 #include <windowsx.h>
+#include <vaDbgTs.h>
 #include "ModelessChild.h"
 
 #include <commdefs.h>
@@ -13,7 +14,7 @@
 #include <mswin/commctrl.itc.h>
 using namespace itc;
 
-#include "../utils.h"
+//#include "../utils.h"
 
 extern BOOL g_isTTS_BALLOON;
 extern BOOL g_isTTF_CENTERTIP;
