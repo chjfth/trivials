@@ -1,4 +1,3 @@
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 #include <CommCtrl.h>
@@ -10,11 +9,11 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
+#define CHHI_ALL_IMPL
 
 #include <CHHI_vaDBG_is_vaDbgTs.h>
 
-#define JULayout2_IMPL
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 
 #include <mswin/WinUser.itc.h>
@@ -158,11 +157,10 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 static void Dlg_EnableJULayout(HWND hdlg)
 {
-	JULayout *jul = JULayout::EnableJULayout(hdlg);
+	JULayout *jul = JULayout::EnableJULayout(hdlg, 0, 0, 2000, 0);
 
 	jul->AnchorControl(0,0, 100,0, IDC_LABEL1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-	jul->AnchorControl(50,100, 50,100, IDC_BUTTON1);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
@@ -208,7 +206,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 //	test(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDB_StartSubclass));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 

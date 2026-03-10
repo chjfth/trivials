@@ -6,7 +6,6 @@
 #define IDD_WINMAIN                     101
 #define IDC_LABEL1                      1000
 #define IDC_EDIT_LOGMSG                 1001
-#define IDC_BUTTON1                     1002
 #define IDB_StartSubclass               1002
 #define IDB_StopSubclass                1003
 #define IDB_CreateUnnamed               1004
