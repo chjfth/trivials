@@ -7,11 +7,11 @@
 #include <tchar.h>
 #include <locale.h>
 
+#define CHHI_ALL_IMPL
 #include <EnsureClnup_mswin.h>
 //#include <AutoBuf.h>
-#include "../../__WinConst/itc/InterpretConst.h"
-#include "../../__WinConst/mswin/LMAccess.itc.h"
-#include "../../__WinConst/mswin/winnt.itc.h"
+#include <mswin/LMAccess.itc.h>
+#include <mswin/winnt.itc.h>
 
 #pragma comment(lib, "Netapi32.lib")
 #pragma comment(lib, "Advapi32.lib")

@@ -1,5 +1,6 @@
 #define  NOMINMAX // LeWei use?
 #define  WIN32_LEAN_AND_MEAN
+#include <tchar.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -7,6 +8,10 @@
 #include <Sddl.h>
 
 #include <EnsureClnup_mswin.h>
+
+#define CHHI_ALL_IMPL
+#define CHHI_ALL_IMPL_HIDE_NtStatus_itc
+
 #include <mswin/WinError.itc.h>
 #include <mswin/NtStatus.itc.h>
 #include <mswin/NTSecAPI.itc.h>

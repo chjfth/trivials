@@ -5,6 +5,7 @@
 #include <tchar.h>
 #include <locale.h>
 
+#define CHHI_ALL_IMPL
 #include <EnsureClnup_mswin.h>
 #include <mswin/LMErr.itc.h>
 using namespace itc;
