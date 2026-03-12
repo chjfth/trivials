@@ -11,10 +11,14 @@
 
 #include "iversion.h"
 
-#include "utils.h"
+//#include "utils.h"
+
+#define CHHI_ALL_IMPL
 
 #include <CHHI_vaDBG_is_vaDbgTs.h>
 
+#include <mswin/utils_env.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/WinError.itc.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinBase.itc.h>
@@ -23,17 +27,12 @@ using namespace itc;
 
 #include <EnsureClnup_mswin.h>
 
-#define JAUTOBUF_IMPL
 #include <JAutoBuf.h>
-typedef JAutoBuf<TCHAR, sizeof(TCHAR), 1> AutoTCHARs;
 
-#define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
-#define Combobox_EnableWideDrop_IMPL
 #include <mswin/Combobox_EnableWideDrop.h>
 
-#define DlgTooltipEasy_IMPL
 #include <mswin/DlgTooltipEasy.h>
 
 
