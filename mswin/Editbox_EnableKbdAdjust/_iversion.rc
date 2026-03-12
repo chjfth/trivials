@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    Editbox_EnableKbdAdjust_VMAJOR, Editbox_EnableKbdAdjust_VMINOR, Editbox_EnableKbdAdjust_VPATCH, Editbox_EnableKbdAdjust_VTAIL
+ProductVersion Editbox_EnableKbdAdjust_VMAJOR, Editbox_EnableKbdAdjust_VMINOR, Editbox_EnableKbdAdjust_VPATCH, Editbox_EnableKbdAdjust_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     Editbox_EnableKbdAdjust_NAME
+            VALUE "FileDescription", Editbox_EnableKbdAdjust_NAME
+            VALUE "FileVersion",    Editbox_EnableKbdAdjust_VMAJORs "." Editbox_EnableKbdAdjust_VMINORs "." Editbox_EnableKbdAdjust_VPATCHs
+            VALUE "ProductVersion",    Editbox_EnableKbdAdjust_VMAJORs "." Editbox_EnableKbdAdjust_VMINORs "." Editbox_EnableKbdAdjust_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , Editbox_EnableKbdAdjust_NAME ".exe"
+            VALUE "InternalName", Editbox_EnableKbdAdjust_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}
