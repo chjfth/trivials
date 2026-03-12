@@ -2,9 +2,9 @@
 #define __Editbox_EnableKbdAdjust_iversion_h_
 
 #define Editbox_EnableKbdAdjust_VMAJOR 1
-#define Editbox_EnableKbdAdjust_VMINOR 0
+#define Editbox_EnableKbdAdjust_VMINOR 1
 #define Editbox_EnableKbdAdjust_VPATCH 0
-#define Editbox_EnableKbdAdjust_VTAIL  1
+#define Editbox_EnableKbdAdjust_VTAIL  0
 
 #define Editbox_EnableKbdAdjuststr__(n) #n
 #define Editbox_EnableKbdAdjuststr(n) Editbox_EnableKbdAdjuststr__(n)

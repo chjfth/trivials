@@ -10,14 +10,15 @@
 #include "iversion.h"
 
 #define CHHI_ALL_IMPL
-#include <mswin/JULayout2.h>
 
 #include <vaDbgTs.h>
 #include <mswin/utils_env.h>
 #include <mswin/utils_wingui.h>
 
+#include <mswin/CxxWindowSubclass.h>
 #include <mswin/Editbox_EnableKbdAdjustIntnum.h>
 #include <mswin/Editbox_EnableKbdAdjustFloatnum.h>
+#include <mswin/JULayout2.h>
 
 
 #include "CxxDialog.h"
@@ -26,6 +27,24 @@
 
 
 HINSTANCE g_hinstExe;
+
+class EditboxRemoveHiliOnFocus : public CxxWindowSubclass
+{
+	virtual LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		LRESULT lret = DefSubclassProc(hwnd, uMsg, wParam, lParam);
+
+		if(uMsg==WM_SETFOCUS)
+		{
+			// For demo slickness, we remove auto text-selection on editbox focus.
+			// So that, user can start adjusting the text "00:03" immediately.
+			Edit_SetSel(hwnd, 0, 0);
+		}
+
+		return lret;
+	}
+};
+
 
 class MainDialog : public CxxDialog
 {
@@ -113,6 +132,10 @@ void Do_InitEditboxKbd(HWND hdlg)
 	vaSetDlgItemText(hdlg, IDS_Intnum2, 
 		_T("Range: %d ~ %d, zero-padded, wrap-around"),
 		min_int2, max_int2, step_int2);
+
+	 CxxWindowSubclass::FetchCxxobjFromHwnd<EditboxRemoveHiliOnFocus>(
+		hedit, _T("sig_EditboxRemoveHiliOnFocus"), TRUE);
+
 
 	// Floatnum1
 
