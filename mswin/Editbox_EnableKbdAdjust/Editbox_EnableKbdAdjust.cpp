@@ -10,8 +10,11 @@
 #include "iversion.h"
 
 #define CHHI_ALL_IMPL
+#define Editbox_EnableKbdAdjustIntnum_DEBUG
+#define Editbox_EnableKbdAdjustFloatnum_DEBUG
 
 #include <vaDbgTs.h>
+#include <CHHI_vaDBG_is_vaDbgTs.h>
 #include <mswin/utils_env.h>
 #include <mswin/utils_wingui.h>
 
