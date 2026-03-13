@@ -13,8 +13,8 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
-
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 #include <JAutoBuf.h>
 #include <mswin/WinMultiMon.h>

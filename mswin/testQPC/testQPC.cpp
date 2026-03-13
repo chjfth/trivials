@@ -9,11 +9,13 @@
 
 #include "iversion.h"
 
-#include "..\utils.h"
-#include "myutils.h"
+#define CHHI_ALL_IMPL
 
-#define JULAYOUT_IMPL
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
+
+#include "myutils.h"
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
@@ -71,7 +73,7 @@ void RefreshInfo(HWND hdlg)
 	{
 		TCHAR tbuf2[40] = {};
 		vaAppendText_mled(hedit, _T("[PANIC!] %s See new QPF value: %I64d\r\n"), 
-			now_timestr(tbuf2, _countof(tbuf2)),
+			va_now_ymdhms(tbuf2, _countof(tbuf2)),
 			BigNum64ToString(qpfNow, tbuf, _countof(tbuf))
 			);
 	}
@@ -106,7 +108,7 @@ bool StartWork(HWND hdlg)
 
 	TCHAR tbuf[100] = {};
 	vaAppendText_mled(hedit, _T("Start at %s\r\n"),
-		now_timestr(tbuf, _countof(tbuf), true, false));
+		va_now_ymdhms(tbuf, _countof(tbuf)));
 	vaAppendText_mled(hedit, _T("GetTickCount start value: %s\r\n"),
 		BigNum64ToString(ud.gtcStart, tbuf, _countof(tbuf)));
 	vaAppendText_mled(hedit, _T("QueryPerformanceCounter start value: %s\r\n"),

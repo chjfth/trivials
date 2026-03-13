@@ -14,15 +14,15 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
-#include <EnsureClnup_mswin.h>
+#define CHHI_ALL_IMPL
 
-#define JULAYOUT_IMPL
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 
 #include <StringHelper.h>
+#include <EnsureClnup_mswin.h>
 
-#include <itc/InterpretConst.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
 using namespace itc;
@@ -233,10 +233,12 @@ bool do_LsaLookupNames(HWND hdlg)
 		arus[iline].MaximumLength = arus[iline].Length;
 	}
 
-	vaDbgS(_T("Input %d names:"), iline);
+	vaDbgTs(_T("Input %d names:"), iline);
 	int i;
 	for(i=0; i<iline; i++)
-		vaDbgS(_T("    %.*s"), arus[i].Length/sizeof(TCHAR), arus[i].Buffer);
+	{
+		vaDbgTs(_T("    %.*s"), arus[i].Length/sizeof(TCHAR), arus[i].Buffer);
+	}
 
 	DWORD msec_start = TrueGetMillisec();
 

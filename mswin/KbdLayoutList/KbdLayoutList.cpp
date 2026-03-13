@@ -7,7 +7,8 @@
 #include "resource.h"
 #include "iversion.h"
 
-#define JULAYOUT_IMPL
+#define CHHI_ALL_IMPL
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -76,19 +77,6 @@ void vaDbg(const TCHAR *fmt, ...)
 	s_prev_msec = now_msec;
 }
 
-int vaMsgBox(HWND hwnd, UINT utype, const TCHAR *szTitle, const TCHAR *szfmt, ...)
-{
-	va_list args;
-	va_start(args, szfmt);
-
-	TCHAR msgtext[4000] = {};
-	_vsntprintf_s(msgtext, _TRUNCATE, szfmt, args);
-
-	int ret = MessageBox(hwnd, msgtext, szTitle, utype);
-
-	va_end(args);
-	return ret;
-}
 
 void dlg_ComboboxPopulateHKLs(HWND hdlg)
 {

@@ -1,14 +1,8 @@
-#include <windows.h>
+#define CHHI_ALL_IMPL
 
-#define vaDbgTs_IMPL
 #include <CHHI_vaDBG_is_vaDbgTs.h> // use vaDbgTs() inside
 
-#define JAutoBuf_IMPL
-#include <JAutoBuf.h>
-
-#define WinMultiMon_IMPL
-#define WinMultiMon_DEBUG
-#include <mswin/WinMultiMon.h>
-
-#define JULayout2_IMPL
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
+#include <JAutoBuf.h>
+#include <mswin/WinMultiMon.h>
