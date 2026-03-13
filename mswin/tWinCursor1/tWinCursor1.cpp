@@ -8,8 +8,10 @@
 
 #define EXE_VERSION "1.1"
 
-#include "utils.h"
+#define CHHI_ALL_IMPL
 
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/winuser.itc.h>
 using namespace itc;
 

@@ -19,7 +19,9 @@ link /debug GuiRcManifest.obj GuiRcManifest.res kernel32.lib user32.lib gdi32.li
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "utils.h"
+#define CHHI_ALL_IMPL
+#include <mswin/utils_wingui.h>
+
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 

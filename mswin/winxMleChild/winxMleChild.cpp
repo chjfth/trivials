@@ -8,7 +8,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "../utils.h"
+#define CHHI_ALL_IMPL
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 
 bool g_insideGetMessage = false;
 

@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <varargs.h>
 
-#include <itc/InterpretConst.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
 

@@ -13,12 +13,14 @@
 
 #include "iversion.h"
 
-#include "utils.h"
+#define CHHI_ALL_IMPL
 
+#include <CHHI_vaDBG_is_vaDbgTs.h>
 #include <StringHelper.h>
 
 #include <EnsureClnup_mswin.h>
 
+#include <mswin/utils_wingui.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
 using namespace itc;
@@ -376,7 +378,7 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 
 	TCHAR timestr[100] = {};
 	appendmsg(hdlg, _T("%s Start calling SetNamedSecurityInfo()"),
-		now_timestr(timestr, ARRAYSIZE(timestr)));
+		va_now_timestr(VaNowtime_ymd, timestr, ARRAYSIZE(timestr)));
 
 	DWORD msec_start = TrueGetMillisec();
 	DWORD winerr = SetNamedSecurityInfo(
@@ -391,7 +393,7 @@ void do_SetNamedSecurityInfo(HWND hdlg)
 	DWORD msec_used = TrueGetMillisec() - msec_start;
 
 	appendmsg(hdlg, _T("%s Done calling SetNamedSecurityInfo()"),
-		now_timestr(timestr, ARRAYSIZE(timestr)));
+		va_now_timestr(VaNowtime_ymd, timestr, ARRAYSIZE(timestr)));
 
 	appendmsg(hdlg, _T("Time cost: %u millisec"), msec_used);
 
@@ -412,7 +414,7 @@ void DO_SetNamedSecurityInfo(HWND hdlg)
 	catch (const ErrMsg& e)
 	{
 		TCHAR timestr[40] = _T("");
-		now_timestr(timestr, ARRAYSIZE(timestr));
+		va_now_timestr(VaNowtime_ymd, timestr, ARRAYSIZE(timestr));
 
 		appendmsg(hdlg, _T("%s[ERROR] In %s():\r\n%s"), timestr, e.m_func, e.m_errmsg);
 

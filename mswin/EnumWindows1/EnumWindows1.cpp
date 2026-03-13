@@ -8,6 +8,8 @@
 #include <stdarg.h>
 #include <locale.h>
 
+#define CHHI_ALL_IMPL
+
 #include <mswin/win32cozy.h>
 
 #include <mswin/winuser.itc.h>

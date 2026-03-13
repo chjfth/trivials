@@ -155,7 +155,7 @@
 
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
-      <AdditionalIncludeDirectories>.;..;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -206,11 +206,6 @@
    -->
   <ItemGroup>
     <ClCompile Include="tWinCursor1.cpp" />
-    <ClCompile Include="..\utils.cpp" />
-    <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
-    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
-    <ClCompile Include="..\..\__WinConst\mswin\winuser.itc.cpp" />
-    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tWinCursor1.rc" />
@@ -220,7 +215,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="..\utils.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
     <ClInclude Include="..\..\__WinConst\mswin\winuser.itc.h" />
   </ItemGroup>

@@ -8,12 +8,14 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
+#define CHHI_ALL_IMPL
+
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
+#include <mswin/JULayout2.h>
 
 #include "cpuhog.h"
 
-#define JULAYOUT_IMPL
-#include <mswin/JULayout2.h>
 
 #define VERSION "1.1"
 

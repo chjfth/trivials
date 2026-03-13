@@ -4,15 +4,18 @@
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <_MINMAX_.h>
 #include "resource.h"
 
 #include "iversion.h"
 
-#include "..\utils.h"
-#include <mswin/dlptr_winapi.h>
+#define CHHI_ALL_IMPL
 
-#define JULayout2_IMPL
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
+
+#include <mswin/dlptr_winapi.h>
 
 #pragma warning(disable:4800)  // warning C4800: 'int' : forcing value to bool 'true' or 'false' (performance warning)
 
@@ -264,7 +267,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 		// Note: When the message box pops out, the WM_TIMER is still generated.
 		// So to preserve the spot, we tweak prdata->count_max to make it stop prematurely.
 		//
-		prdata->timer_count_max = Min(prdata->timer_count + 10, prdata->timer_count_max);
+		prdata->timer_count_max = _MIN_(prdata->timer_count + 10, prdata->timer_count_max);
 
 		vaMsgBox(hdlg, MB_OK|MB_ICONEXCLAMATION, _T(APPNAME), 
 			_T("Unusual! [#%d]Got a timer interval(%d ms) LESS THAN user requested(%d ms).")

@@ -77,8 +77,8 @@
         "v120" on VC2013
         "v140" on VC2015
         "v141" on VC2017
-          "v142" on VC2019
-          "v143" on VC2022
+        "v142" on VC2019
+        "v143" on VC2022
       -->
     <PlatformToolset Condition="$(DefaultPlatformToolset)!=''">$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
@@ -116,7 +116,7 @@
       <!-- EXE/DLL's .pdb is truly intermediate, so we put it in $(IntDir), with some fancy file-naming -->
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,7 +172,6 @@
  
   <ItemGroup>
     <ClCompile Include="doShowWindow.cpp" />
-    <ClCompile Include="..\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="doShowWindow.rc" />
@@ -182,9 +181,7 @@
     <None Include="_iversion.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\JULayout2.h" />
     <ClInclude Include="iversion.h" />
-    <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
  

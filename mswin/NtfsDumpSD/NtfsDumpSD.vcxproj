@@ -153,7 +153,7 @@
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
 
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../../__chjcxx/common-include/include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+	  <AdditionalIncludeDirectories>.;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -212,10 +212,6 @@
   <ItemGroup>
     <ClCompile Include="NtfsDumpSD.cpp" />
     <ClCompile Include="ch10-DumpSD.cpp" />
-    <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
-    <ClCompile Include="..\..\__WinConst\mswin\winnt.itc.cpp" />
-    <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
-    <ClCompile Include="..\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NtfsDumpSD.rc" />
@@ -227,7 +223,6 @@
   <ItemGroup>
     <ClInclude Include="iversion.h" />
     <ClInclude Include="ch10-DumpSD.h" />
-    <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\util_WinSecuAPI.h" />
   </ItemGroup>

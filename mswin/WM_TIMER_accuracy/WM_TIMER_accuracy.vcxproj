@@ -116,7 +116,7 @@
       <!-- EXE/DLL's .pdb is truly intermediate, so we put it in $(IntDir), with some fancy file-naming -->
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;../../__chjcxx/common-include/include;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,7 +172,6 @@
  
   <ItemGroup>
     <ClCompile Include="WM_TIMER_accuracy.cpp" />
-    <ClCompile Include="..\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WM_TIMER_accuracy.rc" />
@@ -183,7 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="iversion.h" />
-    <ClInclude Include="..\utils.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
  

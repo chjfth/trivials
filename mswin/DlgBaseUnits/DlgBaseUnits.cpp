@@ -10,7 +10,10 @@
 #include <stdlib.h>
 #include "resource.h"
 #include "iversion.h"
-#include "../utils.h"
+
+#define CHHI_ALL_IMPL
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 

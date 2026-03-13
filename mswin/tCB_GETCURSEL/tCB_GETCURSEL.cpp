@@ -8,10 +8,10 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
-
 #define CHHI_ALL_IMPL
-#define JULAYOUT_IMPL
+
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 #include <mswin/WinUser.itc.h>
 
@@ -63,7 +63,7 @@ void myPeekCombobox(HWND hdlg, int codeNotify)
 	int cursel = ComboBox_GetCurSel(hcbx);
 
 	vaAppendText_mled(hedit, _T("[#%d]%s codeNotify=%s , cursel=%d\r\n"),
-		g_count, now_timestr(timestr, ARRAYSIZE(timestr)),
+		g_count, va_now_hms(timestr, ARRAYSIZE(timestr)),
 		ITCSvn(codeNotify, CBN_xxx_ComboBox), cursel
 		);
 }

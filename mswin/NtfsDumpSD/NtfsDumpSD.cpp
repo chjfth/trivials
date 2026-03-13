@@ -8,18 +8,20 @@
 #include <stdio.h>
 #include "resource.h"
 
-#define JULAYOUT_IMPL
+#define CHHI_ALL_IMPL
+
+#include <CHHI_vaDBG_is_vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 
-#define util_WinSecuAPI_IMPL
 #include <mswin/util_WinSecuAPI.h>
 
+#include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
 using namespace itc;
 
 #include "iversion.h"
 
-#include "../utils.h"
 #include "ch10-DumpSD.h" // for g_dbgbuf[]
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")

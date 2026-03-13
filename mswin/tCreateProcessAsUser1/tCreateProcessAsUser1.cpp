@@ -10,12 +10,11 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
+#define CHHI_ALL_IMPL
 
-#define JULAYOUT_IMPL
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
-
-#define JAUTOBUF_IMPL
 #include <JAutoBuf.h>
 
 #include <mswin/dlptr_winapi.h>

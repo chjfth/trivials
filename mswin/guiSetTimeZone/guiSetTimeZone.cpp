@@ -8,13 +8,12 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
+#define CHHI_ALL_IMPL
 
-#define JULAYOUT_IMPL
-#include <mswin/JULayout2.h>
-
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/WinError.itc.h>
-
+#include <mswin/JULayout2.h>
 #include <EnsureClnup_mswin.h>
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
