@@ -30,7 +30,7 @@ public:
 	CEditboxPeeker()
 	{}
 
-	virtual LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	virtual LRESULT SubWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) cxx11_override
 	{
 		vaDbgTs(_T("[cxxobj %p] Hwnd=0x%X sees %s"), this, hwnd, ITCSv(uMsg, WM_xxx));
 

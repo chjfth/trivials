@@ -3,7 +3,7 @@
 
 #define Editbox_EnableKbdAdjust_VMAJOR 1
 #define Editbox_EnableKbdAdjust_VMINOR 1
-#define Editbox_EnableKbdAdjust_VPATCH 0
+#define Editbox_EnableKbdAdjust_VPATCH 1
 #define Editbox_EnableKbdAdjust_VTAIL  0
 
 #define Editbox_EnableKbdAdjuststr__(n) #n

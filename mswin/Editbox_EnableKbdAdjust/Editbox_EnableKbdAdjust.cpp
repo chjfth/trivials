@@ -33,7 +33,7 @@ HINSTANCE g_hinstExe;
 
 class EditboxRemoveHiliOnFocus : public CxxWindowSubclass
 {
-	virtual LRESULT WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	virtual LRESULT SubWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) cxx11_override
 	{
 		LRESULT lret = DefSubclassProc(hwnd, uMsg, wParam, lParam);
 
