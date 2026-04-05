@@ -8,11 +8,12 @@
 
 #undef NDEBUG // Enable assert for Release-build
 
-#define vaDbgTs_IMPL
-#include <CHHI_vaDBG_is_vaDbgTs.h> // optional
+//#define vaDbgTs_IMPL
 
 #define CHHI_ALL_IMPL
 #define hashdict_DEBUG
+
+#include <CHHI_vaDBG_is_vaDbgTs.h> // optional
 
 #include <hashdict.h>
 using namespace chjds;
@@ -23,7 +24,7 @@ struct NumMap_st
 	int value;
 };
 
-NumMap_st gar_nummap[] =
+NumMap_st gar_NumMap[] =
 {
 	{ _T("one"), 1, },
 	{ _T("two"), 2, },
@@ -65,12 +66,12 @@ NumMap_st gar_MonthMap[] =
 };
 
 
-void test_hashdict()
+void test_hashdict_ints()
 {
-	hashdict<int> d1; //(_T("d1"));
+	hashdict<int> d1(_T("d1"));
 
 	int i, *pi = nullptr;
-	const int NUMs = ARRAYSIZE(gar_nummap);
+	const int NUMs = ARRAYSIZE(gar_NumMap);
 
 	d1.SetDbgParams(0);
 
@@ -78,7 +79,7 @@ void test_hashdict()
 
 	for(i=0; i<NUMs; i++)
 	{
-		NumMap_st &map = gar_nummap[i];
+		NumMap_st &map = gar_NumMap[i];
 		d1.set(map.name, map.value);
 	}
 
@@ -113,7 +114,7 @@ void test_hashdict()
 	//
 	for(i=0; i<NUMs; i++)
 	{
-		NumMap_st &map = gar_nummap[i];
+		NumMap_st &map = gar_NumMap[i];
 		pi = d1.get(map.name);
 		assert(pi);
 		assert(*pi == map.value);
@@ -149,14 +150,14 @@ void test_hashdict()
 	const int DELs = 5;
 	for(i=0; i<DELs; i++)
 	{
-		NumMap_st &map = gar_nummap[i];
+		NumMap_st &map = gar_NumMap[i];
 		d1.del(map.name);
 	}
 
 	// test non-existence number keys
 	for(i=0; i<DELs; i++)
 	{
-		NumMap_st &map = gar_nummap[i];
+		NumMap_st &map = gar_NumMap[i];
 		pi = d1.get(map.name);
 		assert(!pi);
 	}
@@ -164,12 +165,12 @@ void test_hashdict()
 	// Re-add those DELs
 	for(i=0; i<DELs; i++)
 	{
-		NumMap_st &map = gar_nummap[i];
+		NumMap_st &map = gar_NumMap[i];
 		d1.set(map.name, map.value);
 	}
 	for(i=0; i<NUMs; i++)
 	{
-		NumMap_st &map = gar_nummap[i];
+		NumMap_st &map = gar_NumMap[i];
 		pi = d1.get(map.name);
 		assert(pi);
 		assert(*pi == map.value);
@@ -213,12 +214,117 @@ void test_hashdict()
 	// d1.CompactTrove(); // explict compact, for debug purpose
 	for(i=0; i<15; i++)
 	{
-		NumMap_st &map = gar_nummap[i];
+		NumMap_st &map = gar_NumMap[i];
 		bool succ = d1.del(map.name);
 		assert(succ);
 	}
 	
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+//static int s_counter = 0;
+
+class CV 
+{
+public:
+	int* m_pint;
+public:
+	CV() { 
+		printf("CV() ctor @<%p>\n", this);
+		m_pint = nullptr; 
+	}
+	CV(int n) { 
+		m_pint = new int(n);
+		printf("CV(%d) ctor @<%p>.\n", *m_pint, this);
+	}
+	virtual ~CV() {
+		if(m_pint) {
+			printf("CV(%d) dtor @<%p>.\n", *m_pint, this);
+			delete m_pint;
+		} else {
+			printf("CV() dtor @<%p>.\n", this);
+		}
+	}
+
+	CV(const CV& ins) { // copy-ctor
+		printf("CV copy-ctor\n");
+		if(ins.m_pint)
+			m_pint = new int(*ins.m_pint);
+		else
+			m_pint = nullptr;
+	}
+
+	CV& operator=(const CV& ins) { // copy-assign
+		printf("CV copy-assign\n");
+		delete m_pint;
+		if(ins.m_pint)
+			m_pint = new int(*ins.m_pint);
+		else
+			m_pint = nullptr;
+	}
+#if 1
+	CV(CV&& ins) {           // move-ctor
+		if(ins.m_pint)
+			printf("CV(%d) move-ctor @<%p> => @<%p>\n", *ins.m_pint, &ins, this);
+		else
+			printf("CV() move-ctor @<%p> => @<%p>\n", &ins, this);
+		_steal_from_old(ins);
+	}
+	CV& operator=(CV&& old) { // move-assign
+		if (this != &old) {
+			if(old.m_pint)
+				printf("CV(%d) move-assign\n", *old.m_pint);
+			else
+				printf("CV() move-assign\n");
+			delete this->m_pint;
+			_steal_from_old(old);
+		}
+		return *this;
+	}
+	void _steal_from_old(CV& old) {
+		this->m_pint = old.m_pint;
+		old.m_pint = nullptr;
+	}
+#endif
+};
+
+void test_hashdict_cxxobjs()
+{
+	_tprintf(_T("Do %s()\n"), _T(__FUNCTION__));
+
+	hashdict<CV> d2(_T("d2"));
+	d2.SetDbgParams(0);
+
+	int i, *pi=nullptr;
+	CV *pcv = nullptr;
+
+	const int CVs = 16;//ARRAYSIZE(gar_NumMap);
+	for(i=0; i<CVs; i++)
+	{
+		NumMap_st &map = gar_NumMap[i];
+		pcv = d2.set(map.name, CV(map.value));
+		assert(*pcv->m_pint==map.value);
+	}
+#if 0
+	d2.setdefault(_T("one"), 111);
+	pcv = d2.get(_T("one"));
+	assert(*pcv->m_pint==1); // should not change by setdefault()
+	d2.set(_T("one"), 111);
+	pcv = d2.get(_T("one"));
+	assert(*pcv->m_pint==111);
+	d2.set(_T("one"), 1); // restore 
+#endif
+	for(i=0; i<CVs; i++)
+	{
+		NumMap_st &map = gar_NumMap[i];
+		pcv = d2.get(map.name);
+		assert(*pcv->m_pint==map.value);
+	}
+
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 #ifdef _MSC_VER
 int _tmain(int argc, TCHAR* argv[])
@@ -232,7 +338,9 @@ int main(int argc, char *argv[])
 	_CrtMemCheckpoint(&state1);
 #endif
 
-	test_hashdict();
+//	test_hashdict_ints();
+
+	test_hashdict_cxxobjs();
 
 #ifdef _MSC_VER
 	// Take snapshot after
