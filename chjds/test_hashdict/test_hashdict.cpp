@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 #include <ps_TCHAR.h>
 
 #ifdef __linux_
@@ -14,9 +15,13 @@
 #define hashdict_DEBUG
 
 #include <CHHI_vaDBG_is_vaDbgTs.h> // optional
+#include <fsapi.h>
+#include <makeTsdring.h>
 
 #include <hashdict.h>
 using namespace chjds;
+
+#include "t_english_dict.h"
 
 struct NumMap_st
 {
@@ -262,6 +267,7 @@ public:
 			m_pint = new int(*ins.m_pint);
 		else
 			m_pint = nullptr;
+		return *this;
 	}
 #if 1
 	CV(CV&& ins) {           // move-ctor
@@ -294,7 +300,7 @@ void test_hashdict_cxxobjs()
 	_tprintf(_T("Do %s()\n"), _T(__FUNCTION__));
 
 	hashdict<CV> d2(_T("d2"));
-	d2.SetDbgParams(0);
+//	d2.SetDbgParams(0);
 
 	int i, *pi=nullptr;
 	CV *pcv = nullptr;
@@ -306,7 +312,7 @@ void test_hashdict_cxxobjs()
 		pcv = d2.set(map.name, CV(map.value));
 		assert(*pcv->m_pint==map.value);
 	}
-#if 0
+#if 1
 	d2.setdefault(_T("one"), 111);
 	pcv = d2.get(_T("one"));
 	assert(*pcv->m_pint==1); // should not change by setdefault()
@@ -332,6 +338,8 @@ int _tmain(int argc, TCHAR* argv[])
 int main(int argc, char *argv[])
 #endif
 {
+	setlocale(LC_ALL, "");
+
 #ifdef _MSC_VER
 	// Take snapshot before operations
 	_CrtMemState state1={}, state2={}, stateDiff={};
@@ -340,7 +348,9 @@ int main(int argc, char *argv[])
 
 //	test_hashdict_ints();
 
-	test_hashdict_cxxobjs();
+//	test_hashdict_cxxobjs();
+
+	t_english_dict(_T("..\\..\\_data\\english-words-22k.utf8.txt"));
 
 #ifdef _MSC_VER
 	// Take snapshot after

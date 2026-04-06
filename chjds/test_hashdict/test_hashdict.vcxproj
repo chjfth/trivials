@@ -211,6 +211,7 @@
    -->
   <ItemGroup>
     <ClCompile Include="test_hashdict.cpp" />
+    <ClCompile Include="t_english_dict.cpp" />
 <!--
     <ClCompile Include="..\..\__WinConst\itc\InterpretConst.cpp" />
     <ClCompile Include="..\..\__WinConst\mswin\WinError.itc.cpp" />
@@ -218,6 +219,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ClInclude Include="t_english_dict.h" />
 <!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
