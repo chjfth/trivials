@@ -1,148 +1,22 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "sdring1.h"
-
-inline bool StringSplitter_IsCrlf(int charval)
-{
-	return (charval == '\r' || charval == '\n') ? true : false;
-}
-
-inline bool StringSplitter_TrimSpacechar(int charval)
-{
-	return (charval == ' ') ? true : false;
-}
-
-inline bool StringSplitter_TrimSpaceTab(int charval)
-{
-	return (charval == ' ' || charval == '\t') ? true : false;
-}
-
-inline bool StringSplitter_TrimNone(int)
-{
-	return false;
-}
-
-template<
-	typename TString, // can be char* or wchar_t*, or any type that supports operator[] 
-	bool IsSplitterChar(int charval) = StringSplitter_IsCrlf,
-	bool IsTrimChar(int charval) = StringSplitter_TrimNone
->
-class StringSplitter
-{
-public:
-	StringSplitter(const TString &s, int startpos=0, int scanlen=-1)
-		: m_str(s), m_startpos(startpos)
-	{
-		m_nowpos = m_startpos;
-		//vaDbgTs(_T("StringSplitter.ctor(), &s=<%p>"), &s);
-
-		if(scanlen>=0)
-		{
-			m_endpos_ = m_nowpos + scanlen;
-		}
-		else 
-		{	// m_endpos determined by NUL char
-			m_endpos_ = m_nowpos;
-			while( m_str[m_endpos_] )
-				m_endpos_++;
-		}
-	}
-
-	void reset()
-	{
-		m_nowpos = m_startpos;
-	}
-
-	int next(int *p_nowlen=nullptr)
-	{
-		// Returns an offset value that points to the next sub-string.
-		// *p_nowlen tells the length of the sub-string.
-
-		// Skip consecutive splitter-chars and trim-chars.
-		//
-		for(;;)
-		{
-			if(m_nowpos == m_endpos_)
-			{
-				if(p_nowlen)
-					*p_nowlen = 0;
-
-				return -1; // scan ended
-			}
-
-			if( IsSplitterChar(m_str[m_nowpos]) || IsTrimChar(m_str[m_nowpos]))
-				m_nowpos++;
-			else
-				break;
-		}
-
-		// Check if scan end.
-		//
-		if (m_nowpos == m_endpos_)
-		{
-			if (*p_nowlen)
-				*p_nowlen = 0;
-
-			return -1;
-		}
-
-		// Seen a word start, Scan for word length.
-
-		int word_at_pos = m_nowpos;
-
-		for(;;)
-		{
-			if( m_nowpos==m_endpos_ || IsSplitterChar(m_str[m_nowpos]) )
-			{
-				// Scan backward and drop those consecutive trim-chars.
-
-				int tailpos = m_nowpos;
-				while (IsTrimChar(m_str[tailpos - 1]))
-					tailpos--;
-
-				if(p_nowlen)
-					*p_nowlen = tailpos - word_at_pos;
-
-				return word_at_pos;
-			}
-			else
-			{
-				m_nowpos++;
-			}
-		}
-
-	}
-
-	int count()
-	{
-		reset();
-		int n = 0;
-		while (next() != -1)
-			n++;
-
-		reset();
-		return n;
-	}
-
-private:
-	const TString &m_str;
-
-	int m_startpos;
-	int m_nowpos;
-	int m_endpos_;
-};
-
+#include "StringSplitter.h"
 
 void test1()
 {
-	sdring<char> alltext("abc\ndef");
+	sdring alltext("abc\ndef");
 	StringSplitter<char*> sp(alltext);
+	// StringSplitter<sdring> sp(alltext); // this is OK
 	
 	int len = 0;
 	int pos1 = sp.next(&len);
 	int pos2 = sp.next(&len);
 
-	printf("Can you survive this?\n");
+	assert(pos1==0 && pos2==4);
+	printf("Word1 at %d, word2 at %d\n", pos1, pos2);
 }
 
 int main()
@@ -150,5 +24,8 @@ int main()
 	printf("Be aware, this C++ program will NOT crash on Debug-build,\n");
 	printf("          but will CRASH on Release-build (/O2 or -O2).\n");
 	test1();
-	printf("Survived.\n");
+	printf("Good, Survived.\n");
 }
+
+// To see crash on gcc 9.3, compile it using:
+//	g++ -O2  refop_crash.cpp

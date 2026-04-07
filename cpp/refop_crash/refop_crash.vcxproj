@@ -219,6 +219,7 @@
 
   <ItemGroup>
     <ClInclude Include="sdring1.h" />
+    <ClInclude Include="StringSplitter.h" />
 <!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
