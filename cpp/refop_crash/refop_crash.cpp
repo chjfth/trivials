@@ -5,6 +5,9 @@
 #include "sdring1.h"
 #include "StringSplitter.h"
 
+// Context: 20260407.1 ~ 20260407.9
+// On VC2010 & VC2015, x86 Release-build will crash in test1().
+
 void test1()
 {
 	sdring alltext("abc\ndef");
@@ -22,7 +25,7 @@ void test1()
 int main()
 {
 	printf("Be aware, this C++ program will NOT crash on Debug-build,\n");
-	printf("          but will CRASH on Release-build (/O2 or -O2).\n");
+	printf("          but could CRASH on Release-build (/O2 or -O2).\n");
 	test1();
 	printf("Good, Survived.\n");
 }

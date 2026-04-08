@@ -67,7 +67,7 @@ public:
 		m_nchars = 0;
 	}
 
-#define USE_ERROR_CODE
+#define USE_ERROR_CODE // EXE will crash on Release-build
 #ifdef USE_ERROR_CODE
 	operator char* () const {         // OPE1
 		return m_buf; 
