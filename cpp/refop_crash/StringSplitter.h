@@ -113,6 +113,10 @@ public:
 		return n;
 	}
 
+// Disallow copy-assign, bcz C++ does not allow changing(rebinding) reference-target.
+private:
+	StringSplitter& operator=(const StringSplitter &insp) {}
+
 private:
 	const TString &m_str;
 
