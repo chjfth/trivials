@@ -12,7 +12,7 @@
 //#define vaDbgTs_IMPL
 
 #define CHHI_ALL_IMPL
-#define hashdict_DEBUG
+//#define hashdict_DEBUG
 
 #include <CHHI_vaDBG_is_vaDbgTs.h> // optional
 #include <fsapi.h>
@@ -332,13 +332,35 @@ void test_hashdict_cxxobjs()
 
 //////////////////////////////////////////////////////////////////////////
 
-#ifdef _MSC_VER
-int _tmain(int argc, TCHAR* argv[])
-#else
-int main(int argc, char *argv[])
-#endif
+#include <ctype.h>
+
+template<typename TString>
+class MakeUpper
+{
+public:
+	MakeUpper(TString &s) : m_str(s){ }
+	void DoUp()
+	{
+		for(int i=0; m_str[i]; i++)
+			m_str[i] = toupper(m_str[i]);
+	}
+
+private:
+	TString &m_str;
+};
+
+void test_uppper()
+{
+	Sdring sd1(_T("xyz"));
+	MakeUpper<TCHAR*> up1(sd1);
+	up1.DoUp();
+	_tprintf(_T("Upper result: %s\n"), sd1.c_str());
+}
+
+int _tmain(int argc, char *argv[])
 {
 	setlocale(LC_ALL, "");
+//	test_uppper();
 
 #ifdef _MSC_VER
 	// Take snapshot before operations
@@ -346,11 +368,16 @@ int main(int argc, char *argv[])
 	_CrtMemCheckpoint(&state1);
 #endif
 
-//	test_hashdict_ints();
+	test_hashdict_ints();
 
-//	test_hashdict_cxxobjs();
+	test_hashdict_cxxobjs();
 
-	t_english_dict(_T("..\\..\\_data\\english-words-22k.utf8.txt"));
+	printf("\n");
+	t_english_dict(_T("..\\..\\_data\\english-words-22k.txt"));
+//	t_english_dict(_T("..\\..\\_data\\english-words-22k.utf8.txt"));
+
+	printf("\n");
+	t_english_dict(_T("..\\..\\_data\\english-words-4600k.txt"));
 
 #ifdef _MSC_VER
 	// Take snapshot after
@@ -359,6 +386,7 @@ int main(int argc, char *argv[])
 	// Compare snapshots
 	if (_CrtMemDifference(&stateDiff, &state1, &state2)) 
 	{
+		_tprintf(_T("Memory leak detected!!! See debug channel for details.\n"));
 		_CrtMemDumpStatistics(&stateDiff);
 		_CrtMemDumpAllObjectsSince(&state1);
 	}
