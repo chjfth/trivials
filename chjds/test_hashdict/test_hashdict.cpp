@@ -13,6 +13,7 @@
 
 #define CHHI_ALL_IMPL
 //#define hashdict_DEBUG
+//#define vaDBG_MAX_LEVEL 3
 
 #include <CHHI_vaDBG_is_vaDbgTs.h> // optional
 #include <fsapi.h>
@@ -181,7 +182,7 @@ void test_hashdict_ints()
 		assert(*pi == map.value);
 	}
 
-	vaDbgTs(_T("Repeatedly add then del many times, to see trove grow then *compact*."));
+	_tprintf(_T("Repeatedly add then del many times, to see trove grow then *compact*.\n"));
 
 	const TCHAR *jankey = gar_MonthMap[0].name;
 	int janval = gar_MonthMap[0].value;
@@ -214,7 +215,7 @@ void test_hashdict_ints()
 	assert(i==d1.keycount());
 
 
-	vaDbgTs(_T("Test mass del() triggering CompactTrove."));
+	_tprintf(_T("Test mass del() triggering CompactTrove.\n"));
 
 	// d1.CompactTrove(); // explict compact, for debug purpose
 	for(i=0; i<15; i++)
@@ -227,8 +228,6 @@ void test_hashdict_ints()
 }
 
 //////////////////////////////////////////////////////////////////////////
-
-//static int s_counter = 0;
 
 class CV 
 {
@@ -297,6 +296,8 @@ public:
 
 void test_hashdict_cxxobjs()
 {
+	// This verifies we can use complex C++ object as dict-value.
+
 	_tprintf(_T("Do %s()\n"), _T(__FUNCTION__));
 
 	hashdict<CV> d2(_T("d2"));
@@ -330,37 +331,37 @@ void test_hashdict_cxxobjs()
 
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-#include <ctype.h>
-
-template<typename TString>
-class MakeUpper
+void test_trivials()
 {
-public:
-	MakeUpper(TString &s) : m_str(s){ }
-	void DoUp()
+	hashdict<int> dict(_T("AllDummy"));
+	dict.SetDbgParams(0);
+
+	int i, *pi=nullptr;
+	for(i=0; i<8; i++)
 	{
-		for(int i=0; m_str[i]; i++)
-			m_str[i] = toupper(m_str[i]);
+		NumMap_st &map = gar_NumMap[i];
+		pi = dict.set(map.name, map.value);
+		assert(*pi==map.value);
 	}
 
-private:
-	TString &m_str;
-};
+	// Make all slots dummy
+	for(i=0; i<8; i++)
+	{
+		NumMap_st &map = gar_NumMap[i];
+		int oldval = -1;
+		dict.del(map.name, oldval);
+		assert(oldval = map.value);
+	}
 
-void test_uppper()
-{
-	Sdring sd1(_T("xyz"));
-	MakeUpper<TCHAR*> up1(sd1);
-	up1.DoUp();
-	_tprintf(_T("Upper result: %s\n"), sd1.c_str());
+	pi = dict.set(_T("hundred"), 100);
+	assert(*pi==100);
 }
+
+//////////////////////////////////////////////////////////////////////////
 
 int _tmain(int argc, char *argv[])
 {
 	setlocale(LC_ALL, "");
-//	test_uppper();
 
 #ifdef _MSC_VER
 	// Take snapshot before operations
@@ -368,16 +369,32 @@ int _tmain(int argc, char *argv[])
 	_CrtMemCheckpoint(&state1);
 #endif
 
+//	test_trivials();
+
 	test_hashdict_ints();
 
 	test_hashdict_cxxobjs();
 
 	printf("\n");
-	t_english_dict(_T("..\\..\\_data\\english-words-22k.txt"));
-//	t_english_dict(_T("..\\..\\_data\\english-words-22k.utf8.txt"));
 
-	printf("\n");
-	t_english_dict(_T("..\\..\\_data\\english-words-4600k.txt"));
+	int ar_resizepct[] = {66, 0};
+	for(int i=0; i<ARRAYSIZE(ar_resizepct); i++)
+	{
+		int resizepct = ar_resizepct[i];
+		printf("/////////////////////////////////////////////////////////////////////\n");
+		printf("TestDict with resizepct = %d %s\n", resizepct,
+			resizepct==0 ? "(Tight-loaded, no spare slots, slow)" : "");
+		printf("/////////////////////////////////////////////////////////////////////\n");
+
+		printf("\n");
+		t_english_dict(_T("..\\..\\_data\\english-words-22k.txt"), resizepct);
+		//	t_english_dict(_T("..\\..\\_data\\english-words-22k.utf8.txt"));
+
+		printf("\n");
+		t_english_dict(_T("..\\..\\_data\\english-words-4600k.txt"), resizepct);
+
+		printf("\n");
+	}
 
 #ifdef _MSC_VER
 	// Take snapshot after

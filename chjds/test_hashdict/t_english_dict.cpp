@@ -23,31 +23,14 @@ using namespace chjds;
 
 #include <EnsureClnup_misc.h>
 
-bool IsSplitterChar(int c)
+
+inline bool StringSplitter_IsCrlfNul(int charval)
 {
-	return c==';' ? true : false;
-}
-void test1()
-{
-	TCHAR ws[] = _T("AB;xyz;;1234");
-	StringSplitter<decltype(ws), IsSplitterChar> sp(ws);
-
-	int i=0;
-	for(;;i++)
-	{
-		int len = 0;
-		int pos = sp.next(&len);
-		if(pos==-1)
-			break;
-
-		_tprintf(_T("[#%d] %.*s\n"), i, len, &ws[pos]);
-	}
-
-	_tprintf(_T("\n"));
-
+	return (charval=='\r' || charval=='\n' || charval=='\0') ? true : false;
 }
 
-bool t_english_dict(const TCHAR* dictfilename)
+
+bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 {
 	// Note: Duplicate words in dictfilename will be considered as one single word.
 
@@ -76,9 +59,10 @@ bool t_english_dict(const TCHAR* dictfilename)
 	_tprintf(_T("Dict file loaded: '%s'\n"), dictfilename);
 
 	// Define a hashdict and inject dict words into it.
-	hashdict<int> dict1;
+	hashdict<int> dict1(_T("D1"));
+	dict1.SetDbgParams(resize_pct);
 
-	StringSplitter<TCHAR*> sp(alltext); // ok with 16:40
+	StringSplitter<TCHAR*, StringSplitter_IsCrlfNul> sp(alltext); // ok with 16:40
 
 	Uint msec_start = va_millisec();
 
@@ -86,7 +70,7 @@ bool t_english_dict(const TCHAR* dictfilename)
 	int len = 0;
 	int dups = 0;
 	
-	for(;;i++)
+	for(;; i++)
 	{
 		int pos = sp.next(&len);
 		if(pos==-1)
@@ -163,7 +147,9 @@ bool t_english_dict(const TCHAR* dictfilename)
 	// Move half words from dict1 to new dict2
 	//
 
-	hashdict<int> dict2;
+	hashdict<int> dict2(_T("D2"));
+	dict2.SetDbgParams(resize_pct);
+
 	sp.reset();
 	msec_start = va_millisec();
 	int dict1_words = total_words, dict2_words = 0;
@@ -189,6 +175,8 @@ bool t_english_dict(const TCHAR* dictfilename)
 			dict2_words++;
 		}
 	}
+
+	assert( abs(dict1_words-dict2_words) <= 1 );
 
 	// Do verify
 	sp.reset();
@@ -218,7 +206,80 @@ bool t_english_dict(const TCHAR* dictfilename)
 
 	msec_end = va_millisec();
 
-	_tprintf(_T("[DictTest3] Split dict into halves and verify costs %d millisec.\n"), msec_end-msec_start);
+	_tprintf(_T("[DictTest3] Split dict into halves and verify, costs %d millisec.\n"), msec_end-msec_start);
+
+	//
+	// Move words from dict2 back into dict1. We should see dict2 shrunk.
+	//
+
+	msec_start = va_millisec();
+
+	const TCHAR *key = nullptr;
+	Sdring keydel;
+
+	hashdict<int>::enumer en2(dict2);
+
+	int ndels = 0;
+	for(;; ndels++)
+	{
+		int *pvalue = nullptr;
+		const TCHAR *key = en2.next(&pvalue);
+		keydel = key; // make a copy of the key str
+
+		if(keydel)
+		{
+			int oldval = -1;
+			bool succ = dict2.del(key, oldval);
+			assert(succ);
+
+			// We must use `keydel` below, bcz `key` has become a dangling pointer after `del()`.
+			int *pi = dict1.setdefault(keydel, oldval);
+			assert(*pi==oldval);
+		}
+		else
+			break;
+	}
+
+	assert(ndels==dict2_words);
+	assert(ndels+dict1_words == total_words);
+
+	// Verify dict1 content again.
+
+	sp.reset();
+	for(i=0;; i++)
+	{
+		int pos = sp.next(&len);
+		if(pos==-1)
+			break;
+
+		const TCHAR *nowword = &alltext[pos];
+		int *pline = dict1.get(nowword);
+
+		int iline = i+1;
+		assert(*pline==iline);
+	}
+
+	assert(i==total_words);
+
+	msec_end = va_millisec();
+
+	_tprintf(_T("[DictTest4] Merge dict2 back into dict1 and verify, costs %d millisec.\n"), msec_end-msec_start);
+
+	//
+	// Test that dict2 adding key is OK after shrinking
+	//
+	sp.reset();
+	for(i=0;; i++)
+	{
+		int pos = sp.next(&len);
+		if(pos==-1)
+			break;
+
+		int iline = i+1;
+		const TCHAR *nowword = &alltext[pos];
+		int *pline = dict1.set(nowword, iline);
+		assert(*pline==iline);
+	}
 
 	return true;
 }

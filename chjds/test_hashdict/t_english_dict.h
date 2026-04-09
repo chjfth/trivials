@@ -3,6 +3,6 @@
 
 #include <ps_TCHAR.h>
 
-bool t_english_dict(const TCHAR* dictfilename);
+bool t_english_dict(const TCHAR* dictfilename, int resize_pct);
 
 #endif
