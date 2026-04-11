@@ -220,6 +220,7 @@
 
   <ItemGroup>
     <ClInclude Include="t_english_dict.h" />
+    <ClInclude Include="CHHI_DEBUG.h" />
 <!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />

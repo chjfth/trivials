@@ -6,13 +6,10 @@
 	using namespace fsapi;
 #include <makeTsdring.h>
 #include <StringHelper.h>
-#include "t_english_dict.h"
-
-//#ifdef __unix__
+#include <EnsureClnup_misc.h>
 #include <msvc_extras.h>
-//#else
-//#include <tchar.h>
-//#endif
+
+#include "CHHI_DEBUG.h"
 
 #undef NDEBUG // Enable assert for Release-build
 
@@ -21,7 +18,8 @@
 #include <hashdict.h>
 using namespace chjds;
 
-#include <EnsureClnup_misc.h>
+
+#include "t_english_dict.h"
 
 
 inline bool StringSplitter_IsCrlfNul(int charval)
@@ -217,7 +215,7 @@ bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 	const TCHAR *key = nullptr;
 	Sdring keydel;
 
-	hashdict<int>::enumer en2(dict2);
+	hashdict<int>::enumor en2(dict2);
 
 	int ndels = 0;
 	for(;; ndels++)

@@ -2,18 +2,13 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <ps_TCHAR.h>
+#include <msvc_extras.h>
 
-#ifdef __linux_
-#include <linux/msvc_extras.h>
-#endif
+#include "CHHI_DEBUG.h"
 
 #undef NDEBUG // Enable assert for Release-build
 
-//#define vaDbgTs_IMPL
-
 #define CHHI_ALL_IMPL
-//#define hashdict_DEBUG
-//#define vaDBG_MAX_LEVEL 3
 
 #include <CHHI_vaDBG_is_vaDbgTs.h> // optional
 #include <fsapi.h>
@@ -93,7 +88,7 @@ void test_hashdict_ints()
 	const TCHAR * key = nullptr;
 
 	_tprintf(_T("First round enumeration: (total %d)\n"), d1.keycount());
-	hashdict<int>::enumer en1(d1);
+	hashdict<int>::enumor en1(d1);
 	for(i=0; ;i++)
 	{
 		int *pvalue = nullptr;
