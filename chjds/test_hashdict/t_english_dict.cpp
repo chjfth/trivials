@@ -210,6 +210,11 @@ bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 	// Move words from dict2 back into dict1. We should see dict2 shrunk.
 	//
 
+	hashdict<int>::ReportState_st st1a={sizeof(st1a)}, st1b={sizeof(st1b)};
+	hashdict<int>::ReportState_st st2a={sizeof(st2a)}, st2b={sizeof(st2b)};
+	dict1.ReportState(&st1a); 
+	dict2.ReportState(&st2a); 
+
 	msec_start = va_millisec();
 
 	const TCHAR *key = nullptr;
@@ -241,6 +246,9 @@ bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 	assert(ndels==dict2_words);
 	assert(ndels+dict1_words == total_words);
 
+	dict1.ReportState(&st1b); 
+	dict2.ReportState(&st2b); 
+
 	// Verify dict1 content again.
 
 	sp.reset();
@@ -262,6 +270,12 @@ bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 	msec_end = va_millisec();
 
 	_tprintf(_T("[DictTest4] Merge dict2 back into dict1 and verify, costs %d millisec.\n"), msec_end-msec_start);
+	_tprintf(_T("            dict1 memuse increased from %lld to %lld (diff %lld bytes)\n"), 
+		st1a.total_memuse64, st1b.total_memuse64,   st1b.total_memuse64-st1a.total_memuse64);
+	_tprintf(_T("            dict2 memuse reduced from %lld to %lld (diff %lld bytes)\n"), 
+		st2a.total_memuse64, st2b.total_memuse64,   st2b.total_memuse64-st2a.total_memuse64);
+	assert(st1a.total_memuse64 < st1b.total_memuse64);
+	assert(st2a.total_memuse64 > st2b.total_memuse64);
 
 	//
 	// Test that dict2 adding key is OK after shrinking
