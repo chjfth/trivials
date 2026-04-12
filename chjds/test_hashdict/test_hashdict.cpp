@@ -84,7 +84,7 @@ void test_hashdict_ints()
 		d1.set(map.name, map.value);
 	}
 
-	// test enumer
+	// test enumor
 	const TCHAR * key = nullptr;
 
 	_tprintf(_T("First round enumeration: (total %d)\n"), d1.keycount());
@@ -326,6 +326,20 @@ void test_hashdict_cxxobjs()
 
 }
 
+void Evernote_Demo()
+{
+	hashdict<int> dict;			// init 8 slots
+
+	dict.set(_T("one"), 1);		// slot #7
+	dict.set(_T("two"), 2);		// slot #5
+	dict.set(_T("three"), 3);	// slot (#7) #0
+	dict.set(_T("four"), 4);	// slot #2
+	
+	dict.del(_T("one"));		// slot #7 is marked dummy
+	int *pi = dict.get(_T("three"));
+	assert(*pi==3);
+}
+
 void test_trivials()
 {
 	hashdict<int> dict(_T("AllDummy"));
@@ -366,11 +380,15 @@ int _tmain(int argc, char *argv[])
 
 //	test_trivials();
 
+	Evernote_Demo();
+
 	test_hashdict_ints();
 
 	test_hashdict_cxxobjs();
 
 	printf("\n");
+
+	bool succ = false;
 
 	int ar_resizepct[] = {66, 0};
 	for(int i=0; i<ARRAYSIZE(ar_resizepct); i++)
@@ -382,11 +400,13 @@ int _tmain(int argc, char *argv[])
 		printf("/////////////////////////////////////////////////////////////////////\n");
 
 		printf("\n");
-		t_english_dict(_T("..\\..\\_data\\english-words-22k.txt"), resizepct);
+		succ = t_english_dict(_T("..\\..\\_data\\english-words-22k.txt"), resizepct);
 		//	t_english_dict(_T("..\\..\\_data\\english-words-22k.utf8.txt"));
+		assert(succ);
 
 		printf("\n");
-		t_english_dict(_T("..\\..\\_data\\english-words-4600k.txt"), resizepct);
+		succ = t_english_dict(_T("..\\..\\_data\\english-words-4600k.txt"), resizepct);
+		assert(succ);
 
 		printf("\n");
 	}

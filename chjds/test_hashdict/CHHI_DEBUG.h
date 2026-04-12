@@ -3,7 +3,7 @@
 // these same macro values. Different CHHI debug macro values will
 // cause different .cpp to see different C++ template code.
 
-#define vaDBG_MAX_LEVEL 2 // use 3 to see max vaDBG output
+#define vaDBG_MAX_LEVEL 2 // use 3 to see most verbose vaDBG output
 
 #define hashdict_DEBUG
 

@@ -33,7 +33,7 @@ bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 	// Note: Duplicate words in dictfilename will be considered as one single word.
 
 	CEC_filehandle_t fh = file_open(dictfilename, open_for_read, open_share_read);
-	if(!fh)
+	if(is_bad_filehandle(fh))
 	{
 		_tprintf(_T("Error: Cannot open file '%s'\n"), dictfilename);
 		return false;
