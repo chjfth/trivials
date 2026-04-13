@@ -326,7 +326,7 @@ void test_hashdict_cxxobjs()
 
 }
 
-void Evernote_Demo()
+void Evernote_Demo() // Evclip: 20260413.m1
 {
 	hashdict<int> dict;			// init 8 slots
 
@@ -363,6 +363,8 @@ void test_trivials()
 	}
 
 	pi = dict.set(_T("hundred"), 100);
+	// -- Note: This set() will trigger slot-capacity increase, bcz dummy slots
+	//    contribute to "full" state of slot storage.
 	assert(*pi==100);
 }
 
