@@ -326,6 +326,50 @@ void test_hashdict_cxxobjs()
 
 }
 
+void test_hashdict_copymove()
+{
+	printf("%s()\n", __FUNCTION__);
+	bool succ = false;
+
+	hashdict<int> x1(_T("x1"));
+	int i, *pi = nullptr;
+	const int NUMs = ARRAYSIZE(gar_NumMap);
+
+	// fill x1
+	for(i=0; i<NUMs; i++)
+	{
+		NumMap_st &map = gar_NumMap[i];
+		x1.set(map.name, map.value);
+	}
+
+	// clone out x2 from x1
+	hashdict<int> x2(x1);
+	x2.set_dbgsig(_T("x2"));
+	assert(x2.keycount()==NUMs);
+
+	// create x3 and transfer x1 to x3
+
+	hashdict<int> x3( std::move(x1) );
+	x3.set_dbgsig(_T("x3"));
+	assert(x3.keycount()==NUMs);
+	assert(x1.keycount()==0);
+
+	// delete "one" from x3
+	succ = x3.del(_T("one"));
+	assert(succ);
+	pi = x3.get(_T("one"));
+	assert(!pi);
+
+	// move x2 to x3, this abandons x2
+	x3 = std::move(x2);
+	
+	pi = x2.get(_T("one"));
+	assert(!pi);
+	
+	pi = x3.get(_T("one"));
+	assert(pi && *pi==1);
+}
+
 void Evernote_Demo() // Evclip: 20260413.m1
 {
 	hashdict<int> dict;			// init 8 slots
@@ -368,6 +412,7 @@ void test_trivials()
 	assert(*pi==100);
 }
 
+
 //////////////////////////////////////////////////////////////////////////
 
 int _tmain(int argc, char *argv[])
@@ -387,6 +432,8 @@ int _tmain(int argc, char *argv[])
 	test_hashdict_ints();
 
 	test_hashdict_cxxobjs();
+
+	test_hashdict_copymove();
 
 	printf("\n");
 
