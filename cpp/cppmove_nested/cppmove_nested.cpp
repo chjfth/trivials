@@ -20,8 +20,8 @@ int main()
 {
 #ifdef _MSC_VER
 	printf("Compile using _MSC_VER=%d\n", _MSC_VER);
-#if _MSC_VER==1600
-	printf("Note: You are using VC2010(pre-C++11 era), the code behavior is wrong.\n\n");
+#if _MSC_VER<1900
+	printf("Note: You are using Visual C++ older than VC2015(pre-C++11 era), the code behavior is wrong.\n\n");
 #endif
 #endif
 #ifdef __GNUC__
