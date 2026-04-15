@@ -451,12 +451,12 @@ int _tmain(int argc, char *argv[])
 		printf("/////////////////////////////////////////////////////////////////////\n");
 
 		printf("\n");
-		succ = t_english_dict(_T("..\\..\\_data\\english-words-22k.txt"), resizepct);
-		//	t_english_dict(_T("..\\..\\_data\\english-words-22k.utf8.txt"));
+		succ = t_english_dict(_T("../../_data/english-words-22k.txt"), resizepct);
+		//	t_english_dict(_T("../../_data/english-words-22k.utf8.txt"));
 		assert(succ);
 
 		printf("\n");
-		succ = t_english_dict(_T("..\\..\\_data\\english-words-4600k.txt"), resizepct);
+		succ = t_english_dict(_T("../../_data/english-words-4600k.txt"), resizepct);
 		assert(succ);
 
 		printf("\n");
