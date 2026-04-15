@@ -1,0 +1,6 @@
+[2026-04-15] Compile on Ubuntu Linux 20.04, gcc 9.4:
+
+	g++ -O2 -o test_hashdict.ex  -D__int64="long long" -I ../../__chjcxx/common-include/include/linux -I ../../__chjcxx/common-include/include test_hashdict.cpp t_english_dict.cpp
+	
+To ompile on Win7 Cygwin, gcc 9.3, we need to add extra `-liconv`.
+

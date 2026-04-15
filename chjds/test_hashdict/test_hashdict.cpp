@@ -209,10 +209,10 @@ void test_hashdict_ints()
 	}
 	assert(i==d1.keycount());
 
+	// d1.CompactTrove(); // explicit compact, for debug purpose
 
 	_tprintf(_T("Test mass del() triggering CompactTrove.\n"));
 
-	// d1.CompactTrove(); // explict compact, for debug purpose
 	for(i=0; i<15; i++)
 	{
 		NumMap_st &map = gar_NumMap[i];
@@ -429,7 +429,7 @@ int _tmain(int argc, char *argv[])
 
 	Evernote_Demo();
 
-	test_hashdict_ints();
+	test_hashdict_ints(); 
 
 	test_hashdict_cxxobjs();
 
@@ -438,6 +438,8 @@ int _tmain(int argc, char *argv[])
 	printf("\n");
 
 	bool succ = false;
+
+	// Test big English dictionaries.
 
 	int ar_resizepct[] = {66, 0};
 	for(int i=0; i<ARRAYSIZE(ar_resizepct); i++)
@@ -460,6 +462,7 @@ int _tmain(int argc, char *argv[])
 		printf("\n");
 	}
 
+
 #ifdef _MSC_VER
 	// Take snapshot after
 	_CrtMemCheckpoint(&state2);
@@ -470,6 +473,8 @@ int _tmain(int argc, char *argv[])
 		_tprintf(_T("Memory leak detected!!! See debug channel for details.\n"));
 		_CrtMemDumpStatistics(&stateDiff);
 		_CrtMemDumpAllObjectsSince(&state1);
+
+		return 4;
 	}
 #endif // _MSC_VER
 
