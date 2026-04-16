@@ -227,6 +227,23 @@
 -->
   </ItemGroup>
 
+  <PropertyGroup>
+    <VSPG_ExeDataFiles>
+    ;.\..\..\_data\english-words-22k.txt
+    ;.\..\..\_data\english-words-4600k.txt
+    </VSPG_ExeDataFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <CustomBuild Include="$(VSPG_ExeDataFiles)">
+      <FileType>Document</FileType>
+      <Message>#### VSPG_ExeDataFiles: %(FullPath)</Message>
+      <Command>if not exist "%(FullPath)" echo .  -- [NOTE] Above file does NOT exist, CustomBuild will be triggered everytime.</Command>
+      <Outputs>$(TargetPath)</Outputs>
+     </CustomBuild>
+  </ItemGroup>
+
+
   <!-- MSBuild system stock Cpp.targets -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
