@@ -415,7 +415,7 @@ void test_trivials()
 
 //////////////////////////////////////////////////////////////////////////
 
-int _tmain(int argc, char *argv[])
+int _tmain(int argc, TCHAR *argv[])
 {
 	setlocale(LC_ALL, "");
 

@@ -220,7 +220,7 @@ bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 	const TCHAR *key = nullptr;
 	Sdring keydel;
 
-	hashdict<int>::enumor en2(dict2);
+	auto en2 = dict2.get_enumor();
 
 	int ndels = 0;
 	for(;; ndels++)
