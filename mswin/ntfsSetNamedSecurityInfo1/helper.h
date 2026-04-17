@@ -1,7 +1,8 @@
 #pragma once
 
-#if _MSC_VER < 1900
-#error "This makedeeptree needs at least VC2015 to compile. Older compiler behaves abnormally on C++ exceptions."
+#include <CxxVerCheck.h>
+#ifndef VC2015_OR_NEWER
+#error "This makedeeptree needs at least VC2015 to compile. Older compiler generates wrong code."
 #endif
 
 #include <tchar.h>

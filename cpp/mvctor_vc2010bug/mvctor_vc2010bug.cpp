@@ -1,9 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <tchar.h>
-#include <locale.h>
 #include <assert.h>
-#include <xutility>
+#include <utility>
 
 #include <EnsureClnup.h>
 
@@ -12,10 +9,10 @@ class CFoo
 {
 public:
 	CFoo(int data) : m_data(data) {
-		printf("CA ctor (%p)\n", this);
+		printf("CFoo ctor (%p)\n", this);
 	}
 	~CFoo() {
-		printf("CA dtor (%p)\n", this);
+		printf("CFoo dtor (%p)\n", this);
 	}
 	int m_data;
 };
@@ -63,7 +60,7 @@ void test4()
 	printf("in test4()\n");
 }
 
-int _tmain(int argc, TCHAR* argv[])
+int main()
 {
 	printf("\n==test2()\n");
 	test2();
