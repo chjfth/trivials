@@ -5,6 +5,7 @@
 #include <utility> // On MSVC, this brings in _CrtMemState()
 #include <msvc_extras.h>
 
+#include "CHHI_DEBUG.h"
 
 #include "SimpleIni.h"
 
