@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <tchar.h>
+#include <ps_TCHAR.h>
 #include <locale.h>
 #include <string>
 #include <iostream>
@@ -81,7 +81,7 @@ void do_test()
 	printf("\n========= Use with C++ STL string =========\n");
 	printf("\"%s\"  *SplitBySemicolon, TrimSpace)\n", ss.c_str());
 
-	StringSplitter<string, SplitBySemicolon, TrimSpace> sp_wstring(ss, 0, ss.length());
+	StringSplitter<string, SplitBySemicolon, TrimSpace> sp_wstring(ss, 0, (int)ss.length());
 	for (int i = 0;; i++)
 	{
 		int len = 0;
