@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <tchar.h>
+#include <assert.h>
+#include <ps_TCHAR.h>
 #include <locale.h>
 #include <utility> // On MSVC, this brings in _CrtMemState()
 #include <msvc_extras.h>
+
+#define NDEBUG // always enable assert()
 
 #include "CHHI_DEBUG.h"
 
@@ -13,7 +16,7 @@ void do_test()
 {
 	SimpleIni ini;
 	SimpleIni::ReCode_et err = ini.read(_T("sample1.ini"));
-
+	assert(!err);
 }
 
 int _tmain(int argc, TCHAR* argv[])
