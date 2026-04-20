@@ -1,4 +1,5 @@
 #undef NDEBUG
+
 #include <stdio.h>
 #include <assert.h>
 
@@ -51,9 +52,6 @@ struct SHoldRef
 	}
 };
 
-#undef NDEBUG
-
-
 void do_test()
 {
 	Szring sz("ABC", 3);
@@ -61,7 +59,7 @@ void do_test()
 	SHoldRef holdref(sz);
 
 	assert(sz.m_buf == holdref.m_szref);
-	assert(&sz.m_buf != *(PCHAR**)&holdref);
+	assert(&sz.m_buf == *(PCHAR**)&holdref);
 }
 
 
