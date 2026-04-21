@@ -1,3 +1,4 @@
+#undef NDEBUG // always enable assert()
 
 // This dedicated CHHI_DEBUG.h ensures that all CHHI headers receive 
 // these same macro values. Different CHHI debug macro values will
