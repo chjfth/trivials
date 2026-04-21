@@ -20,7 +20,7 @@ public:
 	}
 
 	~Szring() {
-		delete m_buf;
+		delete []m_buf;
 	}
 
 	operator char* & () // I just want it, anyway!
@@ -28,7 +28,7 @@ public:
 		return m_buf;
 	}
 
-	operator char const* const& () // linux faint
+	operator char const* const& () // GCC faint
 	{
 		return m_buf;
 	}
