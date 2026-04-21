@@ -74,9 +74,9 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{20260420-0000-0000-0000-200929000001}</ProjectGuid>
-    <ProjectName>oper_retref</ProjectName>
-    <TargetName>oper_retref</TargetName>
+    <ProjectGuid>{20260421-0000-0000-0000-110752000001}</ProjectGuid>
+    <ProjectName>tdcrazy</ProjectName>
+    <TargetName>tdcrazy</TargetName>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Configuration.EndsWith('-gcc'))" Label="Globals">
@@ -229,12 +229,12 @@
 
     <!-- [20230326.R1] This is to workround a possible msvc 16.11 VSLinux bug: 
       When launching WSL_1_0 exe, VSIDE will go hard to launch exe inside:
-        /mnt/d/gitw/Templates/msvc/oper_retref/bin/x64/Debug-WSL-gcc
+        /mnt/d/gitw/Templates/msvc/tdcrazy/bin/x64/Debug-WSL-gcc
       instead of the correct:
-        /mnt/d/gitw/Templates/msvc/oper_retref/bin.linux/x64/Debug-WSL-gcc
+        /mnt/d/gitw/Templates/msvc/tdcrazy/bin.linux/x64/Debug-WSL-gcc
       .
       Without this workaround, user needs to set the `<DebuggerWorkingDirectory>$(OutDir)</DebuggerWorkingDirectory>` 
-      into oper_retref.vcxproj.user to make it work.
+      into tdcrazy.vcxproj.user to make it work.
     -->
     <DebuggerWorkingDirectory>$(OutDir)</DebuggerWorkingDirectory>
 
@@ -385,7 +385,7 @@
     Source file list:
    -->
   <ItemGroup>
-    <ClCompile Include="oper_retref.cpp" />
+    <ClCompile Include="tdcrazy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <!-- 
