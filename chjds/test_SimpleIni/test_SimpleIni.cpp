@@ -7,11 +7,15 @@
 #include <locale.h>
 #include <utility> // On MSVC, this brings in _CrtMemState()
 #include <msvc_extras.h>
+#include <sdring.h>
 
 #include "SimpleIni.h"
 
 void do_test()
 {
+// 	Sdring sz1(_T("ABC"));
+// 	int kk = sz1;
+
 	SimpleIni ini;
 	SimpleIni::ReCode_et err = ini.read(_T("sample1.ini"));
 	assert(!err);
