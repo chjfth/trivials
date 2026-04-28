@@ -229,7 +229,7 @@ bool t_english_dict(const TCHAR* dictfilename, int resize_pct)
 		const TCHAR *key = en2.next(&pvalue);
 		keydel = key; // make a copy of the key str
 
-		if(keydel)
+		if(keydel.not_empty())
 		{
 			int oldval = -1;
 			bool succ = dict2.del(key, oldval);
