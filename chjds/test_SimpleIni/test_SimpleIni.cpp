@@ -11,6 +11,11 @@
 
 #include "SimpleIni.h"
 
+bool IsEqual(const TCHAR *s1, const TCHAR *s2)
+{
+	return _tcscmp(s1, s2)==0 ? true : false;
+}
+
 void do_test1()
 {
 // 	Sdring sz1(_T("ABC"));
@@ -42,6 +47,18 @@ void do_test1()
 
 		_tprintf(_T("\n"));
 	}
+
+	assert( ini.has_key(_T("section1"), _T("key2")) );
+	assert(!ini.has_key(_T("section1"), _T("keyZ")) );
+
+	Sdring val;
+	const TCHAR *sverify = _T("\n")
+		_T("val line one\n")
+		_T("val line two\n")
+		_T("val line three");
+
+	val = ini.get(_T("section2"), _T("keym"));
+	assert( IsEqual(val, sverify) );
 }
 
 int _tmain(int argc, TCHAR* argv[])
