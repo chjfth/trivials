@@ -35,7 +35,7 @@ void do_test1()
 	SimpleIni::ReCode_et err = ini.read(inifilename);
 	assert(!err);
 
-	int i;
+	int i, DiffAt=-1;
 	const TCHAR *secname = nullptr;
 
 	//
@@ -75,13 +75,14 @@ void do_test1()
 
 	const wchar_t *answerW = L"\
 Section#1 [global]\n\
-'basedir' = 'dirFoo'\n\
+'basedir' = 'd:/testdir'\n\
 \n\
 Section#2 [section1]\n\
 'key1' = '11'\n\
 'key2' = '12'\n\
 'keym' = 'val first line\n\
 val second line'\n\
+'greet words' = 'Hello, my friend!'\n\
 \n\
 Section#3 [section2]\n\
 'key1' = '21'\n\
@@ -90,16 +91,18 @@ Section#3 [section2]\n\
 val line one\n\
 val line two\n\
 val line three'\n\
+'emptykey' = ''\n\
 \n\
 Section#4 [unicodes]\n\
 'key1' = 'ABC\x7535'\n\
 \n"; //Note: \x7535 is a Unicode code-point(GBK dian).
-	assert( sdring<wchar_t>::str_match(bigstrW, answerW) );
+	assert( sdring<wchar_t>::str_match(bigstrW, answerW, &DiffAt) );
 
 	assert( ini.has_key(_T("section1"), _T("key2")) );
 	assert(!ini.has_key(_T("section1"), _T("keyZ")) );
 
 	Sdring val;
+	bool haskey = false;
 	const TCHAR *sverify = _T("\n")
 		_T("val line one\n")
 		_T("val line two\n")
@@ -113,6 +116,13 @@ Section#4 [unicodes]\n\
 
 	val = ini.get(_T("section2"), _T("no-such"));
 	assert(val.is_empty());
+	haskey = ini.has_key(_T("section2"), _T("no-such"));
+	assert(!haskey);
+
+	val = ini.get(_T("section2"), _T("emptykey"));
+	assert(val.is_empty());
+	haskey = ini.has_key(_T("section2"), _T("emptykey"));
+	assert(haskey);
 }
 
 int _tmain(int argc, TCHAR* argv[])
