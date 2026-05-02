@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <assert.h>
 #include <ps_TCHAR.h>
 #include <locale.h>
@@ -92,6 +93,7 @@ val line one\n\
 val line two\n\
 val line three'\n\
 'emptykey' = ''\n\
+'endkey' = 'endval'\n\
 \n\
 Section#4 [unicodes]\n\
 'key1' = 'ABC\x7535'\n\
@@ -123,6 +125,38 @@ Section#4 [unicodes]\n\
 	assert(val.is_empty());
 	haskey = ini.has_key(_T("section2"), _T("emptykey"));
 	assert(haskey);
+
+
+	//
+	// Set some new key-value pairs, then verify
+	//
+
+	const TCHAR *key2val = _T("New value \nwith second line");
+	const TCHAR *endkeyval = _T("new endval");
+
+	ini.set(_T("section2"), _T("key2"), key2val);
+	Sdring newval1 = ini.get(_T("section2"), _T("key2"));
+
+	ini.set(_T("section2"), _T("endkey"), endkeyval);
+	Sdring newval2 = ini.get(_T("section2"), _T("endkey"));
+
+	assert( Sdring::str_match(newval1, key2val, &DiffAt) );
+	assert( Sdring::str_match(newval2, endkeyval, &DiffAt) );
+
+	const TCHAR *in_newsec = _T("Fruits");
+	const TCHAR *in_newkey1 = _T("Apple");
+	const TCHAR *in_newkey2 = _T("Pear");
+	ini.set(in_newsec, in_newkey1, _T("1"));
+	ini.set(in_newsec, in_newkey2, _T("2"));
+
+	Sdring retval1 = ini.get(in_newsec, in_newkey1);
+	assert( Sdring::str_match(retval1, _T("1"), &DiffAt) );
+
+	// Write whole INI content.
+
+	Sdring iniout = ini.save_ini_string(_T("\r\n"));
+
+	_tprintf(_T("\n"));
 }
 
 int _tmain(int argc, TCHAR* argv[])
