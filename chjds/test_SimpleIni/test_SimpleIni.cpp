@@ -15,7 +15,9 @@
 #include <makeTsdring.h>
 #include <chj_mishmash.h>
 #include <fsapi.h>
+using namespace fsapi;
 #include <ospath.h>
+using namespace ospath;
 
 #include <SimpleIni.h>
 #include <SimpleIniEx.h>
@@ -190,24 +192,31 @@ void test_iniEx()
 
 	const TCHAR * const ar_inifiles[] =
 	{
-		_T("tier1.ini"), _T("tier2.ini"), _T("tier3.ini")
+		_T("tier0.ini"), _T("tier1.ini"), _T("tier2.ini")
 	};
 
-	const TCHAR *ini_need_exists = ar_inifiles[1];
-	const TCHAR *ini_output_file = ar_inifiles[2];
+	bool is_fail = false;
+	const TCHAR *ini_need_exist = ar_inifiles[1];
+	const TCHAR *ini_output_new = ar_inifiles[2];
+
+	// First delete ini_output_new.
+
+	file_delete(ini_output_new);
+	assert( !file_exists(ini_output_new) );
 
 	SimpleIniEx ini;
 	bool succ = ini.load_cascade(ar_inifiles, ARRAY_SIZE(ar_inifiles));
 	if(!succ) {
-		_tprintf(_T("[ERROR]Test input-file %s SHOULD exist for the test to run.\n"), ini_need_exists);
+		_tprintf(_T("[ERROR]Test input-file %s SHOULD exist for the test to run.\n"), ini_need_exist);
 	}
 	assert(succ);
 
-	// Here, we mark tier2.ini readonly, so that later save_cascade() will write to tier3.ini.
+	// Here, we temporarily TURN-ON readonly for tier1.ini, so that later 
+	// save_cascade() will write to tier2.ini.
 
-	succ = ospath::file_mark_readonly(ini_need_exists);
+	succ = file_mark_readonly(ini_need_exist, true);
 	if(!succ) {
-		_tprintf(_T("[ERROR]Test input-file %s marking readonly -- fail!\n"), ini_need_exists);
+		_tprintf(_T("[ERROR]Test input-file %s marking readonly -- fail!\n"), ini_need_exist);
 	}
 	assert(succ);
 
@@ -216,16 +225,30 @@ void test_iniEx()
 	va_now_ymdhms(sznowtime, ARRAY_SIZE(sznowtime));
 
 	SimpleIni::ReCode_et err = ini.set(_T("foosec"), _T("nowtime"), sznowtime);
-	assert(!err);
+	if(err) {
+		_tprintf(_T("[ERROR]Unexpected! In test_iniEx(), ini.set() fail!\n"));
+		is_fail = true;
+	}
 	
 	Sdring sout_inifile;
 	succ = ini.save_cascade(&sout_inifile);
-	assert(succ);
+	if(!succ) {
+		_tprintf(_T("[ERROR] ini.save_cascade() fail!\n"));
+		is_fail = true;
+	}
+
+	// TURN-OFF readonly for tier1.ini (back to normal)
+	assert( file_mark_readonly(ini_need_exist, false) );
+
+	assert(!is_fail);
+	
+	Sdring ini_output_fullpath = fullpath_from_rela(ini_output_new);
+	assert( Sdring::str_match(ini_output_fullpath, sout_inifile) );
 
 	// Verify the written content.
 
 	SimpleIni iniout;
-	err = iniout.load(ini_output_file);
+	err = iniout.load(ini_output_new);
 	assert(!err);
 
 	Sdring rs_nowtime = iniout.get(_T("foosec"), _T("nowtime"));
@@ -264,4 +287,3 @@ int _tmain(int argc, TCHAR* argv[])
 	printf("Success.\n");
 	return 0;
 }
-

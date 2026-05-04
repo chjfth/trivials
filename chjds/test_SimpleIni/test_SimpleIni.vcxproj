@@ -210,7 +210,7 @@
     <VSPG_ExeDataFiles>
     ;sample1.ini
     ;sample1.mod.ini
-    ;tier2.ini
+    ;tier1.ini
     </VSPG_ExeDataFiles>
   </PropertyGroup>
 
