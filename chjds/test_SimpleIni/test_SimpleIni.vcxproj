@@ -206,6 +206,14 @@
     </Link>
   </ItemDefinitionGroup>
 
+  <PropertyGroup>
+    <VSPG_ExeDataFiles>
+    ;sample1.ini
+    ;sample1.mod.ini
+    ;tier2.ini
+    </VSPG_ExeDataFiles>
+  </PropertyGroup>
+
   <!-- 
     Source file list:
    -->
@@ -222,6 +230,7 @@
     <ClInclude Include="CHHI_DEBUG.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\hashdict.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\SimpleIni.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\SimpleIniEx.h" />
 <!-- 
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
 -->

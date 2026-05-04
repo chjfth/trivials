@@ -5,15 +5,20 @@
 #include <string.h>
 #include <assert.h>
 #include <ps_TCHAR.h>
+#include <commdefs.h>
 #include <locale.h>
 #include <utility> // On MSVC, this brings in _CrtMemState()
 #include <msvc_extras.h>
+#include <vaDbgTs.h>
 #include <snTprintf.h>
 #include <sdring.h>
 #include <makeTsdring.h>
-//#include <TScalableArray.h>
+#include <chj_mishmash.h>
+#include <fsapi.h>
+#include <ospath.h>
 
-#include "SimpleIni.h"
+#include <SimpleIni.h>
+#include <SimpleIniEx.h>
 
 bool IsEqual(const TCHAR *s1, const TCHAR *s2)
 {
@@ -33,7 +38,7 @@ void do_test1()
 	_tprintf(_T("Reading INI file: %s\n\n"), inifilename);
 
 	SimpleIni ini;
-	SimpleIni::ReCode_et err = ini.read(inifilename);
+	SimpleIni::ReCode_et err = ini.load(inifilename);
 	assert(!err);
 
 	int i, DiffAt=-1;
@@ -152,11 +157,79 @@ Section#4 [unicodes]\n\
 	Sdring retval1 = ini.get(in_newsec, in_newkey1);
 	assert( Sdring::str_match(retval1, _T("1"), &DiffAt) );
 
-	// Write whole INI content.
+	// Save whole INI content.
 
-	Sdring iniout = ini.save_ini_string(_T("\r\n"));
+	Sdring initext_gen1 = ini.save_ini_string(_T("\n"));
+
+	const TCHAR *saved_inifile = _T("sample1.save.ini");
+
+	err = ini.save(saved_inifile, _T("\r\n")); // Let disk file use \r\n, even on Linux.
+	assert(!err);
+
+	// Read back the saved ini to verify it's content preserves.
+
+	SimpleIni ini2 ;
+	err = ini2.load(saved_inifile);
+	assert(!err);
+
+	Sdring initext_gen2 = ini2.save_ini_string(_T("\n"));
+
+	assert( Sdring::str_match(initext_gen1, initext_gen2, &DiffAt) );
+
+	// Final verify with stock answer file.
+	
+	const TCHAR *std_answer_file = _T("sample1.mod.ini");
+	assert( binfile_is_match(saved_inifile, std_answer_file, &DiffAt) );
 
 	_tprintf(_T("\n"));
+}
+
+void test_iniEx()
+{
+	_tprintf(_T("Test SimpleIniEx ...\n"));
+
+	const TCHAR * const ar_inifiles[] =
+	{
+		_T("tier1.ini"), _T("tier2.ini"), _T("tier3.ini")
+	};
+
+	const TCHAR *ini_need_exists = ar_inifiles[1];
+	const TCHAR *ini_output_file = ar_inifiles[2];
+
+	SimpleIniEx ini;
+	bool succ = ini.load_cascade(ar_inifiles, ARRAY_SIZE(ar_inifiles));
+	if(!succ) {
+		_tprintf(_T("[ERROR]Test input-file %s SHOULD exist for the test to run.\n"), ini_need_exists);
+	}
+	assert(succ);
+
+	// Here, we mark tier2.ini readonly, so that later save_cascade() will write to tier3.ini.
+
+	succ = ospath::file_mark_readonly(ini_need_exists);
+	if(!succ) {
+		_tprintf(_T("[ERROR]Test input-file %s marking readonly -- fail!\n"), ini_need_exists);
+	}
+	assert(succ);
+
+	// Write current-time as key-value.
+	TCHAR sznowtime[40];
+	va_now_ymdhms(sznowtime, ARRAY_SIZE(sznowtime));
+
+	SimpleIni::ReCode_et err = ini.set(_T("foosec"), _T("nowtime"), sznowtime);
+	assert(!err);
+	
+	Sdring sout_inifile;
+	succ = ini.save_cascade(&sout_inifile);
+	assert(succ);
+
+	// Verify the written content.
+
+	SimpleIni iniout;
+	err = iniout.load(ini_output_file);
+	assert(!err);
+
+	Sdring rs_nowtime = iniout.get(_T("foosec"), _T("nowtime"));
+	assert( Sdring::str_match(sznowtime, rs_nowtime) );
 }
 
 int _tmain(int argc, TCHAR* argv[])
@@ -170,6 +243,8 @@ int _tmain(int argc, TCHAR* argv[])
 #endif
 
 	do_test1();
+
+	test_iniEx();
 
 #ifdef _MSC_VER
 	// Take snapshot after
@@ -186,6 +261,7 @@ int _tmain(int argc, TCHAR* argv[])
 	}
 #endif // _MSC_VER
 
+	printf("Success.\n");
 	return 0;
 }
 
