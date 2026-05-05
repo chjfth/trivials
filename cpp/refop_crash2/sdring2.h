@@ -6,13 +6,6 @@ class sdring
 public:
 	static int bufSize_(int nchars) { return nchars + 1; }
 
-	sdring(int nchars)
-	{
-		_ct0r();
-		if (nchars > 0)
-			setbufsize(nchars);
-	}
-
 	sdring(const char* instr) {
 		_ctor(instr);
 	}
@@ -83,11 +76,6 @@ public:
 	char* getptr() { // this does not have const decoration
 		return m_buf;
 	}
-	//  operator char* () {
-	//		// I don't use this in favor of `operator char* & ()`.
-	//		// Enable both will cause ambiguity in many user cases.
-	//		return getptr();
-	//  }
 
 	char*& getbuf() {
 		// Note: returns a reference(not char*'s value)
@@ -95,57 +83,10 @@ public:
 		return m_buf;
 	}
 	operator char*& () {
-		return getbuf();
-	}
-
-	operator char const* const& () {
-		return getbuf();
-	}
-
-	const char* takeover(char* buf, int nchars)
-	{
-		// [2026-04-06] Used by makeTstring.h
-		// Let sdring manage user-provided buf[], buf should be C++-delete-able.
-
-		if (m_buf)
-			delete[] m_buf;
-
-		m_buf = buf;
-		if (nchars >= 0)
-			m_nchars = nchars;
-		else
-			m_nchars = str_len(m_buf);
-
 		return m_buf;
 	}
 
-	char* setbufsize(int nchars) // to-test
-	{
-		if (nchars <= 0)
-			nchars = 0;
-
-		char* newbuf = new char[bufSize_(nchars)];
-		newbuf[0] = newbuf[nchars] = '\0';
-
-		if (m_buf)
-		{
-			// copy as-many-length of old string to newbuf
-			int nchars_to_copy = m_nchars <= nchars ? m_nchars : nchars;
-			for (int i = 0; i < nchars_to_copy; i++)
-				newbuf[i] = m_buf[i];
-
-			newbuf[nchars_to_copy] = '\0';
-
-			delete[] m_buf;
-			m_buf = newbuf;
-			m_nchars = nchars_to_copy;
-		}
-		else
-		{
-			m_buf = newbuf;
-			m_nchars = nchars;
-		}
-
+	operator char const* const& () {
 		return m_buf;
 	}
 
