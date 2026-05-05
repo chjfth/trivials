@@ -340,7 +340,7 @@
   <ItemDefinitionGroup Condition=" $(Configuration.EndsWith('-gcc'))">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
-      <PreprocessorDefinitions>;;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>;;_CONSOLE;__int64=long long;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
       <AdditionalIncludeDirectories>.;../../__chjcxx/common-include/include/linux;../../__chjcxx/common-include/include;../../__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -400,6 +400,8 @@
 
   <ItemGroup>
     <None Include="sample1.ini" />
+    <None Include="sample1.mod.ini" />
+    <None Include="tier1.ini" />
   </ItemGroup>
 
   <!-- MSBuild system stock Cpp.targets -->
