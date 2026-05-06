@@ -1,0 +1,7 @@
+# I force sample1.mod.ini to have CRLF line-endings, because test_SimpleIni program
+# compares program output with sample1.mod.ini's content to verify program behavior.
+# I may checkout this code/ini using Window Git, and compile and run the code using
+# both Visual C++ and Cygwin. so, MSVC output exe and Cygwin output exe must be able
+# to cope with exactly the same sample1.mod.ini file content.
+#
+sample1.mod.ini        text eol=crlf
