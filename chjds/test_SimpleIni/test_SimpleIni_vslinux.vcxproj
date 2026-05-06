@@ -393,6 +393,7 @@
     <ClInclude Include="CHHI_DEBUG.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\hashdict.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\SimpleIni.h" />
+    <ClInclude Include="..\..\__chjcxx\common-include\include\SimpleIniEx.h" />
     <!-- 
     <ClInclude Include="ps_headers.h" />
      -->
