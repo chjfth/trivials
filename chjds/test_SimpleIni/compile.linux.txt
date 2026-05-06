@@ -1,0 +1,3 @@
+
+g++ -O2   -I ../../__chjcxx/common-include/include/linux  -I ../../__chjcxx/common-include/include -D __int64="long long" CHHI.cpp test_SimpleIni.cpp
+ 

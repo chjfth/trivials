@@ -373,6 +373,21 @@ void see_GetDefaultUserProfileDirectory()
 	REPORT_API_TRAITS(GetDefaultUserProfileDirectory);
 }
 
+void see_GetFullPathName()
+{
+	RESET_OUTPUT;
+
+	g_sret_len = GetFullPathName(_T("foo.txt"), MAX_PATH, soutput, NULL);
+	
+	g_eret_len = GetFullPathName(_T("foo.txt"), SMALL_Usersize, eoutput, NULL);
+	winerr = GetLastError();
+
+	g_edge_len = STRLEN(soutput); // success-return does not count ending-NUL
+	g_edgeret_len = GetFullPathName(_T("foo.txt"), g_edge_len, edge_output, NULL);
+
+	REPORT_API_TRAITS(GetFullPathName);
+}
+
 void see_GetLocaleInfo()
 {
 	RESET_OUTPUT;
@@ -957,6 +972,7 @@ void check_apis()
 	see_GetEnvironmentVariable();
 
 	see_GetDefaultUserProfileDirectory();
+	see_GetFullPathName();
 
 	see_GetLocaleInfo();
 	see_GetLocaleInfo_0buf();
