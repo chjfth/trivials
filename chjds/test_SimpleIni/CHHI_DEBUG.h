@@ -1,3 +1,5 @@
+#if 0
+
 #undef NDEBUG // always enable assert()
 
 // This dedicated CHHI_DEBUG.h ensures that all CHHI headers receive 
@@ -8,3 +10,4 @@
 
 #define SimpleIni_DEBUG
 
+#endif

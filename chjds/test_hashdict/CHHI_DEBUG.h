@@ -1,3 +1,4 @@
+#if 0
 
 // This dedicated CHHI_DEBUG.h ensures that all CHHI headers receive 
 // these same macro values. Different CHHI debug macro values will
@@ -7,3 +8,5 @@
 
 #define hashdict_DEBUG
 
+
+#endif

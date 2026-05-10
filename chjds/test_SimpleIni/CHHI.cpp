@@ -1,4 +1,4 @@
-#include "CHHI_DEBUG.h"
+#include <CHHI_DEBUG.h>
 
 #define vaDbgTs_IMPL
 #include <CHHI_vaDBG_is_vaDbgTs.h> // optional
