@@ -45,7 +45,7 @@ bool test0()
 
 	// Define DataXString objects for INI-concerned data.
 	DataXString<ClockMode_et> clockmode(_T("CM_WallTime"));
-	DataXString<bool> isOnTop(false); // false is default vale
+	DataXString<bool> isOnTop(_T("false")); // false is default value
 
 	// Set new value
 	clockmode = CM_Countdown;
