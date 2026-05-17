@@ -36,8 +36,12 @@ struct DataXTraits<ClockMode_et, FORMAT>
 
 bool test0()
 {
-	const TCHAR *inisrc = _T("DigClock2.ini");
+	const TCHAR *inisrc = _T("DigClock2.ini"); // read-only, don't change its content
 	const TCHAR *inidst = _T("output0.ini");
+
+	file_delete(inidst);
+	bool is_old_output = file_exists(inidst);
+	assert(!is_old_output);
 
 	SimpleIni iniobj;
 	auto err1 = iniobj.load(inisrc);
@@ -60,7 +64,29 @@ bool test0()
 	auto err2 = iniobj.save(inidst);
 	assert(!err2);
 
-	return (err1 || err2) ? false : true;
+	if(err1 || err2) 
+		return false;
+
+	//
+	// Test DataXIni with DataXString_AutoSaveIni
+	//
+
+	DataXIni xini;
+	xini.LoadIni(&inidst, 1);
+
+	DataXString_AutoSaveIni<bool> isShowTitle(xini, secname, _T("IsShowTitle"), _T("false"));
+
+	// Inside `isShowTitle = true;`, INI saving is done automatically
+	isShowTitle = true;
+
+	// Verify above result
+	SimpleIni iniobjv;
+	auto err3 = iniobjv.load(inidst);
+	assert(!err3);
+	Sdring sdShowTitle = iniobjv.get(secname, _T("IsShowTitle"));
+	assert( Sdring::str_match(sdShowTitle, _T("true")) );
+
+	return true;
 }
 
 int _tmain(int argc, TCHAR *argv[])
@@ -70,6 +96,7 @@ int _tmain(int argc, TCHAR *argv[])
 //	assert(isok);
 
 	isok = test0();
+
 	_tprintf(_T("test0() %s.\n"), isok?_T("success"):_T("fail"));
 
 	return 0;
