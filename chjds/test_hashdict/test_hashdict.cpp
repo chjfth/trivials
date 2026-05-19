@@ -4,7 +4,7 @@
 #include <ps_TCHAR.h>
 #include <msvc_extras.h>
 
-#include "CHHI_DEBUG.h"
+#include <CHHI_DEBUG.h>
 
 #undef NDEBUG // Enable assert for Release-build
 
@@ -370,7 +370,7 @@ void test_hashdict_copymove()
 	assert(pi && *pi==1);
 }
 
-void Evernote_Demo() // Evclip: 20260413.m1
+void test_minor1() // Evclip: 20260413.m1
 {
 	hashdict<int> dict;			// init 8 slots
 
@@ -384,7 +384,7 @@ void Evernote_Demo() // Evclip: 20260413.m1
 	assert(*pi==3);
 }
 
-void test_trivials()
+void test_minor0()
 {
 	hashdict<int> dict(_T("AllDummy"));
 	dict.SetDbgParams(0);
@@ -412,6 +412,30 @@ void test_trivials()
 	assert(*pi==100);
 }
 
+int g_sv = 0;
+
+struct SIn // with virtual function
+{
+	SIn() { m1 = g_sv; }
+	virtual ~SIn(){ printf("SIn() dtor.\n"); }
+	int m1;
+};
+
+struct SOut // no virtual function
+{
+	SOut() { m0a = m0b = g_sv; }
+	int m0a;
+	int m0b;
+	SIn m_sin;
+};
+
+void test_TSA_virtual()
+{
+	printf("sizeof(SOut)=%d\n", sizeof(SOut));
+	hashdict<SOut> dict(_T("SinV"));
+	g_sv = 0xAAAA;
+//	dict.set(_T("key1"), SOut());
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -425,9 +449,11 @@ int _tmain(int argc, TCHAR *argv[])
 	_CrtMemCheckpoint(&state1);
 #endif
 
-//	test_trivials();
+//	test_TSA_virtual();  // ok
 
-	Evernote_Demo();
+	test_minor0();
+
+	test_minor1();
 
 	test_hashdict_ints(); 
 
@@ -470,9 +496,9 @@ int _tmain(int argc, TCHAR *argv[])
 	// Compare snapshots
 	if (_CrtMemDifference(&stateDiff, &state1, &state2)) 
 	{
-		_tprintf(_T("Memory leak detected!!! See debug channel for details.\n"));
 		_CrtMemDumpStatistics(&stateDiff);
 		_CrtMemDumpAllObjectsSince(&state1);
+		_tprintf(_T("Memory leak detected!!! See debug channel for details.\n"));
 
 		return 4;
 	}
