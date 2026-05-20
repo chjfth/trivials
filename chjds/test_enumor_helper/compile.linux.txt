@@ -1,0 +1,1 @@
+g++ -O2  -I chjds -I .  -I ../../__chjcxx/common-include/include/linux  -I ../../__chjcxx/common-include/include -D __int64="long long"  test_enumor_helper.cpp
