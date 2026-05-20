@@ -8,7 +8,7 @@
 #include <msvc_extras.h>
 #include <cxx_stack.h>
 	using namespace chjds;
-#include <Sdring.h>
+#include <sdring.h>
 
 #define LOCK_YES(stk) ((stk).dbg_peek_enumlocks()>0)
 #define LOCK_NO(stk) ((stk).dbg_peek_enumlocks()==0)

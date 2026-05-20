@@ -340,7 +340,7 @@
   <ItemDefinitionGroup Condition=" $(Configuration.EndsWith('-gcc'))">
     <ClCompile>
       <CppLanguageStandard>c++14</CppLanguageStandard>
-      <PreprocessorDefinitions>;;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>;;__int64=long long;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
       <AdditionalIncludeDirectories>.\devdbg;.;..\..\__chjcxx\common-include\include\linux;..\..\__chjcxx\common-include\include;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
