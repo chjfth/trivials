@@ -1,6 +1,8 @@
 #undef NDEBUG // always enable assert()
 
-#define _XXX_SEE_REALLOC_CRASH // TScalableArray recognize this.
+// Define this from command-line to see TScalableArray<T>::Realloc() crash,
+// on certain versions of `gcc -O2` (gcc 13.4 etc). (EvClip 20260520.c1)
+//#define _XXX_SEE_REALLOC_CRASH 
 
 #include <stdio.h>
 #include <assert.h>
