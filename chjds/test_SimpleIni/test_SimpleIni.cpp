@@ -7,7 +7,6 @@
 #include <ps_TCHAR.h>
 #include <commdefs.h>
 #include <locale.h>
-#include <utility> // On MSVC, this brings in _CrtMemState()
 #include <msvc_extras.h>
 #include <vaDbgTs.h>
 #include <snTprintf.h>
@@ -42,6 +41,8 @@ void do_test1()
 	SimpleIni ini;
 	SimpleIni::ReCode_et err = ini.load(inifilename);
 	assert(!err);
+
+	SimpleIni ini_copy = ini; // test for copy-ctor memleak
 
 	int i, DiffAt=-1;
 	const TCHAR *secname = nullptr;
@@ -168,6 +169,8 @@ Section#4 [unicodes]\n\
 	err = ini.save(saved_inifile, _T("\r\n")); // Let disk file use \r\n, even on Linux.
 	assert(!err);
 
+	ini_copy = ini; // test for copy-assign memleak
+
 	// Read back the saved ini to verify it's content preserves.
 
 	SimpleIni ini2 ;
@@ -184,6 +187,8 @@ Section#4 [unicodes]\n\
 	assert( binfile_is_match(saved_inifile, std_answer_file, &DiffAt) );
 
 	_tprintf(_T("\n"));
+
+	ini_copy = std::move(ini2); // test for move-assign memleak
 }
 
 void test_iniEx()
@@ -259,31 +264,19 @@ int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
 
-#ifdef _MSC_VER
-	// Take snapshot before operations
-	_CrtMemState state1 = {}, state2 = {}, stateDiff = {};
-	_CrtMemCheckpoint(&state1);
-#endif
+	MSVCRT_MemCheckStart(foo);
 
 	do_test1();
 
 	test_iniEx();
 
-#ifdef _MSC_VER
-	// Take snapshot after
-	_CrtMemCheckpoint(&state2);
-
-	// Compare snapshots
-	if (_CrtMemDifference(&stateDiff, &state1, &state2))
-	{
-		_tprintf(_T("Memory leak detected!!! See debug channel for details.\n"));
-		_CrtMemDumpStatistics(&stateDiff);
-		_CrtMemDumpAllObjectsSince(&state1);
-
+	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
+	if (isleak) {
+		printf("Memleak in my C++ code.\n");
 		return 4;
 	}
-#endif // _MSC_VER
-
-	printf("Success.\n");
-	return 0;
+	else {
+		printf("Success.\n");
+		return 0;
+	}
 }
