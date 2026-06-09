@@ -101,18 +101,22 @@ void test_EnumGroup()
 {
 	const TCHAR *answer = nullptr;
 	int DiffAt = 0;
-	Sdring res = ITCS(0xC0, itc_egs1);
+	Sdring res_all = ITCS(0xC0, itc_egs1);
 
 	int arVals[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 0xff };
+	Sdrings ssRes(ARRAY_SIZE(arVals));
 	int i;
+	bool n2verr = false;
 
 	// ITCS()
 
-	res.set_empty();
+	res_all.set_empty();
 	for (i = 0; i < ARRAY_SIZE(arVals); i++)
 	{
-		vaSdringAppendSelf(res, _T("%3d : %s\n"), 
-			arVals[i], ITCS(arVals[i], itc_egs1));
+		ssRes[i] = ITCS(arVals[i], itc_egs1);
+
+		vaSdringAppendSelf(res_all, _T("%3d : %s\n"), 
+			arVals[i], ssRes[i].getptr());
 	}
 	answer = _T("\
   0 : G1_VAL0|G2_VAL0\n\
@@ -133,15 +137,24 @@ void test_EnumGroup()
  17 : G1_VAL1|G2_VAL4\n\
 255 : G1_VAL3|0x1C|0xE0\n\
 ");
-	assert(Sdring::str_match(res, answer, &DiffAt));
+	assert(Sdring::str_match(res_all, answer, &DiffAt));
 
-	// ITCSvn
+	for(i=0; i<ARRAY_SIZE(arVals); i++)
+	{
+		CONSTVAL_t retval = itc_egs1.NamesToVal(ssRes[i], &n2verr);
+		assert(retval==arVals[i]);
+		assert(!n2verr);
+	}
 
-	res.set_empty();
+	// ITCSvn()
+
+	res_all.set_empty();
 	for (i = 0; i < ARRAY_SIZE(arVals); i++)
 	{
-		vaSdringAppendSelf(res, _T("%3d : %s\n"),
-			arVals[i], ITCSvn(arVals[i], itc_egs1));
+		ssRes[i] = ITCSvn(arVals[i], itc_egs1);
+
+		vaSdringAppendSelf(res_all, _T("%3d : %s\n"),
+			arVals[i], ssRes[i].getptr());
 	}
 	answer = _T("\
   0 : 0x0(G1_VAL0)|0x0(G2_VAL0)\n\
@@ -162,15 +175,24 @@ void test_EnumGroup()
  17 : 0x1(G1_VAL1)|0x10(G2_VAL4)\n\
 255 : 0x3(G1_VAL3)|0x1C|0xE0\n\
 ");
-	assert(Sdring::str_match(res, answer, &DiffAt));
+	assert(Sdring::str_match(res_all, answer, &DiffAt));
 
-	// ITCSnv
+	for(i=0; i<ARRAY_SIZE(arVals); i++)
+	{
+		CONSTVAL_t retval = itc_egs1.NamesToVal(ssRes[i], &n2verr);
+		assert(retval==arVals[i]);
+		assert(!n2verr);
+	}
 
-	res.set_empty();
+	// ITCSnv()
+
+	res_all.set_empty();
 	for (i = 0; i < ARRAY_SIZE(arVals); i++)
 	{
-		vaSdringAppendSelf(res, _T("%3d : %s\n"),
-			arVals[i], ITCSnv(arVals[i], itc_egs1));
+		ssRes[i] = ITCSnv(arVals[i], itc_egs1);
+
+		vaSdringAppendSelf(res_all, _T("%3d : %s\n"),
+			arVals[i], ssRes[i].getptr());
 	}
 	answer = _T("\
   0 : G1_VAL0(0x0)|G2_VAL0(0x0)\n\
@@ -191,7 +213,14 @@ void test_EnumGroup()
  17 : G1_VAL1(0x1)|G2_VAL4(0x10)\n\
 255 : G1_VAL3(0x3)|0x1C|0xE0\n\
 ");
-	assert(Sdring::str_match(res, answer, &DiffAt));
+	assert(Sdring::str_match(res_all, answer, &DiffAt));
+
+	for(i=0; i<ARRAY_SIZE(arVals); i++)
+	{
+		CONSTVAL_t retval = itc_egs1.NamesToVal(ssRes[i], &n2verr);
+		assert(retval==arVals[i]);
+		assert(!n2verr);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
