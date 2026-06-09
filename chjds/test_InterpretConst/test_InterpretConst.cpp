@@ -273,6 +273,28 @@ void test_bitfields_customfmt()
 }
 
 
+void test_DumpTest()
+{
+	int DiffAt = 0;
+	Sdring res = itc_egs1.DumpText(_T("\n"));
+	const TCHAR *answer = _T("\n\
+[Mask: 0x3]\n\
+0x0 G1_VAL0\n\
+0x1 G1_VAL1\n\
+0x2 G1_VAL2\n\
+0x3 G1_VAL3\n\
+\n\
+[Mask: 0x1C]\n\
+0x0 G2_VAL0\n\
+0x4 G2_VAL1\n\
+0x8 G2_VAL2\n\
+0xC [null]\n\
+0x10 G2_VAL4\n\
+0x14 G2_VAL5\n\
+0x18 G2_VAL6\n\
+");
+	assert(Sdring::str_match(res, answer, &DiffAt));
+}
 
 int _tmain(int argc, TCHAR *argv[])
 {
@@ -282,6 +304,8 @@ int _tmain(int argc, TCHAR *argv[])
 	test_EnumGroup();
 	test_Bitfield2Val();
 	test_bitfields_customfmt();
+	
+	test_DumpTest();
 
 	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
 	if (isleak) {
