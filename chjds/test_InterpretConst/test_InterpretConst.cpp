@@ -82,7 +82,7 @@ const Enum2Val_st _e2v_Enumgroup2[] =
 	{ _T("G2_VAL0"), 0 << 2 },
 	{ _T("G2_VAL1"), 1 << 2 },
 	{ _T("G2_VAL2"), 2 << 2 },
-	{ nullptr,       3 << 2 }, // "0xC0" will be the interpreted string, as if this element is not mentioned
+	{ nullptr,       3 << 2 }, // "0xC" will be the interpreted string, as if this element is not mentioned
 	{ _T("G2_VAL4"), 4 << 2 },
 	{ _T("G2_VAL5"), 5 << 2 },
 	{ _T("G2_VAL6"), 6 << 2 },
@@ -101,9 +101,9 @@ void test_EnumGroup()
 {
 	const TCHAR *answer = nullptr;
 	int DiffAt = 0;
-	Sdring res;
+	Sdring res = ITCS(0xC0, itc_egs1);
 
-	int arVals[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 0xff };
+	int arVals[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 0xff };
 	int i;
 
 	// ITCS()
@@ -127,7 +127,8 @@ void test_EnumGroup()
   9 : G1_VAL1|G2_VAL2\n\
  10 : G1_VAL2|G2_VAL2\n\
  11 : G1_VAL3|G2_VAL2\n\
- 12 : G1_VAL0\n\
+ 12 : G1_VAL0|0xC\n\
+ 13 : G1_VAL1|0xC\n\
  16 : G1_VAL0|G2_VAL4\n\
  17 : G1_VAL1|G2_VAL4\n\
 255 : G1_VAL3|0x1C|0xE0\n\
@@ -155,7 +156,8 @@ void test_EnumGroup()
   9 : 0x1(G1_VAL1)|0x8(G2_VAL2)\n\
  10 : 0x2(G1_VAL2)|0x8(G2_VAL2)\n\
  11 : 0x3(G1_VAL3)|0x8(G2_VAL2)\n\
- 12 : 0x0(G1_VAL0)\n\
+ 12 : 0x0(G1_VAL0)|0xC\n\
+ 13 : 0x1(G1_VAL1)|0xC\n\
  16 : 0x0(G1_VAL0)|0x10(G2_VAL4)\n\
  17 : 0x1(G1_VAL1)|0x10(G2_VAL4)\n\
 255 : 0x3(G1_VAL3)|0x1C|0xE0\n\
@@ -183,7 +185,8 @@ void test_EnumGroup()
   9 : G1_VAL1(0x1)|G2_VAL2(0x8)\n\
  10 : G1_VAL2(0x2)|G2_VAL2(0x8)\n\
  11 : G1_VAL3(0x3)|G2_VAL2(0x8)\n\
- 12 : G1_VAL0(0x0)\n\
+ 12 : G1_VAL0(0x0)|0xC\n\
+ 13 : G1_VAL1(0x1)|0xC\n\
  16 : G1_VAL0(0x0)|G2_VAL4(0x10)\n\
  17 : G1_VAL1(0x1)|G2_VAL4(0x10)\n\
 255 : G1_VAL3(0x3)|0x1C|0xE0\n\

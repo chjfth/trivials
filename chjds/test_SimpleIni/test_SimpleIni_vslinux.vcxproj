@@ -421,13 +421,4 @@
   									-->
   <!-- import VSPG end -->
 
-  <!-- below code is just for test -->
-  <Target Name="test1_PreBuild" BeforeTargets="PreBuildEvent">
-    <Message Text='Pre: ResolvedRemoteTarget=$(ResolvedRemoteTarget)'/>
-  </Target>
-  <Target Name="test2_PostBuild" AfterTargets="PostBuildEvent">
-    <Message Text='Post: ResolvedRemoteTarget=$(ResolvedRemoteTarget)'/>
-  </Target>
-  
-  
 </Project>
