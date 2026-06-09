@@ -68,6 +68,7 @@ void test_weekday()
 	assert(Sdring::str_match(res, answer, &DiffAt));
 }
 
+//////////////////////////////////////////////////////////////////////////
 
 const Enum2Val_st _e2v_Enumgroup1[] =
 {
@@ -190,6 +191,86 @@ void test_EnumGroup()
 	assert(Sdring::str_match(res, answer, &DiffAt));
 }
 
+//////////////////////////////////////////////////////////////////////////
+
+const SingleBit2Val_st _b2v_sample1[] =
+{
+	{ _T("bit0"), 1 << 0 },
+	{ _T("bit1"), 1 << 1 },
+	{ _T("bit2"), 1 << 2 },
+	{ _T("bit4"), 1 << 4 },
+	
+	{ _T("bit5and6"), 32 + 64 }, // bit 5&6 must both be set to signify this name
+	// -- Yes, although the struct is named SingleBit2Val_st, it can actually
+	//    deal with an element with multiple bits.
+};
+CInterpretConst BFsample1(_b2v_sample1);
+
+void test_Bitfield2Val()
+{
+	const TCHAR *answer = nullptr;
+	int DiffAt = 0;
+	Sdring res;
+
+	int arVals[] = { 0,1,2,3,4,5,6,7,8,9, 16,17, 32,64,96 };
+	for (int i = 0; i < ARRAY_SIZE(arVals); i++)
+	{
+		vaSdringAppendSelf(res, _T("%3d : %s\n"), 
+			arVals[i], ITCS(arVals[i], BFsample1));
+	}
+	answer = _T("\
+  0 : 0\n\
+  1 : bit0\n\
+  2 : bit1\n\
+  3 : bit0|bit1\n\
+  4 : bit2\n\
+  5 : bit0|bit2\n\
+  6 : bit1|bit2\n\
+  7 : bit0|bit1|bit2\n\
+  8 : 0x8\n\
+  9 : bit0|0x8\n\
+ 16 : bit4\n\
+ 17 : bit0|bit4\n\
+ 32 : 0x20\n\
+ 64 : 0x40\n\
+ 96 : bit5and6\n\
+");
+	assert(Sdring::str_match(res, answer, &DiffAt));
+}
+
+void test_bitfields_customfmt()
+{
+	CInterpretConst itc_bitfields_customfmt(_b2v_sample1, _T("0x%04x"));
+
+	const TCHAR *answer = nullptr;
+	int DiffAt = 0;
+	Sdring res;
+
+	int arVals[] = { 0,1,2,3,4,5,6,7,8,9, 16,17, 32,64,96 };
+	for (int i = 0; i < ARRAY_SIZE(arVals); i++)
+	{
+		vaSdringAppendSelf(res, _T("%3d : %s\n"), 
+			arVals[i], ITCSv(arVals[i], itc_bitfields_customfmt));
+	}
+	answer = _T("\
+  0 : 0\n\
+  1 : bit0(0x0001)\n\
+  2 : bit1(0x0002)\n\
+  3 : bit0(0x0001)|bit1(0x0002)\n\
+  4 : bit2(0x0004)\n\
+  5 : bit0(0x0001)|bit2(0x0004)\n\
+  6 : bit1(0x0002)|bit2(0x0004)\n\
+  7 : bit0(0x0001)|bit1(0x0002)|bit2(0x0004)\n\
+  8 : 0x8\n\
+  9 : bit0(0x0001)|0x8\n\
+ 16 : bit4(0x0010)\n\
+ 17 : bit0(0x0001)|bit4(0x0010)\n\
+ 32 : 0x0020\n\
+ 64 : 0x0040\n\
+ 96 : bit5and6(0x0060)\n\
+");
+	assert(Sdring::str_match(res, answer, &DiffAt));
+}
 
 
 
@@ -199,6 +280,8 @@ int _tmain(int argc, TCHAR *argv[])
 
 	test_weekday();
 	test_EnumGroup();
+	test_Bitfield2Val();
+	test_bitfields_customfmt();
 
 	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
 	if (isleak) {
