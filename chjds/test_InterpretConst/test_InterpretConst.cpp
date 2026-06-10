@@ -70,6 +70,64 @@ void test_weekday()
 
 //////////////////////////////////////////////////////////////////////////
 
+const Enum2Val_st _e2v_PosAndNeg[] =
+{
+	// This itc contains both positive and negative values
+	{ _T("Zero"), 0 },
+	{ _T("PositiveOne"), 1 },
+	{ _T("PositiveTwo"), 2 },
+	{ _T("NegativeOne"), (CONSTVAL_t)-1 },
+	{ _T("NegativeTow"), (CONSTVAL_t)-2 },
+};
+CInterpretConst itc_PosAndNeg(_e2v_PosAndNeg);
+
+void test_PosAndNeg()
+{
+	const TCHAR *answer = nullptr;
+	int DiffAt = 0;
+	Sdring res_all;
+
+	int arVals[] = { 0, 1, 2, -1, -2, 3, -3 };
+	Sdrings ssRes(ARRAY_SIZE(arVals));
+	bool n2verr = false;
+	int i;
+
+	res_all.set_empty();
+	for (i = 0; i < ARRAY_SIZE(arVals); i++)
+	{
+		ssRes[i] = ITCSnv_(arVals[i], itc_PosAndNeg, _T("%d"));
+
+		vaSdringAppendSelf(res_all, _T("%3d : %s\n"),
+			arVals[i], ssRes[i].getptr());
+	}
+	answer = _T("\
+  0 : Zero(0)\n\
+  1 : PositiveOne(1)\n\
+  2 : PositiveTwo(2)\n\
+ -1 : NegativeOne(-1)\n\
+ -2 : NegativeTow(-2)\n\
+  3 : 3\n\
+ -3 : -3\n\
+");
+	// _tprintf(_T("===\n%s\n==="), res_all.getptr());
+
+	// [2026-06-10] Note: If itc::CONSTVAL_t is `unsigned long` (8 bytes on 64bit Unix),
+	// This test will fail. 
+	// So itc::CONSTVAL_t is set to `unsigned int` to make it always 32bits.
+	//
+	assert(Sdring::str_match(res_all, answer, &DiffAt));
+
+	for(i=0; i<ARRAY_SIZE(arVals); i++)
+	{
+		CONSTVAL_t retval = itc_PosAndNeg.NamesToVal(ssRes[i], &n2verr);
+		assert(retval==arVals[i]);
+		assert(!n2verr);
+	}
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+
 const Enum2Val_st _e2v_Enumgroup1[] =
 {
 	{ _T("G1_VAL0"), 0 },
@@ -105,8 +163,8 @@ void test_EnumGroup()
 
 	int arVals[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 17, 0xff };
 	Sdrings ssRes(ARRAY_SIZE(arVals));
-	int i;
 	bool n2verr = false;
+	int i;
 
 	// ITCS()
 
@@ -333,6 +391,7 @@ int _tmain(int argc, TCHAR *argv[])
 	MSVCRT_MemCheckStart(foo);
 
 	test_weekday();
+	test_PosAndNeg();
 	test_EnumGroup();
 	test_Bitfield2Val();
 	test_bitfields_customfmt();
