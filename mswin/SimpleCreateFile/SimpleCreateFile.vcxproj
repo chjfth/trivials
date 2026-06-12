@@ -230,7 +230,8 @@
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
-    <ClInclude Include="..\..\__WinConst\mswin\winnt.itc.h" />
+    <ClInclude Include="..\..\__WinConst\mswin\WinNT.itc.h" />
+    <ClInclude Include="..\..\__WinConst\mswin\WinBase.itc.h" />
   </ItemGroup>
  
   <!-- MSBuild system stock Cpp.targets -->

@@ -20,9 +20,8 @@
 #include <mswin/utils_env.h>
 #include <mswin/utils_wingui.h>
 #include <mswin/WinError.itc.h>
-#include <mswin/winnt.itc.h>
+#include <mswin/WinNT.itc.h>
 #include <mswin/WinBase.itc.h>
-#include <mswin/winuser.itc.h>
 using namespace itc;
 
 #include <EnsureClnup_mswin.h>
@@ -51,13 +50,13 @@ struct DlgPrivate_st
 struct ObjtypeToItc_st
 {
 	const TCHAR *objtype;
-	const CInterpretConst *pitc;
+	const CInterpretConst& (*pitc)();
 };
 
 ObjtypeToItc_st gar_objtype2itc[] =
 {
-	{ _T("File"), &FileRights },
-	{ _T("Directory"), &DirectoryRights },
+	{ _T("File"), FileRights },
+	{ _T("Directory"), DirectoryRights },
 };
 
 
@@ -130,7 +129,7 @@ const TCHAR* Cf_GetContentTooltipText(HWND hwndUic,
 				_T("%s")
 				, 
 				dwDesiredAccess, o2i.objtype,
-				ITCSvn__(dwDesiredAccess, *o2i.pitc, valfmt, sep));
+				ITCSvn__(dwDesiredAccess, o2i.pitc, valfmt, sep));
 		}
 		else
 		{	// A value larger than 32bit(eg 0xC00012345) could results.
@@ -354,7 +353,7 @@ void do_CreateFile(HWND hdlg)
 				attr, ITCSv(attr, FILE_ATTRIBUTE_xxx));
 		}
 	}
-
+	
 	btn_EnableCreateFile(hdlg, false);
 }
 

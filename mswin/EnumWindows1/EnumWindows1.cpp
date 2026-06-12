@@ -10,6 +10,7 @@
 
 #define CHHI_ALL_IMPL
 
+#include <RECTxy.h>
 #include <mswin/win32cozy.h>
 
 #include <mswin/winuser.itc.h>
@@ -211,7 +212,7 @@ int _tmain(int argc, TCHAR* argv[])
 
 	_tprintf(_T("EnumWindows1.exe v1.1\n"));
 
-	auto s = itc::WS_xxx_Button.Interpret(0x50000000, itc::DF_NameAndValue);
+	auto s = itc::WS_xxx_Button().Interpret(0x50000000, itc::DF_NameAndValue);
 
 	do_work();
 

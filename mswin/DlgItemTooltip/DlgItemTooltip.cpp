@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <windowsx.h>
+#include <ShlObj-winxp-patch.h>
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -16,7 +17,7 @@
 
 #include <mswin/win32clarify.h>
 
-#include <mswin/WinUser.itc.h>
+//#include <mswin/WinUser.itc.h>
 #include <mswin/CommCtrl.itc.h>
 using namespace itc;
 

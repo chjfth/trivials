@@ -36,9 +36,10 @@ const SingleBit2Val_st b2v_LmShareType[] =
 	ITC_NAMEPAIR(STYPE_SPECIAL),    // 0x80000000
 };
 
-CInterpretConst STYPE_xxx(ITCF_HEX1B, e2v_LmShareType, ARRAYSIZE(e2v_LmShareType),
+ITC_MAKE_OBJECT(STYPE_xxx,
+	ITCF_HEX1B, e2v_LmShareType, ARRAYSIZE(e2v_LmShareType),
 	b2v_LmShareType, ARRAYSIZE(b2v_LmShareType),
-	nullptr, 0);
+	nullptr, 0)
 
 
 

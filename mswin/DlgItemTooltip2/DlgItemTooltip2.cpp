@@ -6,6 +6,7 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <ShlObj-winxp-patch.h>
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <stdio.h>
@@ -22,7 +23,6 @@
 
 #include <mswin/win32clarify.h>
 
-#include <mswin/WinUser.itc.h>
 #include <mswin/CommCtrl.itc.h>
 using namespace itc;
 
@@ -265,7 +265,7 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		TOOLINFO ti = {sizeof(ti)};
 		ti.hwnd = hdlg;
 		ti.uId = (UINT_PTR)GetDlgItem(hdlg, IDC_LABEL1);
-		BOOL succ = SendMessage(prdata->hwndTooltip, TTM_GETTOOLINFO, 0, (LPARAM)&ti);
+		BOOL succ = (BOOL)SendMessage(prdata->hwndTooltip, TTM_GETTOOLINFO, 0, (LPARAM)&ti);
 		assert(succ);
 		
 		// Note: ti.lpszText is NULL here, we must re-assign our text.

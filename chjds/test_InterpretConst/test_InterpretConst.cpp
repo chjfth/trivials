@@ -20,7 +20,13 @@ const Enum2Val_st _e2v_weekday[] =
 	{_T("Friday"), 5},
 	{_T("Saturday"), 6},
 };
-CInterpretConst itc_weekday(_e2v_weekday);
+//const CInterpretConst itc_weekday(_e2v_weekday);
+// const CInterpretConst& itc_weekday()
+// {
+// 	static const CInterpretConst sobj(_e2v_weekday);
+// 	return sobj;
+// }
+ITC_MAKE_OBJECT(itc_weekday, _e2v_weekday)
 
 void test_weekday()
 {
@@ -79,7 +85,7 @@ const Enum2Val_st _e2v_PosAndNeg[] =
 	{ _T("NegativeOne"), (CONSTVAL_t)-1 },
 	{ _T("NegativeTow"), (CONSTVAL_t)-2 },
 };
-CInterpretConst itc_PosAndNeg(_e2v_PosAndNeg);
+ITC_MAKE_OBJECT(itc_PosAndNeg, _e2v_PosAndNeg)
 
 void test_PosAndNeg()
 {
@@ -119,7 +125,7 @@ void test_PosAndNeg()
 
 	for(i=0; i<ARRAY_SIZE(arVals); i++)
 	{
-		CONSTVAL_t retval = itc_PosAndNeg.NamesToVal(ssRes[i], &n2verr);
+		CONSTVAL_t retval = itc_PosAndNeg().NamesToVal(ssRes[i], &n2verr);
 		assert(retval==arVals[i]);
 		assert(!n2verr);
 	}
@@ -153,7 +159,7 @@ const EnumGroup_st _egs1[] =
 	{ 0x7<<2, _e2v_Enumgroup2, ARRAY_SIZE(_e2v_Enumgroup2) },
 };
 
-CInterpretConst itc_egs1(_egs1);
+ITC_MAKE_OBJECT(itc_egs1, _egs1)
 
 void test_EnumGroup()
 {
@@ -199,7 +205,7 @@ void test_EnumGroup()
 
 	for(i=0; i<ARRAY_SIZE(arVals); i++)
 	{
-		CONSTVAL_t retval = itc_egs1.NamesToVal(ssRes[i], &n2verr);
+		CONSTVAL_t retval = itc_egs1().NamesToVal(ssRes[i], &n2verr);
 		assert(retval==arVals[i]);
 		assert(!n2verr);
 	}
@@ -237,7 +243,7 @@ void test_EnumGroup()
 
 	for(i=0; i<ARRAY_SIZE(arVals); i++)
 	{
-		CONSTVAL_t retval = itc_egs1.NamesToVal(ssRes[i], &n2verr);
+		CONSTVAL_t retval = itc_egs1().NamesToVal(ssRes[i], &n2verr);
 		assert(retval==arVals[i]);
 		assert(!n2verr);
 	}
@@ -275,7 +281,7 @@ void test_EnumGroup()
 
 	for(i=0; i<ARRAY_SIZE(arVals); i++)
 	{
-		CONSTVAL_t retval = itc_egs1.NamesToVal(ssRes[i], &n2verr);
+		CONSTVAL_t retval = itc_egs1().NamesToVal(ssRes[i], &n2verr);
 		assert(retval==arVals[i]);
 		assert(!n2verr);
 	}
@@ -294,7 +300,7 @@ const SingleBit2Val_st _b2v_sample1[] =
 	// -- Yes, although the struct is named SingleBit2Val_st, it can actually
 	//    deal with an element with multiple bits.
 };
-CInterpretConst BFsample1(_b2v_sample1);
+ITC_MAKE_OBJECT(BFsample1, _b2v_sample1)
 
 void test_Bitfield2Val()
 {
@@ -328,10 +334,10 @@ void test_Bitfield2Val()
 	assert(Sdring::str_match(res, answer, &DiffAt));
 }
 
+ITC_MAKE_OBJECT(itc_bitfields_customfmt, _b2v_sample1, _T("0x%04x"))
+
 void test_bitfields_customfmt()
 {
-	CInterpretConst itc_bitfields_customfmt(_b2v_sample1, _T("0x%04x"));
-
 	const TCHAR *answer = nullptr;
 	int DiffAt = 0;
 	Sdring res;
@@ -366,7 +372,7 @@ void test_bitfields_customfmt()
 void test_DumpTest()
 {
 	int DiffAt = 0;
-	Sdring res = itc_egs1.DumpText(_T("\n"));
+	Sdring res = itc_egs1().DumpText(_T("\n"));
 	const TCHAR *answer = _T("\n\
 [Mask: 0x3]\n\
 0x0 G1_VAL0\n\
@@ -397,6 +403,13 @@ int _tmain(int argc, TCHAR *argv[])
 	test_bitfields_customfmt();
 	
 	test_DumpTest();
+
+	// Special for my test program: 
+	// Explicitly destruct those global CInterpretConst object, so that
+	// MSVCRT_MemCheckEnd_IsLeak() will not detect leak.
+	//
+	BFsample1().~CInterpretConst();
+	itc_bitfields_customfmt().~CInterpretConst();
 
 	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
 	if (isleak) {

@@ -53,7 +53,7 @@ void ptime(char *prefix, LARGE_INTEGER twe)
 
 void print_vista_logonsess_details(SECURITY_LOGON_SESSION_DATA &info)
 {
-	printf("\tUserFlags: 0x%X %s\n", info.UserFlags, ITCSv(info.UserFlags, LOGON_xxx_UserFlags));
+	_tprintf(_T("\tUserFlags: 0x%X %s\n"), info.UserFlags, ITCSv(info.UserFlags, LOGON_xxx_UserFlags));
 	
 	pus("LogonScript:", info.LogonScript);
 	pus("ProfilePath:", info.ProfilePath);
@@ -75,11 +75,11 @@ void enum_logon_session_id_detail(LUID* cur)
 	CEC_LsaFreeReturnBuffer cec_luids = ptr;
 	if(ntserr)
 	{	// No reason to fail.
-		printf("LsaEnumerateLogonSessions() error: ntserr=%s\n", ITCSv(ntserr, NtStatus));
+		_tprintf(_T("LsaEnumerateLogonSessions() error: ntserr=%s\n"), ITCSv(ntserr, NtStatus));
 		return;
 	}	
 	
-	printf("Total Logon-Sessions: %u\n", count);
+	_tprintf(_T("Total Logon-Sessions: %u\n"), count);
 
 	for (unsigned i = 0; i < count; ++i) 
 	{
@@ -102,7 +102,7 @@ void enum_logon_session_id_detail(LUID* cur)
 			pus("UserName:", info.UserName);
 			pus("LogonDomain:", info.LogonDomain);
 			pus("AuthenticationPackage:", info.AuthenticationPackage);
-			printf("\tLogonType: %s\n", ITCSv(info.LogonType, itc_SECURITY_LOGON_TYPE));
+			_tprintf(_T("\tLogonType: %s\n"), ITCSv(info.LogonType, itc_SECURITY_LOGON_TYPE));
 			printf("\tSession-idx: %u\n", info.Session);
 
 			char* str = NULL;
@@ -131,7 +131,7 @@ void enum_logon_session_id_detail(LUID* cur)
 			if(ntserr==STATUS_ACCESS_DENIED)
 				printf(" (No access right to this session.)\n");
 			else
-				printf(" (%s)\n", ITCSv(ntserr, NtStatus)); // not likely to see these
+				_tprintf(_T(" (%s)\n"), ITCSv(ntserr, NtStatus)); // not likely to see these
 		}
 	}
 	puts("");

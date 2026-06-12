@@ -1,1 +1,5 @@
 g++ -O2 -I ./devdbg -I . -I ../../__chjcxx/common-include/include/linux  -I ../../__chjcxx/common-include/include -D__int64="long long"  CHHI.cpp test_InterpretConst.cpp
+
+[Note] To check for memleak, append following options
+
+	-g -fsanitize=address
