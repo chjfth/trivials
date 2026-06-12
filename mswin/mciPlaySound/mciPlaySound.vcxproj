@@ -243,6 +243,10 @@
 -->
   </ItemGroup>
  
+  <PropertyGroup>
+    <VSPG_ExeDataFiles>chime-2sec.mp3</VSPG_ExeDataFiles>
+  </PropertyGroup>
+ 
   <!-- MSBuild system stock Cpp.targets -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

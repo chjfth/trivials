@@ -25,7 +25,6 @@
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-
 HINSTANCE g_hinstExe;
 
 class MainDialog : public CxxDialogBase
@@ -52,15 +51,35 @@ MainDialog::MainDialog(LPCTSTR mystr)
 	m_clicks = 0;
 }
 
+static void LogMciErr(HWND helog, MCIERROR mcierr, const TCHAR *szErr)
+{
+	if(mcierr)
+	{
+		if (szErr && szErr[0])
+			vaAppendLog_mled(helog, _T("[ret] MCIERR=%d (%s)"), mcierr, szErr);
+		else
+			vaAppendLog_mled(helog, _T("[ret] MCIERR=%d."), mcierr);
+	}
+	else
+		vaAppendLog_mled(helog, _T("[ret] success"));
+}
+
+static void LogAndRunMci(HWND helog, const TCHAR *mcicmd, HWND hwndNotify)
+{
+	TCHAR szErr[1024] = {};
+	const int ccErr = ARRAYSIZE(szErr);
+
+	vaAppendLog_mled(helog, _T("[run] '%s'"), mcicmd);
+	MCIERROR mcierr = mciSendString(mcicmd, szErr, ccErr, hwndNotify);
+	LogMciErr(helog, mcierr, szErr);
+}
+
 void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	TCHAR szfile[MAX_PATH] = {};
 	GetDlgItemText(hdlg, IDE_SOUND_FILE, szfile, MAX_PATH);
 	Sdring mcicmd;
 	MCIERROR mcierr = 0;
-
-	TCHAR szErr[1024] = {};
-	const int ccErr = ARRAYSIZE(szErr);
 
 	HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 
@@ -69,26 +88,28 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_MCI_OPEN:
 	{
 		vaSdringAppendSelf(mcicmd, _T("open \"%s\" type MPEGVideo alias mysound"), szfile);
-		mcierr = mciSendString(mcicmd, szErr, ccErr, nullptr);
 
-		vaAppendText_mled(helog, _T("[%d] open MciRets: %s\r\n"), mcierr, szErr);
-
-		break;
-	}
-	case IDB_MCI_PLAY:
-	{
-		vaSdringAppendSelf(mcicmd, _T("play mysound from 0 notify"), szfile);
-		mcierr = mciSendString(mcicmd, szErr, ccErr, hdlg);
-
-		vaAppendText_mled(helog, _T("[%d] play MciRets: %s\r\n"), mcierr, szErr);
+		LogAndRunMci(helog, mcicmd, hdlg);
+		
+		SetDlgItemText(hdlg, IDE_MCI_COMMAND, mcicmd);
 		break;
 	}
 	case IDB_MCI_CLOSE:
 	{
 		vaSdringAppendSelf(mcicmd, _T("close mysound"), szfile);
-		mcierr = mciSendString(mcicmd, szErr, ccErr, hdlg);
+		
+		LogAndRunMci(helog, mcicmd, hdlg);
+		
+		SetDlgItemText(hdlg, IDE_MCI_COMMAND, mcicmd);
+		break;
+	}
+	case IDB_PLAY:
+	{
+		vaSdringAppendSelf(mcicmd, _T("play mysound from 0 notify"), szfile);
 
-		vaAppendText_mled(helog, _T("[%d] close MciRets: %s\r\n"), mcierr, szErr);
+		LogAndRunMci(helog, mcicmd, hdlg);
+		
+		SetDlgItemText(hdlg, IDE_MCI_COMMAND, mcicmd);
 		break;
 	}
 	case IDOK:
@@ -105,8 +126,14 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	JULayout *jul = JULayout::EnableJULayout(hdlg);
 
 	jul->AnchorControl(0,0, 100,0, IDE_SOUND_FILE);
+	jul->AnchorControls(100,0, 100,0, IDB_MCI_OPEN, IDB_MCI_CLOSE, -1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
-	jul->AnchorControl(0,100, 0,100, IDC_BUTTON1);
+
+	jul->AnchorControls(0,100, 0,100, IDS_MCI_COMMAND, IDB_PLAY, -1);
+
+	jul->AnchorControls(0,100, 100,100, IDE_MCI_COMMAND, -1);
+
+	jul->AnchorControls(100,100, 100,100, IDB_EXECUTE, -1);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
@@ -115,11 +142,17 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 {
 	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
 
-	SetDlgItemText(hdlg, IDE_SOUND_FILE, _T("chime-56kbps-2sec.mp3"));
+	vaSetWindowText(hdlg, _T("mciPlaySound v%d.%d.%d"),
+		mciPlaySound_VMAJOR, mciPlaySound_VMINOR, mciPlaySound_VPATCH);
+
+	SetDlgItemText(hdlg, IDE_SOUND_FILE, _T("chime-2sec.mp3"));
+
+	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+	Edit_LimitText(hedit, 1024 * 1024); // enlarge max text
 
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
+	SetFocus(GetDlgItem(hdlg, IDB_EXECUTE));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
