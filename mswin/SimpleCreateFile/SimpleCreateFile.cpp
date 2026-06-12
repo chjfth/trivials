@@ -130,7 +130,7 @@ const TCHAR* Cf_GetContentTooltipText(HWND hwndUic,
 				_T("%s")
 				, 
 				dwDesiredAccess, o2i.objtype,
-				ITCSvn_(dwDesiredAccess, *o2i.pitc, valfmt, sep));
+				ITCSvn__(dwDesiredAccess, *o2i.pitc, valfmt, sep));
 		}
 		else
 		{	// A value larger than 32bit(eg 0xC00012345) could results.
@@ -149,7 +149,7 @@ const TCHAR* Cf_GetContentTooltipText(HWND hwndUic,
 			_sntprintf_s(s_text, _TRUNCATE, 
 				_T("dwShareMode=0x%02X:\r\n%s"), 
 				dwShareMode, 
-				ITCSvn_(dwShareMode, itc::dwShareMode, valfmt, sep));
+				ITCSvn__(dwShareMode, itc::dwShareMode, valfmt, sep));
 		}
 		else
 		{
@@ -168,7 +168,7 @@ const TCHAR* Cf_GetContentTooltipText(HWND hwndUic,
 			_sntprintf_s(s_text, _TRUNCATE, 
 				_T("dwCreationDisposition=%u\r\n%s"), 
 				dwCreationDisposition, 
-				ITCSvn_(dwCreationDisposition, itc::dwCreationDisposition, valfmt, sep));
+				ITCSvn__(dwCreationDisposition, itc::dwCreationDisposition, valfmt, sep));
 		}
 		else
 		{
@@ -187,7 +187,7 @@ const TCHAR* Cf_GetContentTooltipText(HWND hwndUic,
 			_sntprintf_s(s_text, _TRUNCATE, 
 				_T("dwFlagsAndAttributes=0x%X\r\n%s"),
 				dwFlagsAndAttributes, 
-				ITCSvn_(dwFlagsAndAttributes, itc::dwFlagsAndAttributes, valfmt, sep));
+				ITCSvn__(dwFlagsAndAttributes, itc::dwFlagsAndAttributes, valfmt, sep));
 		}
 		else
 		{
@@ -624,10 +624,20 @@ void Dlg_OnCommand(HWND hdlg, int idCtrl, HWND hwndCtl, UINT codeNotify)
 	case IDOK:
 	case IDCANCEL:
 		{
-			EndDialog(hdlg, idCtrl);
+			// Don't let ESC close dialog.
+			// EndDialog(hdlg, idCtrl); 
 			break;
 		}
 	}}
+}
+
+void Dlg_OnSysCommand(HWND hdlg, UINT cmd, int x, int y)
+{
+	if (cmd == SC_CLOSE)
+	{
+		EndDialog(hdlg, 0);
+		return;
+	}
 }
 
 static void Dlg_EnableJULayout(HWND hdlg)
@@ -706,6 +716,9 @@ INT_PTR WINAPI UserDlgProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    Dlg_OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
 		HANDLE_dlgMSG(hdlg, WM_DROPFILES,     Dlg_OnDropFiles);
+
+		HANDLE_MSG(hdlg, WM_SYSCOMMAND, Dlg_OnSysCommand); 
+		// -- Use HANDLE_MSG() so that we can keep WinMan's default WM_SYSCOMMAND behavior.
 	}
 	return FALSE;
 }
