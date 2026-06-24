@@ -76,18 +76,26 @@ static void LogAndRunMci(HWND helog, const TCHAR *mcicmd, HWND hwndNotify)
 
 void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
-	TCHAR szfile[MAX_PATH] = {};
-	GetDlgItemText(hdlg, IDE_SOUND_FILE, szfile, MAX_PATH);
 	Sdring mcicmd;
 	MCIERROR mcierr = 0;
-
 	HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+
+	if(codeNotify==EN_SETFOCUS)
+	{
+		static const FocusToDefaultBtn_st smap[] = 
+		{
+			{ IDE_SOUND_FILE, IDB_MCI_OPEN },
+			{ IDE_MCI_COMMAND, IDB_EXECUTE },
+		};
+		Set_DlgDefaultButton_byFocusId(hdlg, id, smap, ARRAYSIZE(smap));
+	}
 
 	switch(id) 
 	{{
 	case IDB_MCI_OPEN:
 	{
-		vaSdringAppendSelf(mcicmd, _T("open \"%s\" type MPEGVideo alias mysound"), szfile);
+		Sdring sdrfile = sdrGetDlgItemText(hdlg, IDE_SOUND_FILE);
+		vaSdringAppendSelf(mcicmd, _T("open \"%s\" type MPEGVideo alias mysound"), sdrfile.c_str());
 
 		LogAndRunMci(helog, mcicmd, hdlg);
 		
@@ -96,7 +104,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	}
 	case IDB_MCI_CLOSE:
 	{
-		vaSdringAppendSelf(mcicmd, _T("close mysound"), szfile);
+		vaSdringAppendSelf(mcicmd, _T("close mysound"));
 		
 		LogAndRunMci(helog, mcicmd, hdlg);
 		
@@ -105,11 +113,36 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	}
 	case IDB_PLAY:
 	{
-		vaSdringAppendSelf(mcicmd, _T("play mysound from 0 notify"), szfile);
+		vaSdringAppendSelf(mcicmd, _T("play mysound from 0 notify"));
 
 		LogAndRunMci(helog, mcicmd, hdlg);
 		
 		SetDlgItemText(hdlg, IDE_MCI_COMMAND, mcicmd);
+		break;
+	}
+	case IDB_PLAY_REPEAT:
+	{
+		vaSdringAppendSelf(mcicmd, _T("play mysound from 0 repeat"));
+
+		LogAndRunMci(helog, mcicmd, hdlg);
+		
+		SetDlgItemText(hdlg, IDE_MCI_COMMAND, mcicmd);
+		break;
+	}
+	case IDB_STOP:
+	{
+		vaSdringAppendSelf(mcicmd, _T("stop mysound"));
+
+		LogAndRunMci(helog, mcicmd, hdlg);
+		
+		SetDlgItemText(hdlg, IDE_MCI_COMMAND, mcicmd);
+		break;
+	}
+	case IDB_EXECUTE:
+	{
+		mcicmd = sdrGetDlgItemText(hdlg, IDE_MCI_COMMAND);
+
+		LogAndRunMci(helog, mcicmd, hdlg);
 		break;
 	}
 	case IDOK:
@@ -129,10 +162,10 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	jul->AnchorControls(100,0, 100,0, IDB_MCI_OPEN, IDB_MCI_CLOSE, -1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
 
-	jul->AnchorControls(0,100, 0,100, IDS_MCI_COMMAND, IDB_PLAY, -1);
-
+	jul->AnchorControls(0,100, 0,100, IDS_MCI_COMMAND, 
+		IDB_PLAY, IDB_PLAY_REPEAT, IDB_STOP,
+		-1);
 	jul->AnchorControls(0,100, 100,100, IDE_MCI_COMMAND, -1);
-
 	jul->AnchorControls(100,100, 100,100, IDB_EXECUTE, -1);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
@@ -147,12 +180,16 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	SetDlgItemText(hdlg, IDE_SOUND_FILE, _T("chime-2sec.mp3"));
 
+	SetDlgItemText(hdlg, IDC_EDIT_LOGMSG, 
+		_T("Hint: [MCI open] first, then [play].\r\n"));
+
 	HWND hedit = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 	Edit_LimitText(hedit, 1024 * 1024); // enlarge max text
 
 	Dlg_EnableJULayout(hdlg);
 
-	SetFocus(GetDlgItem(hdlg, IDB_EXECUTE));
+	Set_DlgDefaultButton(hdlg, IDB_MCI_OPEN);
+	SetFocus(GetDlgItem(hdlg, IDE_SOUND_FILE));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
