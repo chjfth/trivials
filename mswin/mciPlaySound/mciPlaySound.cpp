@@ -20,6 +20,8 @@
 #include <mswin/JULayout2.h>
 #include <chj_mishmash.h>
 
+#include <mswin/mmsystem.itc.h>
+
 
 #include "CxxDialogBase.h"
 
@@ -51,14 +53,18 @@ MainDialog::MainDialog(LPCTSTR mystr)
 	m_clicks = 0;
 }
 
-static void LogMciErr(HWND helog, MCIERROR mcierr, const TCHAR *szErr)
+static void LogMciErr(HWND helog, MCIERROR mcierr, const TCHAR *szMciExtraErr)
 {
 	if(mcierr)
 	{
-		if (szErr && szErr[0])
-			vaAppendLog_mled(helog, _T("[ret] MCIERR=%d (%s)"), mcierr, szErr);
+		if (szMciExtraErr && szMciExtraErr[0])
+		{
+			vaAppendLog_mled(helog, _T("[ret] MCIERR=%s ((%s))"), 
+				ITCSvn(mcierr, itc::MCIERR_xxx), 
+				szMciExtraErr);
+		}
 		else
-			vaAppendLog_mled(helog, _T("[ret] MCIERR=%d."), mcierr);
+			vaAppendLog_mled(helog, _T("[ret] MCIERR=%s."), ITCSvn(mcierr, itc::MCIERR_xxx));
 	}
 	else
 		vaAppendLog_mled(helog, _T("[ret] success"));
@@ -69,7 +75,7 @@ static void LogAndRunMci(HWND helog, const TCHAR *mcicmd, HWND hwndNotify)
 	TCHAR szErr[1024] = {};
 	const int ccErr = ARRAYSIZE(szErr);
 
-	vaAppendLog_mled(helog, _T("[run] '%s'"), mcicmd);
+	vaAppendLog_mled(helog, _T("[run]\r\n> %s"), mcicmd);
 	MCIERROR mcierr = mciSendString(mcicmd, szErr, ccErr, hwndNotify);
 	LogMciErr(helog, mcierr, szErr);
 }
