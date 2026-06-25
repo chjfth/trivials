@@ -3,7 +3,7 @@
 
 #define mciPlaySound_VMAJOR 1
 #define mciPlaySound_VMINOR 0
-#define mciPlaySound_VPATCH 1
+#define mciPlaySound_VPATCH 2
 #define mciPlaySound_VTAIL  0
 
 #define mciPlaySoundstr__(n) #n

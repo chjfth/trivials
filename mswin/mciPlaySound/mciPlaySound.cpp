@@ -201,7 +201,13 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 MCIERROR MainDialog::OnMciNotify(HWND hdlg, UINT flags, LONG devid)
 {
-	vaDbgTs(_T("OnMciNotify() flags=0x%X, devid=%d"), flags, devid);
+	//vaDbgTs(_T("OnMciNotify() flags=0x%X, devid=%d"), flags, devid);
+
+	HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+	vaAppendLog_mled(helog, _T("[notify] devid=%d, flags=%s."), 
+		devid,
+		ITCSvn(flags, itc::MCI_NOTIFY_xxx));
+
 	return 0;
 }
 
