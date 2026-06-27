@@ -156,22 +156,12 @@ void Dlg_OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		// [2024-10-27] I do NOT call EndDialog() here, just as a special code demo.
 		// I do not want ESC key to close the dialog(=End whole exe).
-		// Instead, I call EndDialog() in Dlg_FilterSysCommand(), which can be triggered
+		// Instead, I call EndDialog() in Dlg_HookSysCommand(), which can be triggered
 		// by click window-title Close[X] button.
 		// EndDialog(hdlg, id);
 		break;
 	}
 	}}
-}
-
-// Sets the dialog box icons
-inline void chSETDLGICONS(HWND hwnd, int idi) {
-	SendMessage(hwnd, WM_SETICON, TRUE,  (LPARAM)
-		LoadIcon((HINSTANCE) GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
-		MAKEINTRESOURCE(idi)));
-	SendMessage(hwnd, WM_SETICON, FALSE, (LPARAM)
-		LoadIcon((HINSTANCE) GetWindowLongPtr(hwnd, GWLP_HINSTANCE),
-		MAKEINTRESOURCE(idi)));
 }
 
 typedef LONG NTSTATUS;
@@ -232,7 +222,7 @@ void Dlg_OnTimer(HWND hdlg, UINT timerid)
 	if(textlen>20000)
 		SetWindowText(hedit, _T("")); // Clear old overly long text
 
-	int step_ms = nowtick-prdata->prevTickMillisec;
+	int step_ms = nowtick - prdata->prevTickMillisec;
 
 	{
 		// Append text with length limit:
@@ -346,9 +336,10 @@ static void show_timer_resolution(HWND hdlg)
 
 	UINT64 us1 = wait_perft_change();
 	UINT64 us2 = wait_perft_change();
-	vaAppendText_mled(hedit, _T("QueryPerformanceCounter() resolution is: %I64d microsec.\r\n"), us2-us1);
-
-	vaAppendText_mled(hedit, _T("\r\nI will use QueryPerformanceCounter to measure WM_TIMER."));
+	int usdiff = (int)(us2-us1);
+	vaAppendText_mled(hedit, _T("QueryPerformanceCounter() resolution is: %s%d microsec.\r\n"), 
+		usdiff>1 ? _T(""): _T("(at least)"),
+		usdiff);
 
 	Tell_HardIntr_TimerResolution(hdlg);
 }
@@ -358,7 +349,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	DlgPrivate_st *prdata = (DlgPrivate_st*)lParam;
 	SetWindowLongPtr(hdlg, DWLP_USER, (LONG_PTR)prdata);
 
-	chSETDLGICONS(hdlg, IDI_WINMAIN);
+	Set_WindowIcon(hdlg, MAKEINTRESOURCE(IDI_WINMAIN));
 
 	vaSetWindowText(hdlg, _T("WM_TIMER_accuracy v%d.%d.%d"), 
 		WM_TIMER_accuracy_VMAJOR, WM_TIMER_accuracy_VMINOR, WM_TIMER_accuracy_VPATCH);
@@ -371,7 +362,7 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	SetDlgItemText(hdlg, IDC_LBL_Sleeping, _T(""));
 	SetDlgItemText(hdlg, IDC_LBL_MinMax, _T(""));
 	SetDlgItemText(hdlg, IDC_EDIT_RUNINFO, 
-		_T("The program probes WM_TIMER's actual timing behavior by checking GetTickCount() timestamps.")
+		_T("The program probes WM_TIMER's actual timing behavior by checking QueryPerformanceCounter().")
 		_T("\r\n\r\n")
 		_T("Parameter hint: \r\n")
 		_T("- If Sleep millisec is -1, then I will NOT call Sleep() in WM_TIMER callback.\r\n")
@@ -410,10 +401,11 @@ INT_PTR WINAPI Dlg_Proc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       Dlg_OnCommand);
 		HANDLE_dlgMSG(hdlg, WM_TIMER,         Dlg_OnTimer);
 
-		// [2024-10-27] For WM_SYSCOMMAND, must use HANDLE_MSG() instead of HANDLE_dlgMSG().
+		// [2024-10-27] For WM_SYSCOMMAND, I must use HANDLE_MSG() instead of HANDLE_dlgMSG().
 		// HANDLE_dlgMSG() will return 1, which will bypass DefWindowProc() WM_SYSCOMMAND processing,
 		// defeating all intrinsic window behaviors, like "window cannot move by mouse".
-		HANDLE_MSG(hdlg, WM_SYSCOMMAND, Dlg_HookSysCommand); // return 0
+		//
+		HANDLE_MSG(hdlg, WM_SYSCOMMAND, Dlg_HookSysCommand); // HANDLE_MSG() forces return 0
 	}
 	return FALSE;
 }
