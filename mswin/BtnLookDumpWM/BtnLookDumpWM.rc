@@ -32,8 +32,34 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+ABOUTBOX DIALOG DISCARDABLE  32, 32, 180, 102
+STYLE DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,66,81,50,14
+    ICON            1,IDC_STATIC,7,7,21,20
+    CTEXT           "BtnLookDumpWM",IDC_STATIC,40,12,100,8
+    CTEXT           "Use Dbgview to see debug messages from this EXE.",IDC_STATIC,7,40,166,8
+END
 
 
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+1 MENU DISCARDABLE 
+BEGIN
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About About1...",            IDM_APP_ABOUT
+    END
+END
 
 
 

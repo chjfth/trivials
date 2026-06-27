@@ -31,7 +31,7 @@ link /debug BtnLookDumpWM.obj BtnLookDumpWM.res kernel32.lib user32.lib gdi32.li
 #include <mswin/utils_wingui.h>
 #include <mswin/WinUser.itc.h>
 
-#define VER_STR "1.0"
+#define VER_STR "1.1"
 
 int g_nestlv = 0; // WM_xxx nested level
 int g_msgcount = 0;
@@ -94,6 +94,7 @@ button[] =
 #define NUM  ARRAYSIZE(button)
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
+INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 					PTSTR szCmdLine, int nCmdShow)
@@ -113,7 +114,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(1));
 	wndclass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
 	wndclass.hbrBackground = (HBRUSH) GetStockObject (WHITE_BRUSH) ;
-	wndclass.lpszMenuName  = NULL;
+	wndclass.lpszMenuName  = MAKEINTRESOURCE(1);
 	wndclass.lpszClassName = szAppName ;
 
 	if (!RegisterClass (&wndclass))
@@ -124,7 +125,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	}
 
 	const int client_width = util_SimpleSysDpiScale(540);
-	const int client_height = util_SimpleSysDpiScale(420);
+	const int client_height = util_SimpleSysDpiScale(410);
 
 	hwnd = CreateWindow (szAppName, 
 		TEXT("BtnLook"), // will modify later
@@ -246,12 +247,19 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		TextOut (hdc, 24 * cxChar, cyChar * (rect.bottom / cyChar - 1),
 			szBuffer,
 			wsprintf (szBuffer, szFormat,
-			message == WM_DRAWITEM ? TEXT ("WM_DRAWITEM") : 
-			TEXT ("WM_COMMAND"),
-			HIWORD (wParam), LOWORD (wParam),
-			HIWORD (lParam), LOWORD (lParam))) ;
+				message == WM_DRAWITEM ? TEXT ("WM_DRAWITEM") : 
+				TEXT ("WM_COMMAND"),
+				HIWORD (wParam), LOWORD (wParam),
+				HIWORD (lParam), LOWORD (lParam))
+		);
 
 		ReleaseDC (hwnd, hdc) ;
+
+		if(LOWORD(wParam)==IDM_APP_ABOUT)
+		{
+			DialogBox(GetWindowInstance(hwnd), TEXT("AboutBox"), hwnd, AboutDlgProc);
+		}
+
 		ValidateRect (hwnd, &rect) ;
 		break ;
 
@@ -263,3 +271,23 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc (hwnd, message, wParam, lParam) ;
 }
 
+INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
+	WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+		case IDCANCEL:
+			EndDialog(hDlg, 0);
+			return TRUE;
+		}
+		break;
+	}
+	return FALSE;
+}
