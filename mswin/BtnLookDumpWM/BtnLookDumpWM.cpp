@@ -31,9 +31,9 @@ link /debug BtnLookDumpWM.obj BtnLookDumpWM.res kernel32.lib user32.lib gdi32.li
 #include <mswin/utils_wingui.h>
 #include <mswin/WinUser.itc.h>
 
-#define VER_STR "1.3"
+#define VER_STR "1.4"
 
-//////// Tracking code >>>>
+//////// WM_xxx tracking code >>>>
 
 int g_nestlv = 0; // WM_xxx nested level
 int g_msgcount = 0;
@@ -54,16 +54,19 @@ const TCHAR* get_indents(int nestlv)
 class AutoNestCount
 {
 public:
-	AutoNestCount(int *pNestLv, UINT msg) : m_pNestLv(pNestLv), m_msg(msg)
+	AutoNestCount(int& msgcount, int& nestlv, UINT msg) 
+		: mr_msgcount(msgcount), mr_nestlv(nestlv), m_msg(msg)
 	{ 
-		(*m_pNestLv)++; 
-		DumpOne(true);
+		mr_msgcount++;
+		m_nowcount = mr_msgcount;
 
+		mr_nestlv++;
+		DumpOne(true);
 	}
 	~AutoNestCount()
 	{ 
 		DumpOne(false);
-		(*m_pNestLv)--; 
+		mr_nestlv--;
 	}
 
 private:
@@ -71,17 +74,19 @@ private:
 	{
 		vaDbgTs(_T("<%c>[#%-3d]%s[*%d] %s %s"), 
 			g_inside_getmessage ? _T('i') : _T('o') , // <%c> : 'i/o': inside/outsiude GetMessage()
-			g_msgcount, get_indents(*m_pNestLv), *m_pNestLv, // [#%d]%s[*%d]
+			m_nowcount, get_indents(mr_nestlv), mr_nestlv, // [#%d]%s[*%d]
 			is_enter ? _T(">>> Enter") : _T("<<< Leave") , // %s : Enter or Leave
 			ITCSnv(m_msg, itc::WM_xxx) // %s WM_xxx name and value
 			);
 	}
 private:
-	int *m_pNestLv;
+	int& mr_msgcount;
+	int& mr_nestlv;
+	int m_nowcount;
 	UINT m_msg;
 };
 
-//////// Tracking code <<<<
+//////// WM_xxx tracking code <<<<
 
 
 struct
@@ -199,8 +204,9 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	g_msgcount++;
-	AutoNestCount nestcount(&g_nestlv, message);
+	//////// WM_xxx tracking code >>>>
+	AutoNestCount nestcount(g_msgcount, g_nestlv, message);
+	//////// WM_xxx tracking code <<<<
 
 	static HWND  hwndButton[NUM] ;
 	static RECT  rect ;
