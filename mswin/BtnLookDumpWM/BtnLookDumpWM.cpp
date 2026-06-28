@@ -31,10 +31,13 @@ link /debug BtnLookDumpWM.obj BtnLookDumpWM.res kernel32.lib user32.lib gdi32.li
 #include <mswin/utils_wingui.h>
 #include <mswin/WinUser.itc.h>
 
-#define VER_STR "1.2"
+#define VER_STR "1.3"
+
+//////// Tracking code >>>>
 
 int g_nestlv = 0; // WM_xxx nested level
 int g_msgcount = 0;
+bool g_inside_getmessage = false;
 
 const TCHAR* get_indents(int nestlv)
 {
@@ -54,23 +57,32 @@ public:
 	AutoNestCount(int *pNestLv, UINT msg) : m_pNestLv(pNestLv), m_msg(msg)
 	{ 
 		(*m_pNestLv)++; 
+		DumpOne(true);
 
-		vaDbgTs(_T("[#%-3d]%s[*%d] >>> Enter %s"), 
-			g_msgcount, get_indents(*m_pNestLv), *m_pNestLv, // [#%d]%s[*%d]
-			ITCSnv(m_msg, itc::WM_xxx));
 	}
 	~AutoNestCount()
 	{ 
-		vaDbgTs(_T("[#%-3d]%s[*%d] <<< Leave %s"), 
-			g_msgcount, get_indents(*m_pNestLv), *m_pNestLv, // [#%d]%s[*%d]
-			ITCSnv(m_msg, itc::WM_xxx));
-
+		DumpOne(false);
 		(*m_pNestLv)--; 
+	}
+
+private:
+	void DumpOne(bool is_enter)
+	{
+		vaDbgTs(_T("<%c>[#%-3d]%s[*%d] %s %s"), 
+			g_inside_getmessage ? _T('i') : _T('o') , // <%c> : 'i/o': inside/outsiude GetMessage()
+			g_msgcount, get_indents(*m_pNestLv), *m_pNestLv, // [#%d]%s[*%d]
+			is_enter ? _T(">>> Enter") : _T("<<< Leave") , // %s : Enter or Leave
+			ITCSnv(m_msg, itc::WM_xxx) // %s WM_xxx name and value
+			);
 	}
 private:
 	int *m_pNestLv;
 	UINT m_msg;
 };
+
+//////// Tracking code <<<<
+
 
 struct
 {
@@ -135,6 +147,9 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		CW_USEDEFAULT, CW_USEDEFAULT,
 		client_width, client_height,
 		NULL, NULL, hInstance, NULL);
+
+	vaDbgTs(_T("My main window HWND=0x%X"), (UINT)hwnd);
+
 	Set_ClientAreaSize(hwnd, client_width, client_height);
 
 	SetWindowText(hwnd, _T("BtnLook dumps window-messages to debug-channel ") _T(VER_STR));
@@ -143,13 +158,14 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	UpdateWindow (hwnd) ;
 
 	HWND hwnd_mytop = hwnd;
-	vaDbgTs(_T("My main window HWND=0x%X"), (UINT)hwnd_mytop);
 
 	while (1)
 	{
 		vaDbgTs(_T("GetMessage() >>>"));
 		
+		g_inside_getmessage = true;
 		BOOL succ = GetMessage (&msg, NULL, 0, 0);
+		g_inside_getmessage = false;
 
 		// Check msg.hwnd's traits
 		HWND hwnd_root = GetAncestor(msg.hwnd, GA_ROOT);
