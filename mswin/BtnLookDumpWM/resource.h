@@ -4,6 +4,7 @@
 //
 #define IDI_WINMAIN                     100
 #define IDM_APP_ABOUT                   200
+#define IDM_APP_ABOUT_DELAY             201
 #define IDC_STATIC    -1
 
 

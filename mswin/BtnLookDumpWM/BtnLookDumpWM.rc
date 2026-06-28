@@ -57,7 +57,8 @@ END
 BEGIN
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About About1...",            IDM_APP_ABOUT
+        MENUITEM "&About the program...",            IDM_APP_ABOUT
+    	MENUITEM "&About (delay 2 seconds) ...",     IDM_APP_ABOUT_DELAY
     END
 END
 

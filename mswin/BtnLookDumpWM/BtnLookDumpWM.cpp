@@ -31,7 +31,7 @@ link /debug BtnLookDumpWM.obj BtnLookDumpWM.res kernel32.lib user32.lib gdi32.li
 #include <mswin/utils_wingui.h>
 #include <mswin/WinUser.itc.h>
 
-#define VER_STR "1.1"
+#define VER_STR "1.2"
 
 int g_nestlv = 0; // WM_xxx nested level
 int g_msgcount = 0;
@@ -92,6 +92,8 @@ button[] =
 };
 
 #define NUM  ARRAYSIZE(button)
+
+#define TIMER_ID 1
 
 LRESULT CALLBACK WndProc (HWND, UINT, WPARAM, LPARAM) ;
 INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -259,9 +261,21 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			DialogBox(GetWindowInstance(hwnd), TEXT("AboutBox"), hwnd, AboutDlgProc);
 		}
+		else if(LOWORD(wParam)==IDM_APP_ABOUT_DELAY)
+		{
+			SetTimer(hwnd, TIMER_ID, 2000, NULL);
+		}
 
 		ValidateRect (hwnd, &rect) ;
 		break ;
+
+	case WM_TIMER:
+		if(wParam==TIMER_ID)
+		{
+			KillTimer(hwnd, TIMER_ID);
+			DialogBox(GetWindowInstance(hwnd), TEXT("AboutBox"), hwnd, AboutDlgProc);
+		}
+		return 0;
 
 	case WM_DESTROY :
 		PostQuitMessage (0) ;
