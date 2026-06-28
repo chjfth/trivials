@@ -80,7 +80,7 @@
   <!-- User project properties -->
   
   <PropertyGroup Label="Configuration">
-    <ProjectGuid>{20260627-0000-0000-0000-190641000001}</ProjectGuid>
+    <ProjectGuid>{CCCCCCCC-0000-2026-0627-190641000001}</ProjectGuid>
     <ProjectName>BtnLookDumpWM</ProjectName>
      <TargetName>$(ProjectName)</TargetName>
     <ConfigurationType>Application</ConfigurationType>
