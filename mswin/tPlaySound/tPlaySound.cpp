@@ -14,12 +14,14 @@
 #include <CHHI_vaDBG_is_vaDbgTs.h>
 
 // These .h are from __chjcxx git-module
+#include <InterpretConst.h>
+  using namespace itc;
 #include <mswin/utils_env.h>
 #include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 #include <mswin/mmsystem.itc.h>
 #include <fsapi.h>
-using namespace fsapi;
+  using namespace fsapi;
 #include <EnsureClnup_misc.h>
 #include <IPlaySound_mswin.h>
 
@@ -48,11 +50,14 @@ private:
 private:
 	IPlaySound *m_psobj;
 	sdring_bytes m_wavbin;
+
+	UINT m_msgNotifyPlayDone;
 };
 
 MainDialog::MainDialog(LPCTSTR mystr)
 {
 	m_psobj = nullptr;
+	m_msgNotifyPlayDone = FALSE;
 }
 
 MainDialog::~MainDialog()
@@ -63,7 +68,7 @@ MainDialog::~MainDialog()
 void MainDialog::EnablePsObjButtons(HWND hdlg, bool is_enable)
 {
 	const int arBtnUic[] = 
-		{IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_Play, IDB_Stop, IDB_Close};
+		{IDB_DeleteObj, IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_Play, IDB_Stop, IDB_Close};
 	for(int i=0; i<ARRAYSIZE(arBtnUic); i++)
 	{
 		HWND hbtn = GetDlgItem(hdlg, arBtnUic[i]);
@@ -83,7 +88,18 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(!m_psobj)
 		{
 			m_psobj = IPlaySound::CreateObj();
-			vaSetDlgItemText(hdlg, IDE_ObjAddr, _T("0x%p"), m_psobj);
+			vaSetDlgItemText(hdlg, IDE_ObjAddr, _T("objaddr=0x%p"), m_psobj);
+
+			UINT msgval = IPlaySound_RegisterHwndNotify(m_psobj, hdlg);
+			if(msgval!=FALSE)
+			{
+				vaAppendLog_mled(helog, _T("IPlaySound_RegisterHwndNotify() return msgvalue=%d(=0x%X)"), msgval, msgval);
+				m_msgNotifyPlayDone = msgval;
+			}
+			else
+			{
+				vaAppendLog_mled(helog, _T("Panic! IPlaySound_RegisterHwndNotify() fails!"));
+			}
 
 			EnablePsObjButtons(hdlg, true);
 		}
@@ -97,8 +113,10 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		delete m_psobj;
 		m_psobj = nullptr;
+
 		vaSetDlgItemText(hdlg, IDE_ObjAddr, _T(""));
 		EnablePsObjButtons(hdlg, false);
+		m_msgNotifyPlayDone = FALSE;
 		break;
 	}
 	case IDB_OpenWaveBin:
@@ -131,7 +149,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(pserr)
 		{
 			vaMsgBox(hdlg, MB_ICONERROR, NULL_TITLE, 
-				_T("OpenWavBin() fail with %d."), pserr);
+				_T("OpenWavBin() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
 			break;
 		}
 
@@ -159,15 +177,22 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 		pserr = m_psobj->PlayOnce();
 		if(!pserr)
-			vaAppendLog_mled(helog, _T("PlayOnce() returns ok"));
+			vaAppendLog_mled(helog, _T("PlayOnce() ok"));
 		else
-			vaAppendLog_mled(helog, _T("PlayOnce() returns error: %d"), pserr);
+			vaAppendLog_mled(helog, _T("PlayOnce() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
 
 		break;
 	}
 	case IDB_Stop:
 	{
 		assert(m_psobj);
+		pserr = m_psobj->Stop();
+
+		if(!pserr)
+			vaAppendLog_mled(helog, _T("Stop() ok"));
+		else
+			vaAppendLog_mled(helog, _T("Stop() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
+		
 		break;
 	}
 	case IDOK:
@@ -224,6 +249,14 @@ INT_PTR MainDialog::DialogProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       OnCommand);
 	}
+
+	if(uMsg==m_msgNotifyPlayDone)
+	{
+		HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+		vaAppendLog_mled(helog, _T("Play done"));
+		return TRUE;
+	}
+
 	return FALSE;
 }
 
