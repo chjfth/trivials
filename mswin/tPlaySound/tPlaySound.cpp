@@ -68,7 +68,7 @@ MainDialog::~MainDialog()
 void MainDialog::EnablePsObjButtons(HWND hdlg, bool is_enable)
 {
 	const int arBtnUic[] = 
-		{IDB_DeleteObj, IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_Play, IDB_Stop, IDB_Close};
+		{IDB_DeleteObj, IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_Play, IDB_Stop, IDB_CloseDev};
 	for(int i=0; i<ARRAYSIZE(arBtnUic); i++)
 	{
 		HWND hbtn = GetDlgItem(hdlg, arBtnUic[i]);
@@ -161,9 +161,16 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		assert(m_psobj);
 		
+		Sdring filepath = sdrGetDlgItemText(hdlg, IDE_SoundFile);
+		pserr = m_psobj->OpenSoundFile(filepath);
+		if(!pserr)
+			vaAppendLog_mled(helog, _T("OpenSoundFile() success on '%s'"), filepath.c_str());
+		else
+			vaAppendLog_mled(helog, _T("OpenSoundFile() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
+
 		break;
 	}
-	case IDB_Close:
+	case IDB_CloseDev:
 	{
 		assert(m_psobj);
 		
@@ -198,6 +205,11 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDOK:
 	case IDCANCEL:
 	{
+		// Note: We should `delete m_psobj` before destroying the dialog,
+		// otherwise, the CxxWindowSubclass-ed hdlg will cause crash.
+		delete m_psobj;
+		m_psobj = nullptr;
+
 		EndDialog(hdlg, id);
 		break;
 	}
@@ -215,13 +227,13 @@ static void Dlg_EnableJULayout(HWND hdlg)
 		IDE_WaveBinFile, IDE_SoundFile,
 		-1);
 	jul->AnchorControls(100,0, 100,0, 
-		IDB_OpenWaveBin, IDB_OpenSoundFile,
+		IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_CloseDev,
 		-1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
 	
 	jul->AnchorControls(0,100, 0,100, IDB_Play, IDB_Stop, -1);
 
-	jul->AnchorControls(100,100, 100,100, IDB_Close, -1);
+//	jul->AnchorControls(100,100, 100,100, IDB_CloseDev, -1);
 }
 
 BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
@@ -256,6 +268,14 @@ INT_PTR MainDialog::DialogProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		vaAppendLog_mled(helog, _T("Play done"));
 		return TRUE;
 	}
+
+	/* No need, just for test
+	if(uMsg==MM_MCINOTIFY)
+	{
+		vaDbgTs(_T("EXE got MM_MCINOTIFY, devid=%d , notifycode=%s"), 
+			(LONG)lParam, ITCSvn((LONG)wParam, itc::MCI_NOTIFY_xxx));
+	}
+	*/
 
 	return FALSE;
 }

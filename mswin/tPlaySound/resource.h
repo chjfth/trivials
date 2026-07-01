@@ -15,8 +15,8 @@
 #define IDE_SoundFile                   1008
 #define IDB_OpenSoundFile               1009
 #define IDB_Play                        1010
-#define IDC_BUTTON1                     1011
 #define IDB_Close                       1011
+#define IDB_CloseDev                    1011
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
