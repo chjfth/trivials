@@ -3,7 +3,7 @@
 
 #define tPlaySound_VMAJOR 1
 #define tPlaySound_VMINOR 0
-#define tPlaySound_VPATCH 4
+#define tPlaySound_VPATCH 5
 #define tPlaySound_VTAIL  0
 
 #define tPlaySoundstr__(n) #n

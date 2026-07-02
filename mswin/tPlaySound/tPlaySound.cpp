@@ -38,14 +38,14 @@ public:
 	MainDialog(LPCTSTR mystr);
 	~MainDialog();
 
-	virtual INT_PTR DialogProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	virtual INT_PTR DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 protected:
 	void OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify);
 	BOOL OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam);
 
 private:
-	void EnablePsObjButtons(HWND hdlg, bool is_enable);
+	void EnablePsObjButtons(bool is_enable);
 
 	void Register_PlaydoneNotify(bool want_notify);
 
@@ -67,8 +67,10 @@ MainDialog::~MainDialog()
 	delete m_psobj;
 }
 
-void MainDialog::EnablePsObjButtons(HWND hdlg, bool is_enable)
+void MainDialog::EnablePsObjButtons(bool is_enable)
 {
+	HWND hdlg = m_hwndDlg;
+
 	const int arBtnUic[] = 
 		{IDB_DeleteObj, IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_Play, IDB_Stop, IDB_CloseDev};
 	for(int i=0; i<ARRAYSIZE(arBtnUic); i++)
@@ -126,7 +128,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 
 			Register_PlaydoneNotify(true);
 
-			EnablePsObjButtons(hdlg, true);
+			EnablePsObjButtons(true);
 		}
 		else
 		{
@@ -140,7 +142,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		m_psobj = nullptr;
 
 		vaSetDlgItemText(hdlg, IDE_ObjAddr, _T(""));
-		EnablePsObjButtons(hdlg, false);
+		EnablePsObjButtons(false);
 		m_msgNotifyPlayDone = FALSE;
 		break;
 	}
@@ -281,14 +283,16 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	Dlg_EnableJULayout(hdlg);
 
-	EnablePsObjButtons(hdlg, false);
+	EnablePsObjButtons(false);
 
 	SetFocus(GetDlgItem(hdlg, IDB_CreateObj));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
 
-INT_PTR MainDialog::DialogProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+INT_PTR MainDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
+	HWND hdlg = m_hwndDlg;
+
 	switch (uMsg) 
 	{
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    OnInitDialog);

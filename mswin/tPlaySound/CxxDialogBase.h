@@ -15,7 +15,7 @@ public:
 
 public:
 	// User overrides this virtual function to do dlgbox message processing.
-	virtual INT_PTR DialogProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+	virtual INT_PTR DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
 
 public:
 	INT_PTR DialogBoxParam(HINSTANCE hInstance, LPCTSTR lpTemplateName, HWND hWndParent)
@@ -70,7 +70,7 @@ private:
 			// e.g. WM_SETFONT .
 
 			// Call virtual function.
-			ret = pdlg->DialogProc(hdlg, uMsg, wParam, lParam);
+			ret = pdlg->DialogProc(uMsg, wParam, lParam);
 		}
 
 		return ret;
