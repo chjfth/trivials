@@ -46,8 +46,8 @@ BEGIN
     EDITTEXT        IDC_EDIT_LOGMSG,4,73,315,52,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
     PUSHBUTTON      "Sto&p",IDB_Stop,51,128,37,14
     PUSHBUTTON      "&CreateObj",IDB_CreateObj,4,4,50,14
-    PUSHBUTTON      "&DeleteObj",IDB_DeleteObj,61,4,50,14
-    EDITTEXT        IDE_ObjAddr,119,6,133,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    PUSHBUTTON      "&DeleteObj",IDB_DeleteObj,56,4,50,14
+    EDITTEXT        IDE_ObjAddr,109,6,142,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     EDITTEXT        IDE_WaveBinFile,4,23,249,14,ES_AUTOHSCROLL
     PUSHBUTTON      "Open &WaveBin",IDB_OpenWaveBin,259,23,60,14
     EDITTEXT        IDE_SoundFile,4,40,249,14,ES_AUTOHSCROLL
@@ -55,6 +55,7 @@ BEGIN
     LTEXT           "Log message",IDC_STATIC,4,61,42,8
     PUSHBUTTON      "Pla&y",IDB_Play,4,128,42,14
     PUSHBUTTON      "Close &dev",IDB_CloseDev,278,56,41,14
+    CHECKBOX        "Notify play done",IDCK_NotifyPlaydone,255,7,69,10
 END
 
 

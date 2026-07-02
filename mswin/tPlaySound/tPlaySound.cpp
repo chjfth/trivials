@@ -47,6 +47,8 @@ protected:
 private:
 	void EnablePsObjButtons(HWND hdlg, bool is_enable);
 
+	void Register_PlaydoneNotify(bool want_notify);
+
 private:
 	IPlaySound *m_psobj;
 	sdring_bytes m_wavbin;
@@ -76,6 +78,38 @@ void MainDialog::EnablePsObjButtons(HWND hdlg, bool is_enable)
 	}
 }
 
+void MainDialog::Register_PlaydoneNotify(bool want_notify)
+{
+	assert(m_psobj);
+
+	HWND hdlg = m_hwndDlg;
+	HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+	HWND hbtn = GetDlgItem(hdlg, IDCK_NotifyPlaydone);
+
+	if(want_notify)
+	{
+		UINT msgval = IPlaySound_RegisterHwndNotify(m_psobj, hdlg);
+		if(msgval!=FALSE)
+		{
+			vaAppendLog_mled(helog, _T("Playdone-notify enabled, msgvalue=%d(=0x%X)"), msgval, msgval);
+			m_msgNotifyPlayDone = msgval;
+			Button_SetCheck(hbtn, BST_CHECKED);
+		}
+		else
+		{
+			vaAppendLog_mled(helog, _T("Panic! IPlaySound_RegisterHwndNotify() fails!"));
+			Button_SetCheck(hbtn, BST_UNCHECKED);
+		}
+	}
+	else
+	{
+		IPlaySound_RegisterHwndNotify(m_psobj, NULL);
+		vaAppendLog_mled(helog, _T("Playdone-notify disabled"));
+		Button_SetCheck(hbtn, BST_UNCHECKED);
+	}
+}
+
+
 void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify) 
 {
 	IPlaySound::ReCode_et pserr = IPlaySound::E_Unknown;
@@ -90,16 +124,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			m_psobj = IPlaySound::CreateObj();
 			vaSetDlgItemText(hdlg, IDE_ObjAddr, _T("objaddr=0x%p"), m_psobj);
 
-			UINT msgval = IPlaySound_RegisterHwndNotify(m_psobj, hdlg);
-			if(msgval!=FALSE)
-			{
-				vaAppendLog_mled(helog, _T("IPlaySound_RegisterHwndNotify() return msgvalue=%d(=0x%X)"), msgval, msgval);
-				m_msgNotifyPlayDone = msgval;
-			}
-			else
-			{
-				vaAppendLog_mled(helog, _T("Panic! IPlaySound_RegisterHwndNotify() fails!"));
-			}
+			Register_PlaydoneNotify(true);
 
 			EnablePsObjButtons(hdlg, true);
 		}
@@ -117,6 +142,18 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		vaSetDlgItemText(hdlg, IDE_ObjAddr, _T(""));
 		EnablePsObjButtons(hdlg, false);
 		m_msgNotifyPlayDone = FALSE;
+		break;
+	}
+	case IDCK_NotifyPlaydone:
+	{
+		if(codeNotify==BN_CLICKED)
+		{
+			HWND hbtn = GetDlgItem(hdlg, IDCK_NotifyPlaydone);
+			if(Button_GetCheck(hbtn))
+				Register_PlaydoneNotify(false);
+			else
+				Register_PlaydoneNotify(true);
+		}
 		break;
 	}
 	case IDB_OpenWaveBin:
@@ -174,7 +211,8 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	{
 		assert(m_psobj);
 		
-		m_psobj->Close();
+		pserr = m_psobj->Close();
+		vaAppendLog_mled(helog, _T("Close() done, ret=%s"), ITCSvn(pserr, IPlaySound_ReCode));
 
 		break;
 	}
@@ -205,11 +243,6 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDOK:
 	case IDCANCEL:
 	{
-		// Note: We should `delete m_psobj` before destroying the dialog,
-		// otherwise, the CxxWindowSubclass-ed hdlg will cause crash.
-		delete m_psobj;
-		m_psobj = nullptr;
-
 		EndDialog(hdlg, id);
 		break;
 	}
@@ -227,13 +260,11 @@ static void Dlg_EnableJULayout(HWND hdlg)
 		IDE_WaveBinFile, IDE_SoundFile,
 		-1);
 	jul->AnchorControls(100,0, 100,0, 
-		IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_CloseDev,
+		IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_CloseDev, IDCK_NotifyPlaydone,
 		-1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
 	
 	jul->AnchorControls(0,100, 0,100, IDB_Play, IDB_Stop, -1);
-
-//	jul->AnchorControls(100,100, 100,100, IDB_CloseDev, -1);
 }
 
 BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
@@ -245,6 +276,8 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	
 	SetDlgItemText(hdlg, IDE_WaveBinFile, _T("foxdog-8bit.wav"));
 	SetDlgItemText(hdlg, IDE_SoundFile, _T("chime-2sec.mp3"));
+
+	Button_SetCheck(GetDlgItem(hdlg, IDCK_NotifyPlaydone), BST_CHECKED);
 
 	Dlg_EnableJULayout(hdlg);
 
@@ -265,7 +298,7 @@ INT_PTR MainDialog::DialogProc(HWND hdlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 	if(uMsg==m_msgNotifyPlayDone)
 	{
 		HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-		vaAppendLog_mled(helog, _T("Play done"));
+		vaAppendLog_mled(helog, _T("Play done!!"));
 		return TRUE;
 	}
 
