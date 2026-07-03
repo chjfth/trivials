@@ -33,7 +33,7 @@ LoadAndPatchDialogTemplate(HINSTANCE hInst, LPCTSTR lpDialogName, WORD newPointS
 	// With the help of ChatGPT.
 	// This function makes a copy of the DLGTEMPLATEEX memblock from lpDiaglogName,
 	// and tweaks the dlgbox's font-size to be newPointSize, then return the memblock to caller.
-	// Caller show C++-delete the returned DLGTEMPLATEEX block.
+	// Caller should C++-delete the returned DLGTEMPLATEEX block.
 
     HRSRC hRes = FindResource(hInst, lpDialogName, RT_DIALOG);
     if (!hRes) 

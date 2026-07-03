@@ -7,7 +7,7 @@
 #include "ModelessChild.h"
 
 #include <commdefs.h>
-
+#include <RECTxy.h>
 #include <StringHelper.h>
 #include <mswin/win32cozy.h> // for RECTtext
 
@@ -73,7 +73,7 @@ public:
 			{
 				// restore previous dlg position
 				MoveWindow(m_hdlgMe,
-					m_dlgrect.left, m_dlgrect.top, RECTwidth(m_dlgrect), RECTheight(m_dlgrect),
+					m_dlgrect.left, m_dlgrect.top, RECTcx(m_dlgrect), RECTcy(m_dlgrect),
 					TRUE);
 
 				m_dlgrect.left = BadPos; // must, avoid pinning the window to this pos

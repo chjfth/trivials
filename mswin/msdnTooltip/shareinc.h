@@ -3,6 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <ShlObj-winxp-patch.h>
 #include <CommCtrl.h>
 #include <tchar.h>
 #include <assert.h>
