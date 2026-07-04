@@ -44,7 +44,7 @@ CAPTION "tPlaySound"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     EDITTEXT        IDC_EDIT_LOGMSG,4,73,315,52,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
-    PUSHBUTTON      "Sto&p",IDB_Stop,51,128,37,14
+    PUSHBUTTON      "Sto&p",IDB_Stop,50,128,37,14
     PUSHBUTTON      "&CreateObj",IDB_CreateObj,4,4,50,14
     PUSHBUTTON      "&DeleteObj",IDB_DeleteObj,56,4,50,14
     EDITTEXT        IDE_ObjAddr,109,6,142,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
@@ -56,6 +56,8 @@ BEGIN
     PUSHBUTTON      "Pla&y",IDB_Play,4,128,42,14
     PUSHBUTTON      "Close &dev",IDB_CloseDev,278,56,41,14
     CHECKBOX        "Notify play done",IDCK_NotifyPlaydone,255,7,69,10
+    PUSHBUTTON      "Stop + &RePlay",IDB_StopReplay,95,128,66,14
+    PUSHBUTTON      "Play+Stop &quick",IDB_PlayStopQuick,165,128,66,14
 END
 
 

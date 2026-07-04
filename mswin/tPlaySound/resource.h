@@ -18,6 +18,9 @@
 #define IDB_CloseDev                    1011
 #define IDC_CHECK1                      1012
 #define IDCK_NotifyPlaydone             1012
+#define IDB_StopReplay                  1013
+#define IDC_BUTTON1                     1014
+#define IDB_PlayStopQuick               1014
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -26,7 +29,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        104
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_CONTROL_VALUE         1015
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -16,6 +16,7 @@
 // These .h are from __chjcxx git-module
 #include <InterpretConst.h>
   using namespace itc;
+#include <mswin/win32cozy.h>
 #include <mswin/utils_env.h>
 #include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
@@ -23,7 +24,7 @@
 #include <fsapi.h>
   using namespace fsapi;
 #include <EnsureClnup_misc.h>
-#include <IPlaySound_mswin.h>
+#include <mswin/IPlaySound_mswin.h>
 
 #include "CxxDialogBase.h"
 
@@ -71,13 +72,12 @@ void MainDialog::EnablePsObjButtons(bool is_enable)
 {
 	HWND hdlg = m_hwndDlg;
 
-	const int arBtnUic[] = 
-		{IDB_DeleteObj, IDB_OpenWaveBin, IDB_OpenSoundFile, IDB_Play, IDB_Stop, IDB_CloseDev};
-	for(int i=0; i<ARRAYSIZE(arBtnUic); i++)
-	{
-		HWND hbtn = GetDlgItem(hdlg, arBtnUic[i]);
-		Button_Enable(hbtn, is_enable);
-	}
+	const int arBtnUic[] = {
+		IDB_DeleteObj, IDCK_NotifyPlaydone, IDB_OpenWaveBin, IDB_OpenSoundFile, 
+		IDB_Play, IDB_Stop, IDB_CloseDev, IDB_StopReplay, IDB_PlayStopQuick
+	};
+
+	Enable_Uics(is_enable, hdlg, arBtnUic);
 }
 
 void MainDialog::Register_PlaydoneNotify(bool want_notify)
@@ -242,6 +242,22 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		
 		break;
 	}
+	case IDB_StopReplay:
+	{
+		vaAppendLog_mled(helog, _T("[Stop + Replay] calling start."));
+		pserr = m_psobj->Stop();
+		pserr = m_psobj->PlayOnce();
+		vaAppendLog_mled(helog, _T("[Stop + Replay] calling returned."));
+		break;
+	}
+	case IDB_PlayStopQuick:
+	{
+		vaAppendLog_mled(helog, _T("[Play+Stop quick] calling start."));
+		pserr = m_psobj->PlayOnce();
+		pserr = m_psobj->Stop();
+		vaAppendLog_mled(helog, _T("[Play+Stop quick] calling returned."));
+		break;
+	}
 	case IDOK:
 	case IDCANCEL:
 	{
@@ -266,7 +282,9 @@ static void Dlg_EnableJULayout(HWND hdlg)
 		-1);
 	jul->AnchorControl(0,0, 100,100, IDC_EDIT_LOGMSG);
 	
-	jul->AnchorControls(0,100, 0,100, IDB_Play, IDB_Stop, -1);
+	jul->AnchorControls(0,100, 0,100, IDB_Play, IDB_Stop, 
+		IDB_StopReplay, IDB_PlayStopQuick,
+		-1);
 }
 
 BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
@@ -302,7 +320,19 @@ INT_PTR MainDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	if(uMsg==m_msgNotifyPlayDone)
 	{
 		HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
-		vaAppendLog_mled(helog, _T("Play done!!"));
+
+		IPlaySound::PlayingQuery_et isplaying = m_psobj->IsPlaying();
+
+		assert(isplaying!=IPlaySound::PlayingQuery_NotSupport);
+		// -- If PlayingQuery_NotSupport, this notification message could NOT happen.
+
+		if(isplaying==IPlaySound::Playing)
+			vaAppendLog_mled(helog, _T("Play done!! (delayed previous)"));
+		else if(isplaying==IPlaySound::Stopped)
+			vaAppendLog_mled(helog, _T("Play done!! (true stop)"));
+		else
+			vaAppendLog_mled(helog, _T("Panic!!! Weird play-done!!!"));
+
 		return TRUE;
 	}
 
