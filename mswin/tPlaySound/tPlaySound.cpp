@@ -90,7 +90,7 @@ void MainDialog::Register_PlaydoneNotify(bool want_notify)
 
 	if(want_notify)
 	{
-		UINT msgval = IPlaySound_RegisterHwndNotify(m_psobj, hdlg);
+		UINT msgval = CPlaySound_u::RegisterHwndNotify(m_psobj, hdlg);
 		if(msgval!=FALSE)
 		{
 			vaAppendLog_mled(helog, _T("Playdone-notify enabled, msgvalue=%d(=0x%X)"), msgval, msgval);
@@ -105,7 +105,7 @@ void MainDialog::Register_PlaydoneNotify(bool want_notify)
 	}
 	else
 	{
-		IPlaySound_RegisterHwndNotify(m_psobj, NULL);
+		CPlaySound_u::RegisterHwndNotify(m_psobj, NULL);
 		vaAppendLog_mled(helog, _T("Playdone-notify disabled"));
 		Button_SetCheck(hbtn, BST_UNCHECKED);
 	}
@@ -184,11 +184,11 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 			break;
 		}
 
-		pserr = m_psobj->OpenWavBin(m_wavbin.getptr(), filelen);
+		pserr = m_psobj->OpenSoundBin(m_wavbin.getptr(), filelen);
 		if(pserr)
 		{
 			vaMsgBox(hdlg, MB_ICONERROR, NULL_TITLE, 
-				_T("OpenWavBin() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
+				_T("OpenWavBin() fail with %s"), ITCSvn(pserr, IPlaySound::ReCode_itc));
 			break;
 		}
 
@@ -205,7 +205,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(!pserr)
 			vaAppendLog_mled(helog, _T("OpenSoundFile() success on '%s'"), filepath.c_str());
 		else
-			vaAppendLog_mled(helog, _T("OpenSoundFile() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
+			vaAppendLog_mled(helog, _T("OpenSoundFile() fail with %s"), ITCSvn(pserr, IPlaySound::ReCode_itc));
 
 		break;
 	}
@@ -214,7 +214,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		assert(m_psobj);
 		
 		pserr = m_psobj->Close();
-		vaAppendLog_mled(helog, _T("Close() done, ret=%s"), ITCSvn(pserr, IPlaySound_ReCode));
+		vaAppendLog_mled(helog, _T("Close() done, ret=%s"), ITCSvn(pserr, IPlaySound::ReCode_itc));
 
 		break;
 	}
@@ -226,7 +226,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(!pserr)
 			vaAppendLog_mled(helog, _T("PlayOnce() ok"));
 		else
-			vaAppendLog_mled(helog, _T("PlayOnce() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
+			vaAppendLog_mled(helog, _T("PlayOnce() fail with %s"), ITCSvn(pserr, IPlaySound::ReCode_itc));
 
 		break;
 	}
@@ -238,7 +238,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 		if(!pserr)
 			vaAppendLog_mled(helog, _T("Stop() ok"));
 		else
-			vaAppendLog_mled(helog, _T("Stop() fail with %s"), ITCSvn(pserr, IPlaySound_ReCode));
+			vaAppendLog_mled(helog, _T("Stop() fail with %s"), ITCSvn(pserr, IPlaySound::ReCode_itc));
 		
 		break;
 	}
@@ -321,15 +321,25 @@ INT_PTR MainDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 
+		auto playdone = (CPlaySound_u::PlayDone_et)wParam;
+		assert(playdone==CPlaySound_u::PlayDone_Success || playdone==CPlaySound_u::PlayDone_Aborted);
+		
 		IPlaySound::PlayingQuery_et isplaying = m_psobj->IsPlaying();
-
 		assert(isplaying!=IPlaySound::PlayingQuery_NotSupport);
 		// -- If PlayingQuery_NotSupport, this notification message could NOT happen.
 
 		if(isplaying==IPlaySound::Playing)
-			vaAppendLog_mled(helog, _T("Play done!! (delayed previous)"));
+		{
+			vaAppendLog_mled(helog, _T("Play %s!! (delayed previous)"),
+				playdone==CPlaySound_u::PlayDone_Success ? _T("done") : _T("aborted")
+				);
+		}
 		else if(isplaying==IPlaySound::Stopped)
-			vaAppendLog_mled(helog, _T("Play done!! (true stop)"));
+		{
+			vaAppendLog_mled(helog, _T("Play %s!! (true stop)"),
+				playdone==CPlaySound_u::PlayDone_Success ? _T("done") : _T("aborted")
+				);
+		}
 		else
 			vaAppendLog_mled(helog, _T("Panic!!! Weird play-done!!!"));
 
