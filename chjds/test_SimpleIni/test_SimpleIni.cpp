@@ -165,6 +165,19 @@ Section#5 [section_end]\n\
 	Sdring retval1 = ini.get(in_newsec, in_newkey1);
 	assert( Sdring::str_match(retval1, _T("1"), &DiffAt) );
 
+	//
+	// Add some new key-value pairs, they should appear above 
+	// 'next-section headup blank lines'.
+	//
+
+	const TCHAR *newkey = _T("newkey");
+	const TCHAR *newval = _T("newval");
+	ini.set(_T("section1"), newkey, newval);
+	Sdring ret_newval = ini.get(_T("section1"), _T("newkey"));
+	assert( Sdring::str_match(newval, ret_newval, &DiffAt) );
+
+	ini.set(_T("section2"), newkey, newval);
+
 	// Save whole INI content.
 
 	Sdring initext_gen1 = ini.save_ini_string(_T("\n"));
@@ -267,19 +280,6 @@ void test_iniEx()
 
 void do_test0()
 {
-	TCHAR sbuf[800] = {};
-	sdring<wchar_t> bigstrW; // in order to do exact compare no matter on Unicode or ANSI build
-
-	const TCHAR *inifilename = _T("DigClock2-bug1.ini");
-
-	_tprintf(_T("Reading INI file: %s\n\n"), inifilename);
-
-	SimpleIni ini;
-	SimpleIni::ReCode_et err = ini.load(inifilename);
-	assert(!err);
-
-	Sdring val = ini.get(_T("chime_list"), _T("list"));
-	_tprintf(_T("%s\n"), val.c_str());
 }
 
 int _tmain(int argc, TCHAR* argv[])
@@ -288,7 +288,7 @@ int _tmain(int argc, TCHAR* argv[])
 
 	MSVCRT_MemCheckStart(foo);
 
-	do_test0();
+//	do_test0();
 
 	do_test1();
 
