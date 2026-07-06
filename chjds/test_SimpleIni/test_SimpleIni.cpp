@@ -1,4 +1,4 @@
-#include "CHHI_DEBUG.h"
+#include <CHHI_DEBUG.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -105,7 +105,12 @@ val line three'\n\
 \n\
 Section#4 [unicodes]\n\
 'key1' = 'ABC\x7535'\n\
-\n"; //Note: \x7535 is a Unicode code-point(GBK dian).
+\n\
+Section#5 [section_end]\n\
+'multiline_key_at_file_end' = '001.wav\n\
+002.wav\n\
+003.mp3'\n\
+\n"; //Note: \x7535 (in [unicodes]) is a Unicode code-point(GBK dian).
 	assert( sdring<wchar_t>::str_match(bigstrW, answerW, &DiffAt) );
 
 	assert( ini.has_key(_T("section1"), _T("key2")) );
@@ -260,11 +265,30 @@ void test_iniEx()
 	assert( Sdring::str_match(sznowtime, rs_nowtime) );
 }
 
+void do_test0()
+{
+	TCHAR sbuf[800] = {};
+	sdring<wchar_t> bigstrW; // in order to do exact compare no matter on Unicode or ANSI build
+
+	const TCHAR *inifilename = _T("DigClock2-bug1.ini");
+
+	_tprintf(_T("Reading INI file: %s\n\n"), inifilename);
+
+	SimpleIni ini;
+	SimpleIni::ReCode_et err = ini.load(inifilename);
+	assert(!err);
+
+	Sdring val = ini.get(_T("chime_list"), _T("list"));
+	_tprintf(_T("%s\n"), val.c_str());
+}
+
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
 
 	MSVCRT_MemCheckStart(foo);
+
+	do_test0();
 
 	do_test1();
 
