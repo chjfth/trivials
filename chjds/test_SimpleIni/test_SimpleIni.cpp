@@ -139,6 +139,11 @@ Section#5 [section_end]\n\
 	haskey = ini.has_key(_T("section2"), _T("emptykey"));
 	assert(haskey);
 
+	// Test internal virtual keyname "_blanklines_", should not crash.
+	val = ini.get(_T("section1"), _T("_blanklines_"));
+	assert(IsEqual(val, _T("1"))); // "1" means [section1] has 1 headup blank lines.
+	val = ini.get(_T("unicodes"), _T("_blanklines_"));
+	assert(IsEqual(val, _T("2"))); // "2" means [unicodes] has 2 headup blank lines.
 
 	//
 	// Set some new key-value pairs, then verify
