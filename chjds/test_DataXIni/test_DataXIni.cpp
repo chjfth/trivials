@@ -34,7 +34,7 @@ struct DataXTraits<ClockMode_et, FORMAT>
 };
 
 
-bool test0()
+bool do_test1()
 {
 	const TCHAR *inisrc = _T("DigClock2.ini"); // read-only, don't change its content
 	const TCHAR *inidst = _T("output0.ini");
@@ -91,13 +91,25 @@ bool test0()
 
 int _tmain(int argc, TCHAR *argv[])
 {
+	MSVCRT_MemCheckStart(foo);
+
 	bool isok = false;
 //	isok = file_copy(_T("DigClock2.ini"), _T("test0.ini"), true);
 //	assert(isok);
 
-	isok = test0();
+	isok = do_test1();
 
-	_tprintf(_T("test0() %s.\n"), isok?_T("success"):_T("fail"));
+	_tprintf(_T("do_test1() %s.\n"), isok?_T("success"):_T("fail"));
+
+	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
+	if (isleak) {
+		printf("Memleak in my C++ code!!!\n");
+		return 4;
+	}
+	else {
+		printf("(No memleak.)\n");
+		return 0;
+	}
 
 	return 0;
 }

@@ -431,7 +431,7 @@ struct SOut // no virtual function
 
 void test_TSA_virtual()
 {
-	printf("sizeof(SOut)=%d\n", sizeof(SOut));
+	printf("sizeof(SOut)=%d\n", (int)sizeof(SOut));
 	hashdict<SOut> dict(_T("SinV"));
 	g_sv = 0xAAAA;
 //	dict.set(_T("key1"), SOut());
@@ -443,11 +443,7 @@ int _tmain(int argc, TCHAR *argv[])
 {
 	setlocale(LC_ALL, "");
 
-#ifdef _MSC_VER
-	// Take snapshot before operations
-	_CrtMemState state1={}, state2={}, stateDiff={};
-	_CrtMemCheckpoint(&state1);
-#endif
+	MSVCRT_MemCheckStart(foo);
 
 //	test_TSA_virtual();  // ok
 
@@ -488,22 +484,16 @@ int _tmain(int argc, TCHAR *argv[])
 		printf("\n");
 	}
 
+	printf("Success.\n");
 
-#ifdef _MSC_VER
-	// Take snapshot after
-	_CrtMemCheckpoint(&state2);
-
-	// Compare snapshots
-	if (_CrtMemDifference(&stateDiff, &state1, &state2)) 
-	{
-		_CrtMemDumpStatistics(&stateDiff);
-		_CrtMemDumpAllObjectsSince(&state1);
-		_tprintf(_T("Memory leak detected!!! See debug channel for details.\n"));
-
+	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
+	if (isleak) {
+		printf("Memleak in my C++ code!!!\n");
 		return 4;
 	}
-#endif // _MSC_VER
-
-	return 0;
+	else {
+		printf("(No memleak.)\n");
+		return 0;
+	}
 }
 
