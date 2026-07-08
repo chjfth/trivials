@@ -26,10 +26,22 @@
 #include <EnsureClnup_misc.h>
 #include <mswin/IPlaySound_mswin.h>
 
+#include <mswin/WinError.itc.h>
+#include <mswin/WinUser.itc.h>
+#include <mswin/mmsystem.itc.h>
+#include "AutoNestCount.h"
 #include "CxxDialogBase.h"
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+namespace itc {
+ITC_MAKE_OBJECT(itc_WM_app_all, 
+	new Enum2Val_merge(
+		_e2v_MM_xxx_winmsg, N_e2v_MM_xxx_winmsg,
+		_e2v_WM_xxx, N_e2v_WM_xxx,
+		nullptr, 0) // this Enum2Val_merge object will not be deleted, by design
+	, ITCF_HEX1B)
+} // itc
 
 HINSTANCE g_hinstExe;
 
@@ -262,6 +274,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDCANCEL:
 	{
 		EndDialog(hdlg, id);
+		util_PostDlgboxKillMessage(hdlg);
 		break;
 	}
 	}}
@@ -358,17 +371,109 @@ INT_PTR MainDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 
+int g_nestlv = 0; // WM_xxx nested level
+int g_msgcount = 0;
+bool g_inside_getmessage = false;
+
+bool WinMain_PeekDlgBox(HINSTANCE hinstExe)
+{
+	UINT wm_DlgKill = util_RegisterDlgboxKillMessage();
+
+	MainDialog dlg(_T("Hello.\r\nPrivate string here."));
+	HWND hdlg = dlg.CreateModeless(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL);
+	assert(hdlg);
+	if(!IsWindow(hdlg))
+		return false;
+
+	ShowWindow(hdlg, SW_SHOWNORMAL);
+
+	MSG msg = {};
+	while(1) 
+	{
+		vaDbgTs(_T("GetMessage() >>>"));
+
+		g_inside_getmessage = true;
+		BOOL succ = GetMessage(&msg, NULL, 0, 0);
+		g_inside_getmessage = false;
+		
+		// Check msg.hwnd's traits
+		HWND hwnd_mytop = hdlg;
+		HWND hwnd_root = GetAncestor(msg.hwnd, GA_ROOT);
+		const TCHAR *trait = _T("");
+		if(msg.hwnd==hwnd_mytop)
+			trait = _T("top");
+		else if(hwnd_root==hwnd_mytop)
+			trait = _T("child");
+		else
+		{
+			// Other top-level window, it could be a class="MSCTFIME UI"
+			trait = _T("other");
+		}
+
+		if(msg.message==wm_DlgKill && msg.wParam==(WPARAM)hdlg)
+		{
+			// We get dlgbox kill request, so kill it.
+			succ = DestroyWindow(hdlg);
+			if(succ)
+				vaDbgTs(_T("DestroyWindow(0x%X) success."), Ptr2Uint(hdlg));
+			else
+				vaDbgTs(_T("DestroyWindow(0x%X) fail! WinErr=%s"), Ptr2Uint(hdlg), ITCS_WinError);
+			break; 
+		}
+
+		vaDbgTs(_T("GetMessage() <<< got %s (hwnd=0x%X) %s"), 
+			ITCSnv(msg.message, itc::itc_WM_app_all), 
+			Ptr2Uint(msg.hwnd), // (hwnd=0x%X)
+			trait // %s
+			);
+
+		if(!succ)
+			break;
+
+		vaDbgTs(_T("IsDialogMessage() >>>"));
+
+		BOOL isdlgmsg = IsDialogMessage(hdlg, &msg);
+
+		vaDbgTs(_T("IsDialogMessage() <<< %s"), isdlgmsg?_T("(was yes)"):_T(""));
+
+		if(isdlgmsg)
+			continue;
+
+		TranslateMessage (&msg) ;
+		DispatchMessage  (&msg) ;
+	}
+
+	assert(!IsWindow(hdlg));
+
+	return true;
+}
+
 int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int) 
 {
 	g_hinstExe = hinstExe;
 
 	InitCommonControls(); // WinXP requires this, to work with Visual-style manifest
 
-	const TCHAR *szfullcmdline = GetCommandLine();
-	vaDbgTs(_T("GetCommandLine() = %s"), szfullcmdline);
+	int argc = __argc;
+#ifdef UNICODE
+	PCTSTR* argv = (PCTSTR*) CommandLineToArgvW(GetCommandLine(), &argc);
+#else
+	PCTSTR* argv = (PCTSTR*) __argv;
+#endif
+	// Use argc and argv[] below, just like what traditional main() does.
 
-	MainDialog dlg(_T("Hello.\r\nPrivate string here."));
-	dlg.DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL);
+	if(argc>1 && _tcscmp(argv[1], _T("peek"))==0)
+	{
+		// Chj Special: Use modeless dialog box.
+		// We will use our own message-pump code to peek WM_xxx flowing through.
+		WinMain_PeekDlgBox(hinstExe);
+	}
+	else
+	{
+		// Use traditional Modal dialog box.
+		MainDialog dlg(_T("Hello.\r\nPrivate string here."));
+		dlg.DialogBoxParam(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL);
+	}
 
 	return 0;
 }

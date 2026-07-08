@@ -49,6 +49,10 @@ private:
 	static INT_PTR CALLBACK s_DialogProc(HWND hdlg,
 		UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
+		//////// WM_xxx tracking code >>>>
+		AutoNestCount nestcount(g_msgcount, g_nestlv, uMsg);
+		//////// WM_xxx tracking code <<<<
+
 		CxxDialogBase *pdlg = NULL;
 		if(uMsg==WM_INITDIALOG)
 		{
