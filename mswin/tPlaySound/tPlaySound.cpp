@@ -43,7 +43,7 @@ ITC_MAKE_OBJECT(itc_WM_app_all,
 	, ITCF_HEX1B)
 } // itc
 
-bool g_isEdm = false; // EDM special
+bool g_isEdx = false; // EDX special, Evclip 20260708.5
 
 HINSTANCE g_hinstExe;
 
@@ -308,7 +308,7 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	vaSetWindowText(hdlg, _T("tPlaySound v%d.%d.%d %s"), 
 		tPlaySound_VMAJOR, tPlaySound_VMINOR, tPlaySound_VPATCH,
-		g_isEdm ? _T("(EDM mode)" : _T(""))
+		g_isEdx ? _T("(EDX mode)" : _T(""))
 		);
 	
 	SetDlgItemText(hdlg, IDE_WaveBinFile, _T("foxdog-8bit.wav"));
@@ -320,14 +320,14 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	EnablePsObjButtons(false);
 
-	if(!g_isEdm)
+	if(!g_isEdx)
 	{
 		HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
 		vaSetWindowText(helog, _T("%s")
 			,
-			_T("Hint: To run the dialog in EDM(EndDialog-message) mode, pass \"peek\" parameter.\r\n")
+			_T("Hint: To run the dialog in EDX(EndDialog-eXtension) mode, pass \"peek\" parameter.\r\n")
 			_T("\r\n")
-			_T("In EDM mode, this EXE code manages the message loop and all WM_xxx messages are dumped to debug channel.\r\n")
+			_T("In EDX mode, this EXE code manages the message loop and all WM_xxx messages are dumped to debug channel.\r\n")
 			);
 	}
 
@@ -347,8 +347,8 @@ INT_PTR MainDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	if(uMsg==0)
 	{
-		// [2026-07-08] Chj note: When managing this dlgbox in EDM(EndDialog-message) mode,
-		// and if we close the dlgbox, we can once see uMsg==0 here.
+		// [2026-07-08] Chj note: When managing this dlgbox in EDX mode,
+		// and if we close the dlgbox, we can see uMsg==0 once, quite implicit.
 		// Verified on WinXP & Win10.
 		vaDbgTs(_T("[Note] In DialogProc(), we see uMsg==0. Just ignore it."));
 		return TRUE;
@@ -402,7 +402,7 @@ bool g_inside_getmessage = false;
 bool WinMain_PeekDlgBox(HINSTANCE hinstExe)
 {
 	MainDialog dlg(_T("Hello.\r\nPrivate string here."));
-	g_isEdm = true;
+	g_isEdx = true;
 	HWND hdlg = dlg.CreateModeless(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL);
 	assert(hdlg);
 	if(!IsWindow(hdlg))
@@ -492,7 +492,7 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	if(argc>1 && _tcscmp(argv[1], _T("peek"))==0)
 	{
 		// Chj Special: Use modeless dialog box.
-		// With exe parameter "peek", we manage this dlgbox in EDM(EndDialog-message) mode.
+		// With exe parameter "peek", we manage this dlgbox in EDX(EndDialog-eXtension) mode.
 		// We will use our own message-pump code to peek WM_xxx flowing through.
 		WinMain_PeekDlgBox(hinstExe);
 	}

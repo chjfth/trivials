@@ -5,7 +5,7 @@
 #include <tchar.h>
 #include <windows.h>
 
-extern bool g_isEdm; // EDM special
+extern bool g_isEdx; // EDX special
 
 class CxxDialogBase
 {
@@ -66,7 +66,7 @@ private:
 
 		INT_PTR ret = 0;
 
-		if(g_isEdm)
+		if(g_isEdx)
 		{
 			//////// WM_xxx tracking code >>>>
 			AutoNestCount nestcount(g_msgcount, g_nestlv, uMsg);
