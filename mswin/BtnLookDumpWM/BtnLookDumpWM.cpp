@@ -40,7 +40,7 @@ link /debug BtnLookDumpWM.obj BtnLookDumpWM.res kernel32.lib user32.lib gdi32.li
 #endif
 
 
-#define VER_STR "1.5"
+#define VER_STR "1.6"
 
 //////// WM_xxx tracking code >>>>
 
@@ -171,6 +171,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ShowWindow (hwnd, nCmdShow) ;
 	UpdateWindow (hwnd) ;
 
+	TCHAR szClassName[40] = {}; // window class name "Edit", "Button" etc
 	HWND hwnd_mytop = hwnd;
 
 	while (1)
@@ -194,9 +195,12 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			trait = _T("other");
 		}
 
-		vaDBG3(_T("GetMessage() <<< got %s (hwnd=0x%X) %s"),
+		szClassName[0] = '\0';
+		GetClassName(msg.hwnd, szClassName, ARRAYSIZE(szClassName));
+
+		vaDBG3(_T("GetMessage() <<< got %s (hwnd=0x%X, \"%s\") %s"),
 			ITCSnv(msg.message, itc::WM_xxx), 
-			Ptr2Uint(msg.hwnd), // (hwnd=0x%X)
+			Ptr2Uint(msg.hwnd), szClassName, // (hwnd=0x%X, "%s")
 			trait // %s
 			);
 
