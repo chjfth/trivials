@@ -410,13 +410,14 @@ bool WinMain_PeekDlgBox(HINSTANCE hinstExe)
 
 	ShowWindow(hdlg, SW_SHOWNORMAL);
 
+	TCHAR szClassName[40] = {};
 	MSG msg = {};
 	while(1) 
 	{
 		vaDbgTs(_T("GetMessage() >>>"));
 
 		g_inside_getmessage = true;
-		BOOL succ = GetMessage(&msg, NULL, 0, 0);
+		BOOL succMsg = GetMessage(&msg, NULL, 0, 0);
 		g_inside_getmessage = false;
 		
 		// Check msg.hwnd's traits
@@ -433,10 +434,19 @@ bool WinMain_PeekDlgBox(HINSTANCE hinstExe)
 			trait = _T("other");
 		}
 
+		szClassName[0] = '\0';
+		GetClassName(msg.hwnd, szClassName, ARRAYSIZE(szClassName));
+
+		vaDbgTs(_T("GetMessage() <<< got %s (hwnd=0x%X \"%s\") %s"), 
+			ITCSnv(msg.message, itc::itc_WM_app_all), 
+			Ptr2Uint(msg.hwnd), szClassName, // (hwnd=0x%X "%s")
+			trait // %s
+			);
+
 		if(util_IsEndDialog(hdlg, msg))
 		{
 			// We get dlgbox kill request, so kill it.
-			succ = DestroyWindow(hdlg);
+			BOOL succ = DestroyWindow(hdlg);
 			if(succ)
 				vaDbgTs(_T("DestroyWindow(0x%X) success."), Ptr2Uint(hdlg));
 			else
@@ -444,13 +454,7 @@ bool WinMain_PeekDlgBox(HINSTANCE hinstExe)
 			break; 
 		}
 
-		vaDbgTs(_T("GetMessage() <<< got %s (hwnd=0x%X) %s"), 
-			ITCSnv(msg.message, itc::itc_WM_app_all), 
-			Ptr2Uint(msg.hwnd), // (hwnd=0x%X)
-			trait // %s
-			);
-
-		if(!succ)
+		if(!succMsg)
 			break;
 
 		vaDbgTs(_T("IsDialogMessage() >>>"));
