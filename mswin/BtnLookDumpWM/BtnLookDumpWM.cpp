@@ -14,6 +14,7 @@ link /debug BtnLookDumpWM.obj BtnLookDumpWM.res kernel32.lib user32.lib gdi32.li
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <shlwapi.h>
+#include <mswin/ShlObj-winxp-patch.h>
 #include <CommCtrl.h>
 #include <windowsx.h>
 #include <tchar.h>
@@ -153,7 +154,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		client_width, client_height,
 		NULL, NULL, hInstance, NULL);
 
-	vaDbgTs(_T("My main window HWND=0x%X"), (UINT)hwnd);
+	vaDbgTs(_T("My main window HWND=0x%X"), Ptr2Uint(hwnd));
 
 	Set_ClientAreaSize(hwnd, client_width, client_height);
 
@@ -187,7 +188,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 		vaDbgTs(_T("GetMessage() <<< got %s (hwnd=0x%X) %s"), 
 			ITCSnv(msg.message, itc::WM_xxx), 
-			(UINT)msg.hwnd, // (hwnd=0x%X)
+			Ptr2Uint(msg.hwnd), // (hwnd=0x%X)
 			trait // %s
 			);
 
@@ -235,7 +236,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 				cxChar, cyChar * (1 + 2 * i),
 				20 * cxChar, 7 * cyChar / 4,
 				hwnd, 
-				(HMENU) i,
+				(HMENU)(UINT_PTR)i,
 				((LPCREATESTRUCT) lParam)->hInstance, 
 				NULL) ;
 		}
