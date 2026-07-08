@@ -43,6 +43,8 @@ ITC_MAKE_OBJECT(itc_WM_app_all,
 	, ITCF_HEX1B)
 } // itc
 
+bool g_isEdm = false; // EDM special
+
 HINSTANCE g_hinstExe;
 
 class MainDialog : public CxxDialogBase
@@ -274,7 +276,7 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDCANCEL:
 	{
 		EndDialog(hdlg, id);
-		util_PostDlgboxKillMessage(hdlg);
+		util_PostEndDialogMessage(hdlg);
 		break;
 	}
 	}}
@@ -302,10 +304,12 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
-	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
+	util_SetWindowIcon(hdlg, MAKEINTRESOURCE(IDI_WINMAIN));
 
-	vaSetWindowText(hdlg, _T("tPlaySound v%d.%d.%d"), 
-		tPlaySound_VMAJOR, tPlaySound_VMINOR, tPlaySound_VPATCH);
+	vaSetWindowText(hdlg, _T("tPlaySound v%d.%d.%d %s"), 
+		tPlaySound_VMAJOR, tPlaySound_VMINOR, tPlaySound_VPATCH,
+		g_isEdm ? _T("(EDM mode)" : _T(""))
+		);
 	
 	SetDlgItemText(hdlg, IDE_WaveBinFile, _T("foxdog-8bit.wav"));
 	SetDlgItemText(hdlg, IDE_SoundFile, _T("chime-2sec.mp3"));
@@ -315,6 +319,17 @@ BOOL MainDialog::OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 	Dlg_EnableJULayout(hdlg);
 
 	EnablePsObjButtons(false);
+
+	if(!g_isEdm)
+	{
+		HWND helog = GetDlgItem(hdlg, IDC_EDIT_LOGMSG);
+		vaSetWindowText(helog, _T("%s")
+			,
+			_T("Hint: To run the dialog in EDM(EndDialog-message) mode, pass \"peek\" parameter.\r\n")
+			_T("\r\n")
+			_T("In EDM mode, this EXE code manages the message loop and all WM_xxx messages are dumped to debug channel.\r\n")
+			);
+	}
 
 	SetFocus(GetDlgItem(hdlg, IDB_CreateObj));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
@@ -328,6 +343,15 @@ INT_PTR MainDialog::DialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		HANDLE_dlgMSG(hdlg, WM_INITDIALOG,    OnInitDialog);
 		HANDLE_dlgMSG(hdlg, WM_COMMAND,       OnCommand);
+	}
+
+	if(uMsg==0)
+	{
+		// [2026-07-08] Chj note: When managing this dlgbox in EDM(EndDialog-message) mode,
+		// and if we close the dlgbox, we can once see uMsg==0 here.
+		// Verified on WinXP & Win10.
+		vaDbgTs(_T("[Note] In DialogProc(), we see uMsg==0. Just ignore it."));
+		return TRUE;
 	}
 
 	if(uMsg==m_msgNotifyPlayDone)
@@ -377,9 +401,8 @@ bool g_inside_getmessage = false;
 
 bool WinMain_PeekDlgBox(HINSTANCE hinstExe)
 {
-	UINT wm_DlgKill = util_RegisterDlgboxKillMessage();
-
 	MainDialog dlg(_T("Hello.\r\nPrivate string here."));
+	g_isEdm = true;
 	HWND hdlg = dlg.CreateModeless(hinstExe, MAKEINTRESOURCE(IDD_WINMAIN), NULL);
 	assert(hdlg);
 	if(!IsWindow(hdlg))
@@ -410,7 +433,7 @@ bool WinMain_PeekDlgBox(HINSTANCE hinstExe)
 			trait = _T("other");
 		}
 
-		if(msg.message==wm_DlgKill && msg.wParam==(WPARAM)hdlg)
+		if(util_IsEndDialog(hdlg, msg))
 		{
 			// We get dlgbox kill request, so kill it.
 			succ = DestroyWindow(hdlg);
@@ -465,6 +488,7 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR szParams, int)
 	if(argc>1 && _tcscmp(argv[1], _T("peek"))==0)
 	{
 		// Chj Special: Use modeless dialog box.
+		// With exe parameter "peek", we manage this dlgbox in EDM(EndDialog-message) mode.
 		// We will use our own message-pump code to peek WM_xxx flowing through.
 		WinMain_PeekDlgBox(hinstExe);
 	}

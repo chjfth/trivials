@@ -1,0 +1,28 @@
+#include "iversion.h"
+
+1 VERSIONINFO
+FileVersion    tPlaySound_VMAJOR, tPlaySound_VMINOR, tPlaySound_VPATCH, tPlaySound_VTAIL
+ProductVersion tPlaySound_VMAJOR, tPlaySound_VMINOR, tPlaySound_VPATCH, tPlaySound_VTAIL
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904E4"
+        //language ID = U.S. English, char set = Windows, Multilingual
+        {
+            VALUE "CompanyName", "Public Domain"
+            VALUE "ProductName",     tPlaySound_NAME
+            VALUE "FileDescription", tPlaySound_NAME
+            VALUE "FileVersion",    tPlaySound_VMAJORs "." tPlaySound_VMINORs "." tPlaySound_VPATCHs
+            VALUE "ProductVersion",    tPlaySound_VMAJORs "." tPlaySound_VMINORs "." tPlaySound_VPATCHs
+            VALUE "LegalCopyright",    "Public domain"
+            VALUE "OriginalFilename" , tPlaySound_NAME ".exe"
+            VALUE "InternalName", tPlaySound_NAME ".exe"
+            VALUE "Comments","Presented by public domain"
+        }
+    }
+
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x0409, 1252
+    }
+}

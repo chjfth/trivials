@@ -2,8 +2,8 @@
 #define __tPlaySound_iversion_h_
 
 #define tPlaySound_VMAJOR 1
-#define tPlaySound_VMINOR 0
-#define tPlaySound_VPATCH 9
+#define tPlaySound_VMINOR 1
+#define tPlaySound_VPATCH 0
 #define tPlaySound_VTAIL  0
 
 #define tPlaySoundstr__(n) #n

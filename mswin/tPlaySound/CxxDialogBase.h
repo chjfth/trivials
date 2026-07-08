@@ -5,6 +5,8 @@
 #include <tchar.h>
 #include <windows.h>
 
+extern bool g_isEdm; // EDM special
+
 class CxxDialogBase
 {
 public:
@@ -49,10 +51,6 @@ private:
 	static INT_PTR CALLBACK s_DialogProc(HWND hdlg,
 		UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		//////// WM_xxx tracking code >>>>
-		AutoNestCount nestcount(g_msgcount, g_nestlv, uMsg);
-		//////// WM_xxx tracking code <<<<
-
 		CxxDialogBase *pdlg = NULL;
 		if(uMsg==WM_INITDIALOG)
 		{
@@ -68,13 +66,25 @@ private:
 
 		INT_PTR ret = 0;
 
-		if(pdlg)
+		if(g_isEdm)
 		{
-			// We need to check non-NULL, bcz some WM_xxx precedes WM_INITDIALOG
-			// e.g. WM_SETFONT .
+			//////// WM_xxx tracking code >>>>
+			AutoNestCount nestcount(g_msgcount, g_nestlv, uMsg);
+			//////// WM_xxx tracking code <<<<
 
-			// Call virtual function.
-			ret = pdlg->DialogProc(uMsg, wParam, lParam);
+			if(pdlg)
+				ret = pdlg->DialogProc(uMsg, wParam, lParam);
+		}
+		else
+		{
+			if(pdlg)
+			{
+				// We need to check non-NULL, bcz some WM_xxx precedes WM_INITDIALOG
+				// e.g. WM_SETFONT .
+
+				// Call virtual function.
+				ret = pdlg->DialogProc(uMsg, wParam, lParam);
+			}
 		}
 
 		return ret;
