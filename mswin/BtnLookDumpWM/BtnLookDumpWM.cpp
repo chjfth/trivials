@@ -26,13 +26,21 @@ link /debug BtnLookDumpWM.obj BtnLookDumpWM.res kernel32.lib user32.lib gdi32.li
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+#include <CHHI_DEBUG.h>
+
 #define CHHI_ALL_IMPL
+#include <CHHI_vaDBG_is_vaDbgTs.h>
 #include <snTprintf.h>
 #include <mswin/utils_env.h>
 #include <mswin/utils_wingui.h>
 #include <mswin/WinUser.itc.h>
 
-#define VER_STR "1.4"
+#ifndef BtnLookDumpWM_DEBUG
+#include <CHHI_vaDBG_hide.h> // Suppress/invalidate vaDBG macros, from now on
+#endif
+
+
+#define VER_STR "1.5"
 
 //////// WM_xxx tracking code >>>>
 
@@ -73,7 +81,7 @@ public:
 private:
 	void DumpOne(bool is_enter)
 	{
-		vaDbgTs(_T("<%c>[#%-3d]%s[*%d] %s %s"), 
+		vaDBG3(_T("<%c>[#%-3d]%s[*%d] %s %s"), 
 			g_inside_getmessage ? _T('i') : _T('o') , // <%c> : 'i/o': inside/outsiude GetMessage()
 			m_nowcount, get_indents(mr_nestlv), mr_nestlv, // [#%d]%s[*%d]
 			is_enter ? _T(">>> Enter") : _T("<<< Leave") , // %s : Enter or Leave
@@ -154,7 +162,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		client_width, client_height,
 		NULL, NULL, hInstance, NULL);
 
-	vaDbgTs(_T("My main window HWND=0x%X"), Ptr2Uint(hwnd));
+	vaDBG3(_T("My main window HWND=0x%X"), Ptr2Uint(hwnd));
 
 	Set_ClientAreaSize(hwnd, client_width, client_height);
 
@@ -167,7 +175,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	while (1)
 	{
-		vaDbgTs(_T("GetMessage() >>>"));
+		vaDBG3(_T("GetMessage() >>>"));
 		
 		g_inside_getmessage = true;
 		BOOL succ = GetMessage (&msg, NULL, 0, 0);
@@ -186,7 +194,7 @@ int WINAPI _tWinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			trait = _T("other");
 		}
 
-		vaDbgTs(_T("GetMessage() <<< got %s (hwnd=0x%X) %s"), 
+		vaDBG3(_T("GetMessage() <<< got %s (hwnd=0x%X) %s"),
 			ITCSnv(msg.message, itc::WM_xxx), 
 			Ptr2Uint(msg.hwnd), // (hwnd=0x%X)
 			trait // %s
@@ -328,3 +336,7 @@ INT_PTR CALLBACK AboutDlgProc(HWND hDlg, UINT message,
 	}
 	return FALSE;
 }
+
+#ifndef BtnLookDumpWM_DEBUG
+#include <CHHI_vaDBG_show.h> // Now restore vaDBG macros
+#endif
