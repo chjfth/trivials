@@ -1,0 +1,107 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include <mswin/FlexiInfobox_ids.h>
+
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+1                       ICON                    "test_FlexiInfobox.ico"
+IDI_NEWLAND             ICON                    "NewLand.ico"
+IDI_CLOCK               ICON                    "green-clock-64.ico"
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_WINMAIN DIALOGEX 0, 0, 174, 141
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "test FlexiInfobox"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    ICON            32514,IDC_STATIC,73,12,21,20
+    LTEXT           "Create message box using .rc",IDC_STATIC,7,44,108,8,SS_NOPREFIX
+    LTEXT           "Create message box NOT using .rc",IDC_STATIC,7,83,120,8,SS_NOPREFIX
+    PUSHBUTTON      "&Use .rc",IDC_USE_RC,7,58,67,14,WS_GROUP
+    PUSHBUTTON      "&Not use .rc",IDC_NOT_USE_RC,7,96,67,14,WS_GROUP
+    PUSHBUTTON      "U&se .rc fixed-width",IDC_USE_RC_MONO,85,58,83,14,WS_GROUP
+    PUSHBUTTON      "N&ot use .rc fixed-width",IDC_NOT_USE_RC_MONO,85,96,83,14,WS_GROUP
+    EDITTEXT        IDC_EDIT_HINT,7,118,161,17,ES_MULTILINE | ES_READONLY | NOT WS_BORDER
+    DEFPUSHBUTTON   "&Cases",IDC_BTN_CASES,141,2,27,14
+END
+
+IDD_SHOW_INFO DIALOG 0, 0, 156, 56
+STYLE DS_SETFONT | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "FlexiInfo"
+FONT 9, "MS Shell Dlg"
+BEGIN
+    PUSHBUTTON      "OK",IDOK,46,38,50,14
+    PUSHBUTTON      "Btn2",IDCANCEL,99,38,50,14
+    ICON            "",IDI_SHOW_INFO,14,6,20,20,SS_NOTIFY
+    EDITTEXT        IDC_EDIT_SHOW_INFO,47,6,102,28,ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY | NOT WS_BORDER | WS_VSCROLL
+    PUSHBUTTON      "&Refresh",IDC_BTN_REFRESH,6,28,36,12
+    CONTROL         "&Auto",IDC_CHK_AUTOREFRESH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,42,35,10
+END
+
+
+
+
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
