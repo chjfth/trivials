@@ -15,22 +15,22 @@
 extern HINSTANCE g_hinst;
 
 
-typedef FIB_ret (*PROC_DoCase)(HWND hwnd, LPCTSTR ptext);
+typedef FIB_ret (*PROC_DoCase)(HWND hwnd, int idHuman, LPCTSTR ptext);
 
 struct Case_st
 {
 	PROC_DoCase func;
 	LPCTSTR text;
-	int id;
+	int idHuman; // one-based, no skip
 };
 
-FIB_ret fcSimplest(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcSimplest(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	ggt_FlexiInfo(hwnd, ptext);
 	return FIB_OK;
 }
 
-FIB_ret fcCustomizeTitle(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcCustomizeTitle(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	FibInput_st si;
 	si.title = _T("Your message"); // !
@@ -38,84 +38,99 @@ FIB_ret fcCustomizeTitle(HWND hwnd, LPCTSTR ptext)
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcWantCancelOnly(HWND hwnd, LPCTSTR ptext)
+const TCHAR *TitleByHumanId(int idHuman)
+{
+	static TCHAR s_szTitle[80];
+	snTprintf(s_szTitle, _T("Case (%d)"), idHuman);
+	return s_szTitle;
+}
+
+FIB_ret fcWantCancelOnly(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	// A small probleM here. User tabs to the editbox and Enter, it will return IDOK.
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+
 	si.szBtnCancel = _T("Cancel");
 	return ggt_FlexiInfobox(hwnd, &si, ptext); 
 }
 
-FIB_ret fcOKandCancel(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcOKandCancel(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+
 	si.szBtnOK = _T("OK");
 	si.szBtnCancel = _T("Cancel");
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcYESandNO(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcYESandNO(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&YES");    // !
 	si.szBtnCancel = _T("&NO"); // !
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcYESandNO_default_No(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcYESandNO_default_No(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&YES");
 	si.szBtnCancel = _T("&NO");
 	si.idDefaultFocus = fib_IDC_BTN_CANCEL; // !
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcUseMonoFont(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcUseMonoFont(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("OK");
 	si.fixedwidth_font = true; // !
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcUseBiggerMonoFont(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcUseBiggerMonoFont(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("OK");
 	si.fixedwidth_font = true; // !
 	si.fontsize = 12;          // !
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcUseBiggerDefaultFont(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcUseBiggerDefaultFont(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
 	si.szBtnOK = _T("OK");
 	si.fontsize = 12;  // !
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcCustomizeIcon(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcCustomizeIcon(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
 	si.szBtnOK = _T("OK");
 	si.hIcon = LoadIcon(g_hinst, MAKEINTRESOURCE(IDI_NEWLAND)); // !
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcDelayClose(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcDelayClose(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&Yes");
 	si.szBtnCancel = _T("&No");
 	si.msecDelayClose = 1000;
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
-FIB_ret fcUseNoButtons(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcUseNoButtons(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	return ggt_vaFlexiInfobox(hwnd, &si, _T("%s\n\n%s"), ptext,
 		_T("Use Close nib or keyboard Alt+F4 to close this infobox."));
 }
@@ -129,9 +144,10 @@ FibCallback_ret fcDenyCancel_GetText(void *ctx,
 	else
 		return FIBcb_OK;
 }
-FIB_ret fcDenyCancel(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcDenyCancel(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&OK");
 	si.szBtnCancel = _T("No &Cancel");
 	si.procGetText = fcDenyCancel_GetText;
@@ -154,13 +170,14 @@ FibCallback_ret fcDenyCancelWithPrompt_GetText(void *ctx,
 		return FIBcb_OK;
 }
 //
-FIB_ret fcDenyCancelWithPrompt(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcDenyCancelWithPrompt(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	const int bufsize = 400;
 	TCHAR mytext[bufsize]= _T("");
 	_tcscat_s(mytext, bufsize, ptext);
 
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&OK");
 	si.szBtnCancel = _T("No &Cancel");
 	si.procGetText = fcDenyCancelWithPrompt_GetText;
@@ -193,7 +210,7 @@ FibCallback_ret fcRefreshable_GetText(void *_ctx,
 	return FIBcb_OK;
 }
 //
-FIB_ret fcRefreshable(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcRefreshable(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	const int bufsize = 5500;
 	TCHAR mytext[bufsize]= _T("");
@@ -204,7 +221,8 @@ FIB_ret fcRefreshable(HWND hwnd, LPCTSTR ptext)
 
 	fcRefreshable_st ctx = {0, stars};
 
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&OK");
 	si.procGetText = fcRefreshable_GetText;
 	si.ctxGetText = &ctx;       // !
@@ -228,12 +246,13 @@ FibCallback_ret fcTimedRefresh_GetText(void *_ctx,
 	return FIBcb_OK;
 }
 //
-FIB_ret fcTimedRefresh(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcTimedRefresh(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	const int bufsize = 50;
 	TCHAR mytext[bufsize]= _T("");
 
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&OK");
 	si.procGetText = fcTimedRefresh_GetText;
 	si.msecAutoRefresh = 1000;  // ! unit: millisec
@@ -268,14 +287,15 @@ FibCallback_ret fcCountDownClose_GetText(void *_ctx,
 		return FIBcb_CloseDlg; // ! This auto-close the infobox
 }
 //
-FIB_ret fcCountDownClose(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcCountDownClose(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	const int bufsize = 80;
 	TCHAR mytext[bufsize]= _T("");
 
 	fcCountDownClose_st ctx = { GetTickCount()+5000 };
 
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.procGetText = fcCountDownClose_GetText;
 	si.ctxGetText = &ctx;
 	si.msecAutoRefresh = 500;  // need it to trigger auto-close
@@ -327,13 +347,14 @@ FibCallback_ret fcTimeLocalOrUTC_GetText(void *_ctx,
 	return FIBcb_OK;
 }
 //
-FIB_ret fcTimeLocalOrUTC(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcTimeLocalOrUTC(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	const int bufsize = 50;
 	TCHAR mytext[bufsize]= _T("");
 
 	fcTimeLocalOrUTC_st ctx = {false};
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&OK");
 	si.procGetText = fcTimeLocalOrUTC_GetText;
 	si.ctxGetText = &ctx;
@@ -381,13 +402,14 @@ FibCallback_ret fcTitleShowTime_GetText(void *_ctx,
 	return FIBcb_OK;
 }
 //
-FIB_ret fcTitleShowTime(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcTitleShowTime(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	const int bufsize = 200;
 	TCHAR mytext[bufsize]= _T("");
 
 	fcTitleShowTime_st ctx = {0};
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&OK");
 	si.procGetText = fcTitleShowTime_GetText;
 	si.ctxGetText = &ctx;
@@ -408,7 +430,7 @@ FIB_ret fcTitleShowTime(HWND hwnd, LPCTSTR ptext)
 	return ggt_FlexiInfobox(hwnd, &si, mytext);
 }
 
-FIB_ret fcSwitchAttachDetach(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcSwitchAttachDetach(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	FibUserCmds_st arUserCmds[] =
 	{
@@ -416,7 +438,8 @@ FIB_ret fcSwitchAttachDetach(HWND hwnd, LPCTSTR ptext)
 		{FIBcmd_DetachFromParent, FIBcst_Default, _T("Detach infobox from parent")},
 	};
 
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&Apple");
 	si.szBtnCancel = _T("&Pear");
 	si.arUserCmds = arUserCmds;
@@ -431,7 +454,7 @@ FibCallback_ret fcSwitchAttachDetach_withTimer_GetText(void *_ctx,
 	return FIBcb_OK;
 }
 //
-FIB_ret fcSwitchAttachDetach_withTimer(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcSwitchAttachDetach_withTimer(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	FibUserCmds_st arUserCmds[] =
 	{
@@ -439,7 +462,8 @@ FIB_ret fcSwitchAttachDetach_withTimer(HWND hwnd, LPCTSTR ptext)
 		{FIBcmd_DetachFromParent, FIBcst_Default, _T("Detach infobox from parent")},
 	};
 
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&Apple");
 	si.szBtnCancel = _T("&Pear");
 	si.procGetText = fcSwitchAttachDetach_withTimer_GetText;
@@ -489,14 +513,15 @@ FibCallback_ret fcDenyCancelSoft_GetText(void *ctx,
 	return FIBcb_OK;
 }
 //
-FIB_ret fcDenyCancelSoft(HWND hwnd, LPCTSTR ptext)
+FIB_ret fcDenyCancelSoft(HWND hwnd, int idHuman, LPCTSTR ptext)
 {
 	FibUserCmds_st arUserCmds[] =
 	{
 		{fibcmd_EnableCancel, FIBcst_TickOff, _T("Enable Cancel button")},
 	};
 
-	FibInput_st si;
+	FibInput_st si; si.title = TitleByHumanId(idHuman);
+	
 	si.szBtnOK = _T("&OK");
 	si.szBtnCancel = _T("&No Cancel");
 	si.procGetText = fcDenyCancelSoft_GetText;
@@ -550,33 +575,39 @@ void do_Cases(HWND hwnd)
 	CEC_DestroyMenu hmenu = CreatePopupMenu();
 
 	// Initialize case data
-	int i=0;
+	int i=0, idxHuman=1;
 	for(; i<ARRAYSIZE(gar_FlexiCases); i++)
 	{
 		Case_st &thiscase = gar_FlexiCases[i];
-		thiscase.id = i+1;
+		thiscase.idHuman = idxHuman;
+		
+		int menucmd = i+1; // strictly array_idx+1
 
 		TCHAR szItem[80];
-		snTprintf(szItem, ARRAYSIZE(szItem), _T("%d. %s"), thiscase.id, thiscase.text);
+		snTprintf(szItem, ARRAYSIZE(szItem), _T("%d. %s"), thiscase.idHuman, thiscase.text);
 
 		if(thiscase.func)
-			AppendMenu(hmenu, MF_STRING, thiscase.id, szItem);
+		{
+			AppendMenu(hmenu, MF_STRING, menucmd, szItem);
+			idxHuman++;
+		}
 		else
 			AppendMenu(hmenu, MF_SEPARATOR, 0, 0);
 	}
 
 	RECT rectBtn;
 	GetWindowRect(GetDlgItem(hwnd, IDC_BTN_CASES), &rectBtn);
-	int mret = TrackPopupMenu(hmenu, TPM_RETURNCMD, rectBtn.left, rectBtn.bottom, 0, hwnd, NULL);
-	if(mret>0)
+	int menucmd = TrackPopupMenu(hmenu, TPM_RETURNCMD, rectBtn.left, rectBtn.bottom, 0, hwnd, NULL);
+	if(menucmd>0)
 	{
 		static int s_count = 0;
 		bool isShiftDown = GetAsyncKeyState(VK_SHIFT)<0 ? true:false;
 
 		// Call case function:
-		FIB_ret fibret = gar_FlexiCases[mret-1].func(
+		FIB_ret fibret = gar_FlexiCases[menucmd-1].func(
 			isShiftDown ? NULL : hwnd, 
-			gar_FlexiCases[mret-1].text
+			gar_FlexiCases[menucmd-1].idHuman,
+			gar_FlexiCases[menucmd-1].text
 			);
 		
 		TCHAR hint[40];
