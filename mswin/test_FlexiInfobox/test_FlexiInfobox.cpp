@@ -29,7 +29,7 @@ link /debug test_FlexiInfobox.obj test_FlexiInfobox.res kernel32.lib user32.lib 
 
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-#define VER_STR "1.1.1"
+#define VER_STR "1.1.2"
 
 HINSTANCE g_hinst;
 

@@ -67,7 +67,7 @@ FIB_ret fcYESandNO_default_No(HWND hwnd, LPCTSTR ptext)
 	FibInput_st si;
 	si.szBtnOK = _T("&YES");
 	si.szBtnCancel = _T("&NO");
-	si.idDefaultFocus = IDC_BTN_CANCEL; // !
+	si.idDefaultFocus = fib_IDC_BTN_CANCEL; // !
 	return ggt_FlexiInfobox(hwnd, &si, ptext);
 }
 
