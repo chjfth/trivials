@@ -117,7 +117,7 @@ FIB_ret fcUseNoButtons(HWND hwnd, LPCTSTR ptext)
 {
 	FibInput_st si;
 	return ggt_vaFlexiInfobox(hwnd, &si, _T("%s\n\n%s"), ptext,
-		_T("Use Close nib or Alt+F4 to close this infobox."));
+		_T("Use Close nib or keyboard Alt+F4 to close this infobox."));
 }
 
 FibCallback_ret fcDenyCancel_GetText(void *ctx, 
@@ -534,7 +534,7 @@ Case_st gar_FlexiCases[] =
 
 	{ fcDenyCancel, _T("Deny Cancel button's closing infobox") },
 	{ fcDenyCancelWithPrompt, _T("Deny Cancel button and customize prompt") },
-	{ fcRefreshable, _T("Use Refresh button for new info") },
+	{ fcRefreshable, _T("Use Refresh button to add more text") },
 	{ fcTimedRefresh, _T("Auto refresh to show clock time") },
 	{ fcCountDownClose, _T("Countdown close: Only closeable by program") },
 	{ fcTimeLocalOrUTC, _T("Infobox with context menu (right click blank area)") },
