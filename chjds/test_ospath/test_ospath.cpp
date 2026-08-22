@@ -83,7 +83,7 @@ void test_path_join(TCHAR sepchar)
 		"d:/123");
 
 	CHECK_JOIN2("d:/abc/def", 
-		"../../../123", // Extra ".." levels are omitted.
+		"../../../123", // Verbose ".." levels are silently discarded.
 		"d:/123");
 
 	CHECK_JOIN2("d:/abc/def", "/123", 
@@ -101,8 +101,12 @@ void test_path_join(TCHAR sepchar)
 		"d:/123/456");
 
 	// Extra "." nodes will be removed, midway or at tail.
+
 	CHECK_JOIN2("d:/abc/./def", "./123/.././456/.", 
 		"d:/abc/def/456");
+
+	CHECK_JOIN2(".", "123", 
+		"123");
 
 	// If path1=="", the effect is to purify path2.
 	// = path_normalize()
@@ -127,8 +131,14 @@ void test_path_join(TCHAR sepchar)
 	CHECK_JOIN2("d:/abc//.//def/", "123///./../456//", 
 		"d:/abc/def/456");
 
+	// path2 is empty, we'll path1 verbatim
+	// Python 3.9 will result in a trailing slash, which I frown upon.
+
+	CHECK_JOIN2("d:/abc", "", 
+		"d:/abc");
+
 	//
-	// Unix style root dir.
+	// Unix style root dir, no drive-letter.
 	//
 
 	CHECK_JOIN2("/abc/def", "123/./../456", 
@@ -249,6 +259,15 @@ void test_fullpath_to_rela(TCHAR sepchar)
 
 	CHECK_FTR("c:/abc/def", "/123/456",
 		"/123/456", 0, false);
+
+	// Equal Basedir and Fullpath, a dot is returned.
+	CHECK_FTR("c:/abc/def", "c:/abc/def",
+		".", 0, false);
+	CHECK_FTR("c:/abc/def/", "c:/abc/def",
+		".", 0, false);
+	CHECK_FTR("c:/abc/def", "c:/abc/def/",
+		".", 0, false);
+
 
 	// Wacky input: Input dir NOT in full-path form.
 
