@@ -71,6 +71,8 @@ void test_path_join(TCHAR sepchar)
 	const TCHAR *p1=0, *p2=0, *p3=0;
 	Sdring sret;
 
+	// Join a fullpath and a relapath.
+
 	CHECK_JOIN2("d:/abc/def", "123",
 		"d:/abc/def/123");
 
@@ -89,6 +91,14 @@ void test_path_join(TCHAR sepchar)
 
 	CHECK_JOIN2("d:/abc/def", "./123/../456", 
 		"d:/abc/def/456");
+
+	// We allow that first path is a relative path.
+
+	CHECK_JOIN2("abc/def", "123/456",
+		"abc/def/123/456");
+
+	CHECK_JOIN2("abc/def", "d:/123/456",
+		"d:/123/456");
 
 	// Extra "." nodes will be removed, midway or at tail.
 	CHECK_JOIN2("d:/abc/./def", "./123/.././456/.", 
@@ -140,7 +150,7 @@ void test_path_join(TCHAR sepchar)
 
 
 Sdring _Fullpath_to_rela(const TCHAR *basedir, const TCHAR *tofullpath,  
-	TCHAR sepchar, FTR_feedback_st *pfeedback)
+	TCHAR sepchar, FTR_feedback_st *pfeedback, CaseSensitive_et cas)
 {
 	// User input basedir & tofullpath should always contain forward slashes(/).
 	// If sepchar=='\\', all / in Path1 & Path2 will be replaced with \ then to
@@ -167,7 +177,7 @@ Sdring _Fullpath_to_rela(const TCHAR *basedir, const TCHAR *tofullpath,
 		}
 	}
 
-	Sdring sret = fullpath_to_rela(sbase, sfull, sepchar, pfeedback);
+	Sdring sret = fullpath_to_rela(sbase, sfull, sepchar, pfeedback, cas);
 
 	if(sret.not_empty() && sepchar=='\\')
 	{
@@ -186,13 +196,19 @@ Sdring _Fullpath_to_rela(const TCHAR *basedir, const TCHAR *tofullpath,
 
 
 
-#define CHECK_FTR(Full, Base, Answer, nParents, isReachRoot) \
+#define CHECK_FTR_CaseParam(Full, Base, cas, Answer, nParents, isReachRoot) \
 	pfull = _T(Full); \
 	pbase = _T(Base); \
-	sret = _Fullpath_to_rela(pfull, pbase, sepchar, &feedback); \
+	sret = _Fullpath_to_rela(pfull, pbase, sepchar, &feedback, cas); \
 	assert(Sdring::str_match(sret, _T(Answer))); \
 	assert(feedback.nparents==nParents); \
 	assert(feedback.is_reach_root==isReachRoot); \
+
+#define CHECK_FTR(Full, Base, Answer, nParents, isReachRoot) \
+	CHECK_FTR_CaseParam(Full, Base, CaseSense_yes, Answer, nParents, isReachRoot)
+
+#define CHECK_FTR_IgnoreCase(Full, Base, Answer, nParents, isReachRoot) \
+	CHECK_FTR_CaseParam(Full, Base, CaseSense_no, Answer, nParents, isReachRoot)
 
 void test_fullpath_to_rela(TCHAR sepchar)
 {
@@ -246,7 +262,13 @@ void test_fullpath_to_rela(TCHAR sepchar)
 	CHECK_FTR("d://abc/./def", "d:/xxx/.././123.txt", 
 		"../../123.txt", 2, true);
 
-	// TODO: Case sensitive/insensitive dir prefix matching?
+	// Case-insensitive test-cases
+
+	CHECK_FTR_IgnoreCase("D:/ABC", "d:/abc/def/123.txt", 
+		"def/123.txt", 0, false);
+
+	CHECK_FTR_IgnoreCase("d:/Abc/Def", "D:/abc/123.txt", 
+		"../123.txt", 1, false);
 }
 
 
