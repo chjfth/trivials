@@ -250,6 +250,12 @@ void test_fullpath_to_rela(TCHAR sepchar)
 	CHECK_FTR("d:/abc/def", "d:/", 
 		"../..", 2, true);
 
+	// Basedir is a root-dir, should return isReachRoot=true.
+	CHECK_FTR("d:/", "d:/123/456.txt",
+		"123/456.txt", 0, true);
+	CHECK_FTR("/", "/123/456.txt",
+		"123/456.txt", 0, true);
+
 	// Basedir and Fullpath are from different windows drive-letter
 
 	CHECK_FTR("c:/abc/def", "d:/123/456",
@@ -271,10 +277,13 @@ void test_fullpath_to_rela(TCHAR sepchar)
 
 
 	// Wacky input: Input dir NOT in full-path form.
+	// We return empty string to signify this error.
 
 	CHECK_FTR("c:/abc/def", "123/456",
 		"", 0, false);
 	CHECK_FTR("abc/def", "d:/123/456",
+		"", 0, false);
+	CHECK_FTR("d:", "d:/123/456",
 		"", 0, false);
 
 	// Test for redundant slashes.
