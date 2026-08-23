@@ -4,9 +4,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <tchar.h>
 #include <locale.h>
 
+#include <ps_TCHAR.h>
+#include <msvc_extras.h>
 //#include <commdefs.h>
 
 #define CHHI_ALL_IMPL
@@ -294,6 +295,8 @@ void test_fullpath_to_rela(TCHAR sepchar)
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
+
+	MSVCRT_MemCheckStart(foo);
 	
 	_tprintf(_T("Hello, test_ospath!\n"));
 
@@ -303,7 +306,14 @@ int _tmain(int argc, TCHAR* argv[])
 	test_fullpath_to_rela('/');
 	test_fullpath_to_rela('\\');
 
-	_tprintf(_T("Success test_ospath.\n"));
-	return 0;
+	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
+	if (isleak) {
+		_tprintf(_T("Memleak in my C++ code.\n"));
+		return 4;
+	}
+	else {
+		_tprintf(_T("Success test_ospath.\n"));
+		return 0;
+	}
 }
 

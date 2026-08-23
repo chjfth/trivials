@@ -1,0 +1,2 @@
+
+g++ -O2 -I ./devdbg -I . -I ../../__chjcxx/common-include/include/linux  -I ../../__chjcxx/common-include/include -D __int64="long long" test_ospath.cpp
