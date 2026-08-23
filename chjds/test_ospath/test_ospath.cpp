@@ -207,19 +207,19 @@ Sdring _Fullpath_to_rela(const TCHAR *basedir, const TCHAR *tofullpath,
 
 
 
-#define CHECK_FTR_CaseParam(Full, Base, cas, Answer, nParents, isReachRoot) \
-	pfull = _T(Full); \
+#define CHECK_FTR_CaseParam(Base, Full, cas, Answer, nParents, isReachRoot) \
 	pbase = _T(Base); \
-	sret = _Fullpath_to_rela(pfull, pbase, sepchar, &feedback, cas); \
+	pfull = _T(Full); \
+	sret = _Fullpath_to_rela(pbase, pfull, sepchar, &feedback, cas); \
 	assert(Sdring::str_match(sret, _T(Answer))); \
 	assert(feedback.nparents==nParents); \
 	assert(feedback.is_reach_root==isReachRoot); \
 
-#define CHECK_FTR(Full, Base, Answer, nParents, isReachRoot) \
-	CHECK_FTR_CaseParam(Full, Base, CaseSense_yes, Answer, nParents, isReachRoot)
+#define CHECK_FTR(Base, Full, Answer, nParents, isReachRoot) \
+	CHECK_FTR_CaseParam(Base, Full, CaseSense_yes, Answer, nParents, isReachRoot)
 
-#define CHECK_FTR_IgnoreCase(Full, Base, Answer, nParents, isReachRoot) \
-	CHECK_FTR_CaseParam(Full, Base, CaseSense_no, Answer, nParents, isReachRoot)
+#define CHECK_FTR_IgnoreCase(Base, Full, Answer, nParents, isReachRoot) \
+	CHECK_FTR_CaseParam(Base, Full, CaseSense_no, Answer, nParents, isReachRoot)
 
 void test_fullpath_to_rela(TCHAR sepchar)
 {
@@ -291,6 +291,26 @@ void test_fullpath_to_rela(TCHAR sepchar)
 		"../123.txt", 1, false);
 }
 
+void test_fullpath_to_rela_MixSlash()
+{
+	const TCHAR *pbase=0, *pfull=0;
+	Sdring sret;
+	FTR_feedback_st feedback = {};
+
+	pbase = _T("d:\\abc//def\\hij");
+	pfull = _T("d://abc\\123.txt");
+
+	sret = fullpath_to_rela(pbase, pfull, _T('/'), &feedback); 
+	assert(Sdring::str_match(sret, _T("../../123.txt"))); 
+	assert(feedback.nparents==2); 
+	assert(feedback.is_reach_root==false);
+
+	sret = fullpath_to_rela(pbase, pfull, _T('\\'), &feedback); 
+	assert(Sdring::str_match(sret, _T("..\\..\\123.txt"))); 
+	assert(feedback.nparents==2); 
+	assert(feedback.is_reach_root==false);
+}
+
 
 int _tmain(int argc, TCHAR* argv[])
 {
@@ -305,6 +325,8 @@ int _tmain(int argc, TCHAR* argv[])
 
 	test_fullpath_to_rela('/');
 	test_fullpath_to_rela('\\');
+
+	test_fullpath_to_rela_MixSlash();
 
 	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
 	if (isleak) {
