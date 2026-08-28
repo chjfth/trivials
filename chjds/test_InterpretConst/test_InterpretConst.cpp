@@ -5,6 +5,7 @@
 #include <commdefs.h>
 #include <chj_mishmash.h>
 #include <sdring.h>
+#include <StringHelper.h>
 
 #include <InterpretConst.h>
 using namespace itc;
