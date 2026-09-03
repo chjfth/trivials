@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
 File block scanner with hex dump for non-zero blocks
-([2026-09-03] Provided by Deepseek)
 """
+
+#[2026-09-03] Code by Deepseek
 
 import sys
 import os
@@ -19,6 +20,10 @@ def hex_dump(data: bytes, offset: int, bytes_per_line: int = 16) -> None:
         offset: Starting offset in the file
         bytes_per_line: Number of bytes to display per line
     """
+    
+    # Chj Note: This hexdump code is time consuming, even if you use '> foo.txt' to redirect it to file. 
+    # So, if you have quite many blocks to dump, the program progresses very slow.
+    
     print(f"Offset: 0x{offset:08x}")
     print("-" * 60)
     
@@ -37,19 +42,16 @@ def hex_dump(data: bytes, offset: int, bytes_per_line: int = 16) -> None:
 
 def is_non_zero_block(data: bytes) -> bool:
     """
-    Check if the block contains any non-zero bytes.
-    
-    Args:
-        data: Block of bytes to check
-    
-    Returns:
-        True if block has any non-zero byte, False otherwise
+    Check if the block contains any non-zero bytes - Highly optimized.
+    Using C-level operations for speed.
     """
-    return any(b != 0 for b in data)
+    # This uses C-level memory operations - extremely fast
+    return data != b'\x00' * len(data)
 
 
 def scan_file(file_path: str, block_size: int = 4096, 
-              skip_zero: bool = True, bytes_per_line: int = 16) -> None:
+              skip_zero: bool = True, bytes_per_line: int = 16,
+              progress_interval: Optional[float] = None) -> None:
     """
     Scan a file block by block and hex dump non-zero blocks.
     
@@ -58,6 +60,7 @@ def scan_file(file_path: str, block_size: int = 4096,
         block_size: Size of each block in bytes
         skip_zero: If True, skip blocks that are all zeros
         bytes_per_line: Number of bytes per line in hex dump
+        progress_interval: Report progress every N MiB (None for no progress)
     """
     if block_size <= 0:
         raise ValueError("Block size must be positive")
@@ -65,22 +68,34 @@ def scan_file(file_path: str, block_size: int = 4096,
     if bytes_per_line <= 0:
         raise ValueError("Bytes per line must be positive")
     
+    if progress_interval is not None and progress_interval <= 0:
+        raise ValueError("Progress interval must be positive")
+    
     try:
         # Get file size
         file_size = os.path.getsize(file_path)
-        print(f"File: {file_path}")
-        print(f"File size: {file_size} bytes (0x{file_size:x})")
-        print(f"Block size: {block_size} bytes")
-        print(f"Total blocks: {(file_size + block_size - 1) // block_size}")
-        print("-" * 60)
+        
+        # Send initial info to stderr
+        sys.stderr.write(f"File: {file_path}\n")
+        sys.stderr.write(f"File size: {file_size} bytes (0x{file_size:x})\n")
+        sys.stderr.write(f"Block size: {block_size} bytes\n")
+        sys.stderr.write(f"Total blocks: {(file_size + block_size - 1) // block_size}\n")
+        if progress_interval is not None:
+            sys.stderr.write(f"Progress reporting: every {progress_interval} MiB\n")
+        sys.stderr.write("-" * 60 + "\n")
         
         # Check if file is empty
         if file_size == 0:
-            print("File is empty.")
+            sys.stderr.write("File is empty.\n")
             return
         
         blocks_printed = 0
         blocks_checked = 0
+        bytes_read_total = 0
+        
+        # Progress tracking
+        last_progress_report = 0
+        progress_bytes = int(progress_interval * 1024 * 1024) if progress_interval is not None else None
         
         with open(file_path, 'rb') as f:
             while True:
@@ -91,31 +106,55 @@ def scan_file(file_path: str, block_size: int = 4096,
                 if not data:
                     break
                 
+                bytes_read_total += len(data)
                 blocks_checked += 1
                 
                 # Check if block is all zeros
                 if skip_zero and not is_non_zero_block(data):
+                    # Still report progress if needed
+                    if progress_bytes is not None:
+                        bytes_since_last_report = bytes_read_total - last_progress_report
+                        if bytes_since_last_report >= progress_bytes:
+                            percent = (bytes_read_total / file_size) * 100
+                            sys.stderr.write(f"Progress: {bytes_read_total:,} bytes read "
+                                           f"({percent:.1f}%) at offset 0x{offset:08x}\n")
+                            last_progress_report = bytes_read_total
                     continue
                 
-                # Print block offset and hex dump
+                # Print block offset and hex dump to stdout
                 blocks_printed += 1
                 print(f"Block #{blocks_printed} at offset 0x{offset:08x} "
                       f"({offset} bytes)")
                 hex_dump(data, offset, bytes_per_line)
+                
+                # Report progress after processing the block
+                if progress_bytes is not None:
+                    bytes_since_last_report = bytes_read_total - last_progress_report
+                    if bytes_since_last_report >= progress_bytes:
+                        percent = (bytes_read_total / file_size) * 100
+                        sys.stderr.write(f"Progress: {bytes_read_total:,} bytes read "
+                                       f"({percent:.1f}%) at offset 0x{offset:08x}\n")
+                        last_progress_report = bytes_read_total
         
-        # Summary
-        print("-" * 60)
-        print(f"Scan complete: {blocks_checked} blocks checked, "
-              f"{blocks_printed} non-zero blocks printed.")
+        # Final progress report if needed
+        if progress_bytes is not None and bytes_read_total > last_progress_report:
+            percent = (bytes_read_total / file_size) * 100
+            sys.stderr.write(f"Progress: {bytes_read_total:,} bytes read "
+                           f"({percent:.1f}%) - Complete\n")
+        
+        # Summary to stderr
+        sys.stderr.write("-" * 60 + "\n")
+        sys.stderr.write(f"Scan complete: {blocks_checked:,} blocks checked, "
+                        f"{blocks_printed:,} non-zero blocks printed.\n")
               
     except FileNotFoundError:
-        print(f"Error: File '{file_path}' not found.", file=sys.stderr)
+        sys.stderr.write(f"Error: File '{file_path}' not found.\n")
         sys.exit(1)
     except PermissionError:
-        print(f"Error: Permission denied to read '{file_path}'.", file=sys.stderr)
+        sys.stderr.write(f"Error: Permission denied to read '{file_path}'.\n")
         sys.exit(1)
     except IOError as e:
-        print(f"Error reading file: {e}", file=sys.stderr)
+        sys.stderr.write(f"Error reading file: {e}\n")
         sys.exit(1)
 
 
@@ -130,6 +169,7 @@ Examples:
   %(prog)s -b 1024 file.bin
   %(prog)s -b 2048 --show-zero file.bin
   %(prog)s -b 4096 -l 8 file.bin
+  %(prog)s -p 10 file.bin    # Report progress every 10 MiB
         """
     )
     
@@ -159,6 +199,13 @@ Examples:
     )
     
     parser.add_argument(
+        '-p', '--progress',
+        type=float,
+        metavar='MIB',
+        help='Report progress every MIB MiB (e.g., -p 10 for every 10 MiB)'
+    )
+    
+    parser.add_argument(
         '--version',
         action='version',
         version='%(prog)s 1.0.0'
@@ -171,16 +218,16 @@ Examples:
             file_path=args.file,
             block_size=args.block_size,
             skip_zero=not args.show_zero,
-            bytes_per_line=args.bytes_per_line
+            bytes_per_line=args.bytes_per_line,
+            progress_interval=args.progress
         )
     except ValueError as e:
-        print(f"Error: {e}", file=sys.stderr)
+        sys.stderr.write(f"Error: {e}\n")
         sys.exit(1)
     except KeyboardInterrupt:
-        print("\nScan interrupted by user.", file=sys.stderr)
+        sys.stderr.write("\nScan interrupted by user.\n")
         sys.exit(1)
 
 
 if __name__ == '__main__':
     main()
-
