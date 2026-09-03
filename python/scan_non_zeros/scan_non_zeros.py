@@ -11,33 +11,67 @@ import argparse
 from typing import Optional
 
 
+# Pre-compute lookup tables at module level (done once)
+HEX_TRANS = bytearray(256 * 3)
+for i in range(256):
+    HEX_TRANS[i*3:(i+1)*3] = f'{i:02x} '.encode('ascii')
+
+ASCII_TRANS = bytearray(256)
+for i in range(256):
+    ASCII_TRANS[i] = i if 32 <= i <= 126 else 0x2e  # '.'
+
 def hex_dump(data: bytes, offset: int, bytes_per_line: int = 16) -> None:
     """
-    Print a hex dump of the data with offset information.
-    
-    Args:
-        data: Bytes to dump
-        offset: Starting offset in the file
-        bytes_per_line: Number of bytes to display per line
+    Faster hex dump using pre-computed translation tables.
+    Clean and safe implementation.
     """
-    
     # Chj Note: This hexdump code is time consuming, even if you use '> foo.txt' to redirect it to file. 
     # So, if you have quite many blocks to dump, the program progresses very slow.
+
+    length = len(data)
     
-    print(f"Offset: 0x{offset:08x}")
-    print("-" * 60)
+    # Build output using bytearray
+    output = bytearray()
     
-    for i in range(0, len(data), bytes_per_line):
+    # Header
+    output.extend(f"Offset: 0x{offset:08x}\n".encode('ascii'))
+    output.extend(b'-' * 60)
+    output.append(0x0a)
+    
+    # Process each line
+    for i in range(0, length, bytes_per_line):
         chunk = data[i:i + bytes_per_line]
-        hex_part = ' '.join(f'{b:02x}' for b in chunk)
+        chunk_len = len(chunk)
         
-        # ASCII representation (printable only)
-        ascii_part = ''.join(chr(b) if 32 <= b <= 126 else '.' for b in chunk)
+        # Offset: "  XXXXXXXX  "
+        output.extend(b'  ')
+        output.extend(f'{i+offset:08x}'.encode('ascii'))
+        output.extend(b'  ')
         
-        # Format the output
-        print(f"  {i+offset:08x}  {hex_part:<48}  {ascii_part}")
+        # Hex part
+        for b in chunk:
+            start = b * 3
+            output.extend(HEX_TRANS[start:start+3])
+        
+        # Pad hex part if needed
+        if chunk_len < bytes_per_line:
+            output.extend(b' ' * ((bytes_per_line - chunk_len) * 3))
+        
+        # Separator
+        output.extend(b'  ')
+        
+        # ASCII part
+        for b in chunk:
+            output.append(ASCII_TRANS[b])
+        
+        # Newline
+        output.append(0x0a)
     
-    print()
+    # Extra newline
+    output.append(0x0a)
+    
+    # Single write
+    sys.stdout.buffer.write(output)
 
 
 def is_non_zero_block(data: bytes) -> bool:
