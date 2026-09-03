@@ -20,6 +20,7 @@ ASCII_TRANS = bytearray(256)
 for i in range(256):
     ASCII_TRANS[i] = i if 32 <= i <= 126 else 0x2e  # '.'
 
+
 def hex_dump(data: bytes, offset: int, bytes_per_line: int = 16) -> None:
     """
     Faster hex dump using pre-computed translation tables.
@@ -34,7 +35,7 @@ def hex_dump(data: bytes, offset: int, bytes_per_line: int = 16) -> None:
     output = bytearray()
     
     # Header
-    output.extend(f"Offset: 0x{offset:08x}\n".encode('ascii'))
+    # output.extend(f"Offset: 0x{offset:08x}\n".encode('ascii'))
     output.extend(b'-' * 60)
     output.append(0x0a)
     
@@ -71,7 +72,9 @@ def hex_dump(data: bytes, offset: int, bytes_per_line: int = 16) -> None:
     output.append(0x0a)
     
     # Single write
+    sys.stdout.flush() # Chj: Flush existing buffers prior to hex_dump() call.
     sys.stdout.buffer.write(output)
+    sys.stdout.flush()
 
 
 def is_non_zero_block(data: bytes) -> bool:
@@ -157,8 +160,8 @@ def scan_file(file_path: str, block_size: int = 4096,
                 
                 # Print block offset and hex dump to stdout
                 blocks_printed += 1
-                print(f"Block #{blocks_printed} at offset 0x{offset:08x} "
-                      f"({offset} bytes)")
+                lba = offset//512
+                print(f"Block #{blocks_printed} at offset 0x{offset:08x} (={offset}) @LBA {lba}")
                 hex_dump(data, offset, bytes_per_line)
                 
                 # Report progress after processing the block
