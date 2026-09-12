@@ -14,6 +14,7 @@
 #include <vaDbgTs.h>
 #include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
+#include <DlgTooltipEasy.h>
 
 #include "myutils.h"
 
@@ -180,6 +181,16 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }
 
+const TCHAR* proc_DlgtteGetText(HWND hwndCtl, void *userctx)
+{
+	int uic = GetDlgCtrlID(hwndCtl);
+	if(uic==IDC_LABEL5)
+	{
+		return _T("this is (4) - (1)");
+	}
+	return nullptr;
+}
+
 static const TCHAR *g_szStart = _T(
 	"Use this program to check QueryPerformanceFrequency() and QueryPerformanceCounter()'s behavior.\r\n\
 * On WinXP SP3, you may see QPF equals to CPU's frequency. A 3GHz CPU will report 3000000000.\r\n\
@@ -203,6 +214,8 @@ BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam)
 
 	Dlg_EnableJULayout(hdlg);
 
+	Dlgtte_EnableTooltip(GetDlgItem(hdlg, IDC_LABEL5), proc_DlgtteGetText, nullptr);
+
 	SetFocus(GetDlgItem(hdlg, IDC_BUTTON1));
 	return FALSE; // FALSE to let Dlg-manager respect our SetFocus().
 }
@@ -211,6 +224,8 @@ void Dlg_OnSysCommand(HWND hdlg, UINT cmd, int x, int y)
 {
 	if(cmd==SC_CLOSE)
 	{
+		Dlgtte_RemoveTooltip(GetDlgItem(hdlg, IDC_LABEL5));
+
 		// Due to the fact that Dlg_OnCommand() has disabled SC_CLOSE's default behavior
 		// of "ESC closing dlgbox", so we need to intercept SC_CLOSE so that the window frame
 		// [X] close-button can close it.
