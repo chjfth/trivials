@@ -6,3 +6,5 @@
 #include <mswin/JULayout2.h>
 #include <JAutoBuf.h>
 #include <mswin/WinMultiMon.h>
+
+#include <mswin/WinError.itc.h>

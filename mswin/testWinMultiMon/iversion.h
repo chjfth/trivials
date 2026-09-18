@@ -2,7 +2,7 @@
 #define __testWinMultiMon_iversion_h_
 
 #define testWinMultiMon_VMAJOR 1
-#define testWinMultiMon_VMINOR 1
+#define testWinMultiMon_VMINOR 2
 #define testWinMultiMon_VPATCH 0
 #define testWinMultiMon_VTAIL  0
 

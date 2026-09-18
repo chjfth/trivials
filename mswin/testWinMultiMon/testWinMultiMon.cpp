@@ -18,6 +18,7 @@
 #include <mswin/JULayout2.h>
 #include <JAutoBuf.h>
 #include <mswin/WinMultiMon.h>
+#include <mswin/WinError.itc.h>
 
 
 void ui_refresh(HWND hdlg)
@@ -33,12 +34,14 @@ void ui_refresh(HWND hdlg)
 
 	if (winerr)
 	{
-		vaSetWindowText(hedit, _T("Something wrong in doEnumDisplayMonitors(), winerr=%d."), winerr);
+		vaAppendLog_mled(hedit, 
+			_T("Something wrong in doEnumDisplayMonitors(), winerr=%s."), 
+			ITCSvn(winerr, itc::WinError));
 		return;
 	}
 
 	int nMonitors = (int)abMonInfo.Eles();
-	vaSetWindowText(hedit, _T("Total %d monitors:\r\n"), nMonitors);
+	vaAppendLog_mled(hedit, _T("Total %d monitors:"), nMonitors);
 
 	for (int i = 0; i < nMonitors; i++)
 	{
@@ -89,7 +92,7 @@ static void Dlg_EnableJULayout(HWND hdlg)
 
 BOOL Dlg_OnInitDialog(HWND hdlg, HWND hwndFocus, LPARAM lParam) 
 {
-	SNDMSG(hdlg, WM_SETICON, TRUE, (LPARAM)LoadIcon(GetWindowInstance(hdlg), MAKEINTRESOURCE(IDI_WINMAIN)));
+	util_SetWindowIcon(hdlg, MAKEINTRESOURCE(IDI_WINMAIN));
 
 	TCHAR textbuf[200];
 	_sntprintf_s(textbuf, _TRUNCATE, _T("version: %d.%d.%d"), 
