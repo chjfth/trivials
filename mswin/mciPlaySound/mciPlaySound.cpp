@@ -101,7 +101,8 @@ void MainDialog::OnCommand(HWND hdlg, int id, HWND hwndCtl, UINT codeNotify)
 	case IDB_MCI_OPEN:
 	{
 		Sdring sdrfile = sdrGetDlgItemText(hdlg, IDE_SOUND_FILE);
-		vaSdringAppendSelf(mcicmd, _T("open \"%s\" type MPEGVideo alias mysound"), sdrfile.c_str());
+		//vaSdringAppendSelf(mcicmd, _T("open \"%s\" type MPEGVideo alias mysound"), sdrfile.c_str());
+		vaSdringAppendSelf(mcicmd, _T("open \"%s\" alias mysound"), sdrfile.c_str());
 
 		LogAndRunMci(helog, mcicmd, hdlg);
 		
