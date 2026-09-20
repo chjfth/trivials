@@ -185,7 +185,7 @@ Section#5 [section_end]\n\
 
 	// Save whole INI content.
 
-	Sdring initext_gen1 = ini.save_ini_string(_T("\n"));
+	Sdring initext_gen1 = ini.save_ini_as_string(_T("\n"));
 
 	const TCHAR *saved_inifile = _T("sample1.save.ini");
 
@@ -200,7 +200,7 @@ Section#5 [section_end]\n\
 	err = ini2.load(saved_inifile);
 	assert(!err);
 
-	Sdring initext_gen2 = ini2.save_ini_string(_T("\n"));
+	Sdring initext_gen2 = ini2.save_ini_as_string(_T("\n"));
 
 	assert( Sdring::str_match(initext_gen1, initext_gen2, &DiffAt) );
 
@@ -214,9 +214,9 @@ Section#5 [section_end]\n\
 	ini_copy = std::move(ini2); // test for move-assign memleak
 }
 
-void test_iniEx()
+void test_iniEx_fallback_save()
 {
-	_tprintf(_T("Test SimpleIniEx ...\n"));
+	_tprintf(_T("Test test_iniEx_fallback_save() ...\n"));
 
 	const TCHAR * const ar_inifiles[] =
 	{
@@ -233,7 +233,7 @@ void test_iniEx()
 	assert( !file_exists(ini_output_new) );
 
 	SimpleIniEx ini;
-	bool succ = ini.load_cascade(ar_inifiles, ARRAY_SIZE(ar_inifiles));
+	bool succ = ini.load_cascade(ar_inifiles, ARRAY_SIZE(ar_inifiles), SimpleIniEx::LoadMerge);
 	if(!succ) {
 		_tprintf(_T("[ERROR]Test input-file %s SHOULD exist for the test to run.\n"), ini_need_exist);
 	}
@@ -283,9 +283,62 @@ void test_iniEx()
 	assert( Sdring::str_match(sznowtime, rs_nowtime) );
 }
 
-void do_test0()
+void test_iniEx_merge()
 {
+	_tprintf(_T("Test test_iniEx_merge() ...\n"));
+
+	const TCHAR * const ar_inifiles[] =
+	{
+		_T("tier1.ini"), _T("append1.ini")
+	};
+
+	bool is_fail = false;
+	const TCHAR *ini_need_exist1 = ar_inifiles[0];
+	const TCHAR *ini_need_exist2 = ar_inifiles[1];
+	const TCHAR *ini_output_new = _T("merged_output.ini");
+
+	Sdring initext_append = fsapi::load_textfile_simple(ini_need_exist2);
+	const TCHAR *strfound = _tcsstr(initext_append, _T("merged INI content"));
+	assert(strfound);
+
+	// First delete ini_output_new.
+
+	file_delete(ini_output_new);
+	assert(!file_exists(ini_output_new));
+
+	// Check input file existence.
+	bool exist1 = fsapi::file_exists(ini_need_exist1);
+	bool exist2 = fsapi::file_exists(ini_need_exist2);
+	if (!(exist1 && exist2)) {
+		_tprintf(_T("[ERROR]Test input-file %s and %s SHOULD exist for the test to run.\n"),
+			ini_need_exist1, ini_need_exist2);
+		assert(exist1 && exist2);
+		return;
+	}
+
+	SimpleIniEx ini;
+	bool succ = ini.load_cascade(ar_inifiles, ARRAY_SIZE(ar_inifiles), SimpleIniEx::LoadMerge);
+	assert(succ);
+
+	ini.save(ini_output_new, _T("\r\n"));
+
+	// Verify ini_output_new as text file .
+
+	int DiffAt = -1;
+	Sdring initext_new = fsapi::load_textfile_simple(ini_output_new);
+	strfound = _tcsstr(initext_new, _T("merged INI content"));
+	assert(!strfound);
+	//
+	const TCHAR *new_verify = _T("\
+[foosec]\r\n\
+; comment1\r\n\
+key1 = newval1\r\n\
+; comment2\r\n\
+key2 = newval2\
+");
+	assert(Sdring::str_match(initext_new, new_verify, &DiffAt));
 }
+
 
 int _tmain(int argc, TCHAR* argv[])
 {
@@ -293,11 +346,11 @@ int _tmain(int argc, TCHAR* argv[])
 
 	MSVCRT_MemCheckStart(foo);
 
-//	do_test0();
-
 	do_test1();
 
-	test_iniEx();
+	test_iniEx_fallback_save();
+
+	test_iniEx_merge();
 
 	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
 	if (isleak) {
