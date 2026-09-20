@@ -405,20 +405,29 @@
     <None Include="tier1.ini" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <VSPG_ExeDataFiles>
+    ;sample1.ini
+    ;sample1.mod.ini
+    ;tier1.ini
+     </VSPG_ExeDataFiles>
+  </PropertyGroup>  
+
   <!-- MSBuild system stock Cpp.targets -->
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 
   <!-- import VSPG start -->
-								  <!-- 
   <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>..\_VSPG\boots</VSPG_BootsDir_NoTBS>
+    <trydir>..\..\__VSPG\_VSPG\boots</trydir>
+    		<VSPG_BootsDir_NoTBS Condition="exists('$(trydir)\_VSPG.props')">$(trydir)</VSPG_BootsDir_NoTBS>
+    <trydir>$(SolutionDir)_VSPG\boots</trydir>
+    		<VSPG_BootsDir_NoTBS Condition="exists('$(trydir)\_VSPG.props')">$(trydir)</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
   </ImportGroup>
-  									-->
   <!-- import VSPG end -->
 
 </Project>
