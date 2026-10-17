@@ -71,6 +71,7 @@ void test_hashdict_ints()
 {
 	hashdict<int> d1(_T("d1"));
 
+	bool succ = false;
 	int i, *pi = nullptr;
 	const int NUMs = ARRAYSIZE(gar_NumMap);
 
@@ -209,9 +210,67 @@ void test_hashdict_ints()
 	}
 	assert(i==d1.keycount());
 
+
+	// Test key_rename
+
+	_tprintf(_T("Test dict key_rename() ...\n"));
+
+	succ = d1.key_rename(_T("bad_oldname"), _T("new_name"));
+	assert(!succ); // bcz "bad_oldname" not exist
+
+	succ = d1.key_rename(_T("eighteen"), _T("one"));
+	assert(!succ); // bcz "one" key already exists
+
+	succ = d1.key_rename(_T("nine"), _T("_Nine_"));
+	assert(succ);
+
+	pi = d1.get(_T("_Nine_"));
+	assert(pi && *pi==9);
+	pi = d1.get(_T("nine"));
+	assert(!pi);
+
+	succ = d1.key_rename(_T("_Nine_"), _T("nine")); // rename it back 
+	assert(succ);
+
+	// Mass rename all keys and verify.
+
+	for(i=0; i<NUMs; i++)
+	{
+		NumMap_st &map = gar_NumMap[i];
+		pi = d1.get(map.name);
+		assert(pi);
+		
+		Sdring newname = Sdring(map.name)+_T("#"); // key "one" becomes "one#"
+
+		succ = d1.key_rename(map.name, newname);
+		assert(succ);
+	}
+	for(i=0; i<NUMs; i++) // verify cycle
+	{
+		NumMap_st &map = gar_NumMap[i];
+		
+		Sdring newname = Sdring(map.name) + _T("#"); // key "one" becomes "one#"
+
+		pi = d1.get(newname);
+		assert(pi && *pi==map.value);
+
+		pi = d1.get(map.name);
+		assert(!pi);
+	}
+	// rename all back
+	for(i=0; i<NUMs; i++)
+	{
+		NumMap_st &map = gar_NumMap[i];
+
+		Sdring newname = Sdring(map.name) + _T("#"); // key "one" becomes "one#"
+
+		succ = d1.key_rename(newname, map.name);
+		assert(succ);
+	}
+
 	// d1.CompactTrove(); // explicit compact, for debug purpose
 
-	_tprintf(_T("Test mass del() triggering CompactTrove.\n"));
+	_tprintf(_T("Test mass del() triggering CompactTrove...\n"));
 
 	for(i=0; i<15; i++)
 	{
