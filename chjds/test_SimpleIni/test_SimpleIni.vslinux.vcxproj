@@ -298,7 +298,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress Condition="!$(Platform.StartsWith('ARM64'))">false</RandomizedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
   <!-- 
@@ -411,6 +411,7 @@
     ;sample1.mod.ini
     ;tier1.ini
     ;append1.ini
+    ;merged.answer.ini
      </VSPG_ExeDataFiles>
   </PropertyGroup>  
 

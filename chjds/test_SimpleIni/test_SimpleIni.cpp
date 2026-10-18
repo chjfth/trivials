@@ -326,25 +326,42 @@ void test_iniEx_merge()
 
 	int DiffAt = -1;
 	Sdring initext_new = fsapi::load_textfile_simple(ini_output_new);
-	strfound = _tcsstr(initext_new, _T("merged INI content"));
+	strfound = _tcsstr(initext_new, 
+		_T("tier1 comment1") // this sub-string appears in tier1.ini[foosec], must vanish in output
+	);
 	assert(!strfound);
+	strfound = _tcsstr(initext_new,
+		_T("tier1 comment2") // this sub-string appears in tier1.ini[foosec], must vanish in output
+	);
+	assert(!strfound);
+	strfound = _tcsstr(initext_new,
+		_T("tier1 comment3") // this sub-string appears in tier1.ini[barsec], whole section should migrate to merged output.
+	);
+	assert(strfound);
 	//
-	const TCHAR *new_verify = _T("\
-[foosec]\r\n\
-; comment1\r\n\
-key1 = newval1\r\n\
-; comment2\r\n\
-key2 = newval2\
-");
-	assert(Sdring::str_match(initext_new, new_verify, &DiffAt));
+	assert(binfile_is_match(ini_output_new, _T("merged.answer.ini")));
 }
 
+
+void do_test0()
+{
+	SimpleIni ini;
+	SimpleIni::ReCode_et err = ini.load(_T("dupkey.ini"));
+	assert(!err);
+
+	const TCHAR *secname = _T("foosec");
+	Sdring val1 = ini.get(secname, _T("key1"));
+	Sdring val2 = ini.get(secname, _T("key2"));
+
+}
 
 int _tmain(int argc, TCHAR* argv[])
 {
 	setlocale(LC_ALL, "");
 
 	MSVCRT_MemCheckStart(foo);
+
+//	do_test0();
 
 	do_test1();
 
