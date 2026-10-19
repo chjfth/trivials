@@ -4,4 +4,4 @@
 # both Visual C++ and Cygwin. so, MSVC output exe and Cygwin output exe must be able
 # to cope with exactly the same sample1.mod.ini file content.
 #
-sample1.mod.ini        text eol=crlf
+*.ini        text eol=crlf
