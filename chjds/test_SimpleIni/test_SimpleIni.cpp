@@ -292,7 +292,7 @@ void test_iniEx_merge()
 		_T("tier1.ini"), _T("append1.ini")
 	};
 
-	bool is_fail = false;
+//	bool is_fail = false;
 	const TCHAR *ini_need_exist1 = ar_inifiles[0];
 	const TCHAR *ini_need_exist2 = ar_inifiles[1];
 	const TCHAR *ini_output_new = _T("merged_output.ini");
@@ -339,7 +339,7 @@ void test_iniEx_merge()
 	);
 	assert(strfound);
 	//
-	assert(binfile_is_match(ini_output_new, _T("merged.answer.ini")));
+	assert(binfile_is_match(ini_output_new, _T("merged.answer.ini"), &DiffAt));
 }
 
 

@@ -342,7 +342,7 @@
       <CppLanguageStandard>c++14</CppLanguageStandard>
       <PreprocessorDefinitions>;;_CONSOLE;__int64=long long;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
-      <AdditionalIncludeDirectories>.\devdbg;.;../../__chjcxx/common-include/include/linux;../../__chjcxx/common-include/include;../../__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./_devdbg;.;../../__chjcxx/common-include/include/linux;../../__chjcxx/common-include/include;../../__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>;;./myextralib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
