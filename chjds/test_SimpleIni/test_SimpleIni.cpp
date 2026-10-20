@@ -206,7 +206,7 @@ Section#5 [section_end]\n\
 
 	// Final verify with stock answer file.
 	
-	const TCHAR *std_answer_file = _T("sample1.mod.ini");
+	const TCHAR *std_answer_file = _T("sample1.modverify.ini");
 	assert( binfile_is_match(saved_inifile, std_answer_file, &DiffAt) );
 
 	_tprintf(_T("\n"));
@@ -295,7 +295,8 @@ void test_iniEx_merge()
 //	bool is_fail = false;
 	const TCHAR *ini_need_exist1 = ar_inifiles[0];
 	const TCHAR *ini_need_exist2 = ar_inifiles[1];
-	const TCHAR *ini_output_new = _T("merged_output.ini");
+	const TCHAR *ini_output_new    = _T("merged.output.ini");
+	const TCHAR *ini_output_verify = _T("merged.verify.ini");
 
 	Sdring initext_append = fsapi::load_textfile_simple(ini_need_exist2);
 	const TCHAR *strfound = _tcsstr(initext_append, _T("merged INI content"));
@@ -339,7 +340,7 @@ void test_iniEx_merge()
 	);
 	assert(strfound);
 	//
-	assert(binfile_is_match(ini_output_new, _T("merged.answer.ini"), &DiffAt));
+	assert(binfile_is_match(ini_output_new, ini_output_verify, &DiffAt));
 }
 
 
@@ -361,7 +362,10 @@ int _tmain(int argc, TCHAR* argv[])
 
 	MSVCRT_MemCheckStart(foo);
 
-//	do_test0();
+	bool succ = switch_to_exedir(); // bcz we load test INI files alongside exe
+	assert(succ);
+
+	do_test0();
 
 	do_test1();
 

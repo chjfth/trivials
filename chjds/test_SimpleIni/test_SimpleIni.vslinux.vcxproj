@@ -401,17 +401,18 @@
 
   <ItemGroup>
     <None Include="sample1.ini" />
-    <None Include="sample1.mod.ini" />
-    <None Include="tier1.ini" />
+    <None Include="sample1.modverify.ini" />
   </ItemGroup>
 
   <PropertyGroup>
     <VSPG_ExeDataFiles>
     ;sample1.ini
-    ;sample1.mod.ini
+    ;sample1.modverify.ini
     ;tier1.ini
     ;append1.ini
-    ;merged.answer.ini
+    ;merged.verify.ini
+    ;dupkey.ini
+    ;dupkey.modverify.ini
      </VSPG_ExeDataFiles>
   </PropertyGroup>  
 
