@@ -226,7 +226,7 @@ void test_iniEx_fallback_save()
 
 	const TCHAR * const ar_inifiles[] =
 	{
-		_T("tier0.ini"), _T("tier1.ini"), _T("tier2.ini")
+		_T("tier0.ini"), _T("tier1.ini"), _T("tier2fallback.ini")
 	};
 
 	bool is_fail = false;
@@ -246,7 +246,7 @@ void test_iniEx_fallback_save()
 	assert(succ);
 
 	// Here, we temporarily TURN-ON readonly for tier1.ini, so that later 
-	// save_cascade() will write to tier2.ini.
+	// save_cascade() will write to tier2fallback.ini.
 
 	succ = file_mark_readonly(ini_need_exist, true);
 	if(!succ) {
@@ -293,19 +293,19 @@ void test_iniEx_merge()
 {
 	_tprintf(_T("Test test_iniEx_merge() ...\n"));
 
-	const TCHAR * const ar_inifiles[] =
+	const TCHAR * const ar_ini_tiers[] =
 	{
-		_T("tier1.ini"), _T("append1.ini")
+		_T("tier1.ini"), _T("tier2.ini")
 	};
 
-//	bool is_fail = false;
-	const TCHAR *ini_need_exist1 = ar_inifiles[0];
-	const TCHAR *ini_need_exist2 = ar_inifiles[1];
+	const TCHAR *ini_need_exist1 = ar_ini_tiers[0];
+	const TCHAR *ini_need_exist2 = ar_ini_tiers[1];
 	const TCHAR *ini_output_new    = _T("merged.output.ini");
 	const TCHAR *ini_output_verify = _T("merged.verify.ini");
 
 	Sdring initext_append = fsapi::load_textfile_simple(ini_need_exist2);
-	const TCHAR *strfound = _tcsstr(initext_append, _T("merged INI content"));
+	// verify the input is as expected.
+	const TCHAR *strfound = _tcsstr(initext_append, _T("This INI overlays tierl.ini"));
 	assert(strfound);
 
 	// First delete ini_output_new.
@@ -324,7 +324,7 @@ void test_iniEx_merge()
 	}
 
 	SimpleIniEx ini;
-	bool succ = ini.load_cascade(ar_inifiles, ARRAY_SIZE(ar_inifiles), SimpleIniEx::LoadMerge);
+	bool succ = ini.load_cascade(ar_ini_tiers, ARRAY_SIZE(ar_ini_tiers), SimpleIniEx::LoadMerge);
 	assert(succ);
 
 	ini.save(ini_output_new, _T("\r\n"));
@@ -342,7 +342,7 @@ void test_iniEx_merge()
 	);
 	assert(!strfound);
 	strfound = _tcsstr(initext_new,
-		_T("tier1 comment3") // this sub-string appears in tier1.ini[barsec], whole section should migrate to merged output.
+		_T("tier1 [barsec] comments") // this appears in tier1.ini[barsec], whole section should migrate to merged output.
 	);
 	assert(strfound);
 	//
