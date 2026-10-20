@@ -42,6 +42,12 @@ void do_test1()
 	SimpleIni::ReCode_et err = ini.load(inifilename);
 	assert(!err);
 
+	Sdrings ssSections = ini.sections();
+	int nsections = ssSections.count();
+	assert(nsections==5);
+	assert(ssSections[0]==_T("global"));
+	assert(ssSections[nsections-1]==_T("section_end"));
+
 	SimpleIni ini_copy = ini; // test for copy-ctor memleak
 
 	int i, DiffAt=-1;
@@ -343,17 +349,32 @@ void test_iniEx_merge()
 	assert(binfile_is_match(ini_output_new, ini_output_verify, &DiffAt));
 }
 
+void test_dupkeys_and_dupsectoins()
+{
+	_tprintf(_T("Test test_dupkeys_and_dupsectoins() ...\n"));
+
+	const TCHAR *inifileload = _T("dupkey.ini");
+	const TCHAR *inifilesave = _T("dupkey.output.ini");
+	const TCHAR *inifileverify = _T("dupkey.modverify.ini");
+
+	SimpleIni ini;
+	SimpleIni::ReCode_et err = ini.load(inifileload);
+	assert(!err);
+
+	Sdring key1val = ini.get(_T("foosec"), _T("foo1"));
+	assert(key1val==_T("13"));
+
+	err = ini.save(inifilesave, _T("\r\n"));
+
+	int DiffAt = -1;
+	assert(binfile_is_match(inifilesave, inifileverify, &DiffAt));
+}
 
 void do_test0()
 {
 	SimpleIni ini;
-	SimpleIni::ReCode_et err = ini.load(_T("dupkey.ini"));
-	assert(!err);
-
-	const TCHAR *secname = _T("foosec");
-	Sdring val1 = ini.get(secname, _T("key1"));
-	Sdring val2 = ini.get(secname, _T("key2"));
-
+//	SimpleIni::ReCode_et err = ini.load(_T("dupkey.ini"));
+//	assert(!err);
 }
 
 int _tmain(int argc, TCHAR* argv[])
@@ -362,8 +383,13 @@ int _tmain(int argc, TCHAR* argv[])
 
 	MSVCRT_MemCheckStart(foo);
 
-	bool succ = switch_to_exedir(); // bcz we load test INI files alongside exe
-	assert(succ);
+	const TCHAR *inisample =_T("sample1.ini");
+	if(!file_exists(inisample))
+	{
+		_tprintf(_T("CWD to EXE dir due to '%s' not found in current dir.\n"), inisample);
+		bool succ = switch_to_exedir();
+		assert(succ);
+	}
 
 	do_test0();
 
@@ -372,6 +398,8 @@ int _tmain(int argc, TCHAR* argv[])
 	test_iniEx_fallback_save();
 
 	test_iniEx_merge();
+
+	test_dupkeys_and_dupsectoins();
 
 	bool isleak = MSVCRT_MemCheckEnd_IsLeak(foo);
 	if (isleak) {
