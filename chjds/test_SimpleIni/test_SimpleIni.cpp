@@ -361,8 +361,17 @@ void test_dupkeys_and_dupsectoins()
 	SimpleIni::ReCode_et err = ini.load(inifileload);
 	assert(!err);
 
-	Sdring key1val = ini.get(_T("foosec"), _T("foo1"));
-	assert(key1val==_T("13"));
+	Sdring fookey1 = ini.get(_T("foosec"), _T("key1"));
+	assert(fookey1==_T("13"));
+	
+	Sdring fookey2 = ini.get(_T("foosec"), _T("key2"));
+	assert(fookey2 == _T("22"));
+
+	Sdring barkey1 = ini.get(_T("barsec"), _T("key1"));
+	assert(barkey1 == _T("100"));
+
+	Sdring barkey2 = ini.get(_T("barsec"), _T("key2"));
+	assert(barkey2 == _T("200"));
 
 	err = ini.save(inifilesave, _T("\r\n"));
 
