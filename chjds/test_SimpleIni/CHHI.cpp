@@ -5,6 +5,8 @@
 
 #define CHHI_ALL_IMPL
 
+#include <InterpretConst.h>
+
 #include <SimpleIni.h>
 #include <SimpleIniEx.h>
 
