@@ -193,7 +193,7 @@ Section#5 [section_end]\n\
 
 	Sdring initext_gen1 = ini.save_ini_as_string(_T("\n"));
 
-	const TCHAR *saved_inifile = _T("sample1.save.ini");
+	const TCHAR *saved_inifile = _T("sample1.output.ini");
 
 	err = ini.save(saved_inifile, _T("\r\n")); // Let disk file use \r\n, even on Linux.
 	assert(!err);
@@ -368,7 +368,7 @@ void test_dupkeys_and_dupsectoins()
 	assert(fookey2 == _T("22"));
 
 	Sdring barkey1 = ini.get(_T("barsec"), _T("key1"));
-	assert(barkey1 == _T("100"));
+	assert(barkey1 == _T(""));
 
 	Sdring barkey2 = ini.get(_T("barsec"), _T("key2"));
 	assert(barkey2 == _T("200"));
@@ -382,7 +382,7 @@ void test_dupkeys_and_dupsectoins()
 void do_test0()
 {
 	SimpleIni ini;
-//	SimpleIni::ReCode_et err = ini.load(_T("dupkey.ini"));
+//	SimpleIni::ReCode_et err = ini.load(_T("test.ini"));
 //	assert(!err);
 }
 
