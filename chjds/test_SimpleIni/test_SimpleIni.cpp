@@ -375,6 +375,12 @@ void test_dupkeys_and_dupsectoins()
 
 	int DiffAt = -1;
 	assert(binfile_is_match(inifilesave, inifileverify, &DiffAt));
+
+	// Check that the duplication-marked key should exist in output INI.
+	SimpleIniEx ini2;
+	SimpleIni::ReCode_et err2 = ini2.load(inifileverify);
+	Sdring key1n2 = ini2.get(_T("foosec"), _T("key1#2"));
+	assert(key1n2 == _T("12"));
 }
 
 void do_test0()
