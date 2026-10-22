@@ -26,17 +26,14 @@ bool IsEqual(const TCHAR *s1, const TCHAR *s2)
 	return _tcscmp(s1, s2)==0 ? true : false;
 }
 
-void do_test1()
+void test_sample1()
 {
-// 	Sdring sz1(_T("ABC"));
-// 	int kk = sz1;
-
 	TCHAR sbuf[800] = {};
 	sdring<wchar_t> bigstrW; // in order to do exact compare no matter on Unicode or ANSI build
 
 	const TCHAR *inifilename = _T("sample1.ini");
 
-	_tprintf(_T("Reading INI file: %s\n\n"), inifilename);
+	_tprintf(_T("Test {%s} in test_sample1() ...\n\n"), inifilename);
 
 	SimpleIni ini;
 	SimpleIni::ReCode_et err = ini.load(inifilename);
@@ -67,7 +64,7 @@ void do_test1()
 
 		snTprintf(sbuf, _T("Section#%d [%s]\n"), i+1, secname);
 		bigstr.append_self(sbuf);
-		_tprintf(_T("%s"), sbuf);
+//		_tprintf(_T("%s"), sbuf);
 
 		Sdrings seckeys = ini.section_keys(secname);
 		for(int j=0; j<seckeys.count(); j++)
@@ -78,12 +75,12 @@ void do_test1()
 
 			snTprintf(sbuf, _T("'%s' = '%s'\n"), keyname, sval.getptr());
 			bigstr.append_self(sbuf);
-			_tprintf(_T("%s"), sbuf);
+//			_tprintf(_T("%s"), sbuf);
 		}
 
 		// Add an extra line between sections.
 		bigstr.append_self(_T("\n"));
-		_tprintf(_T("\n"));
+//		_tprintf(_T("\n"));
 	}
 
 	bigstrW = makeWsdring(bigstr, mTs_UTF8);
@@ -215,15 +212,13 @@ Section#5 [section_end]\n\
 	const TCHAR *std_answer_file = _T("sample1.modverify.ini");
 	assert( binfile_is_match(saved_inifile, std_answer_file, &DiffAt) );
 
-	_tprintf(_T("\n"));
+//	_tprintf(_T("\n"));
 
 	ini_copy = std::move(ini2); // test for move-assign memleak
 }
 
 void test_iniEx_fallback_save()
 {
-	_tprintf(_T("Test test_iniEx_fallback_save() ...\n"));
-
 	const TCHAR * const ar_inifiles[] =
 	{
 		_T("tier0.ini"), _T("tier1.ini"), _T("tier2fallback.ini")
@@ -232,6 +227,8 @@ void test_iniEx_fallback_save()
 	bool is_fail = false;
 	const TCHAR *ini_need_exist = ar_inifiles[1];
 	const TCHAR *ini_output_new = ar_inifiles[2];
+
+	_tprintf(_T("Test {%s} in test_iniEx_fallback_save() ...\n\n"), ini_need_exist);
 
 	// First delete ini_output_new.
 
@@ -291,8 +288,6 @@ void test_iniEx_fallback_save()
 
 void test_iniEx_merge()
 {
-	_tprintf(_T("Test test_iniEx_merge() ...\n"));
-
 	const TCHAR * const ar_ini_tiers[] =
 	{
 		_T("tier1.ini"), _T("tier2.ini")
@@ -302,6 +297,9 @@ void test_iniEx_merge()
 	const TCHAR *ini_need_exist2 = ar_ini_tiers[1];
 	const TCHAR *ini_output_new    = _T("merged.output.ini");
 	const TCHAR *ini_output_verify = _T("merged.verify.ini");
+
+	_tprintf(_T("Test {%s,%s} test_iniEx_merge() ...\n\n"), ini_need_exist1, ini_need_exist2);
+
 
 	Sdring initext_append = fsapi::load_textfile_simple(ini_need_exist2);
 	// verify the input is as expected.
@@ -351,11 +349,11 @@ void test_iniEx_merge()
 
 void test_dupkeys_and_dupsectoins()
 {
-	_tprintf(_T("Test test_dupkeys_and_dupsectoins() ...\n"));
-
 	const TCHAR *inifileload = _T("dupkey.ini");
 	const TCHAR *inifilesave = _T("dupkey.output.ini");
 	const TCHAR *inifileverify = _T("dupkey.modverify.ini");
+
+	_tprintf(_T("Test {%s} in test_dupkeys_and_dupsectoins() ...\n\n"), inifileload);
 
 	SimpleIni ini;
 	SimpleIni::ReCode_et err = ini.load(inifileload);
@@ -402,7 +400,7 @@ int _tmain(int argc, TCHAR* argv[])
 
 	do_test0();
 
-	do_test1();
+	test_sample1();
 
 	test_iniEx_fallback_save();
 
