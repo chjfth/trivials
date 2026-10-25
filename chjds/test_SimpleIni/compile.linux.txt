@@ -1,4 +1,4 @@
-# [2026-10-20] NOTE: LLVM-10 compiles and runs OK; but GCC-10,11,12 compiles OK but runs with WRONG behavior.
+# [2026-10-20] NOTE: LLVM-10 compiles and runs OK, however, GCC 10~15 `-O2` compiles OK but runs with WRONG behavior.
 # GCC(g++) runs well only with `-O0` optimization(=no optimization).
 
 clang++ -o o2.llvm -O2 -I ./_devdbg -I . -I ../../__chjcxx/common-include/include/linux  -I ../../__chjcxx/common-include/include -D __int64="long long" CHHI.cpp test_SimpleIni.cpp
