@@ -1,11 +1,11 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <ShlObj-winxp-patch.h>
 #include <CommCtrl.h>
 #include <NTSecAPI.h>
 #include <AclAPI.h>
 #include <sddl.h>
-#include <ShlObj.h>
 #include <tchar.h>
 #include <stdio.h>
 #include <limits.h>
@@ -13,13 +13,12 @@
 
 #include "iversion.h"
 
-#define CHHI_ALL_IMPL
-
 #include <CHHI_vaDBG_is_vaDbgTs.h>
 #include <StringHelper.h>
 
 #include <EnsureClnup_mswin.h>
 
+#include <mswin/utils_env.h>
 #include <mswin/utils_wingui.h>
 #include <mswin/winnt.itc.h>
 #include <mswin/WinError.itc.h>
@@ -98,7 +97,7 @@ Trustees_st myCreateTrusteeArray(const TCHAR *pszTrusteelist)
 
 	// Count input trustees
 
-	StringSplitter<decltype(pszTrusteelist), IsSemicolon, StringSplitter_TrimSpacechar> 
+	StringSplitter<decltype(pszTrusteelist), IsSemicolon, StringSplitter_IsSpaceTab>
 		sp(pszTrusteelist);
 	for(;; tees.count++)
 	{

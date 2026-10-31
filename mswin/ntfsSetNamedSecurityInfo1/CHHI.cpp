@@ -1,17 +1,16 @@
-#include <CxxVerCheck.h>
-
-#ifdef CXX11_OR_NEWER
-template<typename... Args>
-void vaDBG(Args&&... args) // forwards all arguments
-{
-	PrnTs(std::forward<Args>(args)...);
-}
-#endif
+#define vaDbgTs_IMPL
+#include <CHHI_vaDBG_is_vaDbgTs.h> // optional
 
 
-#define JAUTOBUF_IMPL
+#define CHHI_ALL_IMPL
+
+#include <ShlObj-winxp-patch.h>
+
+#include <StringHelper.h>
 #include <JAutoBuf.h>
-
-#define JULAYOUT_IMPL
 #include <mswin/JULayout2.h>
 
+#include <mswin/utils_env.h>
+#include <mswin/utils_wingui.h>
+#include <mswin/winnt.itc.h>
+#include <mswin/WinError.itc.h>

@@ -71,6 +71,12 @@
     </ProjectConfiguration>
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Define PlatformX var, using 'x86' instead of 'Win32'. The 'X' refers to the X in x86 & x64. -->
+    <PlatformX>$(Platform)</PlatformX>
+    <PlatformX Condition="'$(Platform)'=='Win32'">x86</PlatformX>
+  </PropertyGroup>
+
   <!-- User project properties -->
 
   <PropertyGroup Label="Configuration">
@@ -117,7 +123,9 @@
     <PlatformToolset Condition="$(DefaultPlatformToolset)!=''">$(DefaultPlatformToolset)</PlatformToolset>
 
     <!-- Chj special: For VC2013 and VC2015, I want them to produce WinXP-runnable EXE. (I want v120_xp or v140_xp) -->
-    <PlatformToolset Condition="$(DefaultPlatformToolset)=='v120' or $(DefaultPlatformToolset)=='v140'">$(DefaultPlatformToolset)_xp</PlatformToolset>  </PropertyGroup>
+    <PlatformToolset Condition="$(DefaultPlatformToolset)=='v120' or $(DefaultPlatformToolset)=='v140'">$(DefaultPlatformToolset)_xp</PlatformToolset>
+    
+  </PropertyGroup>
 
   <!---->
 
@@ -156,7 +164,7 @@
 
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
 
-      <AdditionalIncludeDirectories>.;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\_devdbg;.;..;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -243,11 +251,14 @@
  
   <!-- import VSPG start -->
   <PropertyGroup>
-    <VSPG_BootsDir_NoTBS Condition="exists('..\..\__VSPG\_VSPG\boots\_VSPG.props')" >..\..\__VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
-    <VSPG_BootsDir_NoTBS Condition="exists('$(SolutionDir)_VSPG\boots\_VSPG.props')">$(SolutionDir)_VSPG\boots</VSPG_BootsDir_NoTBS>
+    <trydir>..\..\__VSPG\_VSPG\boots</trydir>
+    		<VSPG_BootsDir_NoTBS Condition="exists('$(trydir)\_VSPG.props')">$(trydir)</VSPG_BootsDir_NoTBS>
+    <trydir>$(SolutionDir)_VSPG\boots</trydir>
+    		<VSPG_BootsDir_NoTBS Condition="exists('$(trydir)\_VSPG.props')">$(trydir)</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
   </ImportGroup>
   <!-- import VSPG end -->
+
 </Project>
