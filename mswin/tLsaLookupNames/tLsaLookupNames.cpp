@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+#include <ShlObj-winxp-patch.h>
 #include <lm.h>
 #include <NTSecAPI.h>
 #include <SDDL.h>
@@ -208,7 +209,7 @@ bool do_LsaLookupNames(HWND hdlg)
 	SetDlgItemText(hdlg, IDC_EDIT_SidOutput, _T(""));
 	SetDlgItemText(hdlg, IDC_EDIT_DomainOutput, _T(""));
 
-	StringSplitter<decltype(szinput), StringSplitter_IsCrlf, StringSplitter_TrimSpacechar> sp(szinput);
+	StringSplitter<decltype(szinput), StringSplitter_IsCrlf, StringSplitter_IsSpaceTab> sp(szinput);
 
 	int nlines = sp.count();
 	if(nlines<=0)

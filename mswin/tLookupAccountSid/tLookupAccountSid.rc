@@ -33,6 +33,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // remains consistent on all systems.
 IDI_WINMAIN             ICON                    "tLookupAccountSid.ico"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
@@ -47,10 +48,10 @@ BEGIN
     EDITTEXT        IDE_QueryOutput,4,56,249,61,ES_MULTILINE | ES_AUTOVSCROLL | ES_WANTRETURN | WS_VSCROLL
     DEFPUSHBUTTON   "&LookupAccountSid",IDB_Query,84,120,83,14
     EDITTEXT        IDE_SidInput,60,4,193,14,ES_AUTOHSCROLL
-    LTEXT           "cchName:",IDC_STATIC,10,36,32,8
+    LTEXT           "cchName:",IDS_cchName,10,36,32,8
     EDITTEXT        IDE_cchName,49,34,40,14,ES_AUTOHSCROLL
     GROUPBOX        "Limit output buffer size (in TCHARs)",IDS_groubox1,4,23,249,29
-    LTEXT           "cchReferencedDomainName:",IDC_STATIC,101,36,93,8
+    LTEXT           "cchReferencedDomainName:",IDS_cchDomName,101,36,93,8
     EDITTEXT        IDE_cchDomName,199,34,40,14,ES_AUTOHSCROLL
 END
 
@@ -102,6 +103,17 @@ BEGIN
 END
 
 #endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_WINMAIN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////

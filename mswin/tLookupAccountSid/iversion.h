@@ -4,7 +4,7 @@
 #define tLookupAccountSid_VMAJOR 1
 #define tLookupAccountSid_VMINOR 0
 #define tLookupAccountSid_VPATCH 5
-#define tLookupAccountSid_VTAIL  0
+#define tLookupAccountSid_VTAIL  1
 
 #define tLookupAccountSidstr__(n) #n
 #define tLookupAccountSidstr(n) tLookupAccountSidstr__(n)

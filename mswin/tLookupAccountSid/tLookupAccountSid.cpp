@@ -1,6 +1,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
+
+#include <ShlObj-winxp-patch.h>
 #include <CommCtrl.h>
 #include <Sddl.h>
 #include <tchar.h>
@@ -13,9 +15,10 @@
 
 #include "iversion.h"
 
-#include "../utils.h"
+#define CHHI_ALL_IMPL
 
-#define JULAYOUT_IMPL
+#include <vaDbgTs.h>
+#include <mswin/utils_wingui.h>
 #include <mswin/JULayout2.h>
 
 #include <EnsureClnup_mswin.h>
@@ -95,6 +98,8 @@ static void Dlg_EnableJULayout(HWND hdlg)
 	jul->AnchorControl(0,0, 0,0, IDS_groubox1);
 	jul->AnchorControl(0,0, 100,100, IDE_QueryOutput);
 	jul->AnchorControl(50,100, 50,100, IDB_Query);
+
+	jul->AnchorControls(0,0, 0,0, IDS_cchName, IDE_cchName, IDS_cchDomName, IDE_cchDomName, -1);
 
 	// If you add more controls(IDC_xxx) to the dialog, adjust them here.
 }

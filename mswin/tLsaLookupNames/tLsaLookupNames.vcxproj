@@ -71,6 +71,12 @@
     </ProjectConfiguration>
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Define PlatformX var, using 'x86' instead of 'Win32'. The 'X' refers to the X in x86 & x64. -->
+    <PlatformX>$(Platform)</PlatformX>
+    <PlatformX Condition="'$(Platform)'=='Win32'">x86</PlatformX>
+  </PropertyGroup>
+
   <!-- User project properties -->
 
   <PropertyGroup Label="Configuration">
@@ -115,6 +121,10 @@
         "v143" on VC2022
       -->
     <PlatformToolset Condition="$(DefaultPlatformToolset)!=''">$(DefaultPlatformToolset)</PlatformToolset>
+
+    <!-- Chj special: For VC2013 and VC2015, I want them to produce WinXP-runnable EXE. (I want v120_xp or v140_xp) -->
+    <PlatformToolset Condition="$(DefaultPlatformToolset)=='v120' or $(DefaultPlatformToolset)=='v140'">$(DefaultPlatformToolset)_xp</PlatformToolset>
+    
   </PropertyGroup>
 
   <!---->
@@ -153,7 +163,8 @@
       <ProgramDataBaseFileName Condition="'$(TargetExt)'!='.lib' ">$(IntDir)$(TargetName).$(PlatformToolset).pdb</ProgramDataBaseFileName>
 
       <PreprocessorDefinitions>;;WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+
+      <AdditionalIncludeDirectories>.\_devdbg;.;..;..\..\__chjcxx\common-include\include\mswin;..\..\__chjcxx\common-include\include;..\..\__WinConst;;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -162,8 +173,10 @@
       <ImportLibrary>$(OutDir)$(TargetName)--imp.lib</ImportLibrary>
       <GenerateMapFile>true</GenerateMapFile>
       <AdditionalLibraryDirectories>;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'"  >;;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+
       <AdditionalDependencies>Psapi.lib;ComCtl32.Lib;;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
  
@@ -222,10 +235,11 @@
   <ItemGroup>
     <ClInclude Include="iversion.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="..\..\__chjcxx\common-include\include\StringHelper.h" />
+<!-- 
     <ClInclude Include="..\..\__chjcxx\common-include\include\mswin\JULayout2.h" />
     <ClInclude Include="..\..\__chjcxx\common-include\include\EnsureClnup_mswin.h" />
     <ClInclude Include="..\..\__WinConst\mswin\WinError.itc.h" />
+-->
   </ItemGroup>
  
   <!-- MSBuild system stock Cpp.targets -->
@@ -235,10 +249,14 @@
  
   <!-- import VSPG start -->
   <PropertyGroup>
-    <VSPG_BootsDir_NoTBS>..\..\__VSPG\_VSPG\boots</VSPG_BootsDir_NoTBS>
+    <trydir>..\..\__VSPG\_VSPG\boots</trydir>
+    		<VSPG_BootsDir_NoTBS Condition="exists('$(trydir)\_VSPG.props')">$(trydir)</VSPG_BootsDir_NoTBS>
+    <trydir>$(SolutionDir)_VSPG\boots</trydir>
+    		<VSPG_BootsDir_NoTBS Condition="exists('$(trydir)\_VSPG.props')">$(trydir)</VSPG_BootsDir_NoTBS>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(VSPG_BootsDir_NoTBS)\_VSPG.props" Condition="exists('$(VSPG_BootsDir_NoTBS)\_VSPG.props')"/>
   </ImportGroup>
   <!-- import VSPG end -->
+
 </Project>
