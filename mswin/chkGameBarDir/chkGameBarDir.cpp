@@ -1,3 +1,5 @@
+// Context: Evclip 20261110.s1 
+
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>

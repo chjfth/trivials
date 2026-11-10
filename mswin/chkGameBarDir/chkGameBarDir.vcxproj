@@ -244,6 +244,10 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+
+  <Target Name="NoteSdkRequirements" BeforeTargets="InitializeBuildStatus">
+    <Message Text="[NOTE] This project needs at least VC2015 and Win10SDK." Importance="high" />
+  </Target>
  
   <!-- import VSPG start -->
   <PropertyGroup>
